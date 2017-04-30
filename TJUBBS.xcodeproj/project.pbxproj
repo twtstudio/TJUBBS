@@ -112,11 +112,11 @@
 		682A84611EB5C3B900510FA4 /* TJUBBS */ = {
 			isa = PBXGroup;
 			children = (
-				682A84961EB5C62A00510FA4 /* Resources */,
+				682A84901EB5C3CE00510FA4 /* Main */,
 				682A84931EB5C5F100510FA4 /* HomePage */,
 				682A84921EB5C5EB00510FA4 /* BBS */,
 				682A84911EB5C5E100510FA4 /* User */,
-				682A84901EB5C3CE00510FA4 /* Main */,
+				682A84961EB5C62A00510FA4 /* Resources */,
 			);
 			path = TJUBBS;
 			sourceTree = "<group>";
@@ -649,6 +649,7 @@
 				682A84891EB5C3BA00510FA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		682A848A1EB5C3BA00510FA4 /* Build configuration list for PBXNativeTarget "TJUBBSTests" */ = {
 			isa = XCConfigurationList;
@@ -657,6 +658,7 @@
 				682A848C1EB5C3BA00510FA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		682A848D1EB5C3BA00510FA4 /* Build configuration list for PBXNativeTarget "TJUBBSUITests" */ = {
 			isa = XCConfigurationList;
@@ -665,6 +667,7 @@
 				682A848F1EB5C3BA00510FA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
