@@ -19,6 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
             window.backgroundColor = UIColor.white
+            
+            //Handle NavigationBar Appearance
+            UINavigationBar.appearance().barTintColor = UIColor.BBSBlue
+            UINavigationBar.appearance().tintColor = UIColor.white
+            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
+            
             let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
             window.rootViewController = navigationController
             window.makeKeyAndVisible()

@@ -18,6 +18,16 @@ extension UIButton {
     }
 }
 
+extension UILabel {
+    convenience init(text: String, color: UIColor = UIColor.black, fontSize: Int = 15) {
+        self.init()
+        self.text = text
+        self.textColor = color
+        self.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
+        self.sizeToFit()
+    }
+}
+
 
 extension UIColor {
     open class var BBSBlue: UIColor {
@@ -25,16 +35,20 @@ extension UIColor {
     }
 }
 
-//extension UIViewController {
-//    func keyboardWillShow() {
-//        UIView.animate(withDuration: 0.5, animations: {
-//            self.view.frame.origin.y = -40
-//        })
-//    }
-//    
-//    func keyboardWillHide() {
-//        UIView.animate(withDuration: 0.5, animations: {
-//            self.view.frame.origin.y = 0
-//        })
-//    }
-//}
+extension UIViewController {
+    func keyboardWillShow() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.frame.origin.y = -40
+        })
+    }
+    
+    func keyboardWillHide() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.frame.origin.y = 0
+        })
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
