@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C21EB625F20090E805 /* BBSBeacon.swift */; };
+		36FE25C61EB62A630090E805 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C51EB62A630090E805 /* log.swift */; };
+		36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C71EB62A790090E805 /* DeviceStatus.swift */; };
 		682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682A84621EB5C3B900510FA4 /* AppDelegate.swift */; };
 		682A84651EB5C3B900510FA4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682A84641EB5C3B900510FA4 /* LoginViewController.swift */; };
 		682A84681EB5C3B900510FA4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 682A84661EB5C3B900510FA4 /* Main.storyboard */; };
@@ -36,6 +39,9 @@
 
 /* Begin PBXFileReference section */
 		1977C405936927832AD1537D /* Pods-TJUBBS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.debug.xcconfig"; sourceTree = "<group>"; };
+		36FE25C21EB625F20090E805 /* BBSBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSBeacon.swift; sourceTree = "<group>"; };
+		36FE25C51EB62A630090E805 /* log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = "<group>"; };
+		36FE25C71EB62A790090E805 /* DeviceStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatus.swift; sourceTree = "<group>"; };
 		682A845F1EB5C3B900510FA4 /* TJUBBS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TJUBBS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		682A84621EB5C3B900510FA4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		682A84641EB5C3B900510FA4 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -87,6 +93,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		36FE25C11EB625D30090E805 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				36FE25C21EB625F20090E805 /* BBSBeacon.swift */,
+			);
+			name = Networking;
+			sourceTree = "<group>";
+		};
+		36FE25C41EB62A500090E805 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				36FE25C51EB62A630090E805 /* log.swift */,
+				36FE25C71EB62A790090E805 /* DeviceStatus.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
 		682A84561EB5C3B900510FA4 = {
 			isa = PBXGroup;
 			children = (
@@ -112,6 +135,8 @@
 		682A84611EB5C3B900510FA4 /* TJUBBS */ = {
 			isa = PBXGroup;
 			children = (
+				36FE25C41EB62A500090E805 /* Utilities */,
+				36FE25C11EB625D30090E805 /* Networking */,
 				682A84961EB5C62A00510FA4 /* Resources */,
 				682A84931EB5C5F100510FA4 /* HomePage */,
 				682A84921EB5C5EB00510FA4 /* BBS */,
@@ -383,7 +408,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -394,7 +419,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				682A84651EB5C3B900510FA4 /* LoginViewController.swift in Sources */,
+				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
+				36FE25C61EB62A630090E805 /* log.swift in Sources */,
 				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
+				36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -649,6 +677,7 @@
 				682A84891EB5C3BA00510FA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		682A848A1EB5C3BA00510FA4 /* Build configuration list for PBXNativeTarget "TJUBBSTests" */ = {
 			isa = XCConfigurationList;
@@ -657,6 +686,7 @@
 				682A848C1EB5C3BA00510FA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		682A848D1EB5C3BA00510FA4 /* Build configuration list for PBXNativeTarget "TJUBBSUITests" */ = {
 			isa = XCConfigurationList;
@@ -665,6 +695,7 @@
 				682A848F1EB5C3BA00510FA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
