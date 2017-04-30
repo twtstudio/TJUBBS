@@ -19,7 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
             window.backgroundColor = UIColor.white
-            window.rootViewController = LoginViewController(para: 1)
+            let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+            window.rootViewController = navigationController
             window.makeKeyAndVisible()
         }
         return true
