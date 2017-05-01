@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import PKHUD
 
-class AuthenticateViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class AuthenticateViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
@@ -50,6 +50,21 @@ class AuthenticateViewController: UIViewController, UITableViewDelegate, UITable
         tableView?.dataSource = self
         tableView?.register(TextInputCell.self, forCellReuseIdentifier: "ID")
     }
+    
+    func addTapGestures() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    
+    func authenticateButtonTapped() {
+        print("func authenticateButtonTapped")
+        HUD.flash(.label("验证未通过！请检查信息是否有误"), delay: 1.0)
+    }
+    
+}
+
+extension AuthenticateViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -98,7 +113,7 @@ class AuthenticateViewController: UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         footerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenFrame.height*(300/1920)))
-        authenticateButton = UIButton(type: .roundedRect)
+        authenticateButton = UIButton(title: "验 证", isConfirmButton: true)
         footerView?.addSubview(authenticateButton!)
         authenticateButton?.snp.makeConstraints {
             make in
@@ -107,12 +122,6 @@ class AuthenticateViewController: UIViewController, UITableViewDelegate, UITable
             make.width.equalTo(screenFrame.width*(800/1080))
             make.height.equalTo(screenFrame.height*(100/1920))
         }
-        authenticateButton?.setTitle("验 证", for: .normal)
-        authenticateButton?.setTitleColor(UIColor.white, for: .normal)
-        authenticateButton?.backgroundColor = UIColor.BBSBlue
-        authenticateButton?.titleLabel?.font = UIFont.systemFont(ofSize: 18)
-        authenticateButton?.layer.cornerRadius = 5.0
-        authenticateButton?.clipsToBounds = true
         authenticateButton?.addTarget(self, action: #selector(authenticateButtonTapped), for: .touchUpInside)
         
         return footerView
@@ -121,6 +130,9 @@ class AuthenticateViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return screenFrame.height*(300/1920)
     }
+}
+
+extension AuthenticateViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -128,16 +140,4 @@ class AuthenticateViewController: UIViewController, UITableViewDelegate, UITable
             cell.textField?.becomeFirstResponder()
         }
     }
-    
-    func addTapGestures() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-    
-    
-    func authenticateButtonTapped() {
-        print("func authenticateButtonTapped")
-        HUD.flash(.label("验证未通过！请检查信息是否有误"), delay: 1.0)
-    }
-    
 }
