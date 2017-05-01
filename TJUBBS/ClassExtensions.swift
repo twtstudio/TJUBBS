@@ -10,11 +10,20 @@ import Foundation
 import UIKit
 
 extension UIButton {
-    convenience init(title: String, color: UIColor = UIColor.black, fontSize: Int = 15) {
+    convenience init(title: String, color: UIColor = .black, fontSize: Int = 15, isConfirmButton: Bool = false) {
         self.init()
-        self.setTitle(title, for: .normal)
-        self.setTitleColor(color, for: .normal)
-        self.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
+        if isConfirmButton == false {
+            self.setTitle(title, for: .normal)
+            self.setTitleColor(color, for: .normal)
+            self.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
+        } else {
+            self.setTitle(title, for: .normal)
+            self.setTitleColor(UIColor.white, for: .normal)
+            self.backgroundColor = UIColor.BBSBlue
+            self.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+            self.layer.cornerRadius = 5.0
+            self.clipsToBounds = true
+        }
     }
 }
 

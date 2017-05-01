@@ -14,9 +14,7 @@ class LoginViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var portraitImageView: UIImageView?
-    var usernameImageView: UIImageView?
     var usernameTextField: UITextField?
-    var passwordImageView: UIImageView?
     var passwordTextField: UITextField?
     var loginButton: UIButton?
     var registerButton: UIButton?
@@ -71,58 +69,59 @@ class LoginViewController: UIViewController {
             make.height.equalTo(screenFrame.height*(650/1920))
         }
         
-        usernameImageView = UIImageView(image: UIImage(named: "用户名"))
-        view.addSubview(usernameImageView!)
-        usernameImageView?.snp.makeConstraints {
-            make in
-            make.top.equalTo(portraitImageView!.snp.bottom).offset(screenFrame.height*(100/1920))
-            make.left.equalTo(view).offset(screenFrame.width*(150/1080))
-            make.width.equalTo(screenFrame.height*(96/1920))
-            make.height.equalTo(screenFrame.height*(88/1920))
-        }
-        
         usernameTextField = UITextField()
         view.addSubview(usernameTextField!)
         usernameTextField?.snp.makeConstraints {
             make in
-            make.centerY.equalTo(usernameImageView!)
-            make.left.equalTo(usernameImageView!.snp.right).offset(8)
-            make.height.equalTo(screenFrame.height*(64/1920))
-            make.width.equalTo(screenFrame.width*(650/1080))
+            make.top.equalTo(portraitImageView!.snp.bottom).offset(screenFrame.height*(100/1920))
+            make.centerX.equalToSuperview()
+            make.height.equalTo(screenFrame.height*(120/1920))
+            make.width.equalTo(screenFrame.width*(800/1080))
         }
         usernameTextField?.placeholder = "用户名"
-        
-        passwordImageView = UIImageView(image: UIImage(named: "密码"))
-        view.addSubview(passwordImageView!)
-        passwordImageView?.snp.makeConstraints {
-            make in
-            make.top.equalTo(usernameImageView!.snp.bottom).offset(screenFrame.height*(100/1920))
-            make.left.equalTo(view).offset(screenFrame.width*(150/1080))
-            make.width.equalTo(screenFrame.height*(96/1920))
-            make.height.equalTo(screenFrame.height*(88/1920))
+        usernameTextField?.borderStyle = .roundedRect
+        let usernameLeftView = UIView(frame: CGRect(x: 0, y: 0, width: screenFrame.width*(128/1080), height: screenFrame.height*(120/1920)))
+        let usernameLeftImageView = UIImageView(image: UIImage(named: "用户名"))
+        usernameLeftView.addSubview(usernameLeftImageView)
+        usernameLeftImageView.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.equalTo(screenFrame.width*(62/1080))
+            $0.height.equalTo(screenFrame.height*(57/1920))
         }
+        usernameTextField?.leftView = usernameLeftView
+        usernameTextField?.leftViewMode = .always
         
         passwordTextField = UITextField()
         view.addSubview(passwordTextField!)
         passwordTextField?.snp.makeConstraints {
             make in
-            make.centerY.equalTo(passwordImageView!)
-            make.left.equalTo(passwordImageView!.snp.right).offset(8)
-            make.height.equalTo(screenFrame.height*(64/1920))
-            make.width.equalTo(screenFrame.width*(650/1080))
+            make.top.equalTo(usernameTextField!.snp.bottom).offset(screenFrame.height*(56/1920))
+            make.centerX.equalToSuperview()
+            make.height.equalTo(screenFrame.height*(120/1920))
+            make.width.equalTo(screenFrame.width*(800/1080))
         }
         passwordTextField?.placeholder = "密 码"
-        passwordTextField?.isSecureTextEntry = true
+        passwordTextField?.borderStyle = .roundedRect
+        let passwordLeftView = UIView(frame: CGRect(x: 0, y: 0, width: screenFrame.width*(128/1080), height: screenFrame.height*(120/1920)))
+        let passwordLeftImageView = UIImageView(image: UIImage(named: "密码"))
+        passwordLeftView.addSubview(passwordLeftImageView)
+        passwordLeftImageView.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.equalTo(screenFrame.width*(62/1080))
+            $0.height.equalTo(screenFrame.height*(57/1920))
+        }
+        passwordTextField?.leftView = passwordLeftView
+        passwordTextField?.leftViewMode = .always
         
         forgetButton = UIButton(title: "忘记密码?")
         view.addSubview(forgetButton!)
         forgetButton?.snp.makeConstraints {
             make in
-            make.top.equalTo(passwordImageView!.snp.bottom).offset(8)
+            make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
             make.right.equalTo(passwordTextField!.snp.right)
         }
 
-        loginButton = UIButton(type: .roundedRect)
+        loginButton = UIButton(title: "登 录", isConfirmButton: true)
         view.addSubview(loginButton!)
         loginButton?.snp.makeConstraints {
             make in
@@ -131,12 +130,6 @@ class LoginViewController: UIViewController {
             make.width.equalTo(screenFrame.width*(800/1080))
             make.height.equalTo(screenFrame.height*(100/1920))
         }
-        loginButton?.setTitle("登 录", for: .normal)
-        loginButton?.setTitleColor(UIColor.white, for: .normal)
-        loginButton?.backgroundColor = UIColor.BBSBlue
-        loginButton?.titleLabel?.font = UIFont.systemFont(ofSize: 18)
-        loginButton?.layer.cornerRadius = 5.0
-        loginButton?.clipsToBounds = true
         
         registerButton = UIButton(title: "新用户注册")
         view.addSubview(registerButton!)
