@@ -17,7 +17,10 @@ extension UIButton {
             self.setTitleColor(color, for: .normal)
             self.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
         } else {
-            self.setTitle(title, for: .normal)
+            var spaceTitle = title
+            let index = title.index(after: title.startIndex)
+            spaceTitle.insert(contentsOf: "  ".characters, at: index)
+            self.setTitle(spaceTitle, for: .normal)
             self.setTitleColor(UIColor.white, for: .normal)
             self.setBackgroundImage(UIImage.init(color: UIColor.lightGray), for: .disabled)
             self.setBackgroundImage(UIImage.init(color: UIColor.BBSBlue), for: .normal)
@@ -26,16 +29,44 @@ extension UIButton {
             self.clipsToBounds = true
         }
     }
+}
+
+extension UIButton {
+    typealias newDataBlock = (UIButton) -> Void
     
-//    func disable() {
-//        self.isEnabled = false
-//        self.backgroundColor = UIColor.lightGray
-//    }
-//    
-//    func enable() {
-//        self.isEnabled = true
-//        self.backgroundColor = UIColor.BBSBlue
-//    }
+    // 关联属性的key
+    private struct associatedKeys {
+        static var newDataBlockKey = "newDataBlockKey"
+    }
+    
+    private class BlockContainer: NSObject, NSCopying {
+        var newDataBlock: newDataBlock?
+        func copy(with zone: NSZone? = nil) -> Any {
+            return self
+        }
+    }
+    
+    private var blockm: BlockContainer? {
+        get {
+            if let newDataBlock = objc_getAssociatedObject(self, &associatedKeys.newDataBlockKey) as? BlockContainer {
+                return newDataBlock
+            }
+            return nil
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &associatedKeys.newDataBlockKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+    
+    func addTarget(for controlEvents: UIControlEvents = .touchUpInside, withBlock block: @escaping newDataBlock) {
+        self.blockm = BlockContainer()
+        blockm?.newDataBlock = block
+        self.addTarget(self, action: #selector(self.callback(sender:)), for: controlEvents)
+    }
+    
+    func callback(sender: UIButton) {
+        self.blockm?.newDataBlock?(sender)
+    }
 }
 
 extension UILabel {
