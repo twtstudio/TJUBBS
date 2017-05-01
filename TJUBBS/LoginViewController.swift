@@ -22,10 +22,6 @@ class LoginViewController: UIViewController {
     var forgetButton: UIButton?
     var visitorButton: UIButton?
     
-//    override var preferredStatusBarStyle: UIStatusBarStyle {
-//        return .lightContent
-//    }
-    
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = UIColor.white
@@ -90,6 +86,8 @@ class LoginViewController: UIViewController {
         }
         usernameTextField?.leftView = usernameLeftView
         usernameTextField?.leftViewMode = .always
+        usernameTextField?.returnKeyType = .next
+        usernameTextField?.delegate = self
         
         passwordTextField = UITextField()
         view.addSubview(passwordTextField!)
@@ -112,6 +110,8 @@ class LoginViewController: UIViewController {
         }
         passwordTextField?.leftView = passwordLeftView
         passwordTextField?.leftViewMode = .always
+        passwordTextField?.returnKeyType = .done
+        passwordTextField?.delegate = self
         
         forgetButton = UIButton(title: "忘记密码?")
         view.addSubview(forgetButton!)
@@ -169,6 +169,7 @@ class LoginViewController: UIViewController {
     func addTargetAction() {
         authenticateButton?.addTarget(self, action: #selector(authenticateButtonTapped), for: .touchUpInside)
         loginButton?.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        visitorButton?.addTarget(self, action: #selector(visitorButtonTapped), for: .touchUpInside)
     }
     
     func authenticateButtonTapped() {
@@ -180,9 +181,27 @@ class LoginViewController: UIViewController {
         print("loginButtonTapped")
         HUD.flash(.success, onView: portraitImageView, delay: 1.0, completion: nil)
     }
+    
+    func visitorButtonTapped() {
+        let tabBarVC = MainTabBarController(para: 1)
+        tabBarVC.modalTransitionStyle = .crossDissolve
+        self.present(tabBarVC, animated: false, completion: nil)
+    }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == usernameTextField {
+            passwordTextField?.becomeFirstResponder()
+        } else if textField == passwordTextField {
+            view.endEditing(true)
+            loginButtonTapped()
+        }
+        return true
     }
 }
 

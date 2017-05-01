@@ -123,7 +123,6 @@ extension AuthenticateViewController: UITableViewDataSource {
             make.height.equalTo(screenFrame.height*(100/1920))
         }
         authenticateButton?.addTarget(self, action: #selector(authenticateButtonTapped), for: .touchUpInside)
-        
         return footerView
     }
     

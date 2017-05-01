@@ -19,12 +19,23 @@ extension UIButton {
         } else {
             self.setTitle(title, for: .normal)
             self.setTitleColor(UIColor.white, for: .normal)
-            self.backgroundColor = UIColor.BBSBlue
+            self.setBackgroundImage(UIImage.init(color: UIColor.lightGray), for: .disabled)
+            self.setBackgroundImage(UIImage.init(color: UIColor.BBSBlue), for: .normal)
             self.titleLabel?.font = UIFont.systemFont(ofSize: 18)
             self.layer.cornerRadius = 5.0
             self.clipsToBounds = true
         }
     }
+    
+//    func disable() {
+//        self.isEnabled = false
+//        self.backgroundColor = UIColor.lightGray
+//    }
+//    
+//    func enable() {
+//        self.isEnabled = true
+//        self.backgroundColor = UIColor.BBSBlue
+//    }
 }
 
 extension UILabel {
@@ -59,5 +70,28 @@ extension UIViewController {
     
     func dismissKeyboard() {
         view.endEditing(true)
+    }
+}
+
+extension UIImage {
+    
+    convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
+        let rect = CGRect(origin: .zero, size: size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        color.setFill()
+        UIRectFill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        guard let cgImage = image?.cgImage else { return nil }
+        self.init(cgImage: cgImage)
+    }
+    
+    static func resizedImage(image: UIImage, scaledToSize newSize: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
     }
 }
