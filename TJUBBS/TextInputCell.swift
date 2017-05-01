@@ -12,7 +12,7 @@ class TextInputCell: UITableViewCell {
     
     var titleLabel: UILabel?
     var textField: UITextField?
-    
+
     convenience init(title: String, placeholder: String) {
         self.init()
         
@@ -34,8 +34,7 @@ class TextInputCell: UITableViewCell {
             make.centerY.equalTo(contentView)
             make.right.equalTo(textField!.snp.left).offset(-8)
         }
-        
-        
+    
         
     }
     
