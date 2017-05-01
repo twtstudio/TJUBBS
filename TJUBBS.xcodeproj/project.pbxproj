@@ -10,6 +10,9 @@
 		6826D7431EB5F561000F520B /* ClassExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6826D7421EB5F561000F520B /* ClassExtensions.swift */; };
 		6826D7451EB604F0000F520B /* AuthenticateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6826D7441EB604F0000F520B /* AuthenticateViewController.swift */; };
 		6826D7471EB61496000F520B /* TextInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6826D7461EB61496000F520B /* TextInputCell.swift */; };
+		36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C21EB625F20090E805 /* BBSBeacon.swift */; };
+		36FE25C61EB62A630090E805 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C51EB62A630090E805 /* log.swift */; };
+		36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C71EB62A790090E805 /* DeviceStatus.swift */; };
 		682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682A84621EB5C3B900510FA4 /* AppDelegate.swift */; };
 		682A84651EB5C3B900510FA4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682A84641EB5C3B900510FA4 /* LoginViewController.swift */; };
 		682A84681EB5C3B900510FA4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 682A84661EB5C3B900510FA4 /* Main.storyboard */; };
@@ -42,6 +45,9 @@
 		6826D7421EB5F561000F520B /* ClassExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassExtensions.swift; sourceTree = "<group>"; };
 		6826D7441EB604F0000F520B /* AuthenticateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticateViewController.swift; sourceTree = "<group>"; };
 		6826D7461EB61496000F520B /* TextInputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextInputCell.swift; sourceTree = "<group>"; };
+		36FE25C21EB625F20090E805 /* BBSBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSBeacon.swift; sourceTree = "<group>"; };
+		36FE25C51EB62A630090E805 /* log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = "<group>"; };
+		36FE25C71EB62A790090E805 /* DeviceStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatus.swift; sourceTree = "<group>"; };
 		682A845F1EB5C3B900510FA4 /* TJUBBS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TJUBBS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		682A84621EB5C3B900510FA4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		682A84641EB5C3B900510FA4 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +99,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		36FE25C11EB625D30090E805 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				36FE25C21EB625F20090E805 /* BBSBeacon.swift */,
+			);
+			name = Networking;
+			sourceTree = "<group>";
+		};
+		36FE25C41EB62A500090E805 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				36FE25C51EB62A630090E805 /* log.swift */,
+				36FE25C71EB62A790090E805 /* DeviceStatus.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
 		682A84561EB5C3B900510FA4 = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +142,8 @@
 			isa = PBXGroup;
 			children = (
 				682A84901EB5C3CE00510FA4 /* Main */,
+				36FE25C41EB62A500090E805 /* Utilities */,
+				36FE25C11EB625D30090E805 /* Networking */,
 				682A84931EB5C5F100510FA4 /* HomePage */,
 				682A84921EB5C5EB00510FA4 /* BBS */,
 				682A84911EB5C5E100510FA4 /* User */,
@@ -392,7 +417,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -405,8 +430,11 @@
 				682A84651EB5C3B900510FA4 /* LoginViewController.swift in Sources */,
 				6826D7431EB5F561000F520B /* ClassExtensions.swift in Sources */,
 				6826D7451EB604F0000F520B /* AuthenticateViewController.swift in Sources */,
-				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
 				6826D7471EB61496000F520B /* TextInputCell.swift in Sources */,
+				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
+				36FE25C61EB62A630090E805 /* log.swift in Sources */,
+				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
+				36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
