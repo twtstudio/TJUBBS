@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().tintColor = UIColor.white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
             
-            let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+            let navigationController = UINavigationController(rootViewController: SetInfoViewController())
             
 //            let arr: [InputItem] = ["用户名-请输入用户名-username", "密码-请输入密码-password-s"]
 //            

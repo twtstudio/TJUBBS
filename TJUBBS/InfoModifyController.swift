@@ -133,7 +133,20 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func doneTapped() {
-        handler?(self.results)
+        if style != .custom {
+            handler?(self.results)
+        } else {
+            for v in customView!.subviews {
+                if let textView = v as? UITextView {
+                    handler?(textView.text)
+                    return
+                }
+                if let textField = v as? UITextField {
+                    handler?(textField.text)
+                    return
+                }
+            }
+        }
     }
 }
 
