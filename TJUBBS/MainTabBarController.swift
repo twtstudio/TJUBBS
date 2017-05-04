@@ -25,16 +25,18 @@ class MainTabBarController: UITabBarController {
         BBSVC?.tabBarItem = createBarItem(imageName: "论坛")
         BBSVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        infoVC = UIViewController()
-        infoVC?.tabBarItem = createBarItem(imageName: "个人中心")
-        infoVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        setViewControllers([homepageVC!, BBSVC!, infoVC!], animated: true)
+        infoVC = UserInfoViewController(user: 1 as AnyObject, type: .myself)
+        let infoNC = UINavigationController(rootViewController: infoVC!)
+        infoNC.tabBarItem = createBarItem(imageName: "个人中心")
+        infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        
+        setViewControllers([homepageVC!, BBSVC!, infoNC], animated: true)
     }
     
     func createBarItem(imageName: String) -> UITabBarItem {
-        let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 32, height: 32)).withRenderingMode(.alwaysOriginal)
-        let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 32, height: 32)).withRenderingMode(.alwaysOriginal)
+        let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 30, height: 30)).withRenderingMode(.alwaysOriginal)
+        let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 30, height: 30)).withRenderingMode(.alwaysOriginal)
         return UITabBarItem(title: nil, image: image, selectedImage: selectedImage)
     }
 }
