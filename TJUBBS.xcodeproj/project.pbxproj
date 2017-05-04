@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D36A21EBA224C002978C6 /* SetInfoViewController.swift */; };
 		36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */; };
 		36D21F411EB7171D00677534 /* InputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D21F401EB7171D00677534 /* InputItem.swift */; };
 		36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C21EB625F20090E805 /* BBSBeacon.swift */; };
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		1977C405936927832AD1537D /* Pods-TJUBBS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.debug.xcconfig"; sourceTree = "<group>"; };
+		368D36A21EBA224C002978C6 /* SetInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
 		36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoModifyController.swift; sourceTree = "<group>"; };
 		36D21F401EB7171D00677534 /* InputItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputItem.swift; sourceTree = "<group>"; };
 		36FE25C21EB625F20090E805 /* BBSBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSBeacon.swift; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 				36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */,
 				36D21F401EB7171D00677534 /* InputItem.swift */,
 				68B5A5291EBB162700968FFD /* UserInfoViewController.swift */,
+				368D36A21EBA224C002978C6 /* SetInfoViewController.swift */,
 			);
 			name = Info;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				36D21F411EB7171D00677534 /* InputItem.swift in Sources */,
 				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
 				36FE25C61EB62A630090E805 /* log.swift in Sources */,
+				368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */,
 				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
 				36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */,
 			);
