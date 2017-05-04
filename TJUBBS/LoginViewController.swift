@@ -88,6 +88,9 @@ class LoginViewController: UIViewController {
         usernameTextField?.leftViewMode = .always
         usernameTextField?.returnKeyType = .next
         usernameTextField?.delegate = self
+        usernameTextField?.autocorrectionType = .no
+        usernameTextField?.autocapitalizationType = .none
+        usernameTextField?.spellCheckingType = .no
         
         passwordTextField = UITextField()
         view.addSubview(passwordTextField!)
@@ -112,6 +115,10 @@ class LoginViewController: UIViewController {
         passwordTextField?.leftViewMode = .always
         passwordTextField?.returnKeyType = .done
         passwordTextField?.delegate = self
+        passwordTextField?.autocorrectionType = .no
+        passwordTextField?.autocapitalizationType = .none
+        passwordTextField?.spellCheckingType = .no
+        passwordTextField?.isSecureTextEntry = true
         
         forgetButton = UIButton(title: "忘记密码?")
         view.addSubview(forgetButton!)
@@ -120,8 +127,20 @@ class LoginViewController: UIViewController {
             make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
             make.right.equalTo(passwordTextField!.snp.right)
         }
+        forgetButton?.addTarget { _ in
+            let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号-schoolid", "身份证号-输入身份证号-id"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证") { result in
+                // TODO: 判断逻辑
+                let vc = InfoModifyController(title: "密码重置", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "验证信息通过，请重置密码") { result in
+                    print(result)
+                }
+                vc.doneText = "确认"
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            vc.doneText = "验证"
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
 
-        loginButton = UIButton(title: "登 录", isConfirmButton: true)
+        loginButton = UIButton(title: "登录", isConfirmButton: true)
         view.addSubview(loginButton!)
         loginButton?.snp.makeConstraints {
             make in
@@ -138,6 +157,14 @@ class LoginViewController: UIViewController {
             make.top.equalTo(loginButton!.snp.bottom).offset(8)
             make.left.equalTo(loginButton!.snp.left)
         }
+        registerButton?.addTarget { _ in
+            // FIXME: 密码要求
+            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-realname", "学号-输入学号-schoolid", "身份证号-输入身份证号-id", "用户名-这里可以写用户名要求-uid", "密码-这里可以写密码要求-pwd-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
+                print(result)
+            }
+            vc.doneText = "确认"
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
         
         authenticateButton = UIButton(title: "老用户认证")
         view.addSubview(authenticateButton!)
@@ -145,6 +172,19 @@ class LoginViewController: UIViewController {
             make in
             make.top.equalTo(loginButton!.snp.bottom).offset(8)
             make.right.equalTo(loginButton!.snp.right)
+        }
+        authenticateButton?.addTarget { _ in
+            let vc = InfoModifyController(title: "老用户认证", items: ["用户名-输入用户名-username", "姓名-输入姓名-name", "身份证号-输入身份证号-id"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证") { result in
+                print(result)
+                // TODO: 逻辑判断
+                let vc =  InfoModifyController(title: "老用户认证", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "请重置密码，以同步您的个人数据") { result in
+                    print(result)
+                }
+                vc.doneText = "确认"
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            vc.doneText = "验证"
+            self.navigationController?.pushViewController(vc, animated: true)
         }
         
         visitorButton = UIButton(title: "游客登录 >", color: UIColor.BBSBlue, fontSize: 16)
@@ -167,14 +207,8 @@ class LoginViewController: UIViewController {
     }
     
     func addTargetAction() {
-        authenticateButton?.addTarget(self, action: #selector(authenticateButtonTapped), for: .touchUpInside)
         loginButton?.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         visitorButton?.addTarget(self, action: #selector(visitorButtonTapped), for: .touchUpInside)
-    }
-    
-    func authenticateButtonTapped() {
-        let authenticateVC = AuthenticateViewController(para: 1)
-        self.navigationController?.pushViewController(authenticateVC, animated: true)
     }
     
     func loginButtonTapped() {
