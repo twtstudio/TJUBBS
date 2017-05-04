@@ -51,7 +51,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.row == 0 && indexPath.section == 0 {
             return 80
         }
-        return 40
+        return 50
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -61,8 +61,12 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 let cell = UITableViewCell(style: .value1, reuseIdentifier: "CustomValueCell")
                 cell.imageView?.image = UIImage(named: "头像")
-                cell.imageView?.sizeToFit()
-                cell.imageView?.layer.cornerRadius = 40
+                let size = CGSize(width: 60, height: 60)
+                UIGraphicsBeginImageContext(size)
+                let imageRect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+                cell.imageView?.image?.draw(in: imageRect)
+                cell.imageView?.image = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
                 cell.imageView?.layer.masksToBounds = true
                 cell.accessoryType = .disclosureIndicator
                 cell.detailTextLabel?.text = "编辑头像"
@@ -104,30 +108,52 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 break
                 // FIXME: 修改头像
             case 1:
-                let vc = InfoModifyController(title: "编辑昵称", items: [" - - -userid"], style: .custom) { result in
+                // FIXME: 旧昵称palceholder
+                let vc = InfoModifyController(title: "编辑昵称", items: [" -jenny- -userid"], style: .rightTop) { result in
                     print(result)
                 }
+                vc.headerMsg = "请输入新昵称"
                 self.navigationController?.pushViewController(vc, animated: true)
             case 2:
                 let vc = InfoModifyController(title: "编辑签名", style: .custom) { str in
                     print(str)
                 }
                 let contentView = UIView()
+                contentView.backgroundColor = UIColor.white
                 let textView = UITextView()
                 contentView.addSubview(textView)
                 textView.snp.makeConstraints { make in
-                    make.top.equalTo(contentView).offset(20)
+                    make.top.equalTo(contentView).offset(18)
                     make.left.equalTo(contentView).offset(20)
                     make.right.equalTo(contentView).offset(-20)
+                    make.height.equalTo(100)
                 }
+                textView.layer.borderColor = UIColor.black.cgColor
+                textView.layer.borderWidth = 1
+                textView.layer.cornerRadius = 3
+                textView.text = "go big or go home."
+                
+                // FIXME: 加载原签名
                 let label = UILabel()
+                label.text = "18/50字"
+                label.font = UIFont.systemFont(ofSize: 13)
                 contentView.addSubview(label)
                 label.snp.makeConstraints { make in
                     make.top.equalTo(textView.snp.bottom).offset(10)
-                    make.right.equalTo(contentView).offset(-10)
-                    make.bottom.equalTo(contentView).offset(10)
+                    make.right.equalTo(contentView).offset(-20)
+                    make.bottom.equalTo(contentView).offset(-10)
                 }
+                contentView.snp.makeConstraints { make in
+                    make.width.equalTo(UIScreen.main.bounds.size.width)
+//                    make.height.equalTo(150)
+                }
+                textView.delegate = vc
                 vc.customView = contentView
+                vc.customCallback = { count in
+                    if let count = count as? Int {
+                        label.text = "\(count)/50字"
+                    }
+                }
                 self.navigationController?.pushViewController(vc, animated: true)
             default:
                 return

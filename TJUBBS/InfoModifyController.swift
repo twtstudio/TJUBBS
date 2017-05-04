@@ -19,6 +19,7 @@ class InfoModifyController: UIViewController {
     var items: [InputItem] = []
     var headerMsg: String? = "修改信息"
     var customView: UIView? = nil
+    var customCallback: ((Any)->())?
     var handler: ((Any)->())? = nil
     var results: [String : String] = [:]
     var style: InfoModifyStyle = .bottom
@@ -35,7 +36,7 @@ class InfoModifyController: UIViewController {
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()        
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
@@ -43,7 +44,7 @@ class InfoModifyController: UIViewController {
         tableView.isScrollEnabled = false
         self.view.addSubview(tableView)
         // 初始化完成操作View
-        if style == .rightTop {
+        if style == .rightTop || style == .custom {
             let rightButton = UIBarButtonItem(title: doneText, style: .done, target: self, action: #selector(self.doneTapped))
             self.navigationItem.rightBarButtonItem = rightButton
             self.navigationItem.rightBarButtonItem?.isEnabled = results.count == items.count
@@ -97,7 +98,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 35
+        return headerMsg == nil ? 0.1 : 35
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -142,7 +143,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
                     return
                 }
                 if let textField = v as? UITextField {
-                    handler?(textField.text)
+                    handler?(textField.text as Any)
                     return
                 }
             }
@@ -191,12 +192,12 @@ extension InfoModifyController: UITextFieldDelegate {
     func moveUpwards(_ cell: UITableViewCell) {
         let screenHeight = UIScreen.main.bounds.height
         if style == .rightTop {
-            let offset = cell.frame.origin.y - screenHeight/4
+            let offset = cell.center.y - screenHeight/4
             UIView.animate(withDuration: 0.3) {
                 self.tableView.frame = CGRect(x: 0, y: -offset, width: self.tableView.frame.size.width, height: self.tableView.frame.size.height)
             }
         } else if style == .bottom {
-            let offset = cell.frame.origin.y - screenHeight/4
+            let offset = cell.center.y - screenHeight/4
             UIView.animate(withDuration: 0.3) {
                 self.tableView.frame = CGRect(x: 0, y: -offset, width: self.tableView.frame.size.width, height: self.tableView.frame.size.height)
             }
@@ -225,4 +226,23 @@ extension InfoModifyController: UITextFieldDelegate {
         }
     }
     
+}
+
+extension InfoModifyController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+
+        let count = textView.text.characters.count
+        self.customCallback?(count)
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if range.location >= 50 {
+            if text.isEmpty {
+                return true
+            }
+            return false
+        } else {
+            return true
+        }
+    }
 }

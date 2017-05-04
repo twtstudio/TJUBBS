@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            let arr: [InputItem] = ["用户名-请输入用户名-username", "密码-请输入密码-password-s"]
 //            
 //            let vc = InfoModifyController(title: "登录", items: arr, headerMsg: "请输入以下信息", handler: { result in print(result) })
-//            let navigationController = UINavigationController(rootViewController: vc)
+//            let navigationController = UINavigationController(rootViewController: LoginViewController(para: 0))
             window.rootViewController = navigationController
             window.makeKeyAndVisible()
         }
