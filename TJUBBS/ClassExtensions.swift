@@ -2,7 +2,7 @@
 //  ClassExtensions.swift
 //  TJUBBS
 //
-//  Created by JinHongxu on 2017/4/30.
+//  Created by JinHongxu and AllenX on 2017/4/30.
 //  Copyright © 2017年 twtstudio. All rights reserved.
 //
 
@@ -77,13 +77,35 @@ extension UILabel {
         self.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
         self.sizeToFit()
     }
+    
+    static func roundLabel(text: String, textColor: UIColor = UIColor.white, backgroundColor: UIColor = UIColor.BBSBadgeRed) -> UILabel {
+        let label = UILabel(text: text, color: textColor, fontSize: 12)
+        label.backgroundColor = backgroundColor
+        label.layer.cornerRadius = 5.0
+        label.clipsToBounds = true
+        
+        return label
+    }
 }
 
 
 extension UIColor {
     open class var BBSBlue: UIColor {
-        return UIColor.init(red: 25.0/255, green: 126.0/255, blue: 225.0/255, alpha: 1.0)
+        return UIColor(red: 25.0/255, green: 126.0/255, blue: 225.0/255, alpha: 1.0)
     }
+    
+    open class var BBSLightBlue: UIColor {
+        return UIColor(red: 26.0/255, green: 184.0/255, blue: 226.0/255, alpha: 1.0)
+    }
+    
+    open class var BBSBadgeOrange: UIColor {
+        return UIColor(red: 239.0/255, green: 144.0/255, blue: 108.0/255, alpha: 1.0)
+    }
+    
+    open class var BBSBadgeRed: UIColor {
+        return UIColor(red: 232.0/255, green: 94.0/255, blue: 58.0/255, alpha: 1.0)
+    }
+
 }
 
 extension UIViewController {
@@ -106,6 +128,7 @@ extension UIViewController {
 
 extension UIImage {
     
+    //pure color image
     convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
         let rect = CGRect(origin: .zero, size: size)
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
@@ -118,11 +141,21 @@ extension UIImage {
         self.init(cgImage: cgImage)
     }
     
+    //resized image may cause some problem
     static func resizedImage(image: UIImage, scaledToSize newSize: CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
         image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
         let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return newImage
+    }
+    
+}
+
+extension UIImageView {
+    
+    func resize(newFrame: CGRect) {
+        // self.frame = newFrame
+        //self.image = UIImage.resizedImage(image: self.image!, scaledToSize: newFrame.size)
     }
 }

@@ -39,7 +39,7 @@ class InfoModifyController: UIViewController {
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.allowsSelection = false
+//        tableView.allowsSelection = false
         tableView.isScrollEnabled = false
         self.view.addSubview(tableView)
         // 初始化完成操作View
@@ -134,6 +134,13 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
     
     func doneTapped() {
         handler?(self.results)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if let cell = tableView.cellForRow(at: indexPath) as? TextInputCell {
+            cell.textField?.becomeFirstResponder()
+        }
     }
 }
 
