@@ -37,7 +37,7 @@ class UserInfoTableViewCell: UITableViewCell {
         }
         
         if badgeNumber != 0 {
-            badgeLabel = UILabel.roundLabel(text: " \(badgeNumber) ")
+            badgeLabel = UILabel.roundLabel(text: "\(badgeNumber)")
             contentView.addSubview(badgeLabel!)
             badgeLabel?.snp.makeConstraints {
                 make in

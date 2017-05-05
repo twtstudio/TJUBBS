@@ -13,6 +13,7 @@
 		36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C21EB625F20090E805 /* BBSBeacon.swift */; };
 		36FE25C61EB62A630090E805 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C51EB62A630090E805 /* log.swift */; };
 		36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C71EB62A790090E805 /* DeviceStatus.swift */; };
+		6823C49B1EBC077D00FBB5C7 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6823C49A1EBC077D00FBB5C7 /* PostCell.swift */; };
 		6826D7431EB5F561000F520B /* ClassExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6826D7421EB5F561000F520B /* ClassExtensions.swift */; };
 		6826D7451EB604F0000F520B /* AuthenticateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6826D7441EB604F0000F520B /* AuthenticateViewController.swift */; };
 		6826D7471EB61496000F520B /* TextInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6826D7461EB61496000F520B /* TextInputCell.swift */; };
@@ -54,6 +55,7 @@
 		36FE25C21EB625F20090E805 /* BBSBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSBeacon.swift; sourceTree = "<group>"; };
 		36FE25C51EB62A630090E805 /* log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = "<group>"; };
 		36FE25C71EB62A790090E805 /* DeviceStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatus.swift; sourceTree = "<group>"; };
+		6823C49A1EBC077D00FBB5C7 /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		6826D7421EB5F561000F520B /* ClassExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassExtensions.swift; sourceTree = "<group>"; };
 		6826D7441EB604F0000F520B /* AuthenticateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticateViewController.swift; sourceTree = "<group>"; };
 		6826D7461EB61496000F520B /* TextInputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextInputCell.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 			children = (
 				36FE25C51EB62A630090E805 /* log.swift */,
 				36FE25C71EB62A790090E805 /* DeviceStatus.swift */,
+				6823C49A1EBC077D00FBB5C7 /* PostCell.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -462,6 +465,7 @@
 				68B5A52D1EBB1FFB00968FFD /* UserInfoTableViewCell.swift in Sources */,
 				6826D7471EB61496000F520B /* TextInputCell.swift in Sources */,
 				36D21F411EB7171D00677534 /* InputItem.swift in Sources */,
+				6823C49B1EBC077D00FBB5C7 /* PostCell.swift in Sources */,
 				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
 				36FE25C61EB62A630090E805 /* log.swift in Sources */,
 				368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */,

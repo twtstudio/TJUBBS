@@ -29,6 +29,7 @@ extension UIButton {
             self.clipsToBounds = true
         }
     }
+    
 }
 
 extension UIButton {
@@ -79,7 +80,7 @@ extension UILabel {
     }
     
     static func roundLabel(text: String, textColor: UIColor = UIColor.white, backgroundColor: UIColor = UIColor.BBSBadgeRed) -> UILabel {
-        let label = UILabel(text: text, color: textColor, fontSize: 12)
+        let label = UILabel(text: " \(text) ", color: textColor, fontSize: 12)
         label.backgroundColor = backgroundColor
         label.layer.cornerRadius = 5.0
         label.clipsToBounds = true

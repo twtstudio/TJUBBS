@@ -18,14 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
-            window.backgroundColor = UIColor.white
+            window.backgroundColor = .white
             
             //Handle NavigationBar Appearance
-            UINavigationBar.appearance().barTintColor = UIColor.BBSBlue
-            UINavigationBar.appearance().tintColor = UIColor.white
+            UINavigationBar.appearance().barTintColor = .BBSBlue
+            UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
             
-            let navigationController = UINavigationController(rootViewController: SetInfoViewController())
+            let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
             
 //            let arr: [InputItem] = ["用户名-请输入用户名-username", "密码-请输入密码-password-s"]
 //            
