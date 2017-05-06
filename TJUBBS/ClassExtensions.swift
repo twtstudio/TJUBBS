@@ -30,6 +30,11 @@ extension UIButton {
         }
     }
     
+    convenience init(imageName: String) {
+        self.init()
+        self.setImage(UIImage(named: imageName), for: .normal)
+    }
+    
 }
 
 extension UIButton {
