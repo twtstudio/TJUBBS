@@ -18,7 +18,6 @@ class UserInfoViewController: UIViewController {
     let screenFrame = UIScreen.main.bounds
     var headerView: UIView?
     var headerViewBackground: UIImageView?
-    var titleLabel: UILabel?
     var portraitImageView: UIImageView?
     var portraitBadgeLabel: UILabel?
     var usernameLabel: UILabel?
@@ -29,11 +28,16 @@ class UserInfoViewController: UIViewController {
     var tableView: UITableView?
     let contentArray = [["我的消息", "我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
     
+    //bad way to make navigationBar translucent
+    var fooNavigationBarImage: UIImage?
+    var fooNavigationBarShadowImage: UIImage?
+    
     convenience init(user: AnyObject, type: UserInfoViewControllerType) {
         self.init()
         view.backgroundColor = .white
-        
+        self.title = "个人中心"
         initUI()
+        
     }
     
     override func viewDidLoad() {
@@ -51,7 +55,7 @@ class UserInfoViewController: UIViewController {
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints {
             make in
-            make.top.equalToSuperview().offset(-20)
+            make.top.equalToSuperview().offset(-64)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
@@ -63,19 +67,27 @@ class UserInfoViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: animated)
-        //UIApplication.shared.statusBarStyle = .lightContent
+        
+        fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
+        fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.navigationController?.navigationBar.setBackgroundImage(fooNavigationBarImage, for: .default)
+        self.navigationController?.navigationBar.shadowImage = fooNavigationBarShadowImage
+        self.navigationController?.navigationBar.isTranslucent = false
+    
     }
     
 }
 
-extension UserInfoViewController: UITableViewDelegate {
+extension UserInfoViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
@@ -106,19 +118,11 @@ extension UserInfoViewController: UITableViewDelegate {
         headerViewBackground?.frame = headerView!.bounds
         headerView?.addSubview(headerViewBackground!)
         
-        titleLabel = UILabel(text: "个人中心", color: .white, fontSize: 20)
-        headerView?.addSubview(titleLabel!)
-        titleLabel?.snp.makeConstraints {
-            make in
-            make.top.equalToSuperview().offset(32)
-            make.centerX.equalToSuperview()
-        }
-        
         let avatarBackground = UIView()
         headerView?.addSubview(avatarBackground)
         avatarBackground.snp.makeConstraints {
             make in
-            make.top.equalTo(titleLabel!.snp.bottom).offset(8)
+            make.top.equalTo(headerView!).offset(64)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(screenFrame.height*(240/1920))
         }
@@ -239,20 +243,39 @@ extension UserInfoViewController: UITableViewDelegate {
     }
 }
 
-extension UserInfoViewController: UITableViewDataSource {
+extension UserInfoViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = UIViewController()
-        detailVC.view.backgroundColor = .white
-        detailVC.title = contentArray[indexPath.section][indexPath.row]
-        self.navigationController?.pushViewController(detailVC, animated: true)
+        switch indexPath {
+        case IndexPath(row: 0, section: 0):
+            let detailVC = UIViewController()
+            detailVC.view.backgroundColor = .white
+            detailVC.title = contentArray[indexPath.section][indexPath.row]
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 1, section: 0):
+            let detailVC = FavorateViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 3, section: 0):
+            let detailVC = SetInfoViewController()
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 0, section: 1):
+            let detailVC = SettingViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        default:
+            let detailVC = UIViewController()
+            detailVC.view.backgroundColor = .white
+            detailVC.title = contentArray[indexPath.section][indexPath.row]
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
+        
+        
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let y = -scrollView.contentOffset.y
-        print(y)
-        guard y > 20 else {
+        var y = -scrollView.contentOffset.y
+        y = y - 64
+        guard y > 0 else {
             return
         }
         let ratio = screenFrame.width/(screenFrame.height*(820.0/1920))

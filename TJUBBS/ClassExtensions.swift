@@ -29,6 +29,12 @@ extension UIButton {
             self.clipsToBounds = true
         }
     }
+    
+    convenience init(imageName: String) {
+        self.init()
+        self.setImage(UIImage(named: imageName), for: .normal)
+    }
+    
 }
 
 extension UIButton {
@@ -79,7 +85,7 @@ extension UILabel {
     }
     
     static func roundLabel(text: String, textColor: UIColor = UIColor.white, backgroundColor: UIColor = UIColor.BBSBadgeRed) -> UILabel {
-        let label = UILabel(text: text, color: textColor, fontSize: 12)
+        let label = UILabel(text: " \(text) ", color: textColor, fontSize: 12)
         label.backgroundColor = backgroundColor
         label.layer.cornerRadius = 5.0
         label.clipsToBounds = true
@@ -104,6 +110,10 @@ extension UIColor {
     
     open class var BBSBadgeRed: UIColor {
         return UIColor(red: 232.0/255, green: 94.0/255, blue: 58.0/255, alpha: 1.0)
+    }
+    
+    open class var BBSRed: UIColor {
+        return UIColor(red: 248.0/255, green: 48.0/255, blue: 48.0/255, alpha: 1.0)
     }
 
 }
