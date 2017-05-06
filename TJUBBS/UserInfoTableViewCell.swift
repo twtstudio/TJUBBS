@@ -13,10 +13,10 @@ class UserInfoTableViewCell: UITableViewCell {
     var iconImageView: UIImageView?
     var titleLabel: UILabel?
     var badgeLabel: UILabel?
-    var rightArrowImageView: UIImageView?
     
     convenience init(iconName: String, title: String, badgeNumber: Int = 0) {
         self.init()
+        self.accessoryType = .disclosureIndicator
         
         iconImageView = UIImageView(image: UIImage(named: iconName))
         contentView.addSubview(iconImageView!)
@@ -43,15 +43,6 @@ class UserInfoTableViewCell: UITableViewCell {
                 make.left.equalTo(titleLabel!.snp.right).offset(8)
                 make.centerY.equalToSuperview()
             }
-        }
-        
-        rightArrowImageView = UIImageView(image: UIImage(named: "more"))
-        contentView.addSubview(rightArrowImageView!)
-        rightArrowImageView?.snp.makeConstraints {
-            make in
-            make.right.equalToSuperview().offset(-8)
-            make.centerY.equalToSuperview()
-            make.width.height.equalTo(contentView.bounds.width*(64/1080))
         }
     }
     

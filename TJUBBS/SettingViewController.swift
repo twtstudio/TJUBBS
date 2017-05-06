@@ -72,6 +72,7 @@ extension SettingViewController: UITableViewDataSource {
             cell.textLabel?.text = "退出登录"
             cell.textLabel?.textAlignment = .center
             cell.textLabel?.textColor = .BBSRed
+            cell.textLabel?.font = UIFont.systemFont(ofSize: 20)
             return cell
         }
         return UITableViewCell()

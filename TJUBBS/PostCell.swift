@@ -10,13 +10,14 @@ import UIKit
 
 class PostCell: UITableViewCell {
     
+    let screenFrame = UIScreen.main.bounds
     var portraitImageView = UIImageView()
     var usernameLable = UILabel(text: "", color: .black, fontSize: 18)
     var favorButton = UIButton(imageName: "收藏")
     var titleLable = UILabel(text: "", fontSize: 20)
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
-    var timeLablel = UILabel(text: "", color: .lightGray, fontSize: 14)
+    var timeLablel = UILabel(text: "", color: .lightGray, fontSize: 16)
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -28,6 +29,10 @@ class PostCell: UITableViewCell {
         contentView.addSubview(detailLabel)
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
+        favorButton.addTarget { button in
+            print("clicked")
+            button.setImage(UIImage(named: "已收藏"), for: .normal)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -48,9 +53,9 @@ class PostCell: UITableViewCell {
         portraitImageView.snp.makeConstraints {
             make in
             make.top.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(contentView.bounds.width*(80/1080))
+            make.width.height.equalTo(screenFrame.height*(80/1920))
         }
-        portraitImageView.layer.cornerRadius = contentView.bounds.width*(80/1080)/2
+        portraitImageView.layer.cornerRadius = screenFrame.height*(80/1920)/2
         portraitImageView.clipsToBounds = true
         
         usernameLable.text = username
@@ -63,8 +68,8 @@ class PostCell: UITableViewCell {
         favorButton.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView)
-            make.right.equalToSuperview().offset(-16)
-            make.width.height.equalTo(contentView.bounds.width*(48/1080))
+            make.right.equalToSuperview()
+            make.width.height.equalTo(screenFrame.height*(144/1920))
         }
         
         titleLable.text = title
