@@ -10,7 +10,6 @@ import UIKit
 
 class PostCell: UITableViewCell {
     
-    let screenFrame = UIScreen.main.bounds
     var portraitImageView = UIImageView()
     var usernameLable = UILabel(text: "", color: .black, fontSize: 18)
     var favorButton = UIButton(imageName: "收藏")
@@ -19,81 +18,24 @@ class PostCell: UITableViewCell {
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
     var timeLablel = UILabel(text: "", color: .lightGray, fontSize: 14)
     
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        contentView.addSubview(portraitImageView)
+        contentView.addSubview(usernameLable)
+        contentView.addSubview(favorButton)
+        contentView.addSubview(titleLable)
+        contentView.addSubview(detailLabel)
+        contentView.addSubview(replyNumberLabel)
+        contentView.addSubview(timeLablel)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        portraitImageView.image = portraitImage
-        contentView.addSubview(portraitImageView)
-        portraitImageView.snp.makeConstraints {
-            make in
-            make.top.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(screenFrame.height*(80/1920))
-        }
-        portraitImageView.layer.cornerRadius = screenFrame.height*(80/1920)/2
-        portraitImageView.clipsToBounds = true
-        
-        usernameLable.text = username
-        contentView.addSubview(usernameLable)
-        usernameLable.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(portraitImageView).offset(4)
-            make.left.equalTo(portraitImageView.snp.right).offset(8)
-        }
-        
-        contentView.addSubview(favorButton)
-        favorButton.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(portraitImageView)
-            make.right.equalToSuperview().offset(-16)
-            make.width.height.equalTo(screenFrame.height*(48/1920))
-        }
-        
-        titleLable.text = title
-        if let label = category {
-            let fooTitle = labeledTitle(label: label, content: title)
-            titleLable.attributedText = fooTitle
-        }
-        contentView.addSubview(titleLable)
-        titleLable.snp.makeConstraints {
-            make in
-            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-            make.left.equalToSuperview().offset(16)
-            make.right.equalToSuperview().offset(-16)
-        }
-        titleLable.numberOfLines = 0
-        
-        if let text = detail {
-            detailLabel.text = text
-            contentView.addSubview(detailLabel)
-            detailLabel.snp.makeConstraints {
-                make in
-                make.top.equalTo(titleLable.snp.bottom).offset(8)
-                make.left.equalToSuperview().offset(24)
-                make.right.equalToSuperview().offset(-24)
-            }
-        }
-        detailLabel.numberOfLines = 0
-        
-        replyNumberLabel.text = "回复(\(replyNumber))"
-        contentView.addSubview(replyNumberLabel)
-        replyNumberLabel.snp.makeConstraints {
-            make in
-            if detailLabel.text?.characters.count != 0 {
-                make.top.equalTo(detailLabel.snp.bottom).offset(16)
-            } else {
-                make.top.equalTo(titleLable.snp.bottom).offset(16)
-            }
-            make.left.equalToSuperview().offset(24)
-            make.bottom.equalToSuperview().offset(-16)
-        }
-        
-        let timeString = TimeStampTransfer.string(from: time, with: "yyyy-MM-dd")
-        timeLablel.text = timeString
-        contentView.addSubview(timeLablel)
-        timeLablel.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(replyNumberLabel)
-            make.right.equalToSuperview().offset(-16)
-        }
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -103,29 +45,26 @@ class PostCell: UITableViewCell {
     func initUI(portraitImage: UIImage?, username: String, category: String? = nil, favor: Bool = false, title: String, detail: String? = nil, replyNumber: String, time: String) {
         
         portraitImageView.image = portraitImage
-        contentView.addSubview(portraitImageView)
         portraitImageView.snp.makeConstraints {
             make in
             make.top.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(screenFrame.height*(80/1920))
+            make.width.height.equalTo(contentView.bounds.width*(80/1080))
         }
-        portraitImageView.layer.cornerRadius = screenFrame.height*(80/1920)/2
+        portraitImageView.layer.cornerRadius = contentView.bounds.width*(80/1080)/2
         portraitImageView.clipsToBounds = true
         
         usernameLable.text = username
-        contentView.addSubview(usernameLable)
         usernameLable.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView).offset(4)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        contentView.addSubview(favorButton)
         favorButton.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView)
             make.right.equalToSuperview().offset(-16)
-            make.width.height.equalTo(screenFrame.height*(48/1920))
+            make.width.height.equalTo(contentView.bounds.width*(48/1080))
         }
         
         titleLable.text = title
@@ -133,7 +72,6 @@ class PostCell: UITableViewCell {
             let fooTitle = labeledTitle(label: label, content: title)
             titleLable.attributedText = fooTitle
         }
-        contentView.addSubview(titleLable)
         titleLable.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
@@ -143,22 +81,27 @@ class PostCell: UITableViewCell {
         titleLable.numberOfLines = 0
         
         if let text = detail {
+            if detailLabel.superview == nil {
+                contentView.addSubview(detailLabel)
+            }
             detailLabel.text = text
-            contentView.addSubview(detailLabel)
             detailLabel.snp.makeConstraints {
                 make in
                 make.top.equalTo(titleLable.snp.bottom).offset(8)
                 make.left.equalToSuperview().offset(24)
                 make.right.equalToSuperview().offset(-24)
             }
+        } else {
+            if detailLabel.superview != nil {
+                detailLabel.removeFromSuperview()
+            }
         }
         detailLabel.numberOfLines = 0
         
         replyNumberLabel.text = "回复(\(replyNumber))"
-        contentView.addSubview(replyNumberLabel)
         replyNumberLabel.snp.makeConstraints {
             make in
-            if detailLabel.text?.characters.count != 0 {
+            if let _ = detail {
                 make.top.equalTo(detailLabel.snp.bottom).offset(16)
             } else {
                 make.top.equalTo(titleLable.snp.bottom).offset(16)
@@ -169,16 +112,12 @@ class PostCell: UITableViewCell {
         
         let timeString = TimeStampTransfer.string(from: time, with: "yyyy-MM-dd")
         timeLablel.text = timeString
-        contentView.addSubview(timeLablel)
         timeLablel.snp.makeConstraints {
             make in
             make.centerY.equalTo(replyNumberLabel)
             make.right.equalToSuperview().offset(-16)
         }
     }
-    
-    
-    
 }
 
 extension PostCell {

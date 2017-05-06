@@ -248,13 +248,16 @@ extension UserInfoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
-        case IndexPath(row: 0, section: 0) :
+        case IndexPath(row: 0, section: 0):
             let detailVC = UIViewController()
             detailVC.view.backgroundColor = .white
             detailVC.title = contentArray[indexPath.section][indexPath.row]
             self.navigationController?.pushViewController(detailVC, animated: true)
-        case IndexPath(row: 1, section: 0) :
+        case IndexPath(row: 1, section: 0):
             let detailVC = FavorateViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 0, section: 1):
+            let detailVC = SettingViewController(para: 1)
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             let detailVC = UIViewController()

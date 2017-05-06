@@ -10,7 +10,6 @@ import UIKit
 
 class UserInfoTableViewCell: UITableViewCell {
     
-    let screenFrame = UIScreen.main.bounds
     var iconImageView: UIImageView?
     var titleLabel: UILabel?
     var badgeLabel: UILabel?
@@ -25,7 +24,7 @@ class UserInfoTableViewCell: UITableViewCell {
             make in
             make.left.equalToSuperview().offset(8)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(screenFrame.height*(57/1920))
+            make.width.height.equalTo(contentView.bounds.width*(57/1080))
         }
         
         titleLabel = UILabel(text: title, fontSize: 18)
@@ -52,7 +51,7 @@ class UserInfoTableViewCell: UITableViewCell {
             make in
             make.right.equalToSuperview().offset(-8)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(screenFrame.height*(64/1920))
+            make.width.height.equalTo(contentView.bounds.width*(64/1080))
         }
     }
     

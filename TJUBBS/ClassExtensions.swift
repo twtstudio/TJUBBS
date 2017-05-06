@@ -111,6 +111,10 @@ extension UIColor {
     open class var BBSBadgeRed: UIColor {
         return UIColor(red: 232.0/255, green: 94.0/255, blue: 58.0/255, alpha: 1.0)
     }
+    
+    open class var BBSRed: UIColor {
+        return UIColor(red: 248.0/255, green: 48.0/255, blue: 48.0/255, alpha: 1.0)
+    }
 
 }
 
