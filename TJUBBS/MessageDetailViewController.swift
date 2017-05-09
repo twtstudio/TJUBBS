@@ -10,7 +10,7 @@ import UIKit
 
 class MessageDetailViewController: UIViewController {
     
-    let screenFrame = UIScreen.main.bounds
+    let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
     let data = [
         "portrait": "头像2",
@@ -105,14 +105,14 @@ extension MessageDetailViewController: UITableViewDataSource {
                 make.left.equalToSuperview().offset(16)
             }
             
-            let postView = UIView()
+            let postView = UIImageView(image: UIImage(named: "框"))
             cell.contentView.addSubview(postView)
             postView.snp.makeConstraints {
                 make in
                 make.top.equalTo(postLabel.snp.bottom).offset(8)
                 make.left.equalToSuperview().offset(16)
                 make.right.equalToSuperview().offset(-16)
-                make.height.equalTo(screenFrame.height*(200/1920))
+                make.height.equalTo(screenSize.height*(200/1920))
             }
             postView.backgroundColor = .BBSlightGray
             
@@ -121,10 +121,10 @@ extension MessageDetailViewController: UITableViewDataSource {
             authorPortraitImageView.snp.makeConstraints {
                 make in
                 make.centerY.equalToSuperview()
-                make.width.height.equalTo(screenFrame.width*(160/1080))
+                make.width.height.equalTo(screenSize.width*(160/1080))
                 make.left.equalToSuperview().offset(16)
             }
-            authorPortraitImageView.layer.cornerRadius = screenFrame.width*(160/1080)/2
+            authorPortraitImageView.layer.cornerRadius = screenSize.width*(160/1080)/2
             authorPortraitImageView.clipsToBounds = true
             
             let postTitleLabel = UILabel(text: data["postTitle"]!)

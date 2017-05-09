@@ -135,5 +135,7 @@ extension FavorateViewController: UITableViewDataSource {
 extension FavorateViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let detailVC = PostDetailViewController(para: 1)
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

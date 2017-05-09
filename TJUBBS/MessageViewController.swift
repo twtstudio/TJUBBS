@@ -10,7 +10,7 @@ import UIKit
 
 class MessageViewController: UIViewController {
     
-    let screenFrame = UIScreen.main.bounds
+    let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
     let dataList = [
         [

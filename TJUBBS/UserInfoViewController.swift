@@ -15,7 +15,7 @@ enum UserInfoViewControllerType {
 
 class UserInfoViewController: UIViewController {
     
-    let screenFrame = UIScreen.main.bounds
+    let screenSize = UIScreen.main.bounds.size
     var headerView: UIView?
     var headerViewBackground: UIImageView?
     var portraitImageView: UIImageView?
@@ -103,7 +103,7 @@ extension UserInfoViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return screenFrame.height*(150/1920)
+        return screenSize.height*(150/1920)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -112,7 +112,7 @@ extension UserInfoViewController: UITableViewDataSource {
             return nil
         }
         
-        headerView = UIView(frame: CGRect(x: 0, y: 0, width: screenFrame.width, height: screenFrame.height*(820/1920)))
+        headerView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height*(820/1920)))
         
         headerViewBackground = UIImageView(image: UIImage(named: "封面"))
         headerViewBackground?.frame = headerView!.bounds
@@ -124,10 +124,10 @@ extension UserInfoViewController: UITableViewDataSource {
             make in
             make.top.equalTo(headerView!).offset(64)
             make.centerX.equalToSuperview()
-            make.width.height.equalTo(screenFrame.height*(240/1920))
+            make.width.height.equalTo(screenSize.height*(240/1920))
         }
         avatarBackground.backgroundColor = .white
-        avatarBackground.layer.cornerRadius = screenFrame.height*(240/1920)/2
+        avatarBackground.layer.cornerRadius = screenSize.height*(240/1920)/2
         avatarBackground.clipsToBounds = true
 
         portraitImageView = UIImageView(image: UIImage(named: "头像"))
@@ -135,9 +135,9 @@ extension UserInfoViewController: UITableViewDataSource {
         portraitImageView?.snp.makeConstraints {
             make in
             make.centerX.centerY.equalToSuperview()
-            make.width.height.equalTo(screenFrame.height*(240/1920)-8)
+            make.width.height.equalTo(screenSize.height*(240/1920)-8)
         }
-        portraitImageView?.layer.cornerRadius = (screenFrame.height*(240/1920)-8)/2
+        portraitImageView?.layer.cornerRadius = (screenSize.height*(240/1920)-8)/2
         portraitImageView?.clipsToBounds = true
         
         portraitBadgeLabel = UILabel.roundLabel(text: "一般站友", textColor: .white, backgroundColor: .BBSBadgeOrange)
@@ -185,7 +185,7 @@ extension UserInfoViewController: UITableViewDataSource {
         pointLabel?.snp.makeConstraints {
             make in
             make.top.equalTo(signatureLabel!.snp.bottom).offset(16)
-            make.centerX.equalToSuperview().offset(-screenFrame.width/3)
+            make.centerX.equalToSuperview().offset(-screenSize.width/3)
         }
         
         let pointTitleLabel = UILabel(text: "积分", color: .white, fontSize: 14)
@@ -201,7 +201,7 @@ extension UserInfoViewController: UITableViewDataSource {
         ageLabel?.snp.makeConstraints {
             make in
             make.top.equalTo(signatureLabel!.snp.bottom).offset(16)
-            make.centerX.equalToSuperview().offset(screenFrame.width/3)
+            make.centerX.equalToSuperview().offset(screenSize.width/3)
         }
         
         let ageTitleLabel = UILabel(text: "站龄", color: .white, fontSize: 14)
@@ -219,7 +219,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.top.equalTo(postNumberLabel!)
             make.bottom.equalTo(postNumberTitleLabel)
             make.width.equalTo(1)
-            make.centerX.equalToSuperview().offset(-screenFrame.width/6)
+            make.centerX.equalToSuperview().offset(-screenSize.width/6)
         }
         
         let dividerLine2 = UIImageView(image: UIImage(color: .white))
@@ -229,7 +229,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.top.equalTo(postNumberLabel!)
             make.bottom.equalTo(postNumberTitleLabel)
             make.width.equalTo(1)
-            make.centerX.equalToSuperview().offset(screenFrame.width/6)
+            make.centerX.equalToSuperview().offset(screenSize.width/6)
         }
         
         return headerView
@@ -237,7 +237,7 @@ extension UserInfoViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return screenFrame.height*(820/1920)
+            return screenSize.height*(820/1920)
         }
         return 0
     }
@@ -279,10 +279,10 @@ extension UserInfoViewController: UITableViewDelegate {
         guard y > 0 else {
             return
         }
-        let ratio = screenFrame.width/(screenFrame.height*(820.0/1920))
-        let height = screenFrame.height*(820.0/1920)+y
+        let ratio = screenSize.width/(screenSize.height*(820.0/1920))
+        let height = screenSize.height*(820.0/1920)+y
         let width = height*ratio
-        let x = -(width-screenFrame.width)/2.0
+        let x = -(width-screenSize.width)/2.0
 
         headerViewBackground?.frame = CGRect(x: x, y: -y, width: width, height: height)
     }

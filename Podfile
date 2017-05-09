@@ -5,5 +5,4 @@ target 'TJUBBS' do
   pod 'Alamofire'
   pod 'SnapKit'
   pod 'PKHUD', '~> 4.0'
-
 end
