@@ -249,18 +249,19 @@ extension UserInfoViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
         case IndexPath(row: 0, section: 0):
-            let detailVC = UIViewController()
-            detailVC.view.backgroundColor = .white
-            detailVC.title = contentArray[indexPath.section][indexPath.row]
+            let detailVC = MessageViewController(para: 1)
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 1, section: 0):
             let detailVC = FavorateViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 2, section: 0):
+            let detailVC = MyPostViewController(para: 1)
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 3, section: 0):
             let detailVC = SetInfoViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 1):
-            let detailVC = SettingViewController(para: 1)
+            let detailVC = SettingViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             let detailVC = UIViewController()

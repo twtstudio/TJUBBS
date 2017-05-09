@@ -12,11 +12,17 @@ class SettingViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
-    
-    convenience init(para: Int) {
-        self.init()
+
+    //FIX ME: should initUI in init or viewDidLoad
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        print("调用啦！")
         self.title = "我的收藏"
         initUI()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {

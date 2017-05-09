@@ -61,7 +61,7 @@ class PostCell: UITableViewCell {
         usernameLable.text = username
         usernameLable.snp.makeConstraints {
             make in
-            make.centerY.equalTo(portraitImageView).offset(4)
+            make.centerY.equalTo(portraitImageView).offset(2)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
