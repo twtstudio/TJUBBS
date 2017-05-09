@@ -10,7 +10,12 @@
 		368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D36A21EBA224C002978C6 /* SetInfoViewController.swift */; };
 		36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */; };
 		36D21F411EB7171D00677534 /* InputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D21F401EB7171D00677534 /* InputItem.swift */; };
-		36DDCA031EC0682E00E3AB63 /* ForumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DDCA021EC0682E00E3AB63 /* ForumsViewController.swift */; };
+		36DA591E1EC1D54E00B56F07 /* BoardListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DA591D1EC1D54E00B56F07 /* BoardListController.swift */; };
+		36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DA591F1EC1DD9300B56F07 /* BoardModel.swift */; };
+		36DA59221EC1DF8800B56F07 /* ThreadListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DA59211EC1DF8800B56F07 /* ThreadListController.swift */; };
+		36DA59271EC1E1E700B56F07 /* ThreadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DA59261EC1E1E700B56F07 /* ThreadModel.swift */; };
+		36DA59291EC1EB8700B56F07 /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DA59281EC1EB8700B56F07 /* ThreadCell.swift */; };
+		36DDCA031EC0682E00E3AB63 /* ForumListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DDCA021EC0682E00E3AB63 /* ForumListController.swift */; };
 		36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C21EB625F20090E805 /* BBSBeacon.swift */; };
 		36FE25C61EB62A630090E805 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C51EB62A630090E805 /* log.swift */; };
 		36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C71EB62A790090E805 /* DeviceStatus.swift */; };
@@ -56,7 +61,12 @@
 		368D36A21EBA224C002978C6 /* SetInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
 		36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoModifyController.swift; sourceTree = "<group>"; };
 		36D21F401EB7171D00677534 /* InputItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputItem.swift; sourceTree = "<group>"; };
-		36DDCA021EC0682E00E3AB63 /* ForumsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsViewController.swift; sourceTree = "<group>"; };
+		36DA591D1EC1D54E00B56F07 /* BoardListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardListController.swift; sourceTree = "<group>"; };
+		36DA591F1EC1DD9300B56F07 /* BoardModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardModel.swift; sourceTree = "<group>"; };
+		36DA59211EC1DF8800B56F07 /* ThreadListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadListController.swift; sourceTree = "<group>"; };
+		36DA59261EC1E1E700B56F07 /* ThreadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadModel.swift; sourceTree = "<group>"; };
+		36DA59281EC1EB8700B56F07 /* ThreadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
+		36DDCA021EC0682E00E3AB63 /* ForumListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListController.swift; sourceTree = "<group>"; };
 		36FE25C21EB625F20090E805 /* BBSBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSBeacon.swift; sourceTree = "<group>"; };
 		36FE25C51EB62A630090E805 /* log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = "<group>"; };
 		36FE25C71EB62A790090E805 /* DeviceStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatus.swift; sourceTree = "<group>"; };
@@ -119,6 +129,33 @@
 				FA6F43ADEF3827A55E61BC12 /* Pods_TJUBBS.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		36DA59231EC1DFAB00B56F07 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				36DDCA021EC0682E00E3AB63 /* ForumListController.swift */,
+				36DA591D1EC1D54E00B56F07 /* BoardListController.swift */,
+				36DA59211EC1DF8800B56F07 /* ThreadListController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		36DA59241EC1DFBE00B56F07 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				36DA591F1EC1DD9300B56F07 /* BoardModel.swift */,
+				36DA59261EC1E1E700B56F07 /* ThreadModel.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		36DA59251EC1DFC300B56F07 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				36DA59281EC1EB8700B56F07 /* ThreadCell.swift */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 		36FE25C11EB625D30090E805 /* Networking */ = {
@@ -219,7 +256,9 @@
 		682A84921EB5C5EB00510FA4 /* BBS */ = {
 			isa = PBXGroup;
 			children = (
-				36DDCA021EC0682E00E3AB63 /* ForumsViewController.swift */,
+				36DA59251EC1DFC300B56F07 /* View */,
+				36DA59241EC1DFBE00B56F07 /* Model */,
+				36DA59231EC1DFAB00B56F07 /* Controller */,
 			);
 			name = BBS;
 			sourceTree = "<group>";
@@ -487,20 +526,25 @@
 				36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */,
 				68B5A52A1EBB162700968FFD /* UserInfoViewController.swift in Sources */,
 				682A84651EB5C3B900510FA4 /* LoginViewController.swift in Sources */,
+				36DA59291EC1EB8700B56F07 /* ThreadCell.swift in Sources */,
 				68B5A5281EB7305B00968FFD /* MainTabBarController.swift in Sources */,
-				36DDCA031EC0682E00E3AB63 /* ForumsViewController.swift in Sources */,
+				36DDCA031EC0682E00E3AB63 /* ForumListController.swift in Sources */,
+				36DA59221EC1DF8800B56F07 /* ThreadListController.swift in Sources */,
 				6826D7431EB5F561000F520B /* ClassExtensions.swift in Sources */,
 				68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */,
 				68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */,
 				6826D7451EB604F0000F520B /* AuthenticateViewController.swift in Sources */,
+				36DA59271EC1E1E700B56F07 /* ThreadModel.swift in Sources */,
 				68B5A52D1EBB1FFB00968FFD /* UserInfoTableViewCell.swift in Sources */,
 				6826D7471EB61496000F520B /* TextInputCell.swift in Sources */,
 				36D21F411EB7171D00677534 /* InputItem.swift in Sources */,
 				6823C49B1EBC077D00FBB5C7 /* PostCell.swift in Sources */,
+				36DA591E1EC1D54E00B56F07 /* BoardListController.swift in Sources */,
 				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
 				68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */,
 				36FE25C61EB62A630090E805 /* log.swift in Sources */,
 				368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */,
+				36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */,
 				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
 				36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */,
 			);

@@ -21,7 +21,7 @@ class MainTabBarController: UITabBarController {
         homepageVC?.tabBarItem = createBarItem(imageName: "首页")
         homepageVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        BBSVC = ForumsViewController()
+        BBSVC = ForumListController()
         let bbcNC = UINavigationController(rootViewController: BBSVC!)
         BBSVC?.tabBarItem = createBarItem(imageName: "论坛")
         BBSVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)

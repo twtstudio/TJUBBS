@@ -1,5 +1,5 @@
 //
-//  ForumsViewController.swift
+//  ForumListController.swift
 //  TJUBBS
 //
 //  Created by Halcao on 2017/5/8.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ForumsViewController: UIViewController {
+class ForumListController: UIViewController {
     var collectionView: UICollectionView?
     var forums = ["休闲娱乐", "乡校情谊", "知性感性", "学术交流", "人文艺术", "体育运动", "社会信息", "研究生苑", "站务管理", "敬请期待"]
     
@@ -36,7 +36,7 @@ class ForumsViewController: UIViewController {
     
 }
 
-extension ForumsViewController: UICollectionViewDataSource {
+extension ForumListController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -61,8 +61,11 @@ extension ForumsViewController: UICollectionViewDataSource {
     
 }
 
-extension ForumsViewController: UICollectionViewDelegate {
+extension ForumListController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        let blVC = BoardListController()
+        blVC.boardList.append(BoardModel(boardName: "娱乐", threads: []))
+        blVC.forumName = forums[indexPath.row]
+        self.navigationController?.pushViewController(blVC, animated: true)
     }
 }
