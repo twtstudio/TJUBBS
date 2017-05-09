@@ -33,17 +33,10 @@ class ThreadCell: UITableViewCell {
         authorLabel.sizeToFit()
         dateLabel.sizeToFit()
         contentLabel.sizeToFit()
-        contentView.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.96, alpha:1.00)
-        initUI(type: type)
-    }
-    
-    func bind(with model: ThreadModel) {
-        
-    }
-
-    func initUI(type: ThreadCellType) {
+        contentView.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.94, alpha:1.00)
         switch type {
         case .single:
+            imgView = UIImageView()
             initSingle()
         case .multi:
             initMulti()
@@ -53,13 +46,13 @@ class ThreadCell: UITableViewCell {
     }
     
     func initSingle() {
-        imgView = UIImageView()
         contentView.addSubview(imgView!)
         contentView.addSubview(titleLabel)
         contentView.addSubview(authorLabel)
         contentView.addSubview(dateLabel)
         contentView.addSubview(contentLabel)
         titleLabel.numberOfLines = 0
+        titleLabel.font = UIFont.systemFont(ofSize: 14)
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(contentView).offset(20)
             make.top.equalTo(contentView).offset(5)
@@ -67,29 +60,40 @@ class ThreadCell: UITableViewCell {
         }
         
         imgView?.snp.makeConstraints { make in
-            make.width.equalTo(60)
-            make.height.equalTo(40)
+            make.width.equalTo(90)
+            make.height.equalTo(60)
             make.left.equalTo(contentView).offset(20)
             make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.bottom.equalTo(contentView).offset(-5)
         }
-        
-        contentLabel.numberOfLines = 4
+
+        contentLabel.numberOfLines = 0
+        contentLabel.lineBreakMode = .byWordWrapping
+        contentLabel.textColor = UIColor(red:0.24, green:0.25, blue:0.25, alpha:1.00)
+        let font = UIFont.systemFont(ofSize: 12)
+        contentLabel.font = font
         contentLabel.sizeToFit()
         contentLabel.snp.makeConstraints { make in
-            make.left.equalTo(imgView!.snp.right).offset(5)
-            make.left.equalTo(contentView).offset(-20)
             make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.left.equalTo(imgView!.snp.right).offset(10)
+            make.right.equalTo(contentView).offset(-20)
+            make.height.equalTo(60-dateLabel.frame.height)
         }
         
+        authorLabel.font = font
+        authorLabel.textColor = UIColor.darkGray
         authorLabel.snp.makeConstraints { make in
             make.right.equalTo(contentView).offset(-20)
-            make.top.equalTo(contentLabel.snp.bottom).offset(-3)
+//            make.top.equalTo(contentLabel.snp.bottom).offset(5)
             make.bottom.equalTo(contentView).offset(-5)
         }
         
+        dateLabel.textColor = UIColor.darkGray
+        dateLabel.font = font
         dateLabel.snp.makeConstraints { make in
-            make.right.equalTo(authorLabel.snp.left).offset(-5)
-            make.bottom.equalTo(contentView).offset(-5)
+            make.right.equalTo(authorLabel.snp.left).offset(-10)
+//            make.top.equalTo(contentLabel.snp.bottom).offset(5)
+            make.bottom.equalTo(imgView!.snp.bottom)
         }
     }
     
@@ -103,6 +107,7 @@ class ThreadCell: UITableViewCell {
         contentView.addSubview(dateLabel)
         contentView.addSubview(contentLabel)
         titleLabel.numberOfLines = 0
+        titleLabel.font = UIFont.systemFont(ofSize: 14)
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(contentView).offset(20)
             make.top.equalTo(contentView).offset(5)
@@ -112,7 +117,8 @@ class ThreadCell: UITableViewCell {
         contentLabel.numberOfLines = 0
         contentLabel.lineBreakMode = .byWordWrapping
         contentLabel.textColor = UIColor(red:0.24, green:0.25, blue:0.25, alpha:1.00)
-        contentLabel.font = UIFont.systemFont(ofSize: 14)
+        let font = UIFont.systemFont(ofSize: 12)
+        contentLabel.font = font
         contentLabel.sizeToFit()
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(5)
@@ -120,17 +126,19 @@ class ThreadCell: UITableViewCell {
             make.right.equalTo(contentView).offset(-20)
         }
         
-        authorLabel.font = UIFont.systemFont(ofSize: 14)
+        authorLabel.font = font
+        authorLabel.textColor = UIColor.darkGray
         authorLabel.snp.makeConstraints { make in
             make.right.equalTo(contentView).offset(-20)
-            make.top.equalTo(contentLabel.snp.bottom).offset(-10)
+            make.top.equalTo(contentLabel.snp.bottom).offset(5)
             make.bottom.equalTo(contentView).offset(-5)
         }
         
-        dateLabel.font = UIFont.systemFont(ofSize: 14)
+        dateLabel.textColor = UIColor.darkGray
+        dateLabel.font = font
         dateLabel.snp.makeConstraints { make in
-            make.right.equalTo(authorLabel.snp.left).offset(-5)
-            make.top.equalTo(contentLabel.snp.bottom).offset(-10)
+            make.right.equalTo(authorLabel.snp.left).offset(-10)
+            make.top.equalTo(contentLabel.snp.bottom).offset(5)
             make.bottom.equalTo(contentView).offset(-5)
         }
     }
