@@ -24,6 +24,11 @@ class BoardListController: UIViewController {
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.separatorStyle = .none
         tableView?.estimatedRowHeight = 120
+        
+        // 把返回换成空白
+        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backItem
+
         // Do any additional setup after loading the view.
     }
 
@@ -51,6 +56,11 @@ extension BoardListController: UITableViewDelegate {
         cell.textLabel?.text = " " + boardList[section].boardName
         cell.textLabel?.font = UIFont.systemFont(ofSize: 16)
         cell.textLabel?.textColor = UIColor.BBSBlue
+        cell.addTapGestureRecognizer { [weak self] _ in
+            let tlVC = ThreadListController()
+            tlVC.listName = (self?.boardList[section].boardName)!
+            self?.navigationController?.pushViewController(tlVC, animated: true)
+        }
         return cell
     }
     

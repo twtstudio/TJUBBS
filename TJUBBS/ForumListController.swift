@@ -26,7 +26,14 @@ class ForumListController: UIViewController {
         collectionView?.delegate = self
         collectionView?.dataSource = self
         self.view.addSubview(collectionView!)
-        // Do any additional setup after loading the view.
+        // navigationBar 用
+        self.title = "论坛区"
+        // tabBar 用
+        self.tabBarItem.title = ""
+        
+        // 把返回换成空白
+        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backItem
     }
 
     override func didReceiveMemoryWarning() {
