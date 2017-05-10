@@ -1,14 +1,14 @@
 //
-//  FavorateViewController.swift
+//  PostListViewController.swift
 //  TJUBBS
 //
-//  Created by JinHongxu on 2017/5/6.
+//  Created by JinHongxu on 2017/5/10.
 //  Copyright © 2017年 twtstudio. All rights reserved.
 //
 
 import UIKit
 
-class FavorateViewController: UIViewController {
+class PostListViewController: UIViewController {
     
     var tableView: UITableView?
     var dataList = [
@@ -51,7 +51,7 @@ class FavorateViewController: UIViewController {
             "replyNumber": "20",
             "time": "1494061223"
         ]
-    ] as Array<Dictionary<String, String>>
+        ] as Array<Dictionary<String, String>>
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -84,20 +84,16 @@ class FavorateViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        
     }
     
     func initUI() {
-        guard dataList.count != 0 else {
-            let noDataLabel = UILabel(text: "你还没有收藏的帖子哦～", color: .gray, fontSize: 20)
-            view.addSubview(noDataLabel)
-            noDataLabel.snp.makeConstraints { $0.center.equalToSuperview() }
-            return
-        }
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
-        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
+        tableView?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(108)
+            make.left.right.bottom.equalToSuperview()
+        }
         tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
         tableView?.delegate = self
         tableView?.dataSource = self
@@ -106,7 +102,7 @@ class FavorateViewController: UIViewController {
     }
 }
 
-extension FavorateViewController: UITableViewDataSource {
+extension PostListViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -119,9 +115,9 @@ extension FavorateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = dataList[indexPath.row]
-//        print(data["username"]!)
+        //        print(data["username"]!)
         let portraitImage = UIImage(named: data["image"]!)
-        cell.initUI(portraitImage: portraitImage, username: data["username"]!, category: data["category"], favor: true, title: data["title"]!, detail: data["detail"], replyNumber: data["replyNumber"]!, time: data["time"]!)
+        cell.initUI(portraitImage: portraitImage, username: data["username"]!, category: data["category"], favor: false, title: data["title"]!, detail: data["detail"], replyNumber: data["replyNumber"]!, time: data["time"]!)
         
         return cell
     }
@@ -136,10 +132,11 @@ extension FavorateViewController: UITableViewDataSource {
     }
 }
 
-extension FavorateViewController: UITableViewDelegate {
+extension PostListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = PostDetailViewController(para: 1)
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
+

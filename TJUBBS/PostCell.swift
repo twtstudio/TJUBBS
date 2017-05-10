@@ -10,7 +10,7 @@ import UIKit
 
 class PostCell: UITableViewCell {
     
-    let screenFrame = UIScreen.main.bounds
+    let screenSize = UIScreen.main.bounds.size
     var portraitImageView = UIImageView()
     var usernameLable = UILabel(text: "", color: .black, fontSize: 18)
     var favorButton = UIButton(imageName: "收藏")
@@ -53,23 +53,24 @@ class PostCell: UITableViewCell {
         portraitImageView.snp.makeConstraints {
             make in
             make.top.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(screenFrame.height*(80/1920))
+            make.width.height.equalTo(screenSize.height*(80/1920))
         }
-        portraitImageView.layer.cornerRadius = screenFrame.height*(80/1920)/2
+        portraitImageView.layer.cornerRadius = screenSize.height*(80/1920)/2
         portraitImageView.clipsToBounds = true
         
         usernameLable.text = username
         usernameLable.snp.makeConstraints {
             make in
-            make.centerY.equalTo(portraitImageView).offset(4)
+            make.centerY.equalTo(portraitImageView).offset(2)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
+        favorButton.setImage(UIImage(named: favor ? "已收藏" : "收藏"), for: .normal)
         favorButton.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView)
             make.right.equalToSuperview()
-            make.width.height.equalTo(screenFrame.height*(144/1920))
+            make.width.height.equalTo(screenSize.height*(144/1920))
         }
         
         titleLable.text = title

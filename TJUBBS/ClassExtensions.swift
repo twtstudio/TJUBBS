@@ -89,6 +89,10 @@ extension UIColor {
     open class var BBSRed: UIColor {
         return UIColor(red: 248.0/255, green: 48.0/255, blue: 48.0/255, alpha: 1.0)
     }
+    
+    open class var BBSLightGray: UIColor {
+        return UIColor(red: 244.0/255, green: 244.0/255, blue: 246.0/255, alpha: 1.0)
+    }
 
 }
 
@@ -177,6 +181,9 @@ extension UIView {
     func addTapGestureRecognizer(block: @escaping newDataBlock) {
         self.blockm = blockm ?? BlockContainer()
         blockm?.newDataBlock = block
+        //jhx edit
+        self.isUserInteractionEnabled = true
+        //end edit
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapped(sender:)))
         self.addGestureRecognizer(tapRecognizer)
     }

@@ -1,69 +1,48 @@
 //
-//  FavorateViewController.swift
+//  MyPostViewController.swift
 //  TJUBBS
 //
-//  Created by JinHongxu on 2017/5/6.
+//  Created by JinHongxu on 2017/5/9.
 //  Copyright © 2017年 twtstudio. All rights reserved.
 //
 
+
 import UIKit
 
-class FavorateViewController: UIViewController {
+class MyPostViewController: UIViewController {
     
     var tableView: UITableView?
     var dataList = [
         [
-            "image": "portrait",
-            "username": "wangcong",
-            "category": "全站热点",
-            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
+            "image": "头像2",
+            "username": "苏轼",
+            "title": "念奴娇·赤壁怀古",
             "replyNumber": "20",
             "time": "1494061223"
         ],
         [
-            "image": "portrait",
-            "username": "yqzhufeng",
-            "title": "3月26日周日百人狼人单身趴",
+            "image": "头像2",
+            "username": "苏轼",
+            "title": "水调歌头·明月几时有",
             "replyNumber": "20",
             "time": "1494061223"
         ],
         [
-            "image": "portrait",
-            "username": "yqzhufeng",
-            "title": "3月26日周日百人狼人单身趴",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "portrait",
-            "username": "wangcong",
-            "category": "全站热点",
-            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "portrait",
-            "username": "yqzhufeng",
-            "title": "3月26日周日百人狼人单身趴",
+            "image": "头像2",
+            "username": "苏轼",
+            "title": "江城子·乙卯正月二十日夜记梦",
             "replyNumber": "20",
             "time": "1494061223"
         ]
     ] as Array<Dictionary<String, String>>
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    convenience init(para: Int) {
+        self.init()
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
-        self.title = "我的收藏"
+        self.title = "我的发布"
         initUI()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -90,7 +69,7 @@ class FavorateViewController: UIViewController {
     
     func initUI() {
         guard dataList.count != 0 else {
-            let noDataLabel = UILabel(text: "你还没有收藏的帖子哦～", color: .gray, fontSize: 20)
+            let noDataLabel = UILabel(text: "你还没有发布的帖子哦～", color: .gray, fontSize: 20)
             view.addSubview(noDataLabel)
             noDataLabel.snp.makeConstraints { $0.center.equalToSuperview() }
             return
@@ -106,7 +85,7 @@ class FavorateViewController: UIViewController {
     }
 }
 
-extension FavorateViewController: UITableViewDataSource {
+extension MyPostViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -119,9 +98,10 @@ extension FavorateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = dataList[indexPath.row]
-//        print(data["username"]!)
+        //        print(data["username"]!)
         let portraitImage = UIImage(named: data["image"]!)
         cell.initUI(portraitImage: portraitImage, username: data["username"]!, category: data["category"], favor: true, title: data["title"]!, detail: data["detail"], replyNumber: data["replyNumber"]!, time: data["time"]!)
+        cell.favorButton.isHidden = true
         
         return cell
     }
@@ -136,7 +116,7 @@ extension FavorateViewController: UITableViewDataSource {
     }
 }
 
-extension FavorateViewController: UITableViewDelegate {
+extension MyPostViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = PostDetailViewController(para: 1)

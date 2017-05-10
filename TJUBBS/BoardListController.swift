@@ -57,9 +57,10 @@ extension BoardListController: UITableViewDelegate {
         cell.textLabel?.font = UIFont.systemFont(ofSize: 16)
         cell.textLabel?.textColor = UIColor.BBSBlue
         cell.addTapGestureRecognizer { [weak self] _ in
-            let tlVC = ThreadListController()
-            tlVC.listName = (self?.boardList[section].boardName)!
-            self?.navigationController?.pushViewController(tlVC, animated: true)
+            let detailVC = ThreadListController()
+            //detailVC.listName = (self?.boardList[section].boardName)!
+            detailVC.title = (self?.boardList[section].boardName)!
+            self?.navigationController?.pushViewController(detailVC, animated: true)
         }
         return cell
     }
@@ -70,8 +71,8 @@ extension BoardListController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let tlVC = ThreadListController()
-        self.navigationController?.pushViewController(tlVC, animated: true)
+        let detailVC = PostDetailViewController(para: 1)
+        self.navigationController?.pushViewController(detailVC, animated: true)
         
     }
 }

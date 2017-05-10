@@ -12,7 +12,7 @@ import PKHUD
 
 class LoginViewController: UIViewController {
     
-    let screenFrame = UIScreen.main.bounds
+    let screenSize = UIScreen.main.bounds.size
     var portraitImageView: UIImageView?
     var usernameTextField: UITextField?
     var passwordTextField: UITextField?
@@ -64,27 +64,27 @@ class LoginViewController: UIViewController {
             make.top.equalToSuperview()
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.height.equalTo(screenFrame.height*(650/1920))
+            make.height.equalTo(screenSize.height*(650/1920))
         }
         
         usernameTextField = UITextField()
         view.addSubview(usernameTextField!)
         usernameTextField?.snp.makeConstraints {
             make in
-            make.top.equalTo(portraitImageView!.snp.bottom).offset(screenFrame.height*(100/1920))
+            make.top.equalTo(portraitImageView!.snp.bottom).offset(screenSize.height*(100/1920))
             make.centerX.equalToSuperview()
-            make.height.equalTo(screenFrame.height*(120/1920))
-            make.width.equalTo(screenFrame.width*(800/1080))
+            make.height.equalTo(screenSize.height*(120/1920))
+            make.width.equalTo(screenSize.width*(800/1080))
         }
         usernameTextField?.placeholder = "用户名"
         usernameTextField?.borderStyle = .roundedRect
-        let usernameLeftView = UIView(frame: CGRect(x: 0, y: 0, width: screenFrame.width*(128/1080), height: screenFrame.height*(120/1920)))
+        let usernameLeftView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width*(128/1080), height: screenSize.height*(120/1920)))
         let usernameLeftImageView = UIImageView(image: UIImage(named: "用户名"))
         usernameLeftView.addSubview(usernameLeftImageView)
         usernameLeftImageView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
-            $0.width.equalTo(screenFrame.width*(62/1080))
-            $0.height.equalTo(screenFrame.height*(57/1920))
+            $0.width.equalTo(screenSize.width*(62/1080))
+            $0.height.equalTo(screenSize.height*(57/1920))
         }
         usernameTextField?.leftView = usernameLeftView
         usernameTextField?.leftViewMode = .always
@@ -98,20 +98,20 @@ class LoginViewController: UIViewController {
         view.addSubview(passwordTextField!)
         passwordTextField?.snp.makeConstraints {
             make in
-            make.top.equalTo(usernameTextField!.snp.bottom).offset(screenFrame.height*(56/1920))
+            make.top.equalTo(usernameTextField!.snp.bottom).offset(screenSize.height*(56/1920))
             make.centerX.equalToSuperview()
-            make.height.equalTo(screenFrame.height*(120/1920))
-            make.width.equalTo(screenFrame.width*(800/1080))
+            make.height.equalTo(screenSize.height*(120/1920))
+            make.width.equalTo(screenSize.width*(800/1080))
         }
         passwordTextField?.placeholder = "密 码"
         passwordTextField?.borderStyle = .roundedRect
-        let passwordLeftView = UIView(frame: CGRect(x: 0, y: 0, width: screenFrame.width*(128/1080), height: screenFrame.height*(120/1920)))
+        let passwordLeftView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width*(128/1080), height: screenSize.height*(120/1920)))
         let passwordLeftImageView = UIImageView(image: UIImage(named: "密码"))
         passwordLeftView.addSubview(passwordLeftImageView)
         passwordLeftImageView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
-            $0.width.equalTo(screenFrame.width*(62/1080))
-            $0.height.equalTo(screenFrame.height*(57/1920))
+            $0.width.equalTo(screenSize.width*(62/1080))
+            $0.height.equalTo(screenSize.height*(57/1920))
         }
         passwordTextField?.leftView = passwordLeftView
         passwordTextField?.leftViewMode = .always
@@ -148,8 +148,8 @@ class LoginViewController: UIViewController {
             make in
             make.top.equalTo(forgetButton!.snp.bottom).offset(8)
             make.centerX.equalTo(view)
-            make.width.equalTo(screenFrame.width*(800/1080))
-            make.height.equalTo(screenFrame.height*(100/1920))
+            make.width.equalTo(screenSize.width*(800/1080))
+            make.height.equalTo(screenSize.height*(100/1920))
         }
         
         registerButton = UIButton(title: "新用户注册")

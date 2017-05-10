@@ -12,7 +12,7 @@ import PKHUD
 
 class AuthenticateViewController: UIViewController {
     
-    let screenFrame = UIScreen.main.bounds
+    let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
     var authenticateButton: UIButton?
     var footerView: UIView?
@@ -91,11 +91,11 @@ extension AuthenticateViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return screenFrame.height*(150/1920)
+        return screenSize.height*(150/1920)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenFrame.height*(120/1920)))
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenSize.height*(120/1920)))
         let textLabel = UILabel(text: "老用户(即已拥有BBS账号)请填写以下信息认证", fontSize: 16)
         headerView.addSubview(textLabel)
         textLabel.snp.makeConstraints {
@@ -108,26 +108,26 @@ extension AuthenticateViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return screenFrame.height*(120/1920)
+        return screenSize.height*(120/1920)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        footerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenFrame.height*(300/1920)))
+        footerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenSize.height*(300/1920)))
         authenticateButton = UIButton(title: "验 证", isConfirmButton: true)
         footerView?.addSubview(authenticateButton!)
         authenticateButton?.snp.makeConstraints {
             make in
             make.centerY.equalTo(footerView!)
             make.centerX.equalTo(footerView!)
-            make.width.equalTo(screenFrame.width*(800/1080))
-            make.height.equalTo(screenFrame.height*(100/1920))
+            make.width.equalTo(screenSize.width*(800/1080))
+            make.height.equalTo(screenSize.height*(100/1920))
         }
         authenticateButton?.addTarget(self, action: #selector(authenticateButtonTapped), for: .touchUpInside)
         return footerView
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return screenFrame.height*(300/1920)
+        return screenSize.height*(300/1920)
     }
 }
 

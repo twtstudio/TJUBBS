@@ -12,11 +12,16 @@ class SettingViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
-    
-    convenience init(para: Int) {
-        self.init()
+    var contentArray = ["接受陌生人私信", "夜间模式", "公开个人资料"]
+    //FIX ME: should initUI in init or viewDidLoad
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.title = "我的收藏"
         initUI()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -47,7 +52,7 @@ extension SettingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 3
+            return contentArray.count
         case 1:
             return 1
         default:
@@ -58,7 +63,7 @@ extension SettingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
-            cell.textLabel?.text = "接收陌生人私信"
+            cell.textLabel?.text = contentArray[indexPath.row]
             let switchButton = UISwitch()
             cell.contentView.addSubview(switchButton)
             switchButton.snp.makeConstraints {
@@ -86,5 +91,11 @@ extension SettingViewController: UITableViewDataSource {
 extension SettingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        switch indexPath {
+        case IndexPath(row: 0, section: 1):
+            let loginVC = LoginViewController(para: 1)
+            self.present(loginVC, animated: true, completion: nil)
+        default: break
+        }
     }
 }

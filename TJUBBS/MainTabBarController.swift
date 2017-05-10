@@ -17,9 +17,12 @@ class MainTabBarController: UITabBarController {
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = UIColor.white
-        homepageVC = UIViewController()
-        homepageVC?.tabBarItem = createBarItem(imageName: "首页")
-        homepageVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        
+        homepageVC = HomepageMainController(para: 1)
+        let homepageNC = UINavigationController(rootViewController: homepageVC!)
+        homepageNC.navigationBar.isTranslucent = false
+        homepageNC.tabBarItem = createBarItem(imageName: "首页")
+        homepageNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         BBSVC = ForumListController()
         let bbcNC = UINavigationController(rootViewController: BBSVC!)
@@ -33,7 +36,7 @@ class MainTabBarController: UITabBarController {
         infoNC.tabBarItem = createBarItem(imageName: "个人中心")
         infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        setViewControllers([homepageVC!, bbcNC, infoNC], animated: true)
+        setViewControllers([homepageNC, bbcNC, infoNC], animated: true)
     }
     
     func createBarItem(imageName: String) -> UITabBarItem {
