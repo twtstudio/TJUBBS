@@ -205,6 +205,13 @@ extension UserInfoViewController: UITableViewDataSource {
             make.top.equalTo(signatureLabel!.snp.bottom).offset(12*ratio)
             make.centerX.equalToSuperview().offset(screenSize.width/3)
         }
+        let dayLabel = UILabel(text: "天", color: .white, fontSize: 8)
+        headerView?.addSubview(dayLabel)
+        dayLabel.snp.makeConstraints {
+            make in
+            make.bottom.equalTo(ageLabel!.snp.bottom)
+            make.left.equalTo(ageLabel!.snp.right)
+        }
         
         let ageTitleLabel = UILabel(text: "站龄", color: .white, fontSize: 14)
         headerView?.addSubview(ageTitleLabel)
