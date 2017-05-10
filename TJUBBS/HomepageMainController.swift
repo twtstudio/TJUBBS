@@ -17,8 +17,8 @@ class HomepageMainController: WMPageController {
     var fooNavigationBarShadowImage: UIImage?
     
     convenience init?(para: Int) {
-        self.init(viewControllerClasses: [HomepageViewController.self, HomepageViewController.self], andTheirTitles: ["最新动态", "全站十大"])
-        self.title = "首页"
+        self.init(viewControllerClasses: [PostListViewController.self, PostListViewController.self], andTheirTitles: ["最新动态", "全站十大"])
+        self.title = "首 页"
         UIApplication.shared.statusBarStyle = .lightContent
         // customization for pageController
         pageAnimatable = true;

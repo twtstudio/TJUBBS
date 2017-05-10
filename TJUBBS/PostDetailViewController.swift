@@ -66,6 +66,7 @@ class PostDetailViewController: UIViewController {
     
     convenience init(para: Int) {
         self.init()
+        self.title = "详情"
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true

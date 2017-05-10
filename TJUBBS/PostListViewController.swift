@@ -1,5 +1,5 @@
 //
-//  HomepageViewController.swift
+//  PostListViewController.swift
 //  TJUBBS
 //
 //  Created by JinHongxu on 2017/5/10.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomepageViewController: UIViewController {
+class PostListViewController: UIViewController {
     
     var tableView: UITableView?
     var dataList = [
@@ -102,7 +102,7 @@ class HomepageViewController: UIViewController {
     }
 }
 
-extension HomepageViewController: UITableViewDataSource {
+extension PostListViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -132,7 +132,7 @@ extension HomepageViewController: UITableViewDataSource {
     }
 }
 
-extension HomepageViewController: UITableViewDelegate {
+extension PostListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = PostDetailViewController(para: 1)

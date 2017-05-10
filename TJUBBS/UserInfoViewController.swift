@@ -16,6 +16,7 @@ enum UserInfoViewControllerType {
 class UserInfoViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
+    let ratio = UIScreen.main.bounds.size.width/375.0
     var headerView: UIView?
     var headerViewBackground: UIImageView?
     var portraitImageView: UIImageView?
@@ -37,7 +38,8 @@ class UserInfoViewController: UIViewController {
         view.backgroundColor = .white
         self.title = "个人中心"
         initUI()
-        
+        print(screenSize)
+        print(ratio)
     }
     
     override func viewDidLoad() {
@@ -124,10 +126,10 @@ extension UserInfoViewController: UITableViewDataSource {
             make in
             make.top.equalTo(headerView!).offset(64)
             make.centerX.equalToSuperview()
-            make.width.height.equalTo(screenSize.height*(240/1920))
+            make.width.height.equalTo(screenSize.height*(240/1920)*ratio)
         }
         avatarBackground.backgroundColor = .white
-        avatarBackground.layer.cornerRadius = screenSize.height*(240/1920)/2
+        avatarBackground.layer.cornerRadius = screenSize.height*(240/1920)*ratio/2
         avatarBackground.clipsToBounds = true
 
         portraitImageView = UIImageView(image: UIImage(named: "头像"))
@@ -135,9 +137,9 @@ extension UserInfoViewController: UITableViewDataSource {
         portraitImageView?.snp.makeConstraints {
             make in
             make.centerX.centerY.equalToSuperview()
-            make.width.height.equalTo(screenSize.height*(240/1920)-8)
+            make.width.height.equalTo(screenSize.height*(240/1920)*ratio-8)
         }
-        portraitImageView?.layer.cornerRadius = (screenSize.height*(240/1920)-8)/2
+        portraitImageView?.layer.cornerRadius = (screenSize.height*(240/1920)*ratio-8)/2
         portraitImageView?.clipsToBounds = true
         
         portraitBadgeLabel = UILabel.roundLabel(text: "一般站友", textColor: .white, backgroundColor: .BBSBadgeOrange)
@@ -152,7 +154,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(usernameLabel!)
         usernameLabel?.snp.makeConstraints {
             make in
-            make.top.equalTo(portraitBadgeLabel!.snp.bottom).offset(8)
+            make.top.equalTo(portraitBadgeLabel!.snp.bottom).offset(8*ratio)
             make.centerX.equalToSuperview()
         }
         
@@ -160,7 +162,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(signatureLabel!)
         signatureLabel?.snp.makeConstraints {
             make in
-            make.top.equalTo(usernameLabel!.snp.bottom).offset(8)
+            make.top.equalTo(usernameLabel!.snp.bottom).offset(8*ratio)
             make.centerX.equalToSuperview()
         }
         
@@ -168,7 +170,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(postNumberLabel!)
         postNumberLabel?.snp.makeConstraints {
             make in
-            make.top.equalTo(signatureLabel!.snp.bottom).offset(16)
+            make.top.equalTo(signatureLabel!.snp.bottom).offset(12*ratio)
             make.centerX.equalToSuperview()
         }
         
@@ -176,7 +178,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(postNumberTitleLabel)
         postNumberTitleLabel.snp.makeConstraints {
             make in
-            make.top.equalTo(postNumberLabel!.snp.bottom).offset(8)
+            make.top.equalTo(postNumberLabel!.snp.bottom).offset(4*ratio)
             make.centerX.equalTo(postNumberLabel!)
         }
         
@@ -184,7 +186,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(pointLabel!)
         pointLabel?.snp.makeConstraints {
             make in
-            make.top.equalTo(signatureLabel!.snp.bottom).offset(16)
+            make.top.equalTo(signatureLabel!.snp.bottom).offset(12*ratio)
             make.centerX.equalToSuperview().offset(-screenSize.width/3)
         }
         
@@ -192,7 +194,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(pointTitleLabel)
         pointTitleLabel.snp.makeConstraints {
             make in
-            make.top.equalTo(pointLabel!.snp.bottom).offset(8)
+            make.top.equalTo(pointLabel!.snp.bottom).offset(4*ratio)
             make.centerX.equalTo(pointLabel!)
         }
         
@@ -200,7 +202,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {
             make in
-            make.top.equalTo(signatureLabel!.snp.bottom).offset(16)
+            make.top.equalTo(signatureLabel!.snp.bottom).offset(12*ratio)
             make.centerX.equalToSuperview().offset(screenSize.width/3)
         }
         
@@ -208,7 +210,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(ageTitleLabel)
         ageTitleLabel.snp.makeConstraints {
             make in
-            make.top.equalTo(ageLabel!.snp.bottom).offset(8)
+            make.top.equalTo(ageLabel!.snp.bottom).offset(4*ratio)
             make.centerX.equalTo(ageLabel!)
         }
         
