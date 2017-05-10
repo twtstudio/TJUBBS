@@ -31,7 +31,7 @@ class PostCell: UITableViewCell {
         contentView.addSubview(timeLablel)
         favorButton.addTarget { button in
             print("clicked")
-            button.setImage(UIImage(named: "已收藏"), for: .normal)
+            (button as? UIButton)?.setImage(UIImage(named: "已收藏"), for: .normal)
         }
     }
     

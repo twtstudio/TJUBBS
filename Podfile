@@ -5,4 +5,5 @@ target 'TJUBBS' do
   pod 'Alamofire'
   pod 'SnapKit'
   pod 'PKHUD', '~> 4.0'
+  pod 'MJRefresh', '~> 3.1.12'
 end

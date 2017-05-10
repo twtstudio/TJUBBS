@@ -38,34 +38,8 @@ extension UIButton {
 }
 
 extension UIButton {
-    typealias newDataBlock = (UIButton) -> Void
-    
-    // 关联属性的key
-    private struct associatedKeys {
-        static var newDataBlockKey = "newDataBlockKey"
-    }
-    
-    private class BlockContainer: NSObject, NSCopying {
-        var newDataBlock: newDataBlock?
-        func copy(with zone: NSZone? = nil) -> Any {
-            return self
-        }
-    }
-    
-    private var blockm: BlockContainer? {
-        get {
-            if let newDataBlock = objc_getAssociatedObject(self, &associatedKeys.newDataBlockKey) as? BlockContainer {
-                return newDataBlock
-            }
-            return nil
-        }
-        set(newValue) {
-            objc_setAssociatedObject(self, &associatedKeys.newDataBlockKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
-        }
-    }
-    
     func addTarget(for controlEvents: UIControlEvents = .touchUpInside, withBlock block: @escaping newDataBlock) {
-        self.blockm = BlockContainer()
+        self.blockm = blockm ?? BlockContainer()
         blockm?.newDataBlock = block
         self.addTarget(self, action: #selector(self.callback(sender:)), for: controlEvents)
     }
@@ -171,5 +145,47 @@ extension UIImageView {
     func resize(newFrame: CGRect) {
         // self.frame = newFrame
         //self.image = UIImage.resizedImage(image: self.image!, scaledToSize: newFrame.size)
+    }
+}
+
+extension UIView {
+    
+    typealias newDataBlock = (Any) -> Void
+    
+    // 关联属性的key
+    private struct associatedKeys {
+        static var newDataBlockKey = "GestureBlockKey"
+    }
+    
+    fileprivate class BlockContainer: NSObject, NSCopying {
+        var newDataBlock: newDataBlock?
+        func copy(with zone: NSZone? = nil) -> Any {
+            return self
+        }
+    }
+    
+    // fileprivate: 文件内作用域 为了让上面能用
+    fileprivate var blockm: BlockContainer? {
+        get {
+            if let newDataBlock = objc_getAssociatedObject(self, &associatedKeys.newDataBlockKey) as? BlockContainer {
+                return newDataBlock
+            }
+            return nil
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &associatedKeys.newDataBlockKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+
+    
+    func addTapGestureRecognizer(block: @escaping newDataBlock) {
+        self.blockm = blockm ?? BlockContainer()
+        blockm?.newDataBlock = block
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapped(sender:)))
+        self.addGestureRecognizer(tapRecognizer)
+    }
+    
+    func tapped(sender: UITapGestureRecognizer) {
+        self.blockm?.newDataBlock?(sender)
     }
 }
