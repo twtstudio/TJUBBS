@@ -65,6 +65,7 @@ class PostCell: UITableViewCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
+        favorButton.setImage(UIImage(named: favor ? "已收藏" : "收藏"), for: .normal)
         favorButton.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView)

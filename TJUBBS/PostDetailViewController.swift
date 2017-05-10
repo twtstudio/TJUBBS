@@ -12,13 +12,14 @@ import UIKit
 class PostDetailViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
-    var loadFlag = false
+    fileprivate var loadFlag = false
     var tableView = UITableView(frame: .zero, style: .grouped)
     var webView = UIWebView()
-    lazy var webViewLoad: Void = {
-        //MARK: dangerous thing
-        self.webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
-    }()
+    var webViewHeight: CGFloat = 0
+//    lazy var webViewLoad: Void = {
+//        //MARK: dangerous thing
+//        self.webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
+//    }()
     
     var postDetail = [
         "image": "头像",
@@ -32,14 +33,19 @@ class PostDetailViewController: UIViewController {
             "username": "lln(Elieen)",
             "detail": "The asker of the original question has solved their problem. I am adding this answer as a mini self contained example project for others who are trying to do the same thing.",
             "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "头像",
-            "username": "lln(Elieen)",
-            "detail": "The asker of the original question has solved their problem. I am adding this answer as a mini self contained example project for others who are trying to do the same thing.",
-            "replyNumber": "20",
-            "time": "1494061223"
+            "time": "1494061223",
+            "subReply": [
+                [
+                    "username": "T.S.Eliot",
+                    "detail": "We shall not cease from exploration, and the end of all our exploring will be to arrive where we started and know the place for the first time.",
+                    "time": "1494061223"
+                ],
+                [
+                    "username": "T.S.Eliot",
+                    "detail": "We shall not cease from exploration, and the end of all our exploring will be to arrive where we started and know the place for the first time.",
+                    "time": "1494061223"
+                ],
+            ]
         ],
         [
             "image": "头像",
@@ -98,7 +104,7 @@ class PostDetailViewController: UIViewController {
 extension PostDetailViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -113,8 +119,7 @@ extension PostDetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath {
-        case IndexPath(row: 0, section: 0):
+        if indexPath.section == 0{
             let cell = UITableViewCell()
             let portraitImageView = UIImageView(image: UIImage(named: postDetail["image"]!))
             cell.contentView.addSubview(portraitImageView)
@@ -122,9 +127,9 @@ extension PostDetailViewController: UITableViewDataSource {
                 make in
                 make.top.equalToSuperview().offset(8)
                 make.left.equalToSuperview().offset(16)
-                make.width.height.equalTo(screenSize.height*(80/1920))
+                make.width.height.equalTo(screenSize.height*(120/1920))
             }
-            portraitImageView.layer.cornerRadius = screenSize.height*(80/1920)/2
+            portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
             portraitImageView.clipsToBounds = true
             
             let usernameLabel = UILabel(text: postDetail["username"]!)
@@ -140,7 +145,7 @@ extension PostDetailViewController: UITableViewDataSource {
             cell.contentView.addSubview(timeLabel)
             timeLabel.snp.makeConstraints {
                 make in
-                make.top.equalTo(usernameLabel.snp.bottom).offset(8)
+                make.top.equalTo(usernameLabel.snp.bottom).offset(4)
                 make.left.equalTo(portraitImageView.snp.right).offset(8)
             }
             
@@ -153,24 +158,40 @@ extension PostDetailViewController: UITableViewDataSource {
                 make.width.height.equalTo(screenSize.height*(144/1920))
             }
             favorButton.addTarget { button in
-                button.setImage(UIImage(named: "已收藏"), for: .normal)
+                (button as? UIButton)?.setImage(UIImage(named: "已收藏"), for: .normal)
             }
             
             cell.contentView.addSubview(webView)
-            webView.snp.makeConstraints {
-                make in
-                make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-                make.left.equalToSuperview().offset(16)
-                make.right.equalToSuperview().offset(-16)
-                make.bottom.equalToSuperview().offset(-8)
+            if loadFlag == false {
+                webView.snp.makeConstraints {
+                    make in
+                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+                    make.left.equalToSuperview().offset(16)
+                    make.right.equalToSuperview().offset(-16)
+                    make.bottom.equalToSuperview().offset(-8)
+                    make.height.equalTo(300)
+                }
+                webView.delegate = self
+                webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
+                webView.scrollView.isScrollEnabled = false
+                webView.scrollView.bounces = false
+            } else {
+                webView.snp.remakeConstraints {
+                    make in
+                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+                    make.left.equalToSuperview().offset(16)
+                    make.right.equalToSuperview().offset(-16)
+                    make.bottom.equalToSuperview().offset(-8)
+                    make.height.equalTo(webViewHeight)
+                }
             }
-            webView.delegate = self
-            _ = webViewLoad
-            
             
             return cell
-        default:
-            return UITableViewCell()
+        } else {
+            let reply = replyList[indexPath.row]
+            let cell = replyCell()
+            cell.initUI(portraitImage: UIImage(named: reply["image"]! as! String), username: reply["username"]! as! String, detail: reply["detail"]! as! String, replyNumber: reply["replyNumber"]! as! String, time: reply["time"]! as! String, subReplyList: reply["subReply"] as? Array<Dictionary<String, String>>)
+            return cell
         }
     }
     
@@ -183,6 +204,10 @@ extension PostDetailViewController: UITableViewDataSource {
         return 0.1
     }
     
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 300
+//    }
+    
 }
 
 extension PostDetailViewController: UITableViewDelegate {
@@ -193,10 +218,14 @@ extension PostDetailViewController: UITableViewDelegate {
 
 extension PostDetailViewController: UIWebViewDelegate {
     func webViewDidFinishLoad(_ webView: UIWebView) {
+        loadFlag = true
         let actualSize = webView.sizeThatFits(.zero)
-        var newFrame = webView.frame
-        newFrame.size.height = actualSize.height
-        webView.frame = newFrame
+//        var newFrame = webView.frame
+//
+//        webView.frame = newFrame
+//        print("-------------\(newFrame.size.height)")
+        webViewHeight = actualSize.height
+        print("-------------\(webViewHeight)")
         tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
 }

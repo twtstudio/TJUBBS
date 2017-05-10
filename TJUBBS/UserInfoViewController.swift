@@ -252,7 +252,7 @@ extension UserInfoViewController: UITableViewDelegate {
             let detailVC = MessageViewController(para: 1)
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 1, section: 0):
-            let detailVC = FavorateViewController(para: 1)
+            let detailVC = FavorateViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 2, section: 0):
             let detailVC = MyPostViewController(para: 1)

@@ -53,13 +53,17 @@ class FavorateViewController: UIViewController {
         ]
     ] as Array<Dictionary<String, String>>
     
-    convenience init(para: Int) {
-        self.init()
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         self.title = "我的收藏"
         initUI()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {

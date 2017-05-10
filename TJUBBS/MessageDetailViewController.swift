@@ -63,7 +63,6 @@ class MessageDetailViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 200
-        tableView?.allowsSelection = false
     }
 }
 
@@ -114,7 +113,14 @@ extension MessageDetailViewController: UITableViewDataSource {
                 make.right.equalToSuperview().offset(-16)
                 make.height.equalTo(screenSize.height*(200/1920))
             }
-            postView.backgroundColor = .BBSlightGray
+            postView.backgroundColor = .BBSLightGray
+            postView.addTapGestureRecognizer(block: { _ in
+                print("bang!!!!!")
+                let detailVC = PostDetailViewController(para: 1)
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            })
+//            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
+//            postView.addGestureRecognizer(tapRecognizer)
             
             let authorPortraitImageView = UIImageView(image: UIImage(named: data["authorPortrait"]!))
             postView.addSubview(authorPortraitImageView)
@@ -169,6 +175,11 @@ extension MessageDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.1
     }
+    
+//    func postViewTapped() {
+//        let detailVC = PostDetailViewController(para: 1)
+//        self.navigationController?.pushViewController(detailVC, animated: true)
+//    }
 }
 
 extension MessageDetailViewController: UITableViewDelegate {
