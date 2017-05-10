@@ -10,7 +10,7 @@
 import Foundation
 
 enum log {
-    case errorMessage(_: String)
+    case errorMessage(_: String?)
     case error(_: Error)
     case url(_: String)
     case obj(_: AnyObject)

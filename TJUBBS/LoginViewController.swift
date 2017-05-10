@@ -42,6 +42,9 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // 用户名帮用户输好
+        usernameTextField?.text = BBSUser.shared.username
+
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
@@ -77,6 +80,7 @@ class LoginViewController: UIViewController {
             make.width.equalTo(screenSize.width*(800/1080))
         }
         usernameTextField?.placeholder = "用户名"
+        usernameTextField?.clearButtonMode = .whileEditing
         usernameTextField?.borderStyle = .roundedRect
         let usernameLeftView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width*(128/1080), height: screenSize.height*(120/1920)))
         let usernameLeftImageView = UIImageView(image: UIImage(named: "用户名"))
@@ -129,8 +133,11 @@ class LoginViewController: UIViewController {
             make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
             make.right.equalTo(passwordTextField!.snp.right)
         }
+        
+        // 这是个好用的方法 欢迎去看我的博客 www.halcao.me/tips-using-block-instead-of-selector-of-uibutton/
+        
         forgetButton?.addTarget { _ in
-            let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号-schoolid", "身份证号-输入身份证号-id"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证") { result in
+            let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号-schoolid", "身份证号-输入身份证号-cid"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证") { result in
                 // TODO: 判断逻辑
                 let vc = InfoModifyController(title: "密码重置", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "验证信息通过，请重置密码") { result in
                     print(result)
@@ -151,6 +158,28 @@ class LoginViewController: UIViewController {
             make.width.equalTo(screenSize.width*(800/1080))
             make.height.equalTo(screenSize.height*(100/1920))
         }
+        // 注意这里可能会有循环引用 self->button->block->self.portraitImageView
+        loginButton?.addTarget { [weak self] button in
+            print("loginButtonTapped")
+            if let username = self?.usernameTextField?.text, let password = self?.passwordTextField?.text {
+                BBSJarvis.login(username: username, password: password) { dict in
+                    if let data = dict["data"] as? [String: AnyObject] {
+                        BBSUser.shared.uid = data["uid"] as? Int
+                        BBSUser.shared.group = data["group"] as? Int
+                        BBSUser.shared.token = data["token"] as? String
+                        BBSUser.shared.username = username
+                        
+                        // 用 UserDefaults 存起来 BBSUser.shared
+                        BBSUser.shared.save()
+                        HUD.flash(.success, onView: self?.portraitImageView, delay: 1.2, completion: nil)
+                        let tabBarVC = MainTabBarController(para: 1)
+                        tabBarVC.modalTransitionStyle = .crossDissolve
+                        self?.present(tabBarVC, animated: false, completion: nil)
+
+                    }
+                }
+            }
+        }
         
         registerButton = UIButton(title: "新用户注册")
         view.addSubview(registerButton!)
@@ -159,10 +188,29 @@ class LoginViewController: UIViewController {
             make.top.equalTo(loginButton!.snp.bottom).offset(8)
             make.left.equalTo(loginButton!.snp.left)
         }
+        
+        let check: ([String : String])->(Bool) = { result in
+            guard result["repass"] == result["password"] else {
+                HUD.flash(.label("两次密码不符！请重新输入👀"), delay: 1.2)
+                return false
+            }
+            return true
+
+        }
         registerButton?.addTarget { _ in
             // FIXME: 密码要求
-            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-realname", "学号-输入学号-schoolid", "身份证号-输入身份证号-id", "用户名-这里可以写用户名要求-uid", "密码-这里可以写密码要求-pwd-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
-                print(result)
+            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-6~30字节-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
+                if let result = result as? [String : String] {
+                    if check(result) == true {
+                        var para = result
+                        para.removeValue(forKey: "repass")
+                        BBSJarvis.register(parameters: para) { _ in
+                            HUD.flash(.label("注册成功！🎉"), delay: 1.0)
+                            BBSUser.shared.username = result["username"]
+                            let _ = self.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                }
             }
             vc.doneText = "确认"
             self.navigationController?.pushViewController(vc, animated: true)
@@ -209,13 +257,7 @@ class LoginViewController: UIViewController {
     }
     
     func addTargetAction() {
-        loginButton?.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         visitorButton?.addTarget(self, action: #selector(visitorButtonTapped), for: .touchUpInside)
-    }
-    
-    func loginButtonTapped() {
-        print("loginButtonTapped")
-        HUD.flash(.success, onView: portraitImageView, delay: 1.0, completion: nil)
     }
     
     func visitorButtonTapped() {
@@ -235,7 +277,7 @@ extension LoginViewController: UITextFieldDelegate {
             passwordTextField?.becomeFirstResponder()
         } else if textField == passwordTextField {
             view.endEditing(true)
-            loginButtonTapped()
+            loginButton?.callback(sender: loginButton!)
         }
         return true
     }
