@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PKHUD
 
 class MessageDetailViewController: UIViewController {
     
@@ -23,6 +24,10 @@ class MessageDetailViewController: UIViewController {
         "authorPortrait": "头像",
         "time": "1493165223"
     ]
+    var replyView: UIView?
+    var replyTextField: UITextField?
+    var replyButton: UIButton?
+    
     
     convenience init(para: Int) {
         self.init()
@@ -31,6 +36,7 @@ class MessageDetailViewController: UIViewController {
         self.hidesBottomBarWhenPushed = true
         self.title = "详情"
         initUI()
+        becomeKeyboardObserver()
     }
     
     override func viewDidLoad() {
@@ -58,11 +64,58 @@ class MessageDetailViewController: UIViewController {
     func initUI() {
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
-        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
+        tableView?.snp.makeConstraints {
+            make in
+            make.top.left.right.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-56)
+        }
         tableView?.delegate = self
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 200
+        tableView?.allowsSelection = false
+        
+        replyView = UIView()
+        view.addSubview(replyView!)
+        replyView?.snp.makeConstraints {
+            make in
+            make.top.equalTo(tableView!.snp.bottom)
+            make.left.right.bottom.equalToSuperview()
+        }
+        replyView?.backgroundColor = .white
+        
+        replyTextField = UITextField()
+        replyView?.addSubview(replyTextField!)
+        replyTextField?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalToSuperview().offset(16)
+            make.width.equalTo(screenSize.width*(820/1080))
+            make.bottom.equalToSuperview().offset(-8)
+        }
+        replyTextField?.borderStyle = .roundedRect
+        replyTextField?.returnKeyType = .done
+        replyTextField?.delegate = self
+        
+        replyButton = UIButton.confirmButton(title: "回复")
+        replyView?.addSubview(replyButton!)
+        replyButton?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(replyTextField!.snp.right).offset(4)
+            make.right.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-8)
+        }
+        replyButton?.addTarget(withBlock: {_ in 
+            HUD.flash(.success)
+            self.dismissKeyboard()
+        })
+    }
+    
+    
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -180,11 +233,68 @@ extension MessageDetailViewController: UITableViewDataSource {
 //        let detailVC = PostDetailViewController(para: 1)
 //        self.navigationController?.pushViewController(detailVC, animated: true)
 //    }
+    
 }
 
 extension MessageDetailViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension MessageDetailViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == replyTextField {
+            self.dismissKeyboard()
+        }
+        return true
+    }
+}
+
+//keyboard layout
+extension MessageDetailViewController {
+    
+    override func becomeKeyboardObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+//        print("用的是我，口亨～")
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        
+        let userInfo  = notification.userInfo! as Dictionary
+        let keyboardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        let deltaY = keyboardBounds.size.height
+        let animations:(() -> Void) = {
+            self.replyView?.transform = CGAffineTransform(translationX: 0, y: -deltaY)
+        }
+        if duration > 0 {
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
+            UIView.animate(withDuration: duration, delay: 0, options: options, animations: animations, completion: nil)
+        } else {
+            animations()
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        
+        let userInfo  = notification.userInfo! as Dictionary
+        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        
+        let animations:(() -> Void) = {
+            self.replyView?.transform = CGAffineTransform(translationX: 0, y: 0)
+        }
+        
+        if duration > 0 {
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
+            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
+        } else {
+            animations()
+        }
     }
 }

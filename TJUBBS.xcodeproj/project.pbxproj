@@ -253,7 +253,6 @@
 			isa = PBXGroup;
 			children = (
 				682A84621EB5C3B900510FA4 /* AppDelegate.swift */,
-				6826D7421EB5F561000F520B /* ClassExtensions.swift */,
 				682A84661EB5C3B900510FA4 /* Main.storyboard */,
 				682A846B1EB5C3B900510FA4 /* LaunchScreen.storyboard */,
 				682A846E1EB5C3B900510FA4 /* Info.plist */,
@@ -330,6 +329,7 @@
 		68B683501EC20F5000F7A0BF /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				6826D7421EB5F561000F520B /* ClassExtensions.swift */,
 				68B683511EC20F7100F7A0BF /* PostDetailViewController.swift */,
 				6823C49A1EBC077D00FBB5C7 /* PostCell.swift */,
 				68B683531EC2F02700F7A0BF /* replyCell.swift */,
@@ -349,8 +349,8 @@
 		68F461541EBE01B700D784F4 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */,
 				68B5A5291EBB162700968FFD /* UserInfoViewController.swift */,
+				36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */,
 				368D36A21EBA224C002978C6 /* SetInfoViewController.swift */,
 				68F461511EBDCCE900D784F4 /* FavorateViewController.swift */,
 				68F461551EBE264800D784F4 /* SettingViewController.swift */,

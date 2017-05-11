@@ -27,8 +27,7 @@ class LoginViewController: UIViewController {
         view.backgroundColor = UIColor.white
         UIApplication.shared.statusBarStyle = .lightContent
         initUI()
-        addTapGestures()
-        addKVOSelectors()
+        becomeKeyboardObserver()
         addTargetAction()
     }
     
@@ -198,16 +197,6 @@ class LoginViewController: UIViewController {
         }
     }
 
-    func addTapGestures() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-    
-    func addKVOSelectors() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
-    }
-    
     func addTargetAction() {
         loginButton?.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         visitorButton?.addTarget(self, action: #selector(visitorButtonTapped), for: .touchUpInside)
@@ -223,7 +212,7 @@ class LoginViewController: UIViewController {
         tabBarVC.modalTransitionStyle = .crossDissolve
         self.present(tabBarVC, animated: false, completion: nil)
     }
-
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
