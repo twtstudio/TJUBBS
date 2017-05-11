@@ -66,6 +66,7 @@ extension SettingViewController: UITableViewDataSource {
             cell.textLabel?.text = contentArray[indexPath.row]
             let switchButton = UISwitch()
             cell.contentView.addSubview(switchButton)
+            switchButton.onTintColor = UIColor.BBSBlue
             switchButton.snp.makeConstraints {
                 make in
                 make.right.equalToSuperview().offset(-16)
@@ -93,6 +94,7 @@ extension SettingViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
         case IndexPath(row: 0, section: 1):
+            BBSUser.shared.delete()
             let loginVC = LoginViewController(para: 1)
             self.present(loginVC, animated: true, completion: nil)
         default: break
