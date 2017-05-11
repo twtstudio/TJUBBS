@@ -99,6 +99,14 @@ class PostDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+    }
+    
+    func share() {
+        print("share!")
+        let vc = UIActivityViewController(activityItems: [URL(string: "https://www.baidu.com")!], applicationActivities: [])
+        present(vc, animated: true, completion: nil)
     }
 }
 

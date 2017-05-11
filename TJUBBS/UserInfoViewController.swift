@@ -154,7 +154,6 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerY.equalTo(avatarBackground.snp.bottom)
         }
         
-        // 默认的用户名
         usernameLabel = UILabel(text: BBSUser.shared.username ?? "janny", color: .white, fontSize: 18)
         headerView?.addSubview(usernameLabel!)
         usernameLabel?.snp.makeConstraints {

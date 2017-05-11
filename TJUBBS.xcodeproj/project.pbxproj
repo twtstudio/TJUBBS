@@ -45,6 +45,7 @@
 		68B683541EC2F02700F7A0BF /* replyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683531EC2F02700F7A0BF /* replyCell.swift */; };
 		68B683561EC2F29100F7A0BF /* SubReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683551EC2F29100F7A0BF /* SubReplyView.swift */; };
 		68B683581EC31BE700F7A0BF /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683571EC31BE700F7A0BF /* PostListViewController.swift */; };
+		68E4ED751EC451650067DA35 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E4ED741EC451650067DA35 /* BBSAPI.swift */; };
 		68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F4614F1EBDC95700D784F4 /* TimeStampTransfer.swift */; };
 		68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F461511EBDCCE900D784F4 /* FavorateViewController.swift */; };
 		68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F461551EBE264800D784F4 /* SettingViewController.swift */; };
@@ -114,6 +115,7 @@
 		68B683531EC2F02700F7A0BF /* replyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = replyCell.swift; sourceTree = "<group>"; };
 		68B683551EC2F29100F7A0BF /* SubReplyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubReplyView.swift; sourceTree = "<group>"; };
 		68B683571EC31BE700F7A0BF /* PostListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
+		68E4ED741EC451650067DA35 /* BBSAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSAPI.swift; sourceTree = "<group>"; };
 		68F4614F1EBDC95700D784F4 /* TimeStampTransfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeStampTransfer.swift; sourceTree = "<group>"; };
 		68F461511EBDCCE900D784F4 /* FavorateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavorateViewController.swift; sourceTree = "<group>"; };
 		68F461551EBE264800D784F4 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				363EE57B1EC4680200A71BD5 /* BBSAPI.swift */,
 				36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */,
 				36B8D0241EC34025006D58F8 /* BBSUser.swift */,
+				68E4ED741EC451650067DA35 /* BBSAPI.swift */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -567,7 +570,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				363EE57C1EC4680200A71BD5 /* BBSAPI.swift in Sources */,
+				68E4ED751EC451650067DA35 /* BBSAPI.swift in Sources */,
 				36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */,
 				36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */,
 				68B683521EC20F7100F7A0BF /* PostDetailViewController.swift in Sources */,
