@@ -11,6 +11,7 @@ class InputItem: ExpressibleByStringLiteral {
     var placeholder: String = ""
     var rawName: String = ""
     var isSecure = false
+    var type: TextInputCellType = .textField
 //    ["姓名-请输入姓名-name-s"] // -s secure
     required init(stringLiteral value: String) {
         decodeString(value: value)
@@ -34,6 +35,9 @@ class InputItem: ExpressibleByStringLiteral {
         rawName = array[2]
         if array.last == "s" {
             isSecure = true
+        }
+        if array.last == "v" {
+            type = .textView
         }
     }
 }
