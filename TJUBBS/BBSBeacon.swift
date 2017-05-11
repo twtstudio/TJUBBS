@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import PKHUD
 
 enum SessionType {
     case get
@@ -29,8 +30,10 @@ struct BBSBeacon {
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject>, dict["error_code"] as! Int == -1 {
+                        if let dict = data as? Dictionary<String, AnyObject>, dict["err"] as! Int == 0 {
                             success?(dict)
+                        } else {
+                            HUD.flash(.label((data as? [String: AnyObject])?["data"] as? String), delay: 1.0)
                         }
                     }
                 case .failure(let error):
@@ -38,7 +41,8 @@ struct BBSBeacon {
                     log.error(error)/
                     if let data = response.result.value  {
                         if let dict = data as? Dictionary<String, AnyObject> {
-                            log.errorMessage(dict["message"] as! String)/
+                            log.errorMessage(dict["data"] as? String)/
+                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                         }
                     }
                 }
@@ -59,7 +63,7 @@ struct BBSBeacon {
 //                    switch response.result {
 //                    case .success:
 //                        if let data = response.result.value  {
-//                            if let dict = data as? Dictionary<String, AnyObject>, dict["error_code"] as! Int == -1 {
+//                            if let dict = data as? Dictionary<String, AnyObject>, dict["error_code"] as! Int == 0 {
 //                                success?(dict)
 //                            }
 //                        }
@@ -78,8 +82,10 @@ struct BBSBeacon {
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject>, dict["error_code"] as! Int == -1 {
+                        if let dict = data as? Dictionary<String, AnyObject>, dict["err"] as? Int == 0 {
                             success?(dict)
+                        } else {
+                            HUD.flash(.label((data as? [String: AnyObject])?["data"] as? String), delay: 1.0)
                         }
                     }
                 case .failure(let error):
@@ -87,7 +93,8 @@ struct BBSBeacon {
                     log.error(error)/
                     if let data = response.result.value  {
                         if let dict = data as? Dictionary<String, AnyObject> {
-                            log.errorMessage(dict["message"] as! String)/
+                            log.errorMessage(dict["data"] as? String)/
+                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                         }
                     }
                 }

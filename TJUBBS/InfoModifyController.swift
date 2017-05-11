@@ -91,6 +91,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
         cell.textField?.autocorrectionType = .no
         cell.textField?.autocapitalizationType = .none
         cell.textField?.spellCheckingType = .no
+        cell.textField?.clearButtonMode = .whileEditing
         cell.textField?.delegate = self
         // 更新结果
         cell.textField?.addTarget(self, action: #selector(self.textChange(_:)), for: .editingChanged)
@@ -137,12 +138,14 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
         if style != .custom {
             handler?(self.results)
         } else {
-            for v in customView!.subviews {
-                if let textView = v as? UITextView {
+            for tView in customView!.subviews {
+                // 如果找到 textView
+                if let textView = tView as? UITextView {
                     handler?(textView.text)
                     return
                 }
-                if let textField = v as? UITextField {
+                // 如果找到 textField
+                if let textField = tView as? UITextField {
                     handler?(textField.text as Any)
                     return
                 }

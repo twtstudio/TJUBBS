@@ -24,14 +24,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
+            BBSUser.shared.load()
             
-            let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+            // 如果token不为空
+            if let token = BBSUser.shared.token, token != "" {
+                let tabBarVC = MainTabBarController(para: 1)
+                tabBarVC.modalTransitionStyle = .crossDissolve
+                window.rootViewController = tabBarVC
+            } else {
+                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                window.rootViewController = navigationController
+            }
             
-//            let arr: [InputItem] = ["用户名-请输入用户名-username", "密码-请输入密码-password-s"]
-//            
-//            let vc = InfoModifyController(title: "登录", items: arr, headerMsg: "请输入以下信息", handler: { result in print(result) })
-//            let navigationController = UINavigationController(rootViewController: LoginViewController(para: 0))
-            window.rootViewController = navigationController
             window.makeKeyAndVisible()
         }
         return true

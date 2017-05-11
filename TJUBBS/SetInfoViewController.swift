@@ -67,6 +67,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.imageView?.image?.draw(in: imageRect)
                 cell.imageView?.image = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
+                cell.imageView?.layer.cornerRadius = 30
                 cell.imageView?.layer.masksToBounds = true
                 cell.accessoryType = .disclosureIndicator
                 cell.detailTextLabel?.text = "编辑头像"
@@ -128,9 +129,9 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     make.right.equalTo(contentView).offset(-20)
                     make.height.equalTo(100)
                 }
-                textView.layer.borderColor = UIColor.black.cgColor
-                textView.layer.borderWidth = 1
-                textView.layer.cornerRadius = 3
+//                textView.layer.borderColor = UIColor.black.cgColor
+//                textView.layer.borderWidth = 1
+//                textView.layer.cornerRadius = 3
                 textView.text = "go big or go home."
                 
                 // FIXME: 加载原签名

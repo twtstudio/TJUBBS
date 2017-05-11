@@ -44,6 +44,10 @@ class UserInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 导航栏返回按钮文字为空
+        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backItem
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -150,7 +154,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerY.equalTo(avatarBackground.snp.bottom)
         }
         
-        usernameLabel = UILabel(text: "jenny", color: .white, fontSize: 18)
+        usernameLabel = UILabel(text: BBSUser.shared.username!, color: .white, fontSize: 18)
         headerView?.addSubview(usernameLabel!)
         usernameLabel?.snp.makeConstraints {
             make in
@@ -158,6 +162,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
         }
         
+        // TODO: 替换真数据
         signatureLabel = UILabel(text: "你还没有签名哦~", color: .white, fontSize: 16)
         headerView?.addSubview(signatureLabel!)
         signatureLabel?.snp.makeConstraints {
@@ -204,6 +209,13 @@ extension UserInfoViewController: UITableViewDataSource {
             make in
             make.top.equalTo(signatureLabel!.snp.bottom).offset(12*ratio)
             make.centerX.equalToSuperview().offset(screenSize.width/3)
+        }
+        let dayLabel = UILabel(text: "天", color: .white, fontSize: 8)
+        headerView?.addSubview(dayLabel)
+        dayLabel.snp.makeConstraints {
+            make in
+            make.bottom.equalTo(ageLabel!.snp.bottom)
+            make.left.equalTo(ageLabel!.snp.right)
         }
         
         let ageTitleLabel = UILabel(text: "站龄", color: .white, fontSize: 14)
