@@ -104,7 +104,6 @@ class PostDetailViewController: UIViewController {
     }
     
     func share() {
-        print("share!")
         let vc = UIActivityViewController(activityItems: [URL(string: "https://www.baidu.com")!], applicationActivities: [])
         present(vc, animated: true, completion: nil)
     }
