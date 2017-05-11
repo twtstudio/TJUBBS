@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		363EE57C1EC4680200A71BD5 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363EE57B1EC4680200A71BD5 /* BBSAPI.swift */; };
 		368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D36A21EBA224C002978C6 /* SetInfoViewController.swift */; };
 		36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */; };
 		36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0241EC34025006D58F8 /* BBSUser.swift */; };
@@ -70,6 +71,7 @@
 
 /* Begin PBXFileReference section */
 		1977C405936927832AD1537D /* Pods-TJUBBS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.debug.xcconfig"; sourceTree = "<group>"; };
+		363EE57B1EC4680200A71BD5 /* BBSAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSAPI.swift; sourceTree = "<group>"; };
 		368D36A21EBA224C002978C6 /* SetInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
 		36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSJarvis.swift; sourceTree = "<group>"; };
 		36B8D0241EC34025006D58F8 /* BBSUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSUser.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				36FE25C21EB625F20090E805 /* BBSBeacon.swift */,
+				363EE57B1EC4680200A71BD5 /* BBSAPI.swift */,
 				36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */,
 				36B8D0241EC34025006D58F8 /* BBSUser.swift */,
 				68E4ED741EC451650067DA35 /* BBSAPI.swift */,
