@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		363EE57C1EC4680200A71BD5 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363EE57B1EC4680200A71BD5 /* BBSAPI.swift */; };
 		368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D36A21EBA224C002978C6 /* SetInfoViewController.swift */; };
 		36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */; };
 		36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0241EC34025006D58F8 /* BBSUser.swift */; };
@@ -560,7 +559,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

@@ -7,4 +7,5 @@ target 'TJUBBS' do
   pod 'PKHUD', '~> 4.0'
   pod 'MJRefresh', '~> 3.1.12'
   pod 'WMPageController'
+  pod 'ObjectMapper'
 end
