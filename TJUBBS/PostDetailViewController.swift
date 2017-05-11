@@ -226,7 +226,6 @@ extension PostDetailViewController: UIWebViewDelegate {
 //        webView.frame = newFrame
 //        print("-------------\(newFrame.size.height)")
         webViewHeight = actualSize.height
-        print("-------------\(webViewHeight)")
         tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
 }
