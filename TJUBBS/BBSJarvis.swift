@@ -17,5 +17,5 @@ struct BBSJarvis {
     static func register(parameters: [String : String], failure: ((Error)->())? = nil, success:@escaping ([String: AnyObject])->()) {
     BBSBeacon.request(withType: .post, url: BBSAPI.register, token: BBSUser.shared.token, parameters: parameters, success: success, failure: failure)
     }
-    
+        
 }

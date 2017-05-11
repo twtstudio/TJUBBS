@@ -192,3 +192,13 @@ extension UIView {
         self.blockm?.newDataBlock?(sender)
     }
 }
+
+extension NSObject {
+//    convenience init(dictionary: [String : String]) {
+//        self.init()
+//        for key in dictionary.keys {
+//            if self.setValuesForKeys(<#T##keyedValues: [String : Any]##[String : Any]#>)
+//            self.setValue(dictionary[key], forKey: key)
+//        }
+//    }
+}
