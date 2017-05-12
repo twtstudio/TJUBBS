@@ -18,13 +18,14 @@ class InfoModifyController: UIViewController {
     var tableView: UITableView! = nil
     var items: [InputItem] = []
     var headerMsg: String? = "修改信息"
-    var customView: UIView? = nil
+    var customView: UIView?
     var customCallback: ((Any)->())?
-    var handler: ((Any)->())? = nil
+    var handler: ((Any)->())?
     var results: [String : String] = [:]
     var style: InfoModifyStyle = .bottom
-    var doneView: UIView? = nil
+    var doneView: UIView?
     var doneText = "完成"
+    var extraView: UIView?
     
     convenience init(title: String, items: [InputItem] = [], style: InfoModifyStyle, headerMsg: String? = nil, handler: ((Any)->())?) {
         self.init()
@@ -64,8 +65,17 @@ class InfoModifyController: UIViewController {
                 make.width.equalTo(screenFrame.width*(800/1080))
                 make.height.equalTo(screenFrame.height*(100/1920))
             }
+            
             button.addTarget(self, action: #selector(self.doneTapped), for: .touchUpInside)
             button.isEnabled = false
+        }
+        
+        if let extraView = extraView {
+            self.view.addSubview(extraView)
+            extraView.snp.makeConstraints { make in
+                make.centerX.equalTo(view)
+                make.bottom.equalTo(view).offset(-30)
+            }
         }
     }
 
@@ -264,7 +274,8 @@ extension InfoModifyController: UITextFieldDelegate {
 
 extension InfoModifyController: UITextViewDelegate {
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        if textView.tag < 0 {
+        let itemIndex = -(textView.tag + 1)
+        if textView.tag < 0 && textView.text == items[itemIndex].placeholder  {
             textView.textColor = UIColor.black
             textView.text = ""
         }
@@ -272,7 +283,7 @@ extension InfoModifyController: UITextViewDelegate {
     }
     
     func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-        if textView.tag < 0 {
+        if textView.tag < 0 && !textView.hasText {
             let itemIndex = -(textView.tag + 1)
             textView.textColor = UIColor(red:0.52, green:0.53, blue:0.53, alpha:1.00)
             textView.text = items[itemIndex].placeholder
@@ -281,6 +292,23 @@ extension InfoModifyController: UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
+        let index = textView.tag < 0 ? -(textView.tag + 1) : textView.tag
+        if textView.hasText {
+            // save result
+            let item = items[index]
+            results.updateValue(textView.text!, forKey: item.rawName)
+        } else {
+            let item = items[index]
+            results.removeValue(forKey: item.rawName)
+        }
+        if style == .bottom {
+            if let btn = doneView?.subviews.first as? UIButton {
+                btn.isEnabled = results.count == items.count
+            }
+        } else {
+            self.navigationItem.rightBarButtonItem?.isEnabled = results.count == items.count
+        }
+        
         textView.textColor = UIColor.black
         let count = textView.text.characters.count
         self.customCallback?(count)

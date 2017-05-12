@@ -226,7 +226,7 @@ class LoginViewController: UIViewController {
             make.right.equalTo(loginButton!.snp.right)
         }
         authenticateButton?.addTarget { _ in
-            let vc = InfoModifyController(title: "老用户认证", items: ["用户名-输入用户名-username", "姓名-输入姓名-name", "身份证号-输入身份证号-id", "备注-补充说明其他信息证明您的身份，如曾经发过的帖子名、注册时间、注册邮箱、注册时所填住址等-comment-v"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证") { result in
+            let vc = InfoModifyController(title: "老用户认证", items: ["用户名-输入用户名-username", "姓名-输入姓名-name", "身份证号-输入身份证号-id"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证") { result in
                 print(result)
                 // TODO: 逻辑判断
                 let vc =  InfoModifyController(title: "老用户认证", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "请重置密码，以同步您的个人数据") { result in
@@ -235,6 +235,20 @@ class LoginViewController: UIViewController {
                 vc.doneText = "确认"
                 self.navigationController?.pushViewController(vc, animated: true)
             }
+            
+            // 坑人的需求魔改
+            let manualView = UILabel(text: "验证遇到问题？点这里")
+            manualView.font = UIFont.systemFont(ofSize: 14)
+            manualView.addTapGestureRecognizer { _ in
+                let vc = InfoModifyController(title: "人工验证", items: ["学号-输入学号-stunum", "姓名-输入姓名-realname", "身份证号-输入身份证号-cid", "用户名-输入以前的用户名-username", "邮箱-输入邮箱-mail", "备注-补充说明其他信息证明您的身份，如曾经发过的帖子名、注册时间、注册邮箱、注册时所填住址等-comment-v"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证") { result in
+                    print(result)
+                    HUD.flash(.label("验证信息已经发送至后台管理员，验证结果将会在 1 个工作日内发送至您的邮箱，请注意查收~"), delay: 5.0)
+                }
+                vc.doneText = "验证"
+                self.navigationController?.pushViewController(vc, animated: true)
+
+            }
+            vc.extraView = manualView
             vc.doneText = "验证"
             self.navigationController?.pushViewController(vc, animated: true)
         }
