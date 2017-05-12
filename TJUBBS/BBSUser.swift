@@ -22,14 +22,43 @@ let BBSUSERSHAREDKEY = "BBSUserSharedKey"
  "c_online" : "上线次数",
  "group" : "用户组"
  */
+import ObjectMapper
 
-class BBSUser {
+class BBSUser: Mappable {
     private init() {}
     static let shared = BBSUser()
+    
     var username: String?
+    var nickname: String?
+    var realName: String?
+    var signature: String?
+    var postCount: String?
+    var unreadCount: String?
+    var points: String?
+    var level: String?
     var token: String?
+    var cOnline: String?
     var uid: Int?
     var group: Int?
+    
+    required init?(map: Map) {}
+    
+    func mapping(map: Map) {
+        username <- map["username"]
+        nickname <- map["nickname"]
+        realName <- map["realName"]
+        signature <- map["signature"]
+        postCount <- map["postCount"]
+        unreadCount <- map["unreadCount"]
+        points <- map["points"]
+        level <- map["level"]
+        token <- map["token"]
+        cOnline <- map["cOnline"]
+        uid <- map["uid"]
+        group <- map["group"]
+    }
+    
+    
     
     func save() {
         let dic: [String : Any] = ["username": username ?? "", "token": token ?? "", "uid": uid ?? -1, "group": group ?? -1]
@@ -50,10 +79,17 @@ class BBSUser {
     }
     
     func delete() {
+        //TODO: ??????  delete "BBSUser.shared."
         BBSUser.shared.username = nil
         BBSUser.shared.token = nil
         BBSUser.shared.uid = nil
         BBSUser.shared.group = nil
         UserDefaults.standard.removeObject(forKey: BBSUSERSHAREDKEY)
     }
+    
+    func getUserInfo()  {
+        BBSBeacon.request(withType: .get, url: BBSAPI.userInfo, token: token, parameters: nil, success: { dict in
+        }, failure: nil)
+    }
 }
+

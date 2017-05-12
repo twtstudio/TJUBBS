@@ -45,6 +45,7 @@
 		68B683561EC2F29100F7A0BF /* SubReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683551EC2F29100F7A0BF /* SubReplyView.swift */; };
 		68B683581EC31BE700F7A0BF /* PostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683571EC31BE700F7A0BF /* PostListViewController.swift */; };
 		68E4ED751EC451650067DA35 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E4ED741EC451650067DA35 /* BBSAPI.swift */; };
+		68E4ED771EC59D5F0067DA35 /* ForumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E4ED761EC59D5F0067DA35 /* ForumModel.swift */; };
 		68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F4614F1EBDC95700D784F4 /* TimeStampTransfer.swift */; };
 		68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F461511EBDCCE900D784F4 /* FavorateViewController.swift */; };
 		68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F461551EBE264800D784F4 /* SettingViewController.swift */; };
@@ -115,6 +116,7 @@
 		68B683551EC2F29100F7A0BF /* SubReplyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubReplyView.swift; sourceTree = "<group>"; };
 		68B683571EC31BE700F7A0BF /* PostListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostListViewController.swift; sourceTree = "<group>"; };
 		68E4ED741EC451650067DA35 /* BBSAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSAPI.swift; sourceTree = "<group>"; };
+		68E4ED761EC59D5F0067DA35 /* ForumModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumModel.swift; sourceTree = "<group>"; };
 		68F4614F1EBDC95700D784F4 /* TimeStampTransfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeStampTransfer.swift; sourceTree = "<group>"; };
 		68F461511EBDCCE900D784F4 /* FavorateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavorateViewController.swift; sourceTree = "<group>"; };
 		68F461551EBE264800D784F4 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 			children = (
 				36DA591F1EC1DD9300B56F07 /* BoardModel.swift */,
 				36DA59261EC1E1E700B56F07 /* ThreadModel.swift */,
+				68E4ED761EC59D5F0067DA35 /* ForumModel.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -588,6 +591,7 @@
 				36DA59271EC1E1E700B56F07 /* ThreadModel.swift in Sources */,
 				68B5A52D1EBB1FFB00968FFD /* UserInfoTableViewCell.swift in Sources */,
 				6826D7471EB61496000F520B /* TextInputCell.swift in Sources */,
+				68E4ED771EC59D5F0067DA35 /* ForumModel.swift in Sources */,
 				36D21F411EB7171D00677534 /* InputItem.swift in Sources */,
 				68B683491EC1F24600F7A0BF /* MessageDetailViewController.swift in Sources */,
 				6823C49B1EBC077D00FBB5C7 /* PostCell.swift in Sources */,
