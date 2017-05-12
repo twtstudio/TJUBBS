@@ -42,6 +42,10 @@ class InfoModifyController: UIViewController {
         tableView.dataSource = self
 //        tableView.allowsSelection = false
         tableView.isScrollEnabled = false
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 40
+        
         self.view.addSubview(tableView)
         // 初始化完成操作View
         if style == .rightTop || style == .custom {
@@ -83,19 +87,34 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.row]
-        let cell = TextInputCell(title: item.title, placeholder: item.placeholder)
-        // 设置textField
-        // 作为索引
-        cell.textField?.tag = indexPath.row
-        cell.textField?.isSecureTextEntry = item.isSecure
-        cell.textField?.autocorrectionType = .no
-        cell.textField?.autocapitalizationType = .none
-        cell.textField?.spellCheckingType = .no
-        cell.textField?.clearButtonMode = .whileEditing
-        cell.textField?.delegate = self
-        // 更新结果
-        cell.textField?.addTarget(self, action: #selector(self.textChange(_:)), for: .editingChanged)
-        return cell
+        if item.type == .textField {
+            let cell = TextInputCell(title: item.title, placeholder: item.placeholder)
+            // 设置textField
+            // 作为索引
+            cell.textField?.tag = indexPath.row
+            cell.textField?.isSecureTextEntry = item.isSecure
+            cell.textField?.autocorrectionType = .no
+            cell.textField?.autocapitalizationType = .none
+            cell.textField?.spellCheckingType = .no
+            cell.textField?.clearButtonMode = .whileEditing
+            cell.textField?.delegate = self
+            // 更新结果
+            cell.textField?.addTarget(self, action: #selector(self.textChange(_:)), for: .editingChanged)
+            return cell
+        } else {
+            let cell = TextInputCell(title: item.title, placeholder: item.placeholder, type: .textView)
+            // 设置textField
+            // 作为索引
+            cell.textView?.tag = -1 - indexPath.row
+            cell.textView?.isSecureTextEntry = item.isSecure
+            cell.textView?.autocorrectionType = .no
+            cell.textView?.autocapitalizationType = .none
+            cell.textView?.spellCheckingType = .no
+            cell.textView?.text = item.placeholder
+            cell.textView?.textColor = UIColor(red:0.52, green:0.53, blue:0.53, alpha:1.00)
+            cell.textView?.delegate = self
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -131,6 +150,9 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
         } else if style == .custom {
             return customView
         }
+        if customView != nil {
+            return customView
+        }
         return nil
     }
     
@@ -157,6 +179,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         if let cell = tableView.cellForRow(at: indexPath) as? TextInputCell {
             cell.textField?.becomeFirstResponder()
+            cell.textView?.becomeFirstResponder()
         }
     }
 }
@@ -194,6 +217,7 @@ extension InfoModifyController: UITextFieldDelegate {
             let nextIndex = IndexPath(row: row, section: indexPath.section)
             let cell = tableView.cellForRow(at: nextIndex) as? TextInputCell
             cell?.textField?.becomeFirstResponder()
+            cell?.textView?.becomeFirstResponder()
             return true
         }
         return false
@@ -239,8 +263,25 @@ extension InfoModifyController: UITextFieldDelegate {
 }
 
 extension InfoModifyController: UITextViewDelegate {
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        if textView.tag < 0 {
+            textView.textColor = UIColor.black
+            textView.text = ""
+        }
+        return true
+    }
+    
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        if textView.tag < 0 {
+            let itemIndex = -(textView.tag + 1)
+            textView.textColor = UIColor(red:0.52, green:0.53, blue:0.53, alpha:1.00)
+            textView.text = items[itemIndex].placeholder
+        }
+        return true
+    }
+    
     func textViewDidChange(_ textView: UITextView) {
-
+        textView.textColor = UIColor.black
         let count = textView.text.characters.count
         self.customCallback?(count)
     }
