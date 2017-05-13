@@ -99,6 +99,13 @@ class PostDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+    }
+    
+    func share() {
+        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "来BBS玩呀", URL(string: "http://169.254.178.242:8080/test.html")!], applicationActivities: [])
+        present(vc, animated: true, completion: nil)
     }
 }
 
@@ -226,7 +233,6 @@ extension PostDetailViewController: UIWebViewDelegate {
 //        webView.frame = newFrame
 //        print("-------------\(newFrame.size.height)")
         webViewHeight = actualSize.height
-        print("-------------\(webViewHeight)")
         tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
 }

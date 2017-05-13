@@ -17,6 +17,7 @@ extension UIButton {
             self.setTitleColor(color, for: .normal)
             self.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
         } else {
+            //ugly
             var spaceTitle = title
             let index = title.index(after: title.startIndex)
             spaceTitle.insert(contentsOf: "  ".characters, at: index)
@@ -30,6 +31,19 @@ extension UIButton {
         }
     }
     
+    static func confirmButton(title: String) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.setBackgroundImage(UIImage(color: .lightGray), for: .disabled)
+        button.setBackgroundImage(UIImage(color: .BBSBlue), for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        button.layer.cornerRadius = 5.0
+        button.clipsToBounds = true
+        
+        return button
+    }
+    
     convenience init(imageName: String) {
         self.init()
         self.setImage(UIImage(named: imageName), for: .normal)
@@ -38,6 +52,7 @@ extension UIButton {
 }
 
 extension UIButton {
+    //TODO: want to change "withBlock" into "_"
     func addTarget(for controlEvents: UIControlEvents = .touchUpInside, withBlock block: @escaping newDataBlock) {
         self.blockm = blockm ?? BlockContainer()
         blockm?.newDataBlock = block
@@ -97,6 +112,14 @@ extension UIColor {
 }
 
 extension UIViewController {
+    
+    func becomeKeyboardObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
     func keyboardWillShow() {
         UIView.animate(withDuration: 0.5, animations: {
             self.view.frame.origin.y = -40
@@ -112,6 +135,8 @@ extension UIViewController {
     func dismissKeyboard() {
         view.endEditing(true)
     }
+    
+
 }
 
 extension UIImage {
@@ -191,4 +216,14 @@ extension UIView {
     func tapped(sender: UITapGestureRecognizer) {
         self.blockm?.newDataBlock?(sender)
     }
+}
+
+extension NSObject {
+//    convenience init(dictionary: [String : String]) {
+//        self.init()
+//        for key in dictionary.keys {
+//            if self.setValuesForKeys(<#T##keyedValues: [String : Any]##[String : Any]#>)
+//            self.setValue(dictionary[key], forKey: key)
+//        }
+//    }
 }
