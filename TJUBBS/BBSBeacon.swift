@@ -105,4 +105,50 @@ struct BBSBeacon {
             }
         }
     }
+    
+    static func requestImage(url: String, failure: ((Error)->())? = nil, success: ((UIImage)->())?) {
+//        Alamofire.request( , method:  , parameters:  , encoding:  , headers:  )
+        var headers = HTTPHeaders()
+        headers["User-Agent"] = DeviceStatus.userAgentString()
+        guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
+            log.errorMessage("Token expired!")/
+            return
+        }
+        headers["authentication"] = String(uid) + "|" + tokenStr
+
+        Alamofire.request(url, method: .get, parameters: nil, headers: headers).responseData { response in
+            switch response.result {
+            case .success:
+                if let data = response.data, let image = UIImage(data: data) {
+                    success?(image)
+                }
+            case .failure(let error):
+                failure?(error)
+            }
+        }
+    }
+    
+    static func uploadImage(url: String, image: UIImage, failure: ((Error)->())? = nil, success: (()->())?) {
+        let data = UIImageJPEGRepresentation(image, 1.0)
+        var headers = HTTPHeaders()
+        headers["User-Agent"] = DeviceStatus.userAgentString()
+        guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
+            log.errorMessage("Token expired!")/
+           return
+        }
+        headers["authentication"] = String(uid) + "|" + tokenStr
+        Alamofire.upload(multipartFormData: { formdata in
+            formdata.append(data!, withName: "1", fileName: "avatar.jpeg", mimeType: "image/jpeg")
+        }, to: url, method: .put, headers: headers, encodingCompletion: { response in
+            switch response {
+            case .success(let upload, _, _):
+                upload.responseJSON { response in
+                    success?()
+                }
+            case .failure(let error):
+                failure?(error)
+                print(error)
+            }
+        })
+    }
 }

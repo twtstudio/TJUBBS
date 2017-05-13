@@ -34,35 +34,41 @@ struct BBSJarvis {
 //        BBSBeacon.request(withType: .get, url: BBSAPI.forum, token: nil, parameters: nil,failure: failure, success: success)
 //    }
     
-    static func getHome() {
+    static func getHome(success: (()->())?, failure: @escaping ()->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil) { dict in
             if let data = dict["data"] as? [String: AnyObject],
                 let name = data["name"],
                 let nickname = data["nickname"],
-                let real_name = data["real_name"],
+//                let real_name = data["real_name"],
                 let signature = data["signature"],
-                let post_count = data["post_count"],
-                let unread_count = data["unread_count"],
+                let post_count = data["c_post"],
+                let unread_count = data["c_unread"],
                 let points = data["points"],
                 let level = data["level"],
                 let c_online = data["c_online"],
                 let group = data["group"] {
                 BBSUser.shared.username = name as? String
                 BBSUser.shared.nickname = nickname as? String
-                BBSUser.shared.realName = real_name as? String
+//                BBSUser.shared.realName = real_name as? String
                 BBSUser.shared.signature = signature as? String
-                BBSUser.shared.postCount = post_count as? String
-                BBSUser.shared.unreadCount = unread_count as? String
-                BBSUser.shared.points = points as? String
-                BBSUser.shared.level = level as? String
-                BBSUser.shared.cOnline = c_online as? String
+                BBSUser.shared.postCount = post_count as? Int
+                BBSUser.shared.unreadCount = unread_count as? Int
+                BBSUser.shared.points = points as? Int
+                BBSUser.shared.level = level as? Int
+                BBSUser.shared.cOnline = c_online as? Int
                 BBSUser.shared.group = group as? Int
-                
+                BBSUser.save()
+            } else if let err = dict["err"] as? Int, err == 0 {
+                failure()
             }
         }
     }
     
-    static func getAvatar() {
-        
+    static func getAvatar(success:@escaping (UIImage)->(), failure: @escaping ()->()) {
+        BBSBeacon.requestImage(url: BBSAPI.avatar, success: success)
+    }
+    
+    static func setAvatar(image: UIImage, success:@escaping ()->(), failure: @escaping (Error)->()) {
+        BBSBeacon.uploadImage(url: BBSAPI.setAvatar, image: image, failure: failure, success: success)
     }
 }

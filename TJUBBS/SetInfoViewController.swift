@@ -143,8 +143,9 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
                 let detailAction = UIAlertAction(title: "查看大图", style: .default) { _ in
-                    
-                    
+                    let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar!)
+//                    self.modalPresentationStyle = .overFullScreen
+                    self.present(detailVC, animated: true, completion: nil)
                 }
                 let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
                 alertVC.addAction(pictureAction)
@@ -154,7 +155,6 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 self.present(alertVC, animated: true) {
                     print("foo")
                 }
-                // FIXME: 修改头像
             case 1:
                 // FIXME: 旧昵称palceholder
                 let vc = InfoModifyController(title: "编辑昵称", items: [" -jenny- -userid"], style: .rightTop) { result in
@@ -176,10 +176,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     make.right.equalTo(contentView).offset(-20)
                     make.height.equalTo(100)
                 }
-//                textView.layer.borderColor = UIColor.black.cgColor
-//                textView.layer.borderWidth = 1
-//                textView.layer.cornerRadius = 3
-                textView.text = "go big or go home."
+                textView.text = BBSUser.shared.signature
                 
                 // FIXME: 加载原签名
                 let label = UILabel()
@@ -221,14 +218,18 @@ extension SetInfoViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             let smallerImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: 100, height: 100))
+            BBSJarvis.setAvatar(image: smallerImage, success: {
+//                BBSUser.shared.avatar = smallerImage
+                HUD.flash(.label("头像设置成功🎉"), delay: 1.5)
+            }, failure: { _ in
+                HUD.flash(.labeledError(title: "头像上传失败👀请稍后重试", subtitle: nil), delay: 1.5)
+            })
             BBSUser.shared.avatar = smallerImage
             tableView.reloadData()
             picker.dismiss(animated: true, completion: nil)
         } else {
             HUD.flash(.labeledError(title: "选择失败，请重试", subtitle: nil), onView: self.view)
         }
-        // TODO: 上传
-
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

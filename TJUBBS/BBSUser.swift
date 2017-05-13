@@ -32,12 +32,12 @@ class BBSUser {
     var nickname: String?
     var realName: String?
     var signature: String?
-    var postCount: String?
-    var unreadCount: String?
-    var points: String?
-    var level: String?
+    var postCount: Int?
+    var unreadCount: Int?
+    var points: Int?
+    var level: Int?
     var token: String?
-    var cOnline: String?
+    var cOnline: Int?
     var uid: Int?
     var group: Int?
     var avatar: UIImage?

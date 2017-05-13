@@ -39,6 +39,10 @@ class HomepageMainController: WMPageController {
         progressColor = .yellow
         
         super.viewDidLoad()
+        BBSJarvis.getHome(success: nil, failure: {
+            self.present(UINavigationController(rootViewController: LoginViewController(para: 1)), animated: true, completion: nil)
+        })
+
     }
     
     override func viewWillAppear(_ animated: Bool) {

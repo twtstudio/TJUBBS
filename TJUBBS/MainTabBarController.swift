@@ -37,6 +37,7 @@ class MainTabBarController: UITabBarController {
         infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         setViewControllers([homepageNC, bbcNC, infoNC], animated: true)
+        
     }
     
     func createBarItem(imageName: String) -> UITabBarItem {
