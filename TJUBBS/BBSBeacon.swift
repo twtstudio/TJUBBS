@@ -21,9 +21,12 @@ let rootURL = ""
 
 struct BBSBeacon {
     //TODO: change AnyObject to Any
-    static func request(withType type: HTTPMethod, url: String, token: String?, parameters: Dictionary<String, String>?, success: ((Dictionary<String, AnyObject>)->())?, failure: ((Error)->())?) {
+    static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, AnyObject>)->())?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString()
+        if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
+            headers["authentication"] = String(uid) + "|" + tokenStr
+        }
         let para = parameters ?? [:]
         let fullURL = rootURL + url
         if type == .get || type == .post {

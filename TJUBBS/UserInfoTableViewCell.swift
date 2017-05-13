@@ -27,7 +27,9 @@ class UserInfoTableViewCell: UITableViewCell {
             make.width.height.equalTo(contentView.bounds.width*(57/1080))
         }
         
-        titleLabel = UILabel(text: title, fontSize: 18)
+//        titleLabel = UILabel(text: title, fontSize: 18)
+        titleLabel = UILabel(text: title)
+        titleLabel?.font = UIFont.flexibleFont(ofBaseSize: 15)
         contentView.addSubview(titleLabel!)
         titleLabel?.snp.makeConstraints {
             make in

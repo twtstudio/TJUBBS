@@ -16,6 +16,8 @@ enum UserInfoViewControllerType {
 class UserInfoViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
+    // Used to set header
+    let magicNumber: CGFloat = UIScreen.main.bounds.size.width > 320 ? 820.0 : 900.0
     let ratio = UIScreen.main.bounds.size.width/375.0
     var headerView: UIView?
     var headerViewBackground: UIImageView?
@@ -76,6 +78,7 @@ class UserInfoViewController: UIViewController {
         
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
+        portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像")
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
@@ -118,7 +121,7 @@ extension UserInfoViewController: UITableViewDataSource {
             return nil
         }
         
-        headerView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height*(820/1920)))
+        headerView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height*(magicNumber/1920)))
         
         headerViewBackground = UIImageView(image: UIImage(named: "封面"))
         headerViewBackground?.frame = headerView!.bounds
@@ -126,25 +129,50 @@ extension UserInfoViewController: UITableViewDataSource {
         
         let avatarBackground = UIView()
         headerView?.addSubview(avatarBackground)
-        avatarBackground.snp.makeConstraints {
-            make in
-            make.top.equalTo(headerView!).offset(64)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(screenSize.height*(240/1920)*ratio)
-        }
         avatarBackground.backgroundColor = .white
-        avatarBackground.layer.cornerRadius = screenSize.height*(240/1920)*ratio/2
         avatarBackground.clipsToBounds = true
 
-        portraitImageView = UIImageView(image: UIImage(named: "头像"))
-        avatarBackground.addSubview(portraitImageView!)
-        portraitImageView?.snp.makeConstraints {
-            make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.height.equalTo(screenSize.height*(240/1920)*ratio-8)
-        }
-        portraitImageView?.layer.cornerRadius = (screenSize.height*(240/1920)*ratio-8)/2
+        // TODO: 默认头像
+        portraitImageView = UIImageView(image: BBSUser.shared.avatar ?? UIImage(named: "头像"))
         portraitImageView?.clipsToBounds = true
+        avatarBackground.addSubview(portraitImageView!)
+
+        
+        if screenSize.width > 320 {
+            avatarBackground.snp.makeConstraints {
+                make in
+                make.top.equalTo(headerView!).offset(64)
+                make.centerX.equalToSuperview()
+                make.width.height.equalTo(screenSize.height*(240/1920)*ratio)
+            }
+            avatarBackground.layer.cornerRadius = screenSize.height*(240/1920)*ratio/2
+            
+            portraitImageView?.snp.makeConstraints {
+                make in
+                make.centerX.centerY.equalToSuperview()
+                make.width.height.equalTo(screenSize.height*(240.0/1920.0)*ratio-8)
+            }
+            portraitImageView?.layer.cornerRadius = (screenSize.height*(240.0/1920.0)*ratio-8)/2
+        } else { // small iPhone like 5S
+            avatarBackground.snp.makeConstraints {
+                make in
+                make.top.equalTo(headerView!).offset(64)
+                make.centerX.equalToSuperview()
+                make.width.height.equalTo(78)
+            }
+            avatarBackground.layer.cornerRadius = 78/2
+            
+            portraitImageView?.snp.makeConstraints {
+                make in
+                make.centerX.centerY.equalToSuperview()
+                make.width.height.equalTo(70)
+            }
+            portraitImageView?.layer.cornerRadius = 70/2
+        }
+        portraitImageView?.addTapGestureRecognizer { _ in
+            let setInfoVC = SetInfoViewController()
+            self.navigationController?.pushViewController(setInfoVC, animated: true)
+        }
         
         portraitBadgeLabel = UILabel.roundLabel(text: "一般站友", textColor: .white, backgroundColor: .BBSBadgeOrange)
         headerView?.addSubview(portraitBadgeLabel!)
@@ -251,7 +279,8 @@ extension UserInfoViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return screenSize.height*(820/1920)
+            return screenSize.height*(magicNumber/1920)
+//            return screenSize.height*(820/1920)
         }
         return 0
     }
@@ -293,8 +322,8 @@ extension UserInfoViewController: UITableViewDelegate {
         guard y > 0 else {
             return
         }
-        let ratio = screenSize.width/(screenSize.height*(820.0/1920))
-        let height = screenSize.height*(820.0/1920)+y
+        let ratio = screenSize.width/(screenSize.height*(magicNumber/1920))
+        let height = screenSize.height*(magicNumber/1920)+y
         let width = height*ratio
         let x = -(width-screenSize.width)/2.0
 

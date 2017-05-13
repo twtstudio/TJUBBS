@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
-            BBSUser.shared.load()
+            BBSUser.load()
             
             // 如果token不为空
             if let token = BBSUser.shared.token, token != "" {
@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
-            BBSUser.shared.load()
+            BBSUser.load()
             
             window.rootViewController = tabBarVC
             

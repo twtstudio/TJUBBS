@@ -34,6 +34,7 @@ class ForumListController: UIViewController {
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
+
     }
 
     override func didReceiveMemoryWarning() {

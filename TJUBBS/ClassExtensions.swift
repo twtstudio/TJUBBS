@@ -218,12 +218,17 @@ extension UIView {
     }
 }
 
-extension NSObject {
-//    convenience init(dictionary: [String : String]) {
-//        self.init()
-//        for key in dictionary.keys {
-//            if self.setValuesForKeys(<#T##keyedValues: [String : Any]##[String : Any]#>)
-//            self.setValue(dictionary[key], forKey: key)
-//        }
-//    }
+extension UIFont {
+    static func flexibleFont(ofBaseSize size: CGFloat) -> UIFont {
+        let width = UIScreen.main.bounds.width
+        var flexSize = size
+        if width <= 320 {
+            // small size
+            flexSize = size
+        } else if width >= 414 {
+            // big size
+            flexSize = size*1.2
+        }
+        return UIFont.systemFont(ofSize: flexSize)
+    }
 }

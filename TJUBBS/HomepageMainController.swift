@@ -28,11 +28,10 @@ class HomepageMainController: WMPageController {
         titleColorSelected = .white;
         titleColorNormal = .white;
         menuItemWidth = self.view.frame.size.width/2;
-        
-        
         bounces = true;
-        menuHeight = 44;
-        menuViewBottomSpace = -(self.menuHeight + 64.0);
+//        menuHeight = 44;
+        menuHeight = 35;
+        menuViewBottomSpace = -(self.menuHeight + 64.0 + 9);
     }
     
     override func viewDidLoad() {

@@ -94,7 +94,7 @@ extension SettingViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
         case IndexPath(row: 0, section: 1):
-            BBSUser.shared.delete()
+            BBSUser.delete()
             let loginVC = LoginViewController(para: 1)
             let loginNC = UINavigationController(rootViewController: loginVC)
             self.present(loginNC, animated: true, completion: nil)

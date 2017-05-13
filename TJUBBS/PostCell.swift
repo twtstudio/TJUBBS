@@ -12,9 +12,10 @@ class PostCell: UITableViewCell {
     
     let screenSize = UIScreen.main.bounds.size
     var portraitImageView = UIImageView()
-    var usernameLable = UILabel(text: "", color: .black, fontSize: 18)
+    var usernameLabel = UILabel(text: "", color: .black, fontSize: 18)
     var favorButton = UIButton(imageName: "收藏")
-    var titleLable = UILabel(text: "", fontSize: 20)
+    var titleLabel = UILabel(text: "")
+    
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
     var timeLablel = UILabel(text: "", color: .lightGray, fontSize: 16)
@@ -23,15 +24,24 @@ class PostCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.addSubview(portraitImageView)
-        contentView.addSubview(usernameLable)
+        contentView.addSubview(usernameLabel)
         contentView.addSubview(favorButton)
-        contentView.addSubview(titleLable)
+        contentView.addSubview(titleLabel)
         contentView.addSubview(detailLabel)
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
         favorButton.addTarget { button in
             print("clicked")
-            (button as? UIButton)?.setImage(UIImage(named: "已收藏"), for: .normal)
+            // TODO: 取消点赞
+            if let button = button as? UIButton {
+                if button.tag == 1 {
+                    button.setImage(UIImage(named: "收藏"), for: .normal)
+                    button.tag = 0
+                } else {
+                    button.setImage(UIImage(named: "已收藏"), for: .normal)
+                    button.tag = 1
+                }
+            }
         }
     }
     
@@ -58,8 +68,8 @@ class PostCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(80/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLable.text = username
-        usernameLable.snp.makeConstraints {
+        usernameLabel.text = username
+        usernameLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView).offset(2)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
@@ -73,18 +83,20 @@ class PostCell: UITableViewCell {
             make.width.height.equalTo(screenSize.height*(144/1920))
         }
         
-        titleLable.text = title
+        titleLabel.text = title
+        // size used to be 20
+        titleLabel.font = UIFont.flexibleFont(ofBaseSize: 16.6)
         if let label = category {
             let fooTitle = labeledTitle(label: label, content: title)
-            titleLable.attributedText = fooTitle
+            titleLabel.attributedText = fooTitle
         }
-        titleLable.snp.makeConstraints {
+        titleLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(16)
             make.right.equalToSuperview().offset(-16)
         }
-        titleLable.numberOfLines = 0
+        titleLabel.numberOfLines = 0
         
         if let text = detail {
             if detailLabel.superview == nil {
@@ -93,7 +105,7 @@ class PostCell: UITableViewCell {
             detailLabel.text = text
             detailLabel.snp.makeConstraints {
                 make in
-                make.top.equalTo(titleLable.snp.bottom).offset(8)
+                make.top.equalTo(titleLabel.snp.bottom).offset(8)
                 make.left.equalToSuperview().offset(24)
                 make.right.equalToSuperview().offset(-24)
             }
@@ -110,7 +122,7 @@ class PostCell: UITableViewCell {
             if let _ = detail {
                 make.top.equalTo(detailLabel.snp.bottom).offset(16)
             } else {
-                make.top.equalTo(titleLable.snp.bottom).offset(16)
+                make.top.equalTo(titleLabel.snp.bottom).offset(16)
             }
             make.left.equalToSuperview().offset(24)
             make.bottom.equalToSuperview().offset(-16)
@@ -133,8 +145,10 @@ extension PostCell {
         let mutableAttributedString = NSMutableAttributedString(string: fooString)
         mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.lightGray,range: NSRange(location: 0, length: label.characters.count))
         mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.black, range: NSRange(location: label.characters.count+1, length: content.characters.count))
-        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 16), range: NSRange(location: 0, length: label.characters.count))
-        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 20), range: NSRange(location: label.characters.count+1 , length: content.characters.count))
+//        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 16), range: NSRange(location: 0, length: label.characters.count))
+        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.flexibleFont(ofBaseSize: 13.3), range: NSRange(location: 0, length: label.characters.count))
+//        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 20), range: NSRange(location: label.characters.count+1 , length: content.characters.count))
+        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.flexibleFont(ofBaseSize: 16.6), range: NSRange(location: label.characters.count+1 , length: content.characters.count))
         
         return mutableAttributedString
     }
