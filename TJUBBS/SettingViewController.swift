@@ -16,7 +16,7 @@ class SettingViewController: UIViewController {
     //FIX ME: should initUI in init or viewDidLoad
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.title = "我的收藏"
+        self.title = "通用设置"
         initUI()
     }
     

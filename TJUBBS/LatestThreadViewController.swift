@@ -1,66 +1,18 @@
 //
-//  ThreadListController.swift
+//  PostListViewController.swift
 //  TJUBBS
 //
-//  Created by Halcao on 2017/5/9.
+//  Created by JinHongxu on 2017/5/10.
 //  Copyright © 2017年 twtstudio. All rights reserved.
 //
 
 import UIKit
 import ObjectMapper
-//class ThreadListController: UIViewController {
-//    var currentPage = 1
-//    var threads: [ThreadModel] = []
-//    var tableView: UITableView! = nil
-//    var listName: String = ""
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        tableView = UITableView(frame: self.view.bounds, style: .grouped)
-//        tableView?.delegate = self
-//        tableView?.dataSource = self
-//        self.title = listName
-//
-//        
-//        // 把返回换成空白
-//        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-//        self.navigationItem.backBarButtonItem = backItem
-//
-//        // Do any additional setup after loading the view.
-//    }
-//
-//    override func didReceiveMemoryWarning() {
-//        super.didReceiveMemoryWarning()
-//        // Dispose of any resources that can be recreated.
-//    }
-//    
-//}
-//
-//extension ThreadListController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        
-//    }
-//}
-//
-//extension ThreadListController: UITableViewDataSource {
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 1
-//    }
-//    
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return threads.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        return UITableViewCell()
-//    }
-//}
 
-
-
-class ThreadListController: UIViewController {
+class LatestThreadViewController: UIViewController {
     
     var tableView: UITableView?
+    var threadList: [ThreadModel] = []
 //    var dataList = [
 //        [
 //            "image": "portrait",
@@ -102,26 +54,32 @@ class ThreadListController: UIViewController {
 //            "time": "1494061223"
 //        ]
 //        ] as Array<Dictionary<String, String>>
-    var board: BoardModel?
-    var threadList: [ThreadModel] = []
     
-    convenience init(board: BoardModel?) {
-        self.init()
-        self.board = board
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
+        
         initUI()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
+        
+        BBSJarvis.getLatestThreadList {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
-                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
+                let latest = data["latest"] as? Array<Dictionary<String, Any>> {
+                for thread in latest {
+                    let fooThread = ThreadModel(JSON: thread)
+                    self.threadList.append(fooThread!)
+                }
             }
             self.tableView?.reloadData()
         }
@@ -147,7 +105,7 @@ class ThreadListController: UIViewController {
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints {
             make in
-            make.top.equalToSuperview().offset(0)
+            make.top.equalToSuperview().offset(108)
             make.left.right.bottom.equalToSuperview()
         }
         tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
@@ -158,7 +116,7 @@ class ThreadListController: UIViewController {
     }
 }
 
-extension ThreadListController: UITableViewDataSource {
+extension LatestThreadViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -188,10 +146,10 @@ extension ThreadListController: UITableViewDataSource {
     }
 }
 
-extension ThreadListController: UITableViewDelegate {
+extension LatestThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController()
+        let detailVC = PostDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

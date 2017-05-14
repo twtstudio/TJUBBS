@@ -7,15 +7,26 @@
 //
 
 import UIKit
+import ObjectMapper
 
 class BoardListController: UIViewController {
-    var forumName: String! = nil
+    
+    var forum: ForumModel?
     var tableView: UITableView?
     var boardList: [BoardModel] = []
+    var threadList: [[ThreadModel]] = []
+    
+    convenience init(forum: ForumModel) {
+        self.init()
+        //why this line cause nil forum
+        //view.backgroundColor = .white
+        self.forum = forum
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = forumName
+        view.backgroundColor = .white
+        self.title = forum?.name
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView?.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.94, alpha:1.00)
         tableView?.delegate = self
@@ -28,18 +39,87 @@ class BoardListController: UIViewController {
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
-
+        
         // Do any additional setup after loading the view.
+        BBSJarvis.getBoardList(forumID: (self.forum?.id)!, success: {
+            dict in
+//            print("dict:\(dict)")
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let boards = data["boards"] as? Array<Dictionary<String, Any>>{
+                for board in boards {
+                    let fooBoard = BoardModel(JSON: board)
+                    self.boardList.append(fooBoard!)
+                    
+                    //2 threads
+                    var fooThreadList: [ThreadModel] = []
+                    if let threads = board["threads"] as? Array<Dictionary<String, Any>> {
+                        fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
+                    }
+                    self.threadList.append(fooThreadList)
+                }
+            }
+            self.tableView?.reloadData()
+//            for board in self.boardList {
+//                BBSJarvis.getThreadList(boardID: board.id, page: 0, success: {
+//                    dict in
+//                    print("dict: \(dict)")
+//                    var fooThreadList: [ThreadModel] = []
+//                    if let data = dict["data"] as? Dictionary<String, Any>,
+//                        let threads = data["thread"] as? Array<Dictionary<String, Any>> {
+//                        print("解析啦")
+//                        for i in 0..<threads.count {
+//                            let fooThread = ThreadModel(JSON: threads[i])
+//                            fooThreadList.append(fooThread!)
+//                        }
+//                    }
+//                    print("fooThreadListCount:\(fooThreadList.count)")
+//                    self.threadList.append(fooThreadList)
+//                    //TODO: 有毒啊，商量接口获取两个
+//                    self.tableView?.reloadData()
+//               })
+//            }
+        })
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
 }
 
 extension BoardListController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let detailVC = PostDetailViewController(thread: threadList[indexPath.section][indexPath.row])
+        self.navigationController?.pushViewController(detailVC, animated: true)
+        
+    }
+}
+
+extension BoardListController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        print("boardListCount:\(boardList.count)")
+        return boardList.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // preview
+        if section >= threadList.count {
+            return 0
+        }
+        return threadList[section].count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //        return ThreadCell(type: .none, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "lksjdlakjsdlkjaslkdjlaksjdlkasjdljaslaskldka;slkd;laskd;lkas;ldk;alskd;laksdhkajshdkjahkdjaslkjdlasjdklsl")
+//        let cell = ThreadCell(type: .single, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "你不是真正的快乐 你的笑只是你穿的保护色 你决定不恨了 也决定不爱了 把你的灵魂关在永远锁上的躯壳")
+        let thread = threadList[indexPath.section][indexPath.row]
+        let cell = ThreadCell(type: .single, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: thread.content)
+        cell.imgView?.image = UIImage(named: "封面")
+        return cell
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = UITableViewCell()
         let square = UIView()
@@ -52,14 +132,14 @@ extension BoardListController: UITableViewDelegate {
             make.left.equalTo(cell.contentView).offset(9)
         }
         cell.accessoryType = .disclosureIndicator
-         //                    空格是 offset
-        cell.textLabel?.text = " " + boardList[section].boardName
+        //                    空格是 offset
+        cell.textLabel?.text = " " + boardList[section].name
         cell.textLabel?.font = UIFont.systemFont(ofSize: 16)
         cell.textLabel?.textColor = UIColor.BBSBlue
         cell.addTapGestureRecognizer { [weak self] _ in
-            let detailVC = ThreadListController()
+            let detailVC = ThreadListController(board: self?.boardList[section])
             //detailVC.listName = (self?.boardList[section].boardName)!
-            detailVC.title = (self?.boardList[section].boardName)!
+            detailVC.title = (self?.boardList[section].name)!
             self?.navigationController?.pushViewController(detailVC, animated: true)
         }
         return cell
@@ -67,30 +147,5 @@ extension BoardListController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 36
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController(para: 1)
-        self.navigationController?.pushViewController(detailVC, animated: true)
-        
-    }
-}
-
-extension BoardListController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return boardList.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // preview
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        return ThreadCell(type: .none, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "lksjdlakjsdlkjaslkdjlaksjdlkasjdljaslaskldka;slkd;laskd;lkas;ldk;alskd;laksdhkajshdkjahkdjaslkjdlasjdklsl")
-        let cell = ThreadCell(type: .single, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "你不是真正的快乐 你的笑只是你穿的保护色 你决定不恨了 也决定不爱了 把你的灵魂关在永远锁上的躯壳")
-        cell.imgView?.image = UIImage(named: "封面")
-        return cell
     }
 }

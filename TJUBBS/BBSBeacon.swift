@@ -21,9 +21,10 @@ let rootURL = ""
 
 struct BBSBeacon {
     //TODO: change AnyObject to Any
-    static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, AnyObject>)->())?) {
+    static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString()
+        headers["X-Requested-With"] = "Mobile"
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
         }
@@ -34,23 +35,26 @@ struct BBSBeacon {
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject>, dict["err"] as! Int == 0 {
+                        if let dict = data as? Dictionary<String, Any>, dict["err"] as! Int == 0 {
                             success?(dict)
                         } else {
-                            HUD.flash(.label((data as? [String: AnyObject])?["data"] as? String), delay: 1.0)
+                            HUD.flash(.label((data as? [String: Any])?["data"] as? String), delay: 1.0)
                         }
                     }
                 case .failure(let error):
                     failure?(error)
                     log.error(error)/
                     if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject> {
+                        if let dict = data as? Dictionary<String, Any> {
                             log.errorMessage(dict["data"] as? String)/
                             HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                         }
                     }
                 }
+            }.downloadProgress {_ in
+                HUD.flash(.progress)
             }
+    
         } else if type == .put {
             guard let filePath = parameters?["filePath"] else {
                 fatalError("参数里要有文件路径filePath!")
@@ -86,17 +90,17 @@ struct BBSBeacon {
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject>, dict["err"] as? Int == 0 {
+                        if let dict = data as? Dictionary<String, Any>, dict["err"] as? Int == 0 {
                             success?(dict)
                         } else {
-                            HUD.flash(.label((data as? [String: AnyObject])?["data"] as? String), delay: 1.0)
+                            HUD.flash(.label((data as? [String: Any])?["data"] as? String), delay: 1.0)
                         }
                     }
                 case .failure(let error):
                     failure?(error)
                     log.error(error)/
                     if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject> {
+                        if let dict = data as? Dictionary<String, Any> {
                             log.errorMessage(dict["data"] as? String)/
                             HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                         }
