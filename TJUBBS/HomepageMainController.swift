@@ -39,9 +39,9 @@ class HomepageMainController: WMPageController {
         progressColor = .yellow
         
         super.viewDidLoad()
-        BBSJarvis.getHome(success: nil, failure: {
-            self.present(UINavigationController(rootViewController: LoginViewController(para: 1)), animated: true, completion: nil)
-        })
+//        BBSJarvis.getHome(success: nil, failure: {
+//            self.present(UINavigationController(rootViewController: LoginViewController(para: 1)), animated: true, completion: nil)
+//        })
 
     }
     
@@ -58,7 +58,6 @@ class HomepageMainController: WMPageController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        print("不应该呀")
         self.navigationController?.navigationBar.setBackgroundImage(fooNavigationBarImage, for: .default)
         self.navigationController?.navigationBar.shadowImage = fooNavigationBarShadowImage
         

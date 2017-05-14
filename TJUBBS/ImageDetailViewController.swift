@@ -22,7 +22,9 @@ class ImageDetailViewController: UIViewController {
         super.viewDidLoad()
         scrollView = UIScrollView(frame: self.view.bounds)
         scrollView.backgroundColor = UIColor.black
-        scrollView.isUserInteractionEnabled
+        //? jhx edit: add "= true"
+        scrollView.isUserInteractionEnabled = true
+        //end edit
         scrollView.maximumZoomScale = 1.5
         scrollView.delegate = self
         imgView = UIImageView(frame: self.view.bounds)
