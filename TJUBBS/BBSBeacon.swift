@@ -115,7 +115,8 @@ struct BBSBeacon {
             return
         }
         headers["authentication"] = String(uid) + "|" + tokenStr
-
+        let defaultPolicy = Alamofire.SessionManager.default.session.configuration.requestCachePolicy
+        Alamofire.SessionManager.default.session.configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         Alamofire.request(url, method: .get, parameters: nil, headers: headers).responseData { response in
             switch response.result {
             case .success:
@@ -125,6 +126,7 @@ struct BBSBeacon {
             case .failure(let error):
                 failure?(error)
             }
+            Alamofire.SessionManager.default.session.configuration.requestCachePolicy = defaultPolicy
         }
     }
     

@@ -203,13 +203,14 @@ extension UIView {
     }
 
     
-    func addTapGestureRecognizer(block: @escaping newDataBlock) {
+    func addTapGestureRecognizer(gestureHandler: ((UITapGestureRecognizer)->(Void))? = nil, block: @escaping newDataBlock) {
         self.blockm = blockm ?? BlockContainer()
         blockm?.newDataBlock = block
         //jhx edit
         self.isUserInteractionEnabled = true
         //end edit
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.tapped(sender:)))
+        gestureHandler?(tapRecognizer)
         self.addGestureRecognizer(tapRecognizer)
     }
     
