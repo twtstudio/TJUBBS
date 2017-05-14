@@ -22,9 +22,9 @@ let BBSUSERSHAREDKEY = "BBSUserSharedKey"
  "c_online" : "上线次数",
  "group" : "用户组"
  */
-import ObjectMapper
+//import ObjectMapper
 
-class BBSUser: Mappable {
+class BBSUser {
     private init() {}
     static let shared = BBSUser()
     
@@ -32,53 +32,54 @@ class BBSUser: Mappable {
     var nickname: String?
     var realName: String?
     var signature: String?
-    var postCount: String?
-    var unreadCount: String?
-    var points: String?
-    var level: String?
+    var postCount: Int?
+    var unreadCount: Int?
+    var points: Int?
+    var level: Int?
     var token: String?
-    var cOnline: String?
+    var cOnline: Int?
     var uid: Int?
     var group: Int?
+    var avatar: UIImage?
     
-    required init?(map: Map) {}
+//    required init?(map: Map) {}
+//    
+//    func mapping(map: Map) {
+//        username <- map["username"]
+//        nickname <- map["nickname"]
+//        realName <- map["realName"]
+//        signature <- map["signature"]
+//        postCount <- map["postCount"]
+//        unreadCount <- map["unreadCount"]
+//        points <- map["points"]
+//        level <- map["level"]
+//        token <- map["token"]
+//        cOnline <- map["cOnline"]
+//        uid <- map["uid"]
+//        group <- map["group"]
+//    }
     
-    func mapping(map: Map) {
-        username <- map["username"]
-        nickname <- map["nickname"]
-        realName <- map["realName"]
-        signature <- map["signature"]
-        postCount <- map["postCount"]
-        unreadCount <- map["unreadCount"]
-        points <- map["points"]
-        level <- map["level"]
-        token <- map["token"]
-        cOnline <- map["cOnline"]
-        uid <- map["uid"]
-        group <- map["group"]
-    }
     
     
-    
-    func save() {
-        let dic: [String : Any] = ["username": username ?? "", "token": token ?? "", "uid": uid ?? -1, "group": group ?? -1]
+    static func save() {
+        let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1]
         UserDefaults.standard.set(NSDictionary(dictionary: dic), forKey: BBSUSERSHAREDKEY)
     }
     
-    func load() {
+    static func load() {
         if let dic = UserDefaults.standard.object(forKey: BBSUSERSHAREDKEY) as? NSDictionary,
             let username = dic["username"] as? String,
             let token = dic["token"] as? String,
             let uid = dic["uid"] as? Int,
             let group = dic["group"] as? Int {
-            self.username = username
-            self.uid = (uid == -1) ? nil : uid
-            self.token = (token == "") ? nil : token
-            self.group = (group == -1) ? nil : group
+            BBSUser.shared.username = username
+            BBSUser.shared.uid = (uid == -1) ? nil : uid
+            BBSUser.shared.token = (token == "") ? nil : token
+            BBSUser.shared.group = (group == -1) ? nil : group
         }
     }
     
-    func delete() {
+    static func delete() {
         //TODO: ??????  delete "BBSUser.shared."
         BBSUser.shared.username = nil
         BBSUser.shared.token = nil
@@ -87,9 +88,9 @@ class BBSUser: Mappable {
         UserDefaults.standard.removeObject(forKey: BBSUSERSHAREDKEY)
     }
     
-    func getUserInfo()  {
-        BBSBeacon.request(withType: .get, url: BBSAPI.userInfo, token: token, parameters: nil, success: { dict in
-        }, failure: nil)
-    }
+//    func getUserInfo()  {
+//        BBSBeacon.request(withType: .get, url: BBSAPI.userInfo, token: token, parameters: nil, success: { dict in
+//        }, failure: nil)
+//    }
 }
 

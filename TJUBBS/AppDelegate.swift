@@ -25,10 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
-            BBSUser.shared.load()
+            BBSUser.load()
             
             // 如果token不为空
             if let token = BBSUser.shared.token, token != "" {
+                BBSJarvis.getAvatar(success: { image in
+                    BBSUser.shared.avatar = image
+                }, failure: {})
                 let tabBarVC = MainTabBarController(para: 1)
                 tabBarVC.modalTransitionStyle = .crossDissolve
                 window.rootViewController = tabBarVC
@@ -54,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
-            BBSUser.shared.load()
+            BBSUser.load()
             
             window.rootViewController = tabBarVC
             
