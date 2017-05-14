@@ -85,4 +85,8 @@ struct BBSJarvis {
     static func getLatestThreadList(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.index, parameters: nil, success: success)
     }
+    
+    static func getThread(threadID: Int, page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, success: success)
+    }
 }

@@ -73,7 +73,7 @@ class replyCell: UITableViewCell {
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
             make.right.equalToSuperview().offset(-24)
-            if subReplyList == nil {
+            if subReplyList == nil || (subReplyList?.count)! == 0 {
                 make.bottom.equalToSuperview().offset(-8)
             }
         }

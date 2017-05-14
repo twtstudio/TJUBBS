@@ -149,7 +149,7 @@ extension LatestThreadViewController: UITableViewDataSource {
 extension LatestThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController(para: 1)
+        let detailVC = PostDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

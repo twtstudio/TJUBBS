@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import ObjectMapper
 //class ThreadListController: UIViewController {
 //    var currentPage = 1
 //    var threads: [ThreadModel] = []
@@ -102,11 +102,12 @@ class ThreadListController: UIViewController {
 //            "time": "1494061223"
 //        ]
 //        ] as Array<Dictionary<String, String>>
+    var board: BoardModel?
     var threadList: [ThreadModel] = []
     
-    convenience init(threadList: [ThreadModel]) {
+    convenience init(board: BoardModel?) {
         self.init()
-        self.threadList = threadList
+        self.board = board
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
@@ -116,6 +117,14 @@ class ThreadListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
+            }
+            self.tableView?.reloadData()
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -182,7 +191,7 @@ extension ThreadListController: UITableViewDataSource {
 extension ThreadListController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController(para: 1)
+        let detailVC = PostDetailViewController()
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

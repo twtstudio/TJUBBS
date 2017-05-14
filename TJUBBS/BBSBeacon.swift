@@ -24,7 +24,7 @@ struct BBSBeacon {
     static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString()
-        headers["X-Request-With"] = "Mobile"
+        headers["X-Requested-With"] = "Mobile"
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
         }

@@ -44,10 +44,7 @@ class ForumListController: UIViewController {
             dict in
 //            print("dict: \(dict)")
             if let data = (dict["data"] as? Array<Dictionary<String, Any>>) {
-                for forumDict in data as Array {
-                    let forum = ForumModel(JSON: forumDict)
-                    self.forumList.append(forum!)
-                }
+                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
             }
 //            print("forumListCount: \(self.forumList.count)")
 //            print("id: \(String(describing: self.forumList[0].id))")
