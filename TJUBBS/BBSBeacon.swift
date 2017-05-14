@@ -24,6 +24,7 @@ struct BBSBeacon {
     static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString()
+        headers["X-Request-With"] = "Mobile"
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
         }
@@ -50,7 +51,10 @@ struct BBSBeacon {
                         }
                     }
                 }
+            }.downloadProgress {_ in
+                HUD.flash(.progress)
             }
+    
         } else if type == .put {
             guard let filePath = parameters?["filePath"] else {
                 fatalError("参数里要有文件路径filePath!")

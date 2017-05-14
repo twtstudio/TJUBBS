@@ -31,7 +31,6 @@ class PostCell: UITableViewCell {
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
         favorButton.addTarget { button in
-            print("clicked")
             // TODO: 取消点赞
             if let button = button as? UIButton {
                 if button.tag == 1 {

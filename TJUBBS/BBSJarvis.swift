@@ -7,10 +7,10 @@
 //
 
 import UIKit
+import ObjectMapper
 
 struct BBSJarvis {
     
-    //TODO: Model things here & View things in success
     static func login(username: String, password: String, failure: ((Error)->())? = nil, success:@escaping ()->()) {
         let para: [String : String] = ["username": username, "password": password]
         BBSBeacon.request(withType: .post, url: BBSAPI.login, parameters: para) { dict in
@@ -69,8 +69,20 @@ struct BBSJarvis {
     }
     
     static func getForumList(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.forum, token: nil, parameters: nil,failure: failure, success: success)
+        BBSBeacon.request(withType: .get, url: BBSAPI.forumList, token: nil, parameters: nil, failure: failure, success: success)
     }
     
+    static func getBoardList(forumID: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.boardList(forumID: forumID), token: nil, parameters: nil, failure: failure, success: success)
+    }
     
+    static func getThreadList(boardID: Int, page: Int, type: String = "", failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        print("API:\(BBSAPI.threadList(boardID: boardID, page: page, type: type))")
+        BBSBeacon.request(withType: .get, url: BBSAPI.threadList(boardID: boardID, page: page, type: type), parameters: nil, success: success)
+    }
+
+    //TODO: cache Homepage
+    static func getLatestThreadList(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.index, parameters: nil, success: success)
+    }
 }
