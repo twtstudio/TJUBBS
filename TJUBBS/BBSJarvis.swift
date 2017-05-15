@@ -69,7 +69,9 @@ struct BBSJarvis {
         BBSBeacon.uploadImage(url: BBSAPI.setAvatar, image: image, failure: failure, success: success)
     }
     
-    static func setPersonalInfo(para: [String : String], success: ()->(), failure: ()->()) {
-        
+    static func setInfo(para: [String : String], success: @escaping ()->(), failure: @escaping (Error)->()) {
+        BBSBeacon.request(withType: .put, url: BBSAPI.home, parameters: para, failure: failure) { dict in
+            success()
+        }
     }
 }

@@ -293,14 +293,16 @@ extension InfoModifyController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         let index = textView.tag < 0 ? -(textView.tag + 1) : textView.tag
-        if textView.hasText {
-            // save result
-            let item = items[index]
-            results.updateValue(textView.text!, forKey: item.rawName)
-        } else {
-            let item = items[index]
-            results.removeValue(forKey: item.rawName)
-        }
+        if textView.tag < 0 {
+            if textView.hasText {
+                // save result
+                let item = items[index]
+                results.updateValue(textView.text!, forKey: item.rawName)
+            } else {
+                let item = items[index]
+                results.removeValue(forKey: item.rawName)
+            }
+        } 
         if style == .bottom {
             if let btn = doneView?.subviews.first as? UIButton {
                 btn.isEnabled = results.count == items.count

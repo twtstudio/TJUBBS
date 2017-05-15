@@ -34,7 +34,7 @@ struct BBSBeacon {
         }
         let para = parameters ?? [:]
         let fullURL = rootURL + url
-        if type == .get || type == .post {
+        if type == .get || type == .post || type == .put {
             Alamofire.request(fullURL, method: type, parameters: para, encoding: JSONEncoding.default, headers: headers).validate(statusCode: 200...200)
                 .responseJSON { response in
                     switch response.result {
@@ -61,11 +61,7 @@ struct BBSBeacon {
                     }
             }
         } else if type == .put {
-//            Alamofire.upload(multipartFormData: { formdata in
-////                for item in para {
-////                    let data = Data()
-////                }
-////                formdata.append(<#T##data: Data##Data#>, withName: <#T##String#>)
+//            Alamofire.request(<#T##url: URLConvertible##URLConvertible#>, method: <#T##HTTPMethod#>, parameters: <#T##Parameters?#>, encoding: <#T##ParameterEncoding#>, headers: <#T##HTTPHeaders?#>)
 //                formdata.append(data!, withName: "1", fileName: "avatar.jpeg", mimeType: "image/jpeg")
 //            }, to: url, method: .put, headers: headers, encodingCompletion: { response in
 //                switch response {
