@@ -144,9 +144,10 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
                 let detailAction = UIAlertAction(title: "查看大图", style: .default) { _ in
                     let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar!)
-//                    self.modalPresentationStyle = .overFullScreen
+                    self.modalPresentationStyle = .overFullScreen
                     self.present(detailVC, animated: true, completion: nil)
                 }
+                
                 let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
                 alertVC.addAction(pictureAction)
                 alertVC.addAction(photoAction)
