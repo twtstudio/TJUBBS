@@ -28,7 +28,7 @@ class ThreadCell: UITableViewCell {
         titleLabel.text = title
         authorLabel.text = author
         contentLabel.text = content
-        dateLabel.text = date
+        dateLabel.text = TimeStampTransfer.string(from: date, with: "yyyy-MM-dd")
         titleLabel.sizeToFit()
         authorLabel.sizeToFit()
         dateLabel.sizeToFit()

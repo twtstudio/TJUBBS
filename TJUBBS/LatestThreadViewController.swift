@@ -72,14 +72,11 @@ class LatestThreadViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        BBSJarvis.getLatestThreadList {
+        BBSJarvis.getIndex {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let latest = data["latest"] as? Array<Dictionary<String, Any>> {
-                for thread in latest {
-                    let fooThread = ThreadModel(JSON: thread)
-                    self.threadList.append(fooThread!)
-                }
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: latest) ?? []
             }
             self.tableView?.reloadData()
         }
@@ -148,7 +145,7 @@ extension LatestThreadViewController: UITableViewDataSource {
 
 extension LatestThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true) 
         let detailVC = PostDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
