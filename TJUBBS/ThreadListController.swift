@@ -117,6 +117,10 @@ class ThreadListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        // 右侧按钮
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        
         BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
@@ -156,6 +160,11 @@ class ThreadListController: UIViewController {
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
     }
+    
+    func addButtonTapped() {
+        let AddVC = AddThreadViewController()
+        self.navigationController?.pushViewController(AddVC, animated: true)
+    }
 }
 
 extension ThreadListController: UITableViewDataSource {
@@ -191,7 +200,7 @@ extension ThreadListController: UITableViewDataSource {
 extension ThreadListController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController()
+        let detailVC = PostDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

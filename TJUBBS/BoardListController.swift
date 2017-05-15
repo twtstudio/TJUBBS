@@ -40,6 +40,9 @@ class BoardListController: UIViewController {
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         
+        // 右侧按钮
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        
         // Do any additional setup after loading the view.
         BBSJarvis.getBoardList(forumID: (self.forum?.id)!, success: {
             dict in
@@ -86,6 +89,11 @@ class BoardListController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func addButtonTapped() {
+        let AddVC = AddThreadViewController()
+        self.navigationController?.pushViewController(AddVC, animated: true)
+    }
+    
 }
 
 extension BoardListController: UITableViewDelegate {
@@ -100,7 +108,7 @@ extension BoardListController: UITableViewDelegate {
 
 extension BoardListController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        print("boardListCount:\(boardList.count)")
+//        print("boardListCount:\(boardList.count)")
         return boardList.count
     }
     

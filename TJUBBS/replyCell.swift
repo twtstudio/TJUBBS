@@ -17,6 +17,7 @@ class replyCell: UITableViewCell {
     var timeLablel = UILabel(text: "", color: .lightGray)
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
+    var floorLabel = UILabel(text: "", fontSize: 14)
     var subReplyViewList: Array<SubReplyView> = []
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -27,6 +28,7 @@ class replyCell: UITableViewCell {
         contentView.addSubview(detailLabel)
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
+        contentView.addSubview(floorLabel)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -41,7 +43,7 @@ class replyCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func initUI(portraitImage: UIImage?, username: String, detail: String, replyNumber: String, time: String, subReplyList: Array<Dictionary<String, String>>?) {
+    func initUI(portraitImage: UIImage?, username: String, detail: String, floor: String, replyNumber: String, time: String, subReplyList: Array<Dictionary<String, String>>?) {
         
         portraitImageView.image = portraitImage
         portraitImageView.snp.makeConstraints {
@@ -79,10 +81,17 @@ class replyCell: UITableViewCell {
         }
         detailLabel.numberOfLines = 0
         
+        floorLabel.text = "第 \(floor) 楼"
+        floorLabel.snp.makeConstraints {
+            make in
+            make.centerY.equalTo(usernameLable)
+            make.right.equalToSuperview().offset(-16)
+        }
+        
         replyNumberLabel.text = "回复(\(replyNumber))"
         replyNumberLabel.snp.makeConstraints {
             make in
-            make.centerY.equalTo(portraitImageView)
+            make.centerY.equalTo(timeLablel)
             make.right.equalToSuperview().offset(-16)
         }
         
