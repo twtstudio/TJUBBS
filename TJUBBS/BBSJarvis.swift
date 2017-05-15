@@ -30,9 +30,6 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.register, parameters: parameters, failure: failure, success: success)
     }
     
-//    static func getForumList(failure: ((Error)->())? = nil, success: @escaping ([String: AnyObject])->()) {
-//        BBSBeacon.request(withType: .get, url: BBSAPI.forum, token: nil, parameters: nil,failure: failure, success: success)
-//    }
     
     static func getHome(success: (()->())?, failure: @escaping ()->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil) { dict in
@@ -70,5 +67,9 @@ struct BBSJarvis {
     
     static func setAvatar(image: UIImage, success:@escaping ()->(), failure: @escaping (Error)->()) {
         BBSBeacon.uploadImage(url: BBSAPI.setAvatar, image: image, failure: failure, success: success)
+    }
+    
+    static func setPersonalInfo(para: [String : String], success: ()->(), failure: ()->()) {
+        
     }
 }
