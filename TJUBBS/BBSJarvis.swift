@@ -88,6 +88,7 @@ struct BBSJarvis {
     
     static func getThread(threadID: Int, page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, success: success)
+    }
 
     static func setPersonalInfo(para: [String : String], success: ()->(), failure: ()->()) {
         
