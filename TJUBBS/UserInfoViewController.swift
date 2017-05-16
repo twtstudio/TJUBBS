@@ -40,8 +40,6 @@ class UserInfoViewController: UIViewController {
         view.backgroundColor = .white
         self.title = "个人中心"
         initUI()
-        print(screenSize)
-        print(ratio)
     }
     
     override func viewDidLoad() {

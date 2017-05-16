@@ -186,7 +186,6 @@ class LoginViewController: UIViewController {
                 return false
             }
             return true
-
         }
         registerButton?.addTarget { _ in
             // FIXME: 密码要求

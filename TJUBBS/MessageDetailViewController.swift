@@ -169,7 +169,7 @@ extension MessageDetailViewController: UITableViewDataSource {
             postView.backgroundColor = .BBSLightGray
             postView.addTapGestureRecognizer(block: { _ in
                 print("bang!!!!!")
-                let detailVC = PostDetailViewController(para: 1)
+                let detailVC = PostDetailViewController()
                 self.navigationController?.pushViewController(detailVC, animated: true)
             })
 //            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))

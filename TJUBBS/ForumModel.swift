@@ -11,11 +11,11 @@ import ObjectMapper
 
 struct ForumModel: Mappable {
     
-    var id: String?
-    var name: String?
-    var info: String?
-    var admin: String?
-    var childBoard: String?
+    var id: Int = 0
+    var name: String = ""
+    var info: String = ""
+    var admin: String = ""
+    var boardCount: Int = 0
     
     init?(map: Map) {}
     
@@ -24,6 +24,6 @@ struct ForumModel: Mappable {
         name <- map["name"]
         info <- map["info"]
         admin <- map["admin"]
-        childBoard <- map["c_board"]
+        boardCount <- map["c_board"]
     }
 }
