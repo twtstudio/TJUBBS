@@ -106,4 +106,5 @@ struct BBSJarvis {
         print(parameters)
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
     }
+    
 }

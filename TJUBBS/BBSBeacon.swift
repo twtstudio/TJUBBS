@@ -22,28 +22,27 @@ enum BBSError: String, Error {
     case custom = ""
 }
 
-let rootURL = ""
 
 struct BBSBeacon {
     //TODO: change AnyObject to Any
     static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
-        headers["User-Agent"] = DeviceStatus.userAgentString()
-        headers["X-Requested-With"] = "Mobile"
+//        headers["User-Agent"] = DeviceStatus.userAgentString()
+//        headers["X-Requested-With"] = "Mobile"
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
         }
         let para = parameters ?? [:]
-        let fullURL = rootURL + url
-        if type == .get || type == .post {
-            Alamofire.request(fullURL, method: type, parameters: para, encoding: JSONEncoding.default, headers: headers).validate(statusCode: 200...200).responseJSON { response in
+//        let fullURL = rootURL + url
+        if type == .get || type == .post || type == .put {
+            Alamofire.request(url, method: type, parameters: para, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {
                         if let dict = data as? Dictionary<String, AnyObject> {
                             if let err = dict["err"] as? Int, err == 0 {
                                 success?(dict)
-                            } else  {
+                            } else {
                                 HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                                 failure?(BBSError.custom)
                             }
@@ -66,7 +65,7 @@ struct BBSBeacon {
         } else if type == .put {
             //
         } else if type == .delete {
-            Alamofire.request(fullURL, method: .delete, parameters: para, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+            Alamofire.request(url, method: .delete, parameters: para, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {

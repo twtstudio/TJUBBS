@@ -135,6 +135,7 @@ extension MessageDetailViewController: UITableViewDataSource {
         case 0:
             let cell = MessageCell()
             cell.initUI(portraitImage: UIImage(named: data["portrait"]!), username: "\(data["username"]!)[\(data["label"]!)]", time: data["time"]!, detail: data["sign"]!)
+            // FIXME: 头像
             cell.timeLabel.isHidden = true
             return cell
         case 1:

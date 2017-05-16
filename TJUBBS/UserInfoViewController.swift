@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 enum UserInfoViewControllerType {
     case myself
@@ -132,7 +133,14 @@ extension UserInfoViewController: UITableViewDataSource {
         avatarBackground.clipsToBounds = true
 
         // TODO: 默认头像
-        portraitImageView = UIImageView(image: BBSUser.shared.avatar ?? UIImage(named: "头像"))
+        portraitImageView = UIImageView()
+        let url = URL(string: BBSAPI.avatar)
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY-MM-dd"
+        // 日期作为key 每日更新
+        let cacheKey = formatter.string(from: date)
+        portraitImageView!.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey))
         portraitImageView?.clipsToBounds = true
         avatarBackground.addSubview(portraitImageView!)
 

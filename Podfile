@@ -8,4 +8,5 @@ target 'TJUBBS' do
   pod 'MJRefresh', '~> 3.1.12'
   pod 'WMPageController'
   pod 'ObjectMapper'
+  pod 'Kingfisher'
 end

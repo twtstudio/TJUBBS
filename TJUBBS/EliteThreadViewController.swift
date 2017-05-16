@@ -8,6 +8,7 @@
 
 import UIKit
 import ObjectMapper
+import Kingfisher
 
 class EliteThreadViewController: UIViewController {
     
@@ -128,8 +129,9 @@ extension EliteThreadViewController: UITableViewDataSource {
         let data = threadList[indexPath.row]
         //        print(data["username"]!)
         let portraitImage = UIImage(named: "头像")
-        cell.initUI(portraitImage: portraitImage, username: data.authorName, category: data.category, favor: false, title: data.title, detail: data.content, replyNumber: String(data.replyNumber), time: String(data.createTime))
-        
+        cell.initUI(portraitImage: nil, username: data.authorName, category: data.category, favor: false, title: data.title, detail: data.content, replyNumber: String(data.replyNumber), time: String(data.createTime))
+        let url = URL(string: BBSAPI.avatar(uid: data.authorID))
+        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(data.authorID)"), placeholder: portraitImage)
         return cell
     }
     

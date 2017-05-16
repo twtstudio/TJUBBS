@@ -213,7 +213,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 return
             }
         case 1:
-            let setPasswordVC = InfoModifyController(title: "修改密码", items: ["旧密码-请输入旧密码-oldpass-s", "新密码-请输入新密码-newpass-s", "确认密码-请输入新密码-repass-s"], style: .rightTop, handler: nil)
+            let setPasswordVC = InfoModifyController(title: "修改密码", items: ["旧密码-请输入旧密码-old_password-s", "新密码-请输入新密码-password-s", "确认密码-请输入新密码-repass-s"], style: .rightTop, handler: nil)
             let check: ([String : String])->(Bool) = { result in
                 guard result["repass"] == result["password"] else {
                     HUD.flash(.label("两次密码不符！请重新输入👀"), delay: 1.2)
@@ -222,27 +222,24 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 return true
             }
             setPasswordVC.handler = { [weak setPasswordVC] result in
-                if let result = result as? [String : String] {
+                if let result = result as? [String : String]{
                     if check(result) == true {
                         var para = result
-                        BBSJarvis.register(parameters: para) { _ in
-                            HUD.flash(.label("注册成功！🎉"), delay: 1.0)
-                            BBSUser.shared.username = result["username"]
-                            let _ = self.navigationController?.popViewController(animated: true)
-                        }
+                        para.removeValue(forKey: "repass")
+                        BBSJarvis.setInfo(para: para, success: {
+                            HUD.flash(.label("修改成功🎉请重新登录"), delay: 1.0)
+                            BBSUser.delete()
+                            let _ = self.navigationController?.popToRootViewController(animated: false)
+                            let loginVC = LoginViewController(para: 1)
+                            let loginNC = UINavigationController(rootViewController: loginVC)
+                            self.present(loginNC, animated: true, completion: nil)
+                        }, failure: { _ in
+                            //                        HUD.flash(.labeledError(title: "修改失败...请稍后再试", subtitle: nil), delay: 1.0)
+                        })
                     }
                 }
-
-                
-                if let result = result as? [String : String], let pass = result["newpass"] {
-                    let para = ["password": pass]
-                    BBSJarvis.setInfo(para: para, success: {
-                        HUD.flash(.label("修改成功🎉"), delay: 1.0)
-                    }, failure: { _ in
-//                        HUD.flash(.labeledError(title: "修改失败...请稍后再试", subtitle: nil), delay: 1.0)
-                    })
-                }
                 let _ = setPasswordVC?.navigationController?.popViewController(animated: true)
+
             }
             self.navigationController?.pushViewController(setPasswordVC, animated: true)
         default:

@@ -98,6 +98,7 @@ extension MessageViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell") as! MessageCell
         let data = dataList[indexPath.row]
+        // FIXME: 头像
         cell.initUI(portraitImage: UIImage(named: data["portrait"]!), username: "\(data["username"]!)[\(data["label"]!)]", time: data["time"]!, detail: data["detail"]!)
         return cell
     }
