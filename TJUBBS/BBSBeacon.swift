@@ -37,6 +37,7 @@ struct BBSBeacon {
         let fullURL = rootURL + url
         if type == .get || type == .post {
             Alamofire.request(fullURL, method: type, parameters: para, encoding: JSONEncoding.default, headers: headers).validate(statusCode: 200...200).responseJSON { response in
+                HUD.hide(afterDelay: 0.5)
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {
@@ -60,7 +61,7 @@ struct BBSBeacon {
                     log.error(error)/
                 }
             }.downloadProgress {_ in
-                HUD.flash(.progress)
+                HUD.show(.rotatingImage(UIImage(named: "progress")))
             }
             
         } else if type == .put {

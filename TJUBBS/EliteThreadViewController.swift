@@ -70,14 +70,15 @@ class EliteThreadViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        print("I'm Elite")
+//        print("I'm Elite")
         BBSJarvis.getIndex {
             dict in
+            print("dict: \(dict)")
             if let data = dict["data"] as? Dictionary<String, Any>,
-                let latest = data["hot"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: latest) ?? []
+                let hot = data["hot"] as? Array<Dictionary<String, Any>> {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) ?? []
             }
-            print(self.threadList)
+            print("threadlist: \(self.threadList)")
             self.tableView?.reloadData()
         }
     }

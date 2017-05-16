@@ -9,7 +9,7 @@
 
 import UIKit
 
-class replyCell: UITableViewCell {
+class ReplyCell: UITableViewCell {
     
     let screenSize = UIScreen.main.bounds.size
     var portraitImageView = UIImageView()
@@ -69,7 +69,9 @@ class replyCell: UITableViewCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        detailLabel.text = detail
+        print("detail: \(detail)")
+        print("clearBBcode: \(String.clearBBCode(string: detail))")
+        detailLabel.text = String.clearBBCode(string: detail)
         detailLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)

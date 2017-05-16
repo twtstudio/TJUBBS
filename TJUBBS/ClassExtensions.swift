@@ -233,3 +233,12 @@ extension UIFont {
         return UIFont.systemFont(ofSize: flexSize)
     }
 }
+
+extension String {
+    static func clearBBCode(string: String) -> String {
+        let pattern = "[.*]"
+        let regular = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+        regular.replaceMatches(in: string as! NSMutableString, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: string.characters.count), withTemplate: "")
+        return string
+    }
+}

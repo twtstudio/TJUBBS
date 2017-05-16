@@ -19,6 +19,7 @@ struct PostModel: Mappable{
     var floor: Int = 0
     var createTime: Int = 0
     var modifyTime: Int = 0
+    var replyNumber: Int = 0
     
     init?(map: Map) {}
     
@@ -28,7 +29,9 @@ struct PostModel: Mappable{
         authorName <- map["author_name"]
         authorNickname <- map["author_nickname"]
         content <- map["content"]
+        floor <- map["floor"]
         createTime <- map["t_create"]
         modifyTime <- map["t_modify"]
+        replyNumber <- map["replyNumber"]
     }
 }

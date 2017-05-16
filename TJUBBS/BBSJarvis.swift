@@ -103,4 +103,12 @@ struct BBSJarvis {
         print(parameters)
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
     }
+    
+    static func reply(threadID: Int, content: String, toID: Int? = nil, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        var parameters = ["content": content]
+        if let id = toID {
+            parameters["reply"] = String(id)
+        }
+        BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: success)
+    }
 }
