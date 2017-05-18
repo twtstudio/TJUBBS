@@ -140,7 +140,11 @@ extension UserInfoViewController: UITableViewDataSource {
         formatter.dateFormat = "YYYY-MM-dd"
         // 日期作为key 每日更新
         let cacheKey = formatter.string(from: date)
-        portraitImageView!.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey))
+        if let url = url {
+            portraitImageView!.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey)) { image, error, cacheType, imageURL in
+                BBSUser.shared.avatar = image
+            }
+        }
         portraitImageView?.clipsToBounds = true
         avatarBackground.addSubview(portraitImageView!)
 
