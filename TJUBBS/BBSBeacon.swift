@@ -35,30 +35,59 @@ struct BBSBeacon {
         // the next line absofuckinglutely sucks
 //         let para = parameters ?? [:]
         if type == .get || type == .post || type == .put {
-            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseString { response in
                 switch response.result {
                 case .success:
-                    if let data = response.result.value, let dict = data as? Dictionary<String, AnyObject> {
-                        if let err = dict["err"] as? Int, err == 0 {
-                            success?(dict)
-                        } else {
-                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
-                            failure?(BBSError.custom)
+                    if let data = response.data {
+                        do {
+                            let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                            if let dict = json as? Dictionary<String, AnyObject> {
+                                if let err = dict["err"] as? Int, err == 0 {
+                                    success?(dict)
+                                } else {
+                                    HUD.flash(.label(dict["data"] as? String), delay: 1.0)
+                                    failure?(BBSError.custom)
+                                }
+                            }
+                        } catch let error {
+                            let errMsg = String(data: response.data!, encoding: .utf8)
+                            HUD.flash(.labeledError(title: errMsg, subtitle: nil), delay: 1.2)
+                            failure?(error)
+                            log.error(error)/
                         }
                     }
                 case .failure(let error):
-                    if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject> {
-                            log.errorMessage(dict["data"] as? String)/
-                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
-                        }
-                    }
                     failure?(error)
                     log.error(error)/
                 }
-//            }.downloadProgress {_ in
-//                HUD.flash(.progress)
+                //            }.downloadProgress {_ in
+                //                HUD.flash(.progress)
             }
+
+//            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+//                switch response.result {
+//                case .success:
+//                    if let data = response.result.value, let dict = data as? Dictionary<String, AnyObject> {
+//                        if let err = dict["err"] as? Int, err == 0 {
+//                            success?(dict)
+//                        } else {
+//                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
+//                            failure?(BBSError.custom)
+//                        }
+//                    }
+//                case .failure(let error):
+//                    if let data = response.result.value  {
+//                        if let dict = data as? Dictionary<String, AnyObject> {
+//                            log.errorMessage(dict["data"] as? String)/
+//                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
+//                        }
+//                    }
+//                    failure?(error)
+//                    log.error(error)/
+//                }
+////            }.downloadProgress {_ in
+////                HUD.flash(.progress)
+//            }
             
         } else if type == .put {
             //

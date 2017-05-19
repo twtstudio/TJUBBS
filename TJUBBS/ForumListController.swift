@@ -17,7 +17,7 @@ class ForumListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+//        view.backgroundColor = .white
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let height = (self.view.bounds.height - 20 - (self.navigationController?.navigationBar.bounds.height)! - (self.tabBarController?.tabBar.bounds.height)!)/5.0

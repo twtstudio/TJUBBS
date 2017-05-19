@@ -10,6 +10,7 @@ import UIKit
 import ObjectMapper
 import MJRefresh
 import Kingfisher
+import PKHUD
 
 class ThreadListController: UIViewController {
     
@@ -33,16 +34,6 @@ class ThreadListController: UIViewController {
         
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        
-//        BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
-//            dict in
-//            if let data = dict["data"] as? Dictionary<String, Any>,
-//                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-//                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
-//            }
-//            self.tableView?.reloadData()
-//        }
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -82,6 +73,7 @@ class ThreadListController: UIViewController {
         
         self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView?.mj_footer.isAutomaticallyHidden = true
         self.tableView?.mj_header.beginRefreshing()
     }
     
@@ -154,7 +146,12 @@ extension ThreadListController {
     
     func load() {
         self.curPage += 1
-        BBSJarvis.getThreadList(boardID: board!.id, page: curPage) {
+        BBSJarvis.getThreadList(boardID: board!.id, page: curPage, failure: { error in
+            HUD.flash(.labeledError(title: "网络错误...", subtitle: nil), onView: self.view, delay: 1.2, completion: nil)
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let threads = data["thread"] as? Array<Dictionary<String, Any>> {
