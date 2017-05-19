@@ -44,7 +44,7 @@ struct BBSJarvis {
                 let c_online = data["c_online"],
                 let group = data["group"] {
                 BBSUser.shared.username = name as? String
-                BBSUser.shared.nickname = nickname as? String
+                BBSUser.shared.nickname = (nickname as? String) ?? (name as? String)
                 //                BBSUser.shared.realName = real_name as? String
                 BBSUser.shared.signature = signature as? String
                 BBSUser.shared.postCount = post_count as? Int

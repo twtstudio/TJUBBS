@@ -131,7 +131,8 @@ extension LatestThreadViewController: UITableViewDataSource {
         let portraitImage = UIImage(named: "头像")
         cell.initUI(portraitImage: nil, username: data.authorName, category: data.category, favor: false, title: data.title, detail: data.content, replyNumber: String(data.replyNumber), time: String(data.createTime))
         let url = URL(string: BBSAPI.avatar(uid: data.authorID))
-        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(data.authorID)"), placeholder: portraitImage)
+        let cacheKey = "\(data.authorID)" + Date.today
+        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         return cell
     }
     

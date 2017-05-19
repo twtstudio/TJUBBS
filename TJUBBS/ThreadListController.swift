@@ -9,6 +9,7 @@
 import UIKit
 import ObjectMapper
 import MJRefresh
+import Kingfisher
 
 class ThreadListController: UIViewController {
     
@@ -74,6 +75,11 @@ class ThreadListController: UIViewController {
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
         
+        // 把返回换成空白
+        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backItem
+
+        
         self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         self.tableView?.mj_header.beginRefreshing()
@@ -101,7 +107,10 @@ extension ThreadListController: UITableViewDataSource {
         //        print(data["username"]!)
         let portraitImage = UIImage(named: "头像")
         cell.initUI(portraitImage: portraitImage, username: data.authorName, category: data.category, favor: false, title: data.title, detail: data.content, replyNumber: String(data.replyNumber), time: String(data.createTime))
-        
+        let url = URL(string: BBSAPI.avatar(uid: data.authorID))
+        let cacheKey = "\(data.authorID)" + Date.today
+        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+
         return cell
     }
     
@@ -137,7 +146,9 @@ extension ThreadListController {
                 self.curPage = 0
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? self.threadList
             }
-            self.tableView?.reloadData()
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
         }
     }
     
@@ -147,8 +158,8 @@ extension ThreadListController {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-                if (self.tableView?.mj_header.isRefreshing())! {
-                    self.tableView?.mj_header.endRefreshing()
+                if (self.tableView?.mj_footer.isRefreshing())! {
+                    self.tableView?.mj_footer.endRefreshing()
                 }
                 let newList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
                 if newList.count == 0 {
@@ -156,7 +167,9 @@ extension ThreadListController {
                 }
                 self.threadList += newList
             }
-            self.tableView?.reloadData()
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
         }
     }
 }

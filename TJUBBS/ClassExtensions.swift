@@ -233,3 +233,13 @@ extension UIFont {
         return UIFont.systemFont(ofSize: flexSize)
     }
 }
+
+extension Date {
+    static var today: String {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY-MM-dd"
+        let today = formatter.string(from: date)
+        return today
+    }
+}

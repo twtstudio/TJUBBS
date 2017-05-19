@@ -8,6 +8,7 @@
 
 import UIKit
 import PKHUD
+import Kingfisher
 
 class SetInfoViewController: UIViewController {
     var tableView: UITableView! = nil
@@ -251,9 +252,12 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
 extension SetInfoViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
-            let smallerImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: 100, height: 100))
+            let smallerImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: 200, height: 200))
             BBSJarvis.setAvatar(image: smallerImage, success: {
                 BBSUser.shared.avatar = smallerImage
+                let cacheKey = "\(BBSUser.shared.uid!)" + Date.today
+                ImageCache.default.removeImage(forKey: cacheKey)
+                self.tableView.reloadData()
                 HUD.flash(.label("头像设置成功🎉"), delay: 1.5)
             }, failure: { _ in
 //                HUD.flash(.labeledError(title: "头像上传失败👀请稍后重试", subtitle: nil), delay: 1.5)

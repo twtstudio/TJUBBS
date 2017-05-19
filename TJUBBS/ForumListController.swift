@@ -49,7 +49,9 @@ class ForumListController: UIViewController {
             }
 //            print("forumListCount: \(self.forumList.count)")
 //            print("id: \(String(describing: self.forumList[0].id))")
-            self.collectionView?.reloadData()
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
+            }
         })
     }
 

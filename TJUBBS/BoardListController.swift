@@ -49,7 +49,9 @@ class BoardListController: UIViewController {
                     self.threadList.append(fooThreadList)
                 }
             }
-            self.tableView?.reloadData()
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
             //            for board in self.boardList {
             //                BBSJarvis.getThreadList(boardID: board.id, page: 0, success: {
             //                    dict in

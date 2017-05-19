@@ -22,7 +22,8 @@ class MessageDetailViewController: UIViewController {
         "postTitle": "这个时候我就念两句诗",
         "postAuthor": "不可描述",
         "authorPortrait": "头像",
-        "time": "1493165223"
+        "time": "1493165223",
+        "authorID": "21148"
     ]
     var replyView: UIView?
     var replyTextField: UITextField?
@@ -135,7 +136,10 @@ extension MessageDetailViewController: UITableViewDataSource {
         case 0:
             let cell = MessageCell()
             cell.initUI(portraitImage: UIImage(named: data["portrait"]!), username: "\(data["username"]!)[\(data["label"]!)]", time: data["time"]!, detail: data["sign"]!)
-            // FIXME: 头像
+//            let url = URL(string: BBSAPI.avatar(uid: data.authorID))
+//            let cacheKey = "\(data["sign"]!)" + Date.today
+//            cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+
             cell.timeLabel.isHidden = true
             return cell
         case 1:

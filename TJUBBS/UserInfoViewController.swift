@@ -135,11 +135,7 @@ extension UserInfoViewController: UITableViewDataSource {
         // TODO: 默认头像
         portraitImageView = UIImageView()
         let url = URL(string: BBSAPI.avatar)
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "YYYY-MM-dd"
-        // 日期作为key 每日更新
-        let cacheKey = formatter.string(from: date)
+        let cacheKey = "\(BBSUser.shared.uid!)" + Date.today
         if let url = url {
             portraitImageView!.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey)) { image, error, cacheType, imageURL in
                 BBSUser.shared.avatar = image

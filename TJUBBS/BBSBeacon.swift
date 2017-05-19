@@ -27,25 +27,23 @@ struct BBSBeacon {
     //TODO: change AnyObject to Any
     static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
-//        headers["User-Agent"] = DeviceStatus.userAgentString()
-//        headers["X-Requested-With"] = "Mobile"
+        headers["User-Agent"] = DeviceStatus.userAgentString
+        headers["X-Requested-With"] = "Mobile"
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
         }
-        let para = parameters ?? [:]
-//        let fullURL = rootURL + url
+        // the next line absofuckinglutely sucks
+//         let para = parameters ?? [:]
         if type == .get || type == .post || type == .put {
-            Alamofire.request(url, method: type, parameters: para, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
                 switch response.result {
                 case .success:
-                    if let data = response.result.value  {
-                        if let dict = data as? Dictionary<String, AnyObject> {
-                            if let err = dict["err"] as? Int, err == 0 {
-                                success?(dict)
-                            } else {
-                                HUD.flash(.label(dict["data"] as? String), delay: 1.0)
-                                failure?(BBSError.custom)
-                            }
+                    if let data = response.result.value, let dict = data as? Dictionary<String, AnyObject> {
+                        if let err = dict["err"] as? Int, err == 0 {
+                            success?(dict)
+                        } else {
+                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
+                            failure?(BBSError.custom)
                         }
                     }
                 case .failure(let error):
@@ -58,14 +56,14 @@ struct BBSBeacon {
                     failure?(error)
                     log.error(error)/
                 }
-            }.downloadProgress {_ in
-                HUD.flash(.progress)
+//            }.downloadProgress {_ in
+//                HUD.flash(.progress)
             }
             
         } else if type == .put {
             //
         } else if type == .delete {
-            Alamofire.request(url, method: .delete, parameters: para, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
+            Alamofire.request(url, method: .delete, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
                 switch response.result {
                 case .success:
                     if let data = response.result.value  {
@@ -92,14 +90,14 @@ struct BBSBeacon {
     static func requestImage(url: String, failure: ((Error)->())? = nil, success: ((UIImage)->())?) {
         //        Alamofire.request( , method:  , parameters:  , encoding:  , headers:  )
         var headers = HTTPHeaders()
-        headers["User-Agent"] = DeviceStatus.userAgentString()
+        headers["User-Agent"] = DeviceStatus.userAgentString
         guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
             log.errorMessage("Token expired!")/
             return
         }
         headers["authentication"] = String(uid) + "|" + tokenStr
-        let defaultPolicy = Alamofire.SessionManager.default.session.configuration.requestCachePolicy
-        Alamofire.SessionManager.default.session.configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+//        let defaultPolicy = Alamofire.SessionManager.default.session.configuration.requestCachePolicy
+//        Alamofire.SessionManager.default.session.configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         Alamofire.request(url, method: .get, parameters: nil, headers: headers).responseData { response in
             switch response.result {
             case .success:
@@ -109,14 +107,14 @@ struct BBSBeacon {
             case .failure(let error):
                 failure?(error)
             }
-            Alamofire.SessionManager.default.session.configuration.requestCachePolicy = defaultPolicy
+//            Alamofire.SessionManager.default.session.configuration.requestCachePolicy = defaultPolicy
         }
     }
     
     static func uploadImage(url: String, image: UIImage, failure: ((Error)->())? = nil, success: (()->())?) {
         let data = UIImageJPEGRepresentation(image, 1.0)
         var headers = HTTPHeaders()
-        headers["User-Agent"] = DeviceStatus.userAgentString()
+        headers["User-Agent"] = DeviceStatus.userAgentString
         guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
             log.errorMessage("Token expired!")/
             return
