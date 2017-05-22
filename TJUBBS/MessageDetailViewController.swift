@@ -13,18 +13,19 @@ class MessageDetailViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
-    let data = [
-        "portrait": "头像2",
-        "sign": "飘飘何所似，天地一沙鸥",
-        "username": "柳永",
-        "label": "陌生人",
-        "detail": "评论了你的帖子:\n寒蝉凄切，对长亭晚，骤雨初歇。都门帐饮无绪，留恋处，兰舟催发。执手相看泪眼，竟无语凝噎。念去去，千里烟波，暮霭沉沉楚天阔。多情自古伤离别，更那堪，冷落清秋节！今宵酒醒何处？杨柳岸，晓风残月。此去经年，应是良辰好景虚设。便纵有千种风情，更与何人说？",
-        "postTitle": "这个时候我就念两句诗",
-        "postAuthor": "不可描述",
-        "authorPortrait": "头像",
-        "time": "1493165223",
-        "authorID": "21148"
-    ]
+    var model: MessageModel! = nil
+//    let data = [
+//        "portrait": "头像2",
+//        "sign": "飘飘何所似，天地一沙鸥",
+//        "username": "柳永",
+//        "label": "陌生人",
+//        "detail": "评论了你的帖子:\n寒蝉凄切，对长亭晚，骤雨初歇。都门帐饮无绪，留恋处，兰舟催发。执手相看泪眼，竟无语凝噎。念去去，千里烟波，暮霭沉沉楚天阔。多情自古伤离别，更那堪，冷落清秋节！今宵酒醒何处？杨柳岸，晓风残月。此去经年，应是良辰好景虚设。便纵有千种风情，更与何人说？",
+//        "postTitle": "这个时候我就念两句诗",
+//        "postAuthor": "不可描述",
+//        "authorPortrait": "头像",
+//        "time": "1493165223",
+//        "authorID": "21148"
+//    ]
     var replyView: UIView?
     var replyTextField: UITextField?
     var replyButton: UIButton?
@@ -135,10 +136,12 @@ extension MessageDetailViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell = MessageCell()
-            cell.initUI(portraitImage: UIImage(named: data["portrait"]!), username: "\(data["username"]!)[\(data["label"]!)]", time: data["time"]!, detail: data["sign"]!)
-//            let url = URL(string: BBSAPI.avatar(uid: data.authorID))
-//            let cacheKey = "\(data["sign"]!)" + Date.today
-//            cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+//            cell.initUI(portraitImage: UIImage(named: data["portrait"]!), username: "\(data["username"]!)[\(data["label"]!)]", time: data["time"]!, detail: data["sign"]!)
+            cell.initUI(portraitImage: nil, username: model.authorName!, time: String(model.t_create!), detail: "")
+            let portraitImage = UIImage(named: "头像")
+            let url = URL(string: BBSAPI.avatar(uid: model.authorID))
+            let cacheKey = "\(model?.authorId ?? 0000)" + Date.today
+            cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
 
             cell.timeLabel.isHidden = true
             return cell
@@ -199,7 +202,7 @@ extension MessageDetailViewController: UITableViewDataSource {
                 make.left.equalTo(authorPortraitImageView.snp.right).offset(8)
             }
             
-            let authorLabel = UILabel(text: "作者:\(data["postAuthor"]!)", color: .darkGray, fontSize: 14)
+            let authorLabel = UILabel(text: "作者: model.a", color: .darkGray, fontSize: 14)
             postView.addSubview(authorLabel)
             authorLabel.snp.makeConstraints {
                 make in
@@ -208,7 +211,7 @@ extension MessageDetailViewController: UITableViewDataSource {
                 make.right.equalToSuperview().offset(-16)
             }
             
-            let timeString = TimeStampTransfer.string(from: data["time"]!, with: "MM-dd")
+            let timeString = TimeStampTransfer.string(from: model?.t_create, with: "MM-dd")
             let timeLabel = UILabel(text: timeString, color: .lightGray)
             cell.contentView.addSubview(timeLabel)
             timeLabel.snp.makeConstraints {

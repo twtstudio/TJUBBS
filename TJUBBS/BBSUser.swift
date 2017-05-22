@@ -33,6 +33,7 @@ class BBSUser {
     var realName: String?
     var signature: String?
     var postCount: Int?
+    var threadCount: Int?
     var unreadCount: Int?
     var points: Int?
     var level: Int?
@@ -41,6 +42,7 @@ class BBSUser {
     var uid: Int?
     var group: Int?
     var avatar: UIImage?
+    var tCreate: Int?
     
 //    required init?(map: Map) {}
 //    

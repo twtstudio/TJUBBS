@@ -18,4 +18,11 @@ struct TimeStampTransfer {
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC+8")
         return dateFormatter.string(from: timeStamp as Date)
     }
+    
+    static func days(since timeStamp: Int) -> String {
+        let date = Date(timeIntervalSinceReferenceDate: Double(timeStamp))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd"
+        return dateFormatter.string(from: date)
+    }
 }

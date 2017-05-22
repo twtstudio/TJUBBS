@@ -45,7 +45,10 @@ class UserInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        BBSJarvis.getHome(success: {
+            self.tableView?.reloadData()
+        }, failure: {})
+
         // 导航栏返回按钮文字为空
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
@@ -107,7 +110,7 @@ extension UserInfoViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? 5 : 0)
+        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? (BBSUser.shared.unreadCount ?? 0) : 0)
         return cell
     }
     
@@ -207,7 +210,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
         }
         
-        postNumberLabel = UILabel(text: "\(BBSUser.shared.postCount ?? 0)", color: .white, fontSize: 20)
+        postNumberLabel = UILabel(text: "\(BBSUser.shared.threadCount ?? 0)", color: .white, fontSize: 20)
         headerView?.addSubview(postNumberLabel!)
         postNumberLabel?.snp.makeConstraints {
             make in
@@ -239,7 +242,9 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalTo(pointLabel!)
         }
         
-        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
+        
+        let days = TimeStampTransfer.days(since: BBSUser.shared.tCreate ?? 0)
+        ageLabel = UILabel(text: days, color: .white, fontSize: 20)
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {
             make in
