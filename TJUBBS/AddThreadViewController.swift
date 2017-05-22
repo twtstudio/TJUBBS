@@ -18,8 +18,21 @@ class AddThreadViewController: UIViewController {
     var boardList: [BoardModel] = []
     var openForumListFlag = false
     var openBoardListFlag = false
-    var selectedForum: ForumModel?
-    var selectedBoard: BoardModel?
+    var selectedForum: ForumModel? {
+        didSet {
+            openForumListFlag = false
+            forumString = "讨论区：\(selectedForum?.name ?? " ")"
+            tableView.reloadSections([0], with: .automatic)
+            selectedBoard = nil
+        }
+    }
+    var selectedBoard: BoardModel? {
+        didSet {
+            openBoardListFlag = false
+            boardString = "板块：\(selectedBoard?.name ?? " ")"
+            tableView.reloadSections([1], with: .automatic)
+        }
+    }
     var forumString = "讨论区"
     var boardString = "板块"
     let themeCell = TextInputCell(title: "主题", placeholder: "帖子的主题")
@@ -230,15 +243,17 @@ extension AddThreadViewController: UITableViewDelegate {
         if indexPath.section == 0 && indexPath.row != 0 {
             selectedForum = forumList[indexPath.row-1]
             tableView.cellForRow(at: indexPath)?.contentView.backgroundColor = .BBSLightBlue
-            openForumListFlag = false
-            forumString = "讨论区：\(selectedForum!.name)"
-            tableView.reloadSections([0], with: .automatic)
+//            openForumListFlag = false
+//            forumString = "讨论区：\(selectedForum!.name)"
+//            tableView.reloadSections([0], with: .automatic)
         } else if indexPath.section == 1 && indexPath.row != 0 {
             selectedBoard = boardList[indexPath.row-1]
             tableView.cellForRow(at: indexPath)?.contentView.backgroundColor = .BBSLightBlue
-            openBoardListFlag = false
-            boardString = "板块：\(selectedBoard!.name)"
-            tableView.reloadSections([1], with: .automatic)
+//            openBoardListFlag = false
+//            boardString = "板块：\(selectedBoard!.name)"
+//            tableView.reloadSections([1], with: .automatic)
         }
     }
 }
+
+

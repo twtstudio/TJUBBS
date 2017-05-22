@@ -97,7 +97,8 @@ class BoardListController: UIViewController {
     
     func addButtonTapped() {
 //        let AddVC = AddThreadViewController()
-        let addVC = AddThreadViewController(forum: forum)
+        //        let addVC = AddThreadViewController(forum: forum)
+        let addVC = AddThreadViewController()
         self.navigationController?.pushViewController(addVC, animated: true)
     }
     
