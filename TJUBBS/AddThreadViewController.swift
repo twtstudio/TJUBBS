@@ -160,7 +160,7 @@ extension AddThreadViewController: UITableViewDataSource {
                         tableView.reloadSections([0], with: .automatic)
                     }
                 }
-                
+                cell.isHidden = !tableView.allowsSelection
                 return cell
             } else {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "normalCell")
@@ -204,7 +204,7 @@ extension AddThreadViewController: UITableViewDataSource {
                         tableView.reloadSections([1], with: .automatic)
                     }
                 }
-                
+                rightImageView.isHidden = !tableView.allowsSelection
                 return cell
             } else {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "normalCell")
@@ -243,15 +243,9 @@ extension AddThreadViewController: UITableViewDelegate {
         if indexPath.section == 0 && indexPath.row != 0 {
             selectedForum = forumList[indexPath.row-1]
             tableView.cellForRow(at: indexPath)?.contentView.backgroundColor = .BBSLightBlue
-//            openForumListFlag = false
-//            forumString = "讨论区：\(selectedForum!.name)"
-//            tableView.reloadSections([0], with: .automatic)
         } else if indexPath.section == 1 && indexPath.row != 0 {
             selectedBoard = boardList[indexPath.row-1]
             tableView.cellForRow(at: indexPath)?.contentView.backgroundColor = .BBSLightBlue
-//            openBoardListFlag = false
-//            boardString = "板块：\(selectedBoard!.name)"
-//            tableView.reloadSections([1], with: .automatic)
         }
     }
 }

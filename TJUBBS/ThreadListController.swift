@@ -80,6 +80,7 @@ class ThreadListController: UIViewController {
     func addButtonTapped() {
         let addVC = AddThreadViewController()
         addVC.selectedBoard = self.board
+        addVC.tableView.allowsSelection = false
         self.navigationController?.pushViewController(addVC, animated: true)
     }
 }
