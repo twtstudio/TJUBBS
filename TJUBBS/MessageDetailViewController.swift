@@ -8,6 +8,7 @@
 
 import UIKit
 import PKHUD
+import Kingfisher
 
 class MessageDetailViewController: UIViewController {
     
@@ -132,14 +133,18 @@ extension MessageDetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let detailModel = model.detailContent else {
+            return UITableViewCell()
+        }
         
         switch indexPath.row {
         case 0:
             let cell = MessageCell()
 //            cell.initUI(portraitImage: UIImage(named: data["portrait"]!), username: "\(data["username"]!)[\(data["label"]!)]", time: data["time"]!, detail: data["sign"]!)
-            cell.initUI(portraitImage: nil, username: model.authorName!, time: String(model.t_create!), detail: "")
+            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.t_create), detail: "")
             let portraitImage = UIImage(named: "头像")
-            let url = URL(string: BBSAPI.avatar(uid: model.authorID))
+            
+            let url = URL(string: BBSAPI.avatar(uid: model.authorId))
             let cacheKey = "\(model?.authorId ?? 0000)" + Date.today
             cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
 
@@ -147,7 +152,7 @@ extension MessageDetailViewController: UITableViewDataSource {
             return cell
         case 1:
             let cell = UITableViewCell()
-            let detaillabel = UILabel(text: data["detail"]!, fontSize: 16)
+            let detaillabel = UILabel(text: model.content, fontSize: 16)
             cell.contentView.addSubview(detaillabel)
             detaillabel.snp.makeConstraints {
                 make in
@@ -182,8 +187,11 @@ extension MessageDetailViewController: UITableViewDataSource {
             })
 //            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
 //            postView.addGestureRecognizer(tapRecognizer)
-            
-            let authorPortraitImageView = UIImageView(image: UIImage(named: data["authorPortrait"]!))
+            let portraitImage = UIImage(named: "头像")
+            if let detailModel = model.detailContent {
+                
+            }
+            let authorPortraitImageView = UIImageView()
             postView.addSubview(authorPortraitImageView)
             authorPortraitImageView.snp.makeConstraints {
                 make in
@@ -193,8 +201,14 @@ extension MessageDetailViewController: UITableViewDataSource {
             }
             authorPortraitImageView.layer.cornerRadius = screenSize.width*(160/1080)/2
             authorPortraitImageView.clipsToBounds = true
+            // TODO: 很晕 这个应该是帖子的作者
+            let url = URL(string: BBSAPI.avatar(uid: model.authorId))
+            let cacheKey = "\(model.authorId)" + Date.today
+            authorPortraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
             
-            let postTitleLabel = UILabel(text: data["postTitle"]!)
+
+            
+            let postTitleLabel = UILabel(text: detailModel.title)
             postView.addSubview(postTitleLabel)
             postTitleLabel.snp.makeConstraints {
                 make in
@@ -202,7 +216,8 @@ extension MessageDetailViewController: UITableViewDataSource {
                 make.left.equalTo(authorPortraitImageView.snp.right).offset(8)
             }
             
-            let authorLabel = UILabel(text: "作者: model.a", color: .darkGray, fontSize: 14)
+            // TODO: 获取那篇文章的作者
+            let authorLabel = UILabel(text: "作者: ", color: .darkGray, fontSize: 14)
             postView.addSubview(authorLabel)
             authorLabel.snp.makeConstraints {
                 make in
@@ -211,7 +226,7 @@ extension MessageDetailViewController: UITableViewDataSource {
                 make.right.equalToSuperview().offset(-16)
             }
             
-            let timeString = TimeStampTransfer.string(from: model?.t_create, with: "MM-dd")
+            let timeString = TimeStampTransfer.string(from: String(detailModel.createTime), with: "MM-dd")
             let timeLabel = UILabel(text: timeString, color: .lightGray)
             cell.contentView.addSubview(timeLabel)
             timeLabel.snp.makeConstraints {
