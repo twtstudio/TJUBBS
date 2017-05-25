@@ -237,10 +237,10 @@ extension UIFont {
 
 extension String {
     static func clearBBCode(string: String) -> String {
-        let pattern = "[.*]"
-        let regular = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
-        regular.replaceMatches(in: string as! NSMutableString, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: string.characters.count), withTemplate: "")
-        return string
+        let regex = try! NSRegularExpression(pattern: "\\[.*?\\]", options: NSRegularExpression.Options.caseInsensitive)
+        let range = NSMakeRange(0, string.characters.count)
+        let res = regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+        return res
     }
 }
 

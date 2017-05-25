@@ -46,7 +46,7 @@
 		68B6834D1EC200D800F7A0BF /* MyPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */; };
 		68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */; };
 		68B683521EC20F7100F7A0BF /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683511EC20F7100F7A0BF /* PostDetailViewController.swift */; };
-		68B683541EC2F02700F7A0BF /* replyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683531EC2F02700F7A0BF /* replyCell.swift */; };
+		68B683541EC2F02700F7A0BF /* ReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683531EC2F02700F7A0BF /* ReplyCell.swift */; };
 		68B683561EC2F29100F7A0BF /* SubReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683551EC2F29100F7A0BF /* SubReplyView.swift */; };
 		68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683571EC31BE700F7A0BF /* LatestThreadViewController.swift */; };
 		68E4ED751EC451650067DA35 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E4ED741EC451650067DA35 /* BBSAPI.swift */; };
@@ -123,7 +123,7 @@
 		68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostViewController.swift; sourceTree = "<group>"; };
 		68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomepageMainController.swift; sourceTree = "<group>"; };
 		68B683511EC20F7100F7A0BF /* PostDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
-		68B683531EC2F02700F7A0BF /* replyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = replyCell.swift; sourceTree = "<group>"; };
+		68B683531EC2F02700F7A0BF /* ReplyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyCell.swift; sourceTree = "<group>"; };
 		68B683551EC2F29100F7A0BF /* SubReplyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubReplyView.swift; sourceTree = "<group>"; };
 		68B683571EC31BE700F7A0BF /* LatestThreadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestThreadViewController.swift; sourceTree = "<group>"; };
 		68E4ED741EC451650067DA35 /* BBSAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSAPI.swift; sourceTree = "<group>"; };
@@ -381,7 +381,7 @@
 				68EFEBA11ECB164B00FD5EB4 /* ReplyViewController.swift */,
 				36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */,
 				6823C49A1EBC077D00FBB5C7 /* PostCell.swift */,
-				68B683531EC2F02700F7A0BF /* replyCell.swift */,
+				68B683531EC2F02700F7A0BF /* ReplyCell.swift */,
 				68B683551EC2F29100F7A0BF /* SubReplyView.swift */,
 			);
 			name = Shared;
@@ -598,7 +598,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -643,7 +643,7 @@
 				68B6834D1EC200D800F7A0BF /* MyPostViewController.swift in Sources */,
 				68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */,
 				36FE25C61EB62A630090E805 /* log.swift in Sources */,
-				68B683541EC2F02700F7A0BF /* replyCell.swift in Sources */,
+				68B683541EC2F02700F7A0BF /* ReplyCell.swift in Sources */,
 				368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */,
 				36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */,
 				3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */,

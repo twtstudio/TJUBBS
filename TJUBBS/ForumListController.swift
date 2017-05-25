@@ -42,7 +42,6 @@ class ForumListController: UIViewController {
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         
-        print("ForumList")
         //        BBSJarvis.getForumList(success: {
         //            dict in
         //            print("dict: \(dict)")
@@ -71,6 +70,7 @@ class ForumListController: UIViewController {
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
             }
+            HUD.hide()
         })
     }
     

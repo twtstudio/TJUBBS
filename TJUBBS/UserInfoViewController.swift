@@ -8,6 +8,7 @@
 
 import UIKit
 import Kingfisher
+import ObjectMapper
 
 enum UserInfoViewControllerType {
     case myself
@@ -30,7 +31,9 @@ class UserInfoViewController: UIViewController {
     var postNumberLabel: UILabel?
     var ageLabel: UILabel?
     var tableView: UITableView?
-    let contentArray = [["我的消息", "我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
+    let contentArray = [["我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
+    var messagePage: Int = 0
+    var messageList: [MessageModel] = []
     
     //bad way to make navigationBar translucent
     var fooNavigationBarImage: UIImage?
@@ -50,6 +53,13 @@ class UserInfoViewController: UIViewController {
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         // Do any additional setup after loading the view, typically from a nib.
+        
+        BBSJarvis.getMessage(page: 0, success: {
+            dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                self.messageList = Mapper<MessageModel>().mapArray(JSONArray: data)!
+            }
+        })
     }
     
     override func didReceiveMemoryWarning() {
@@ -107,7 +117,8 @@ extension UserInfoViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? 5 : 0)
+//        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? 5 : 0)
+        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: 0)
         return cell
     }
     
@@ -299,16 +310,16 @@ extension UserInfoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
+//        case IndexPath(row: 0, section: 0):
+//            let detailVC = MessageViewController(para: 1)
+//            self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 0):
-            let detailVC = MessageViewController(para: 1)
-            self.navigationController?.pushViewController(detailVC, animated: true)
-        case IndexPath(row: 1, section: 0):
             let detailVC = FavorateViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
-        case IndexPath(row: 2, section: 0):
+        case IndexPath(row: 1, section: 0):
             let detailVC = MyPostViewController(para: 1)
             self.navigationController?.pushViewController(detailVC, animated: true)
-        case IndexPath(row: 3, section: 0):
+        case IndexPath(row: 2, section: 0):
             let detailVC = SetInfoViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 1):

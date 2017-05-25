@@ -152,7 +152,7 @@ extension ReplyViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if post != nil {
             let cell = ReplyCell()
-            cell.initUI(portraitImage: UIImage(named: "头像2"), username: post!.authorName, detail: post!.content, floor: String(post!.floor), replyNumber: String(post!.replyNumber), time: String(post!.createTime), subReplyList: [] as? Array<Dictionary<String, String>>)
+            cell.initUI(post: post!)
             return cell
         } else if thread != nil {
             let cell = UITableViewCell()

@@ -175,7 +175,6 @@ extension AddThreadViewController: UITableViewDataSource {
                         if let forum = self.selectedForum {
                             BBSJarvis.getBoardList(forumID: forum.id) {
                                 dict in
-                                print("dict: \(dict)")
                                 self.openBoardListFlag = true
                                 if let data = dict["data"] as? [String: Any],
                                     let boards = data["boards"] as? [[String: Any]] {

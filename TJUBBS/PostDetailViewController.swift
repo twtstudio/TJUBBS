@@ -198,7 +198,12 @@ extension PostDetailViewController: UITableViewDataSource {
                 make.width.height.equalTo(screenSize.height*(144/1920))
             }
             favorButton.addTarget { button in
-                (button as? UIButton)?.setImage(UIImage(named: "已收藏"), for: .normal)
+                if let button = button as? UIButton {
+                    BBSJarvis.collect(threadID: self.thread!.id) {_ in
+                        button.setImage(UIImage(named: "已收藏"), for: .normal)
+                        button.tag = 1
+                    }
+                }
             }
             
             cell.contentView.addSubview(webView)
@@ -244,12 +249,8 @@ extension PostDetailViewController: UITableViewDataSource {
             return cell
         } else {
             let post = postList[indexPath.row]
-            let cell = replyCell()
-            cell.initUI(portraitImage: nil, username: post.authorName, detail: post.content, floor: String(post.floor), replyNumber: "", time: String(post.createTime), subReplyList: [] as? Array<Dictionary<String, String>>)
-            let url = URL(string: BBSAPI.avatar(uid: post.authorID))
-            let portraitImage = UIImage(named: "头像2")
-            let cacheKey = "\(post.authorID)" + Date.today
-            cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+            let cell = ReplyCell()
+            cell.initUI(post: post)
             return cell
         }
     }
