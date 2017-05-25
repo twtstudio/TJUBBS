@@ -53,12 +53,12 @@ struct BBSBeacon {
                             let errMsg = String(data: response.data!, encoding: .utf8)
                             HUD.flash(.labeledError(title: errMsg, subtitle: nil), delay: 1.2)
                             failure?(error)
-                            log.error(error)/
+//                            log.error(error)/
                         }
                     }
                 case .failure(let error):
                     failure?(error)
-                    log.error(error)/
+//                    log.error(error)/
                 }
                 //            }.downloadProgress {_ in
                 //                HUD.flash(.progress)
@@ -99,18 +99,20 @@ struct BBSBeacon {
                         if let dict = data as? Dictionary<String, Any>, dict["err"] as? Int == 0 {
                             success?(dict)
                         } else {
+                            HUD.hide()
                             HUD.flash(.label((data as? [String: Any])?["data"] as? String), delay: 1.0)
                         }
                     }
                 case .failure(let error):
                     if let data = response.result.value  {
                         if let dict = data as? Dictionary<String, Any> {
-                            log.errorMessage(dict["data"] as? String)/
+//                            log.errorMessage(dict["data"] as? String)/
+                            HUD.hide()
                             HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                         }
                     }
                     failure?(error)
-                    log.error(error)/
+//                    log.error(error)/
                 }
             }
         }
@@ -121,7 +123,7 @@ struct BBSBeacon {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString
         guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
-            log.errorMessage("Token expired!")/
+//            log.errorMessage("Token expired!")/
             return
         }
         headers["authentication"] = String(uid) + "|" + tokenStr
@@ -145,7 +147,7 @@ struct BBSBeacon {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString
         guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
-            log.errorMessage("Token expired!")/
+//            log.errorMessage("Token expired!")/
             return
         }
         headers["authentication"] = String(uid) + "|" + tokenStr
