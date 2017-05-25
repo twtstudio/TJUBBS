@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 enum UserInfoViewControllerType {
     case myself
@@ -80,6 +81,7 @@ class UserInfoViewController: UIViewController {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
+        tableView?.reloadData()
         
     }
     
@@ -131,7 +133,14 @@ extension UserInfoViewController: UITableViewDataSource {
         avatarBackground.clipsToBounds = true
 
         // TODO: 默认头像
-        portraitImageView = UIImageView(image: BBSUser.shared.avatar ?? UIImage(named: "头像"))
+        portraitImageView = UIImageView()
+        let url = URL(string: BBSAPI.avatar)
+        let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today
+        if let url = url {
+            portraitImageView!.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey)) { image, error, cacheType, imageURL in
+                BBSUser.shared.avatar = image
+            }
+        }
         portraitImageView?.clipsToBounds = true
         avatarBackground.addSubview(portraitImageView!)
 
@@ -172,6 +181,7 @@ extension UserInfoViewController: UITableViewDataSource {
             self.navigationController?.pushViewController(setInfoVC, animated: true)
         }
         
+        // FIXME: 称号？？？
         portraitBadgeLabel = UILabel.roundLabel(text: "一般站友", textColor: .white, backgroundColor: .BBSBadgeOrange)
         headerView?.addSubview(portraitBadgeLabel!)
         portraitBadgeLabel?.snp.makeConstraints {
@@ -180,7 +190,8 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerY.equalTo(avatarBackground.snp.bottom)
         }
         
-        usernameLabel = UILabel(text: BBSUser.shared.username ?? "janny", color: .white, fontSize: 18)
+        // FIXME: placeholder
+        usernameLabel = UILabel(text: BBSUser.shared.nickname ?? "null", color: .white, fontSize: 18)
         headerView?.addSubview(usernameLabel!)
         usernameLabel?.snp.makeConstraints {
             make in
@@ -188,8 +199,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
         }
         
-        // TODO: 替换真数据
-        signatureLabel = UILabel(text: "你还没有签名哦~", color: .white, fontSize: 16)
+        signatureLabel = UILabel(text: BBSUser.shared.signature ?? "你还没有签名哦~", color: .white, fontSize: 16)
         headerView?.addSubview(signatureLabel!)
         signatureLabel?.snp.makeConstraints {
             make in
@@ -197,7 +207,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
         }
         
-        postNumberLabel = UILabel(text: "45", color: .white, fontSize: 20)
+        postNumberLabel = UILabel(text: "\(BBSUser.shared.postCount ?? 0)", color: .white, fontSize: 20)
         headerView?.addSubview(postNumberLabel!)
         postNumberLabel?.snp.makeConstraints {
             make in
@@ -213,7 +223,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalTo(postNumberLabel!)
         }
         
-        pointLabel = UILabel(text: "538", color: .white, fontSize: 20)
+        pointLabel = UILabel(text: "\(BBSUser.shared.points ?? 0)", color: .white, fontSize: 20)
         headerView?.addSubview(pointLabel!)
         pointLabel?.snp.makeConstraints {
             make in
@@ -229,7 +239,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalTo(pointLabel!)
         }
         
-        ageLabel = UILabel(text: "98", color: .white, fontSize: 20)
+        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {
             make in

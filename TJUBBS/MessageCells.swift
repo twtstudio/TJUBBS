@@ -47,6 +47,7 @@ class MessageCell: UITableViewCell {
             make.width.height.equalTo(contentView.bounds.width*(160/1080))
             make.left.equalToSuperview().offset(16)
         }
+        
         portraitImageView.layer.cornerRadius = contentView.bounds.width*(160/1080)/2
         portraitImageView.clipsToBounds = true
         

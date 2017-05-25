@@ -44,7 +44,7 @@ struct BBSJarvis {
                 let c_online = data["c_online"],
                 let group = data["group"] {
                 BBSUser.shared.username = name as? String
-                BBSUser.shared.nickname = nickname as? String
+                BBSUser.shared.nickname = (nickname as? String) ?? (name as? String)
                 //                BBSUser.shared.realName = real_name as? String
                 BBSUser.shared.signature = signature as? String
                 BBSUser.shared.postCount = post_count as? Int
@@ -68,6 +68,12 @@ struct BBSJarvis {
         BBSBeacon.uploadImage(url: BBSAPI.setAvatar, image: image, failure: failure, success: success)
     }
     
+    static func setInfo(para: [String : String], success: @escaping ()->(), failure: @escaping (Error)->()) {
+        BBSBeacon.request(withType: .put, url: BBSAPI.home, parameters: para, failure: failure) { dict in
+            success()
+        }
+    }
+
     static func getForumList(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.forumList, token: nil, parameters: nil, failure: failure, success: success)
     }
@@ -90,9 +96,6 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, success: success)
     }
 
-    static func setPersonalInfo(para: [String : String], success: ()->(), failure: ()->()) {
-        
-    }
     
     static func postThread(boardID: Int, title: String, content: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         let parameters = [
@@ -104,6 +107,7 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
     }
     
+
     static func reply(threadID: Int, content: String, toID: Int? = nil, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         var parameters = ["content": content]
         if let id = toID {
@@ -111,4 +115,5 @@ struct BBSJarvis {
         }
         BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: success)
     }
+
 }

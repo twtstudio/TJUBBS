@@ -16,19 +16,19 @@ struct DeviceStatus {
         return "null"
     }
     
-    static func appName() -> String {
+    static var appName: String {
         return getInfo(withKey: "CFBundleName")
     }
     
-    static func appVersion() -> String {
+    static var appVersion: String {
         return getInfo(withKey: "CFBundleVersion")
     }
     
-    static func appBuild() -> String {
+    static var appBuild: String {
         return getInfo(withKey: "CFBundleVersion")
     }
     
-    static func deviceModel() -> String {
+    static var deviceModel: String {
         /*
          NSLog(@"设备所有者的名称－－%@",device_.name);
          NSLog(@"设备的类别－－－－－%@",device_.model);
@@ -75,12 +75,12 @@ struct DeviceStatus {
         return addresses
     }
     
-    static func deviceOSVersion() -> String {
+    static var deviceOSVersion: String {
         return UIDevice.current.systemVersion
     }
     
-    static func userAgentString() -> String {
-        return "\(appName())/\(appVersion())(\(deviceModel()); iOS \(deviceOSVersion()))"
+    static var userAgentString: String {
+        return "\(appName)/\(appVersion)(\(deviceModel); iOS \(deviceOSVersion))"
     }
     
     static func getIPAddress(preferIPv4 preference: Bool) -> String {

@@ -95,6 +95,7 @@ extension SettingViewController: UITableViewDelegate {
         switch indexPath {
         case IndexPath(row: 0, section: 1):
             BBSUser.delete()
+            let _ = self.navigationController?.popToRootViewController(animated: false)
             let loginVC = LoginViewController(para: 1)
             let loginNC = UINavigationController(rootViewController: loginVC)
             self.present(loginNC, animated: true, completion: nil)

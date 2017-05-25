@@ -234,11 +234,22 @@ extension UIFont {
     }
 }
 
+
 extension String {
     static func clearBBCode(string: String) -> String {
         let pattern = "[.*]"
         let regular = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
         regular.replaceMatches(in: string as! NSMutableString, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: string.characters.count), withTemplate: "")
         return string
+    }
+}
+
+extension Date {
+    static var today: String {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY-MM-dd"
+        let today = formatter.string(from: date)
+        return today
     }
 }

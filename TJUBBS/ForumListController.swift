@@ -10,6 +10,7 @@ import UIKit
 import ObjectMapper
 import Alamofire
 import PKHUD
+import Kingfisher
 
 class ForumListController: UIViewController {
     var collectionView: UICollectionView?
@@ -18,7 +19,7 @@ class ForumListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+//        view.backgroundColor = .white
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let height = (self.view.bounds.height - 20 - (self.navigationController?.navigationBar.bounds.height)! - (self.tabBarController?.tabBar.bounds.height)!)/5.0
@@ -61,8 +62,15 @@ class ForumListController: UIViewController {
                     print(data)
                     self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
             }
-            self.collectionView?.reloadData()
-            HUD.hide()
+//<<<<<<< HEAD
+//            self.collectionView?.reloadData()
+//            HUD.hide()
+//=======
+//            print("forumListCount: \(self.forumList.count)")
+//            print("id: \(String(describing: self.forumList[0].id))")
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
+            }
         })
     }
     
@@ -84,7 +92,9 @@ extension ForumListController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionForumCell", for: indexPath)
-        cell.backgroundView = UIImageView(image: UIImage(named: "forumPic"))
+        cell.backgroundView = UIImageView()
+        let url = URL(string: BBSAPI.forumCover(fid: indexPath.row))
+        (cell.backgroundView as? UIImageView)?.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(indexPath.row)"), placeholder: UIImage(named: "forumPic"))
         let label = UILabel(text: forumList[indexPath.row].name)
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.white

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class FavorateViewController: UIViewController {
     
@@ -122,7 +123,9 @@ extension FavorateViewController: UITableViewDataSource {
 //        print(data["username"]!)
         let portraitImage = UIImage(named: data["image"]!)
         cell.initUI(portraitImage: portraitImage, username: data["username"]!, category: data["category"], favor: true, title: data["title"]!, detail: data["detail"], replyNumber: data["replyNumber"]!, time: data["time"]!)
-        
+//        let url = URL(string: BBSAPI.avatar(uid: data["authorID"]!))
+//        let cacheKey = "\(data["authorID"]!)" + Date.today
+//        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         return cell
     }
     

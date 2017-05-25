@@ -8,102 +8,16 @@
 
 import UIKit
 import ObjectMapper
-//class ThreadListController: UIViewController {
-//    var currentPage = 1
-//    var threads: [ThreadModel] = []
-//    var tableView: UITableView! = nil
-//    var listName: String = ""
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        tableView = UITableView(frame: self.view.bounds, style: .grouped)
-//        tableView?.delegate = self
-//        tableView?.dataSource = self
-//        self.title = listName
-//
-//        
-//        // 把返回换成空白
-//        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-//        self.navigationItem.backBarButtonItem = backItem
-//
-//        // Do any additional setup after loading the view.
-//    }
-//
-//    override func didReceiveMemoryWarning() {
-//        super.didReceiveMemoryWarning()
-//        // Dispose of any resources that can be recreated.
-//    }
-//    
-//}
-//
-//extension ThreadListController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        
-//    }
-//}
-//
-//extension ThreadListController: UITableViewDataSource {
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 1
-//    }
-//    
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return threads.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        return UITableViewCell()
-//    }
-//}
-
-
+import MJRefresh
+import Kingfisher
+import PKHUD
 
 class ThreadListController: UIViewController {
     
     var tableView: UITableView?
-//    var dataList = [
-//        [
-//            "image": "portrait",
-//            "username": "wangcong",
-//            "category": "全站热点",
-//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "wangcong",
-//            "category": "全站热点",
-//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ]
-//        ] as Array<Dictionary<String, String>>
     var board: BoardModel?
     var threadList: [ThreadModel] = []
+    var curPage: Int = 0
     
     convenience init(board: BoardModel?) {
         self.init()
@@ -120,15 +34,6 @@ class ThreadListController: UIViewController {
         
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        
-        BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
-            dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
-            }
-            self.tableView?.reloadData()
-        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -141,6 +46,7 @@ class ThreadListController: UIViewController {
         
         
     }
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -159,6 +65,16 @@ class ThreadListController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
+        
+        // 把返回换成空白
+        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backItem
+
+        
+        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView?.mj_footer.isAutomaticallyHidden = true
+        self.tableView?.mj_header.beginRefreshing()
     }
     
     func addButtonTapped() {
@@ -183,7 +99,10 @@ extension ThreadListController: UITableViewDataSource {
         //        print(data["username"]!)
         let portraitImage = UIImage(named: "头像")
         cell.initUI(portraitImage: portraitImage, username: data.authorName, category: data.category, favor: false, title: data.title, detail: data.content, replyNumber: String(data.replyNumber), time: String(data.createTime))
-        
+        let url = URL(string: BBSAPI.avatar(uid: data.authorID))
+        let cacheKey = "\(data.authorID)" + Date.today
+        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+
         return cell
     }
     
@@ -205,3 +124,49 @@ extension ThreadListController: UITableViewDelegate {
     }
 }
 
+
+extension ThreadListController {
+    func refresh() {
+        
+        BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
+                if (self.tableView?.mj_header.isRefreshing())! {
+                    self.tableView?.mj_header.endRefreshing()
+                }
+                self.curPage = 0
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? self.threadList
+            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+        }
+    }
+    
+    func load() {
+        self.curPage += 1
+        BBSJarvis.getThreadList(boardID: board!.id, page: curPage, failure: { error in
+            HUD.flash(.labeledError(title: "网络错误...", subtitle: nil), onView: self.view, delay: 1.2, completion: nil)
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }) {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
+                if (self.tableView?.mj_footer.isRefreshing())! {
+                    self.tableView?.mj_footer.endRefreshing()
+                }
+                let newList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
+                if newList.count == 0 {
+                    self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+                }
+                self.threadList += newList
+            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+        }
+    }
+}

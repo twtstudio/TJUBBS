@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		36636FEA1EC7723200C45CB8 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */; };
 		368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D36A21EBA224C002978C6 /* SetInfoViewController.swift */; };
+		3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3699D16F1ECB34630013D2FD /* MessageModel.swift */; };
 		36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */; };
 		36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0241EC34025006D58F8 /* BBSUser.swift */; };
 		36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */; };
@@ -79,6 +80,7 @@
 		1977C405936927832AD1537D /* Pods-TJUBBS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.debug.xcconfig"; sourceTree = "<group>"; };
 		36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
 		368D36A21EBA224C002978C6 /* SetInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
+		3699D16F1ECB34630013D2FD /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSJarvis.swift; sourceTree = "<group>"; };
 		36B8D0241EC34025006D58F8 /* BBSUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSUser.swift; sourceTree = "<group>"; };
 		36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoModifyController.swift; sourceTree = "<group>"; };
@@ -167,6 +169,22 @@
 				FA6F43ADEF3827A55E61BC12 /* Pods_TJUBBS.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3699D16D1ECB344E0013D2FD /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				3699D16E1ECB34540013D2FD /* Model */,
+			);
+			name = Message;
+			sourceTree = "<group>";
+		};
+		3699D16E1ECB34540013D2FD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3699D16F1ECB34630013D2FD /* MessageModel.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		36DA59231EC1DFAB00B56F07 /* Controller */ = {
@@ -290,6 +308,7 @@
 		682A84911EB5C5E100510FA4 /* User */ = {
 			isa = PBXGroup;
 			children = (
+				3699D16D1ECB344E0013D2FD /* Message */,
 				682A84951EB5C60A00510FA4 /* Info */,
 				682A84941EB5C60400510FA4 /* Login */,
 			);
@@ -627,6 +646,7 @@
 				68B683541EC2F02700F7A0BF /* replyCell.swift in Sources */,
 				368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */,
 				36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */,
+				3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */,
 				68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */,
 				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
 				68B683561EC2F29100F7A0BF /* SubReplyView.swift in Sources */,

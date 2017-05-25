@@ -9,6 +9,7 @@
 
 import UIKit
 import ObjectMapper
+import Kingfisher
 
 class PostDetailViewController: UIViewController {
     
@@ -156,7 +157,11 @@ extension PostDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
             let cell = UITableViewCell()
-            let portraitImageView = UIImageView(image: UIImage(named: "头像2"))
+            let portraitImageView = UIImageView()
+            let portraitImage = UIImage(named: "头像2")
+            let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
+            let cacheKey = "\(thread!.authorID)" + Date.today
+            portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
             cell.contentView.addSubview(portraitImageView)
             portraitImageView.snp.makeConstraints {
                 make in
@@ -239,8 +244,12 @@ extension PostDetailViewController: UITableViewDataSource {
             return cell
         } else {
             let post = postList[indexPath.row]
-            let cell = ReplyCell()
-            cell.initUI(portraitImage: UIImage(named: "头像2"), username: post.authorName, detail: post.content, floor: String(post.floor), replyNumber: String(post.replyNumber), time: String(post.createTime), subReplyList: [] as? Array<Dictionary<String, String>>)
+            let cell = replyCell()
+            cell.initUI(portraitImage: nil, username: post.authorName, detail: post.content, floor: String(post.floor), replyNumber: "", time: String(post.createTime), subReplyList: [] as? Array<Dictionary<String, String>>)
+            let url = URL(string: BBSAPI.avatar(uid: post.authorID))
+            let portraitImage = UIImage(named: "头像2")
+            let cacheKey = "\(post.authorID)" + Date.today
+            cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
             return cell
         }
     }

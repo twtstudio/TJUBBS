@@ -21,12 +21,7 @@ class BoardListController: UIViewController {
         //why this line cause nil forum
         //view.backgroundColor = .white
         self.forum = forum
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        self.title = forum?.name
+        
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView?.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.94, alpha:1.00)
         tableView?.delegate = self
@@ -35,18 +30,10 @@ class BoardListController: UIViewController {
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.separatorStyle = .none
         tableView?.estimatedRowHeight = 120
+
         
-        // 把返回换成空白
-        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        self.navigationItem.backBarButtonItem = backItem
-        
-        // 右侧按钮
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        
-        // Do any additional setup after loading the view.
         BBSJarvis.getBoardList(forumID: (self.forum?.id)!, success: {
             dict in
-            print("dict:\(dict)")
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let boards = data["boards"] as? Array<Dictionary<String, Any>>{
                 for board in boards {
@@ -61,27 +48,45 @@ class BoardListController: UIViewController {
                     self.threadList.append(fooThreadList)
                 }
             }
-            self.tableView?.reloadData()
-//            for board in self.boardList {
-//                BBSJarvis.getThreadList(boardID: board.id, page: 0, success: {
-//                    dict in
-//                    print("dict: \(dict)")
-//                    var fooThreadList: [ThreadModel] = []
-//                    if let data = dict["data"] as? Dictionary<String, Any>,
-//                        let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-//                        print("解析啦")
-//                        for i in 0..<threads.count {
-//                            let fooThread = ThreadModel(JSON: threads[i])
-//                            fooThreadList.append(fooThread!)
-//                        }
-//                    }
-//                    print("fooThreadListCount:\(fooThreadList.count)")
-//                    self.threadList.append(fooThreadList)
-//                    //TODO: 有毒啊，商量接口获取两个
-//                    self.tableView?.reloadData()
-//               })
-//            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+            //            for board in self.boardList {
+            //                BBSJarvis.getThreadList(boardID: board.id, page: 0, success: {
+            //                    dict in
+            //                    print("dict: \(dict)")
+            //                    var fooThreadList: [ThreadModel] = []
+            //                    if let data = dict["data"] as? Dictionary<String, Any>,
+            //                        let threads = data["thread"] as? Array<Dictionary<String, Any>> {
+            //                        print("解析啦")
+            //                        for i in 0..<threads.count {
+            //                            let fooThread = ThreadModel(JSON: threads[i])
+            //                            fooThreadList.append(fooThread!)
+            //                        }
+            //                    }
+            //                    print("fooThreadListCount:\(fooThreadList.count)")
+            //                    self.threadList.append(fooThreadList)
+            //                    //TODO: 有毒啊，商量接口获取两个
+            //                    self.tableView?.reloadData()
+            //               })
+            //            }
         })
+
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        self.title = forum?.name
+        
+        // 把返回换成空白
+        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backItem
+        
+        // 右侧按钮
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        
+        // Do any additional setup after loading the view.
     }
     
     override func didReceiveMemoryWarning() {
@@ -90,8 +95,9 @@ class BoardListController: UIViewController {
     }
     
     func addButtonTapped() {
-        let AddVC = AddThreadViewController()
-        self.navigationController?.pushViewController(AddVC, animated: true)
+//        let AddVC = AddThreadViewController()
+        let addVC = AddThreadViewController(forum: forum)
+        self.navigationController?.pushViewController(addVC, animated: true)
     }
     
 }
@@ -124,6 +130,7 @@ extension BoardListController: UITableViewDataSource {
 //        let cell = ThreadCell(type: .single, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "你不是真正的快乐 你的笑只是你穿的保护色 你决定不恨了 也决定不爱了 把你的灵魂关在永远锁上的躯壳")
         let thread = threadList[indexPath.section][indexPath.row]
         let cell = ThreadCell(type: .single, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: thread.content)
+        // FIXME: 替换图片
         cell.imgView?.image = UIImage(named: "封面")
         return cell
     }
