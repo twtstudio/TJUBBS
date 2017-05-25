@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //Handle NavigationBar Appearance
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
-            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
+            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
             BBSUser.load()
             
             // 如果token不为空

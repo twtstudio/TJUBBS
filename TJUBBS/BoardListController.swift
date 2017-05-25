@@ -46,7 +46,7 @@ class BoardListController: UIViewController {
         // Do any additional setup after loading the view.
         BBSJarvis.getBoardList(forumID: (self.forum?.id)!, success: {
             dict in
-//            print("dict:\(dict)")
+            print("dict:\(dict)")
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let boards = data["boards"] as? Array<Dictionary<String, Any>>{
                 for board in boards {
