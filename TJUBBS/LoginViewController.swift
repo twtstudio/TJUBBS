@@ -159,16 +159,19 @@ class LoginViewController: UIViewController {
         }
         // 注意这里可能会有循环引用 self->button->block->self.portraitImageView
         loginButton?.addTarget { [weak self] button in
-            print("loginButtonTapped")
-            if let username = self?.usernameTextField?.text, let password = self?.passwordTextField?.text {
-                BBSJarvis.login(username: username, password: password) { 
+//            print("loginButtonTapped")
+
+            if let username = self?.usernameTextField?.text, let password = self?.passwordTextField?.text, username != "", password != "" {
+                HUD.show(.rotatingImage(#imageLiteral(resourceName: "progress")))
+                BBSJarvis.login(username: username, password: password) {
+                        HUD.hide()
                         HUD.flash(.success, onView: self?.portraitImageView, delay: 1.2, completion: nil)
                         let tabBarVC = MainTabBarController(para: 1)
                         tabBarVC.modalTransitionStyle = .crossDissolve
                         self?.present(tabBarVC, animated: false, completion: nil)
                 }
             } else {
-                
+                HUD.flash(.label("用户名或密码不能为空"), onView: self?.view, delay: 0.7, completion: nil)
             }
         }
         
