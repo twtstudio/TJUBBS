@@ -234,6 +234,16 @@ extension UIFont {
     }
 }
 
+
+extension String {
+    static func clearBBCode(string: String) -> String {
+        let regex = try! NSRegularExpression(pattern: "\\[.*?\\]", options: NSRegularExpression.Options.caseInsensitive)
+        let range = NSMakeRange(0, string.characters.count)
+        let res = regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+        return res
+    }
+}
+
 extension Date {
     static var today: String {
         let date = Date()

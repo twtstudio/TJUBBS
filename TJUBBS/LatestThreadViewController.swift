@@ -127,12 +127,9 @@ extension LatestThreadViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = threadList[indexPath.row]
-        //        print(data["username"]!)
-        let portraitImage = UIImage(named: "头像")
-        cell.initUI(portraitImage: nil, username: data.authorName, category: data.category, favor: false, title: data.title, detail: data.content, replyNumber: String(data.replyNumber), time: String(data.createTime))
-        let url = URL(string: BBSAPI.avatar(uid: data.authorID))
-        let cacheKey = "\(data.authorID)" + Date.today
-        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+
+
+        cell.initUI(thread: data)
         return cell
     }
     

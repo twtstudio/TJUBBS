@@ -8,33 +8,35 @@
 
 
 import UIKit
-
+import ObjectMapper
 class MyPostViewController: UIViewController {
     
     var tableView: UITableView?
-    var dataList = [
-        [
-            "image": "头像2",
-            "username": "苏轼",
-            "title": "念奴娇·赤壁怀古",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "头像2",
-            "username": "苏轼",
-            "title": "水调歌头·明月几时有",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "头像2",
-            "username": "苏轼",
-            "title": "江城子·乙卯正月二十日夜记梦",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ]
-    ] as Array<Dictionary<String, String>>
+//    var dataList = [
+//        [
+//            "image": "头像2",
+//            "username": "苏轼",
+//            "title": "念奴娇·赤壁怀古",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ],
+//        [
+//            "image": "头像2",
+//            "username": "苏轼",
+//            "title": "水调歌头·明月几时有",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ],
+//        [
+//            "image": "头像2",
+//            "username": "苏轼",
+//            "title": "江城子·乙卯正月二十日夜记梦",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ]
+//    ] as Array<Dictionary<String, String>>
+    var threadList: [ThreadModel] = []
+    var page = 0
     
     convenience init(para: Int) {
         self.init()
@@ -48,6 +50,17 @@ class MyPostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        refresh()
+    }
+    
+    func refresh() {
+        BBSJarvis.getMyThreadList(page: page) {
+            dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
+            }
+            self.tableView?.reloadData()
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -68,12 +81,7 @@ class MyPostViewController: UIViewController {
     }
     
     func initUI() {
-        guard dataList.count != 0 else {
-            let noDataLabel = UILabel(text: "你还没有发布的帖子哦～", color: .gray, fontSize: 20)
-            view.addSubview(noDataLabel)
-            noDataLabel.snp.makeConstraints { $0.center.equalToSuperview() }
-            return
-        }
+
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
@@ -92,20 +100,13 @@ extension MyPostViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList.count
+        return threadList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
-        let data = dataList[indexPath.row]
-        //        print(data["username"]!)
-        let portraitImage = UIImage(named: data["image"]!)
-        cell.initUI(portraitImage: portraitImage, username: data["username"]!, category: data["category"], favor: true, title: data["title"]!, detail: data["detail"], replyNumber: data["replyNumber"]!, time: data["time"]!)
-        cell.favorButton.isHidden = true
-//        let url = URL(string: BBSAPI.avatar(uid: data.authorID))
-//        let cacheKey = "\(data.authorID)" + Date.today
-//        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
-
+        let thread = threadList[indexPath.row]
+        cell.initUI(thread: thread)
         return cell
     }
     

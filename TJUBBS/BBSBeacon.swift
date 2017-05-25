@@ -60,8 +60,6 @@ struct BBSBeacon {
                     failure?(error)
                     log.error(error)/
                 }
-                //            }.downloadProgress {_ in
-                //                HUD.flash(.progress)
             }
 
 //            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in

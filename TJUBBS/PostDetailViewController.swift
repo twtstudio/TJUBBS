@@ -14,8 +14,9 @@ import Kingfisher
 class PostDetailViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
-    fileprivate var loadFlag = false
+    
     var tableView = UITableView(frame: .zero, style: .grouped)
+    fileprivate var loadFlag = false
     var webView = UIWebView()
     var webViewHeight: CGFloat = 0
     //    lazy var webViewLoad: Void = {
@@ -71,6 +72,7 @@ class PostDetailViewController: UIViewController {
     convenience init(thread: ThreadModel) {
         self.init()
         self.thread = thread
+        self.hidesBottomBarWhenPushed = true
     }
     
     override func viewDidLoad() {
@@ -87,6 +89,20 @@ class PostDetailViewController: UIViewController {
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         
+        BBSJarvis.getThread(threadID: thread!.id, page: 0) {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let thread = data["thread"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>> {
+                
+                self.thread = ThreadModel(JSON: thread)
+                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+            }
+            print("postList:\(self.postList)")
+            self.loadFlag = false
+            self.tableView.reloadData()
+        }
+        
         
     }
     
@@ -97,18 +113,6 @@ class PostDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        BBSJarvis.getThread(threadID: thread!.id, page: 0) {
-            dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let thread = data["thread"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>> {
-                
-                self.thread = ThreadModel(JSON: thread)
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
-            }
-            self.loadFlag = false
-            self.tableView.reloadData()
-        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -194,7 +198,12 @@ extension PostDetailViewController: UITableViewDataSource {
                 make.width.height.equalTo(screenSize.height*(144/1920))
             }
             favorButton.addTarget { button in
-                (button as? UIButton)?.setImage(UIImage(named: "已收藏"), for: .normal)
+                if let button = button as? UIButton {
+                    BBSJarvis.collect(threadID: self.thread!.id) {_ in
+                        button.setImage(UIImage(named: "已收藏"), for: .normal)
+                        button.tag = 1
+                    }
+                }
             }
             
             cell.contentView.addSubview(webView)
@@ -209,7 +218,21 @@ extension PostDetailViewController: UITableViewDataSource {
                 }
                 webView.delegate = self
                 //webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
-                webView.loadHTMLString(thread!.content, baseURL: nil)
+                var content = thread!.content
+                print("content: \(content)")
+                content = content.replacingOccurrences(of: "\\", with: "\\\\")
+                content = content.replacingOccurrences(of: "\"", with: "\\\\\"")
+                content = content.replacingOccurrences(of: "<", with: "&lt")
+                content = content.replacingOccurrences(of: ">", with: "&gt")
+                content = content.replacingOccurrences(of: "\n", with: "\\n")
+                // replace \\ with \\\\
+                // replace " with \\"
+                // replace < with &lt;
+                // replace > with &gt;
+                
+                let loadString = "<script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
+                print("string: \(loadString)")
+                webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
                 webView.scrollView.isScrollEnabled = false
                 webView.scrollView.bounces = false
             } else {
@@ -226,12 +249,8 @@ extension PostDetailViewController: UITableViewDataSource {
             return cell
         } else {
             let post = postList[indexPath.row]
-            let cell = replyCell()
-            cell.initUI(portraitImage: nil, username: post.authorName, detail: post.content, floor: String(post.floor), replyNumber: "", time: String(post.createTime), subReplyList: [] as? Array<Dictionary<String, String>>)
-            let url = URL(string: BBSAPI.avatar(uid: post.authorID))
-            let portraitImage = UIImage(named: "头像2")
-            let cacheKey = "\(post.authorID)" + Date.today
-            cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+            let cell = ReplyCell()
+            cell.initUI(post: post)
             return cell
         }
     }
@@ -254,6 +273,13 @@ extension PostDetailViewController: UITableViewDataSource {
 extension PostDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.section == 0 {
+            let replyVC = ReplyViewController(thread: thread)
+            self.navigationController?.pushViewController(replyVC, animated: true)
+        } else if indexPath.section == 1 {
+            let replyVC = ReplyViewController(thread: thread, post: postList[indexPath.row])
+            self.navigationController?.pushViewController(replyVC, animated: true)
+        }
     }
 }
 
