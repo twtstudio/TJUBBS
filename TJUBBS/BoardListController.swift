@@ -34,7 +34,6 @@ class BoardListController: UIViewController {
         
         BBSJarvis.getBoardList(forumID: (self.forum?.id)!, success: {
             dict in
-            //            print("dict:\(dict)")
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let boards = data["boards"] as? Array<Dictionary<String, Any>>{
                 for board in boards {
@@ -96,8 +95,8 @@ class BoardListController: UIViewController {
     }
     
     func addButtonTapped() {
-//        let AddVC = AddThreadViewController()
-        let addVC = AddThreadViewController(forum: forum)
+        let addVC = AddThreadViewController()
+//        let addVC = AddThreadViewController(forum: forum)
         self.navigationController?.pushViewController(addVC, animated: true)
     }
     

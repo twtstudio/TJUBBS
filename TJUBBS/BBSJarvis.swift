@@ -107,4 +107,33 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
     }
     
+
+    static func reply(threadID: Int, content: String, toID: Int? = nil, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        var parameters = ["content": content]
+        if let id = toID {
+            parameters["reply"] = String(id)
+        }
+        BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: success)
+    }
+    
+    static func getMessage(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.reciveMessage(page: page), parameters: nil, success: success)
+    }
+    
+    static func collect(threadID: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        let parameters = ["tid": "\(threadID)"]
+        BBSBeacon.request(withType: .post, url: BBSAPI.collect, parameters: parameters, success: success)
+    }
+    
+    static func deleteCollect(threadID: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .delete, url: BBSAPI.deleteCollection(threadID: threadID), parameters: nil, success: success)
+    }
+    
+    static func getCollectionList(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.collect, parameters: nil, success: success)
+    }
+    
+    static func getMyThreadList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.myThreadList(page: page), parameters: nil, success: success)
+    }
 }

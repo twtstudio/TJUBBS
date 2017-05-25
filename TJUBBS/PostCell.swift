@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Kingfisher
+
 
 class PostCell: UITableViewCell {
     
@@ -19,6 +21,7 @@ class PostCell: UITableViewCell {
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
     var timeLablel = UILabel(text: "", color: .lightGray, fontSize: 16)
+    var thread: ThreadModel?
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -31,16 +34,26 @@ class PostCell: UITableViewCell {
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
         favorButton.addTarget { button in
-            // TODO: 取消点赞
             if let button = button as? UIButton {
-                if button.tag == 1 {
-                    button.setImage(UIImage(named: "收藏"), for: .normal)
-                    button.tag = 0
-                } else {
+                BBSJarvis.collect(threadID: self.thread!.id) {_ in
                     button.setImage(UIImage(named: "已收藏"), for: .normal)
                     button.tag = 1
                 }
             }
+            // TODO: 取消点赞
+//            if let button = button as? UIButton {
+//                if button.tag == 1 {
+//                    BBSJarvis.deleteCollect(threadID: self.threadID!) {_ in
+//                        button.setImage(UIImage(named: "收藏"), for: .normal)
+//                        button.tag = 0
+//                    }
+//                } else {
+//                    BBSJarvis.collect(threadID: self.threadID!) {_ in
+//                        button.setImage(UIImage(named: "已收藏"), for: .normal)
+//                        button.tag = 1
+//                    }
+//                }
+//            }
         }
     }
     
@@ -56,9 +69,15 @@ class PostCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func initUI(portraitImage: UIImage?, username: String, category: String? = nil, favor: Bool = false, title: String, detail: String? = nil, replyNumber: String, time: String) {
+    //TODO: init UI with ThreadModel
+//    func initUI(portraitImage: UIImage?, username: String, category: String? = nil, favor: Bool = false, title: String, detail: String? = nil, replyNumber: String, time: String, threadID: Int) {
+    func initUI(thread: ThreadModel) {
+        self.thread = thread
         
-        portraitImageView.image = portraitImage
+        let portraitImage = UIImage(named: "头像2")
+        let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
+        let cacheKey = "\(thread.authorID)" + Date.today
+        portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         portraitImageView.snp.makeConstraints {
             make in
             make.top.left.equalToSuperview().offset(16)
@@ -67,14 +86,14 @@ class PostCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(80/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLabel.text = username
+        usernameLabel.text = thread.authorName
         usernameLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView).offset(2)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        favorButton.setImage(UIImage(named: favor ? "已收藏" : "收藏"), for: .normal)
+        favorButton.setImage(UIImage(named: thread.inCollection ? "已收藏" : "收藏"), for: .normal)
         favorButton.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView)
@@ -82,11 +101,11 @@ class PostCell: UITableViewCell {
             make.width.height.equalTo(screenSize.height*(144/1920))
         }
         
-        titleLabel.text = title
+        titleLabel.text = thread.title
         // size used to be 20
         titleLabel.font = UIFont.flexibleFont(ofBaseSize: 16.6)
-        if let label = category {
-            let fooTitle = labeledTitle(label: label, content: title)
+        if thread.category != "" {
+            let fooTitle = labeledTitle(label: thread.category, content: thread.title)
             titleLabel.attributedText = fooTitle
         }
         titleLabel.snp.makeConstraints {
@@ -97,11 +116,11 @@ class PostCell: UITableViewCell {
         }
         titleLabel.numberOfLines = 0
         
-        if let text = detail {
+        if thread.content != "" {
             if detailLabel.superview == nil {
                 contentView.addSubview(detailLabel)
             }
-            detailLabel.text = text
+            detailLabel.text = String.clearBBCode(string: thread.content)
             detailLabel.snp.makeConstraints {
                 make in
                 make.top.equalTo(titleLabel.snp.bottom).offset(8)
@@ -115,10 +134,10 @@ class PostCell: UITableViewCell {
         }
         detailLabel.numberOfLines = 0
         
-        replyNumberLabel.text = "回复(\(replyNumber))"
+        replyNumberLabel.text = "回复(\(thread.replyNumber))"
         replyNumberLabel.snp.makeConstraints {
             make in
-            if let _ = detail {
+            if thread.content != "" {
                 make.top.equalTo(detailLabel.snp.bottom).offset(16)
             } else {
                 make.top.equalTo(titleLabel.snp.bottom).offset(16)
@@ -127,7 +146,7 @@ class PostCell: UITableViewCell {
             make.bottom.equalToSuperview().offset(-16)
         }
         
-        let timeString = TimeStampTransfer.string(from: time, with: "yyyy-MM-dd")
+        let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd")
         timeLablel.text = timeString
         timeLablel.snp.makeConstraints {
             make in

@@ -8,51 +8,52 @@
 
 import UIKit
 import Kingfisher
-
+import ObjectMapper
 class FavorateViewController: UIViewController {
     
     var tableView: UITableView?
-    var dataList = [
-        [
-            "image": "portrait",
-            "username": "wangcong",
-            "category": "全站热点",
-            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "portrait",
-            "username": "yqzhufeng",
-            "title": "3月26日周日百人狼人单身趴",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "portrait",
-            "username": "yqzhufeng",
-            "title": "3月26日周日百人狼人单身趴",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "portrait",
-            "username": "wangcong",
-            "category": "全站热点",
-            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ],
-        [
-            "image": "portrait",
-            "username": "yqzhufeng",
-            "title": "3月26日周日百人狼人单身趴",
-            "replyNumber": "20",
-            "time": "1494061223"
-        ]
-    ] as Array<Dictionary<String, String>>
+//    var dataList = [
+//        [
+//            "image": "portrait",
+//            "username": "wangcong",
+//            "category": "全站热点",
+//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
+//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ],
+//        [
+//            "image": "portrait",
+//            "username": "yqzhufeng",
+//            "title": "3月26日周日百人狼人单身趴",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ],
+//        [
+//            "image": "portrait",
+//            "username": "yqzhufeng",
+//            "title": "3月26日周日百人狼人单身趴",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ],
+//        [
+//            "image": "portrait",
+//            "username": "wangcong",
+//            "category": "全站热点",
+//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
+//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ],
+//        [
+//            "image": "portrait",
+//            "username": "yqzhufeng",
+//            "title": "3月26日周日百人狼人单身趴",
+//            "replyNumber": "20",
+//            "time": "1494061223"
+//        ]
+//    ] as Array<Dictionary<String, String>>
+    var threadList: [ThreadModel] = []
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -70,6 +71,13 @@ class FavorateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        BBSJarvis.getCollectionList {
+            dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
+            }
+            self.tableView?.reloadData()
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -90,12 +98,7 @@ class FavorateViewController: UIViewController {
     }
     
     func initUI() {
-        guard dataList.count != 0 else {
-            let noDataLabel = UILabel(text: "你还没有收藏的帖子哦～", color: .gray, fontSize: 20)
-            view.addSubview(noDataLabel)
-            noDataLabel.snp.makeConstraints { $0.center.equalToSuperview() }
-            return
-        }
+
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
@@ -114,18 +117,16 @@ extension FavorateViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataList.count
+        return threadList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
-        let data = dataList[indexPath.row]
-//        print(data["username"]!)
-        let portraitImage = UIImage(named: data["image"]!)
-        cell.initUI(portraitImage: portraitImage, username: data["username"]!, category: data["category"], favor: true, title: data["title"]!, detail: data["detail"], replyNumber: data["replyNumber"]!, time: data["time"]!)
-//        let url = URL(string: BBSAPI.avatar(uid: data["authorID"]!))
-//        let cacheKey = "\(data["authorID"]!)" + Date.today
-//        cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+     
+        var thread = threadList[indexPath.row]
+        thread.inCollection = true
+        cell.initUI(thread: thread)
+
         return cell
     }
     
@@ -143,6 +144,7 @@ extension FavorateViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = PostDetailViewController()
+        detailVC.thread = threadList[indexPath.row]
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
