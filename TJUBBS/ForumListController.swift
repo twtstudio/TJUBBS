@@ -94,7 +94,7 @@ extension ForumListController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionForumCell", for: indexPath)
         cell.backgroundView = UIImageView()
         let url = URL(string: BBSAPI.forumCover(fid: indexPath.row))
-        (cell.backgroundView as? UIImageView)?.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(indexPath.row)"), placeholder: UIImage(named: "forumPic"))
+        (cell.backgroundView as? UIImageView)?.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(indexPath.row)"), placeholder: UIImage(named: "ForumCover\(indexPath.row % 8)"))
         let label = UILabel(text: forumList[indexPath.row].name)
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.white

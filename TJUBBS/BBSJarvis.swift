@@ -42,7 +42,8 @@ struct BBSJarvis {
                 let points = data["points"],
                 let level = data["level"],
                 let c_online = data["c_online"],
-                let group = data["group"] {
+                let group = data["group"],
+                let createTime = data["t_create"] {
                 BBSUser.shared.username = name as? String
                 BBSUser.shared.nickname = (nickname as? String) ?? (name as? String)
                 //                BBSUser.shared.realName = real_name as? String
@@ -53,6 +54,7 @@ struct BBSJarvis {
                 BBSUser.shared.level = level as? Int
                 BBSUser.shared.cOnline = c_online as? Int
                 BBSUser.shared.group = group as? Int
+                BBSUser.shared.createTime = createTime as? Int
                 BBSUser.save()
             } else if let err = dict["err"] as? Int, err == 0 {
                 failure()
@@ -134,6 +136,7 @@ struct BBSJarvis {
     }
     
     static func getMyThreadList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        print(BBSAPI.myThreadList(page: page))
         BBSBeacon.request(withType: .get, url: BBSAPI.myThreadList(page: page), parameters: nil, success: success)
     }
 }

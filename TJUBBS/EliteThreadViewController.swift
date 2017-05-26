@@ -9,6 +9,7 @@
 import UIKit
 import ObjectMapper
 import Kingfisher
+import MJRefresh
 
 class EliteThreadViewController: UIViewController {
     
@@ -72,15 +73,7 @@ class EliteThreadViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 //        print("I'm Elite")
-        BBSJarvis.getIndex {
-            dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let hot = data["hot"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) ?? []
-            }
-            print("threadlist: \(self.threadList)")
-            self.tableView?.reloadData()
-        }
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -111,6 +104,23 @@ class EliteThreadViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
+        
+        tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        tableView?.mj_header.beginRefreshing()
+    }
+    
+    func refresh() {
+        BBSJarvis.getIndex {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let hot = data["hot"] as? Array<Dictionary<String, Any>> {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) ?? []
+            }
+            if (self.tableView?.mj_header.isRefreshing())! {
+                self.tableView?.mj_header.endRefreshing()
+            }
+            self.tableView?.reloadData()
+        }
     }
 }
 
@@ -146,7 +156,7 @@ extension EliteThreadViewController: UITableViewDataSource {
 extension EliteThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController(thread: threadList[indexPath.row])
+        let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

@@ -9,6 +9,7 @@
 
 import UIKit
 import ObjectMapper
+import MJRefresh
 class MyPostViewController: UIViewController {
     
     var tableView: UITableView?
@@ -50,14 +51,35 @@ class MyPostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        refresh()
+
     }
     
     func refresh() {
+        page = 0
         BBSJarvis.getMyThreadList(page: page) {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
+            }
+            if (self.tableView?.mj_header.isRefreshing())! {
+                self.tableView?.mj_header.endRefreshing()
+            }
+            self.tableView?.reloadData()
+        }
+    }
+    
+    func load() {
+        page += 1
+        BBSJarvis.getMyThreadList(page: page) {
+            dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                let fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
+                for thread in fooThreadList {
+                    self.threadList.append(thread)
+                }
+            }
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
             }
             self.tableView?.reloadData()
         }
@@ -90,6 +112,11 @@ class MyPostViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
+        
+        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView?.mj_footer.isAutomaticallyHidden = true
+        self.tableView?.mj_header.beginRefreshing()
     }
 }
 
@@ -105,7 +132,8 @@ extension MyPostViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
-        let thread = threadList[indexPath.row]
+        var thread = threadList[indexPath.row]
+        thread.authorID = BBSUser.shared.uid!
         cell.initUI(thread: thread)
         return cell
     }
@@ -123,7 +151,7 @@ extension MyPostViewController: UITableViewDataSource {
 extension MyPostViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController()
+        let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
