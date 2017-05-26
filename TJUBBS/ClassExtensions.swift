@@ -239,7 +239,10 @@ extension String {
     static func clearBBCode(string: String) -> String {
         let regex = try! NSRegularExpression(pattern: "\\[.*?\\]", options: NSRegularExpression.Options.caseInsensitive)
         let range = NSMakeRange(0, string.characters.count)
-        let res = regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+        var res = regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+        res = res.replacingOccurrences(of: "&amp;#91;", with: "[")
+        res = res.replacingOccurrences(of: "&amp;#93;", with: "]")
+        res = res.replacingOccurrences(of: "&amp;rsquo;", with: "'")
         return res
     }
 }

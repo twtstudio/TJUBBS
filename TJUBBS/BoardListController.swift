@@ -129,7 +129,7 @@ extension BoardListController: UITableViewDataSource {
         //        return ThreadCell(type: .none, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "lksjdlakjsdlkjaslkdjlaksjdlkasjdljaslaskldka;slkd;laskd;lkas;ldk;alskd;laksdhkajshdkjahkdjaslkjdlasjdklsl")
 //        let cell = ThreadCell(type: .single, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "你不是真正的快乐 你的笑只是你穿的保护色 你决定不恨了 也决定不爱了 把你的灵魂关在永远锁上的躯壳")
         let thread = threadList[indexPath.section][indexPath.row]
-        let cell = ThreadCell(type: .single, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: thread.content)
+        let cell = ThreadCell(type: .none, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: String.clearBBCode(string: thread.content))
         // FIXME: 替换图片
         cell.imgView?.image = UIImage(named: "封面")
         return cell

@@ -18,7 +18,7 @@ struct MessageModel: Mappable {
     var authorNickname = ""
     var tag = 0
     var read = -1
-    var t_create = 0
+    var createTime = 0
     
     init?(map: Map) {}
     
@@ -30,7 +30,7 @@ struct MessageModel: Mappable {
         authorNickname <- map["author_nickname"]
         tag <- map["tag"]
         read <- map["read"]
-        t_create <- map["t_create"]
+        createTime <- map["t_create"]
     }
 
 }

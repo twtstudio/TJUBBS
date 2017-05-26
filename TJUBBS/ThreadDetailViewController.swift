@@ -10,6 +10,7 @@
 import UIKit
 import ObjectMapper
 import Kingfisher
+import PKHUD
 
 class ThreadDetailViewController: UIViewController {
     
@@ -25,6 +26,9 @@ class ThreadDetailViewController: UIViewController {
     //    }()
     var thread: ThreadModel?
     var postList: [PostModel] = []
+    var replyView: UIView?
+    var replyTextField: UITextField?
+    var replyButton: UIButton?
     
     //    var postDetail = [
     //        "image": "头像",
@@ -84,6 +88,7 @@ class ThreadDetailViewController: UIViewController {
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         initUI()
+        becomeKeyboardObserver()
         
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
@@ -91,6 +96,7 @@ class ThreadDetailViewController: UIViewController {
         
         BBSJarvis.getThread(threadID: thread!.id, page: 0) {
             dict in
+            print(dict)
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let thread = data["thread"] as? Dictionary<String, Any>,
                 let posts = data["post"] as? Array<Dictionary<String, Any>> {
@@ -98,7 +104,6 @@ class ThreadDetailViewController: UIViewController {
                 self.thread = ThreadModel(JSON: thread)
                 self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
             }
-            print("postList:\(self.postList)")
             self.loadFlag = false
             self.tableView.reloadData()
         }
@@ -121,7 +126,11 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         view.addSubview(tableView)
-        tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        tableView.snp.makeConstraints {
+            make in
+            make.bottom.equalToSuperview()
+            make.top.left.right.equalToSuperview()
+        }
         tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
         tableView.delegate = self
         tableView.dataSource = self
@@ -129,6 +138,48 @@ class ThreadDetailViewController: UIViewController {
         tableView.estimatedRowHeight = 300
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+        
+//        replyView = UIView()
+//        view.addSubview(replyView!)
+//        replyView?.snp.makeConstraints {
+//            make in
+//            make.top.equalTo(tableView.snp.bottom)
+//            make.left.right.bottom.equalToSuperview()
+//        }
+//        replyView?.backgroundColor = .white
+//        
+//        replyTextField = UITextField()
+//        replyView?.addSubview(replyTextField!)
+//        replyTextField?.snp.makeConstraints {
+//            make in
+//            make.top.equalToSuperview().offset(8)
+//            make.left.equalToSuperview().offset(16)
+//            make.width.equalTo(screenSize.width*(820/1080))
+//            make.bottom.equalToSuperview().offset(-8)
+//        }
+//        replyTextField?.borderStyle = .roundedRect
+//        replyTextField?.returnKeyType = .done
+//        replyTextField?.delegate = self
+//        
+//        replyButton = UIButton.confirmButton(title: "回复")
+//        replyView?.addSubview(replyButton!)
+//        replyButton?.snp.makeConstraints {
+//            make in
+//            make.top.equalToSuperview().offset(8)
+//            make.left.equalTo(replyTextField!.snp.right).offset(4)
+//            make.right.equalToSuperview().offset(-16)
+//            make.bottom.equalToSuperview().offset(-8)
+//        }
+//        replyButton?.addTarget(withBlock: {_ in
+//            if let text = self.replyTextField?.text, text != "" {
+//                BBSJarvis.reply(threadID: self.thread!.id, content: text, success: { _ in
+//                    HUD.flash(.success)
+//                })
+//                self.dismissKeyboard()
+//            } else {
+//                HUD.flash(.label("内容不能为空"))
+//            }
+//        })
     }
     
     func share() {
@@ -219,7 +270,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 webView.delegate = self
                 //webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
                 var content = thread!.content
-                print("content: \(content)")
+                content = content.replacingOccurrences(of: "\r", with: "")
                 content = content.replacingOccurrences(of: "\\", with: "\\\\")
                 content = content.replacingOccurrences(of: "\"", with: "\\\\\"")
                 content = content.replacingOccurrences(of: "<", with: "&lt")
@@ -231,7 +282,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 // replace > with &gt;
                 
                 let loadString = "<script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
-                print("string: \(loadString)")
+                print(loadString)
                 webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
                 webView.scrollView.isScrollEnabled = false
                 webView.scrollView.bounces = false
@@ -297,3 +348,66 @@ extension ThreadDetailViewController: UIWebViewDelegate {
     }
 }
 
+extension ThreadDetailViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == replyTextField {
+            textField.text = ""
+            self.dismissKeyboard()
+        }
+        return true
+    }
+}
+
+//keyboard layout
+extension ThreadDetailViewController {
+    
+    override func becomeKeyboardObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        //        print("用的是我，口亨～")
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        
+        let userInfo  = notification.userInfo! as Dictionary
+        let keyboardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        let deltaY = keyboardBounds.size.height
+        let animations:(() -> Void) = {
+            self.replyView?.transform = CGAffineTransform(translationX: 0, y: -deltaY)
+        }
+        if duration > 0 {
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
+            UIView.animate(withDuration: duration, delay: 0, options: options, animations: animations, completion: nil)
+        } else {
+            animations()
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        
+        let userInfo  = notification.userInfo! as Dictionary
+        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        
+        let animations:(() -> Void) = {
+            self.replyView?.transform = CGAffineTransform(translationX: 0, y: 0)
+        }
+        
+        if duration > 0 {
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
+            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
+        } else {
+            animations()
+        }
+    }
+    
+}
+
+extension ThreadDetailViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return true
+    }
+}

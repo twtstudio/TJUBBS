@@ -8,6 +8,7 @@
 
 import UIKit
 import PKHUD
+import Kingfisher
 
 class ReplyViewController: UIViewController {
     
@@ -125,10 +126,14 @@ class ReplyViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-8)
         }
         replyButton?.addTarget(withBlock: {_ in
-            BBSJarvis.reply(threadID: self.thread!.id, content: self.replyTextField?.text ?? "", toID: self.post?.id, success: { _ in
-                HUD.flash(.success)
-            })
-            self.dismissKeyboard()
+            if let text = self.replyTextField?.text, text != "" {
+                BBSJarvis.reply(threadID: self.thread!.id, content: text, toID: self.post?.id, success: { _ in
+                    HUD.flash(.success)
+                })
+                self.dismissKeyboard()
+            } else {
+                HUD.flash(.label("内容不能为空"))
+            }
         })
     }
     
@@ -156,7 +161,11 @@ extension ReplyViewController: UITableViewDataSource {
             return cell
         } else if thread != nil {
             let cell = UITableViewCell()
-            let portraitImageView = UIImageView(image: UIImage(named: "头像2"))
+            let portraitImageView = UIImageView()
+            let portraitImage = UIImage(named: "头像2")
+            let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
+            let cacheKey = "\(thread!.authorID)" + Date.today
+            portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
             cell.contentView.addSubview(portraitImageView)
             portraitImageView.snp.makeConstraints {
                 make in

@@ -379,10 +379,10 @@
 				6826D7421EB5F561000F520B /* ClassExtensions.swift */,
 				68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */,
 				68EFEBA11ECB164B00FD5EB4 /* ReplyViewController.swift */,
-				36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */,
 				6823C49A1EBC077D00FBB5C7 /* PostCell.swift */,
 				68B683531EC2F02700F7A0BF /* ReplyCell.swift */,
 				68B683551EC2F29100F7A0BF /* SubReplyView.swift */,
+				36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -810,6 +810,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -825,6 +826,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

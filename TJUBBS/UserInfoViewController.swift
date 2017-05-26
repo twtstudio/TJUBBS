@@ -87,7 +87,7 @@ class UserInfoViewController: UIViewController {
         
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
-        portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像")
+        portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像2")
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
