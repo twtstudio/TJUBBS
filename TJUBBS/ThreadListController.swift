@@ -70,7 +70,7 @@ class ThreadListController: UIViewController {
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
 
-        
+        //TODO: put this in view did load
         self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         self.tableView?.mj_footer.isAutomaticallyHidden = true
@@ -114,7 +114,7 @@ extension ThreadListController: UITableViewDataSource {
 extension ThreadListController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = PostDetailViewController(thread: threadList[indexPath.row])
+        let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
@@ -122,7 +122,7 @@ extension ThreadListController: UITableViewDelegate {
 
 extension ThreadListController {
     func refresh() {
-        
+        self.curPage = 0
         BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,

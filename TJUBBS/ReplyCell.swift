@@ -74,7 +74,6 @@ class ReplyCell: UITableViewCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        print("clearBBcode: \(String.clearBBCode(string: post.content))")
         detailLabel.text = String.clearBBCode(string: post.content)
         detailLabel.snp.makeConstraints {
             make in

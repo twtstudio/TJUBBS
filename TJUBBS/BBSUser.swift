@@ -40,6 +40,7 @@ class BBSUser {
     var cOnline: Int?
     var uid: Int?
     var group: Int?
+    var createTime: Int?
     var avatar: UIImage?
     
 //    required init?(map: Map) {}

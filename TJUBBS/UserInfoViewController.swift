@@ -54,12 +54,12 @@ class UserInfoViewController: UIViewController {
         self.navigationItem.backBarButtonItem = backItem
         // Do any additional setup after loading the view, typically from a nib.
         
-        BBSJarvis.getMessage(page: 0, success: {
-            dict in
-            if let data = dict["data"] as? [[String: Any]] {
-                self.messageList = Mapper<MessageModel>().mapArray(JSONArray: data)!
-            }
-        })
+//        BBSJarvis.getMessage(page: 0, success: {
+//            dict in
+//            if let data = dict["data"] as? [[String: Any]] {
+//                self.messageList = Mapper<MessageModel>().mapArray(JSONArray: data)!
+//            }
+//        })
     }
     
     override func didReceiveMemoryWarning() {
@@ -250,7 +250,8 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalTo(pointLabel!)
         }
         
-        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
+//        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
+        ageLabel = UILabel(text: "\(TimeStampTransfer.daysString(time: BBSUser.shared.createTime ?? 1494797867))", color: .white, fontSize: 20)
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {
             make in

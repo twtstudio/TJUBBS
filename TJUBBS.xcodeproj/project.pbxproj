@@ -45,7 +45,7 @@
 		68B683491EC1F24600F7A0BF /* MessageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */; };
 		68B6834D1EC200D800F7A0BF /* MyPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */; };
 		68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */; };
-		68B683521EC20F7100F7A0BF /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683511EC20F7100F7A0BF /* PostDetailViewController.swift */; };
+		68B683521EC20F7100F7A0BF /* ThreadDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */; };
 		68B683541EC2F02700F7A0BF /* ReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683531EC2F02700F7A0BF /* ReplyCell.swift */; };
 		68B683561EC2F29100F7A0BF /* SubReplyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683551EC2F29100F7A0BF /* SubReplyView.swift */; };
 		68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683571EC31BE700F7A0BF /* LatestThreadViewController.swift */; };
@@ -122,7 +122,7 @@
 		68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageDetailViewController.swift; sourceTree = "<group>"; };
 		68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostViewController.swift; sourceTree = "<group>"; };
 		68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomepageMainController.swift; sourceTree = "<group>"; };
-		68B683511EC20F7100F7A0BF /* PostDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
+		68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadDetailViewController.swift; sourceTree = "<group>"; };
 		68B683531EC2F02700F7A0BF /* ReplyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyCell.swift; sourceTree = "<group>"; };
 		68B683551EC2F29100F7A0BF /* SubReplyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubReplyView.swift; sourceTree = "<group>"; };
 		68B683571EC31BE700F7A0BF /* LatestThreadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestThreadViewController.swift; sourceTree = "<group>"; };
@@ -377,7 +377,7 @@
 			isa = PBXGroup;
 			children = (
 				6826D7421EB5F561000F520B /* ClassExtensions.swift */,
-				68B683511EC20F7100F7A0BF /* PostDetailViewController.swift */,
+				68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */,
 				68EFEBA11ECB164B00FD5EB4 /* ReplyViewController.swift */,
 				36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */,
 				6823C49A1EBC077D00FBB5C7 /* PostCell.swift */,
@@ -402,10 +402,10 @@
 				36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */,
 				368D36A21EBA224C002978C6 /* SetInfoViewController.swift */,
 				68F461511EBDCCE900D784F4 /* FavorateViewController.swift */,
+				68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */,
 				68F461551EBE264800D784F4 /* SettingViewController.swift */,
 				68B683441EBEC17100F7A0BF /* MessageViewController.swift */,
 				68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */,
-				68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -612,7 +612,7 @@
 				6849ABC11EC8BF8100042B5F /* PostModel.swift in Sources */,
 				36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */,
 				36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */,
-				68B683521EC20F7100F7A0BF /* PostDetailViewController.swift in Sources */,
+				68B683521EC20F7100F7A0BF /* ThreadDetailViewController.swift in Sources */,
 				68B5A52A1EBB162700968FFD /* UserInfoViewController.swift in Sources */,
 				68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */,
 				68EFEBA21ECB164B00FD5EB4 /* ReplyViewController.swift in Sources */,

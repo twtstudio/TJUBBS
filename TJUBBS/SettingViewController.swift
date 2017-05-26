@@ -75,7 +75,11 @@ extension SettingViewController: UITableViewDataSource {
             return cell
         } else if indexPath.section == 1 {
             let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
-            cell.textLabel?.text = "退出登录"
+            if let token = BBSUser.shared.token, token != "" {
+                cell.textLabel?.text = "退出登录"
+            } else {
+                cell.textLabel?.text = "马上登录"
+            }
             cell.textLabel?.textAlignment = .center
             cell.textLabel?.textColor = .BBSRed
             cell.textLabel?.font = UIFont.systemFont(ofSize: 20)

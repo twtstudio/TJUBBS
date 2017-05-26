@@ -1,5 +1,5 @@
 //
-//  PostDetailViewController.swift
+//  ThreadDetailViewController.swift
 //  TJUBBS
 //
 //  Created by JinHongxu on 2017/5/9.
@@ -11,7 +11,7 @@ import UIKit
 import ObjectMapper
 import Kingfisher
 
-class PostDetailViewController: UIViewController {
+class ThreadDetailViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
     
@@ -137,7 +137,7 @@ class PostDetailViewController: UIViewController {
     }
 }
 
-extension PostDetailViewController: UITableViewDataSource {
+extension ThreadDetailViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
@@ -270,7 +270,7 @@ extension PostDetailViewController: UITableViewDataSource {
     
 }
 
-extension PostDetailViewController: UITableViewDelegate {
+extension ThreadDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 0 {
@@ -283,7 +283,7 @@ extension PostDetailViewController: UITableViewDelegate {
     }
 }
 
-extension PostDetailViewController: UIWebViewDelegate {
+extension ThreadDetailViewController: UIWebViewDelegate {
     func webViewDidFinishLoad(_ webView: UIWebView) {
         loadFlag = true
         let actualSize = webView.sizeThatFits(.zero)
