@@ -14,9 +14,9 @@ class PostCell: UITableViewCell {
     
     let screenSize = UIScreen.main.bounds.size
     var portraitImageView = UIImageView()
-    var usernameLabel = UILabel(text: "", color: .black, fontSize: 18)
+    var usernameLabel = UILabel(text: "", color: .black, fontSize: 16)
     var favorButton = UIButton(imageName: "收藏")
-    var titleLabel = UILabel(text: "")
+    var titleLabel = UILabel(text: "", color: .black, fontSize: 20)
     
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
@@ -142,7 +142,7 @@ class PostCell: UITableViewCell {
             } else {
                 make.top.equalTo(titleLabel.snp.bottom).offset(16)
             }
-            make.left.equalToSuperview().offset(24)
+            make.left.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().offset(-16)
         }
         

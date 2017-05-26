@@ -255,6 +255,7 @@ extension ReplyViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == replyTextField {
+            textField.text = ""
             self.dismissKeyboard()
         }
         return true

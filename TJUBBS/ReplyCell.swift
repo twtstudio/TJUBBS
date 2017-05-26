@@ -99,6 +99,7 @@ class ReplyCell: UITableViewCell {
             make.centerY.equalTo(timeLablel)
             make.right.equalToSuperview().offset(-16)
         }
+        replyNumberLabel.alpha = 0
         
 //        if let list = subReplyList {
 //            for i in 0..<list.count {
