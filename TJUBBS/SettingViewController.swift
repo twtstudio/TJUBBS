@@ -12,7 +12,7 @@ class SettingViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
-    var contentArray = ["接受陌生人私信", "夜间模式", "公开个人资料"]
+    var contentArray = ["接受陌生人私信", "公开个人资料"]
     //FIX ME: should initUI in init or viewDidLoad
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
