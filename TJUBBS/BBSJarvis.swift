@@ -38,7 +38,9 @@ struct BBSJarvis {
                 //                let real_name = data["real_name"],
                 let signature = data["signature"],
                 let post_count = data["c_post"],
+                let thread_count = data["c_thread"],
                 let unread_count = data["c_unread"],
+                let tCreate = data["t_create"],
                 let points = data["points"],
                 let level = data["level"],
                 let c_online = data["c_online"],
@@ -55,6 +57,9 @@ struct BBSJarvis {
                 BBSUser.shared.cOnline = c_online as? Int
                 BBSUser.shared.group = group as? Int
                 BBSUser.shared.createTime = createTime as? Int
+                BBSUser.shared.threadCount = thread_count as? Int
+                BBSUser.shared.tCreate = tCreate as? Int
+
                 BBSUser.save()
             } else if let err = dict["err"] as? Int, err == 0 {
                 failure()
@@ -107,6 +112,27 @@ struct BBSJarvis {
         print("API:\(BBSAPI.postThread(boardID: boardID))")
         print(parameters)
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
+    }
+    
+    static func getMsgList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.message(page: page), parameters: nil, failure: failure) { dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                var msgList = Array<MessageModel>()
+                for msg in data {
+                    let model = MessageModel(JSON: msg)
+                    if var model = model {
+                        if (msg["content"] as? String) != nil {
+                            msgList.append(model)
+                        } else if let content = msg["content"] as? [String : Any] {
+                            let contentModel = MessageContentModel(JSON: content)
+                            model.detailContent = contentModel
+                            msgList.append(model)
+                        }
+                    }
+                }
+                success(msgList)
+            }
+        }
     }
     
 

@@ -19,6 +19,7 @@ struct TimeStampTransfer {
         return dateFormatter.string(from: timeStamp as Date)
     }
     
+
     static func daysString(time: Int) -> String {
         let now = Date()
         let timeStamp = Int(now.timeIntervalSince1970)
@@ -52,5 +53,6 @@ struct TimeStampTransfer {
         } else {
             return self.minutesString(time: time)
         }
+
     }
 }
