@@ -57,7 +57,7 @@ class AddThreadViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(doneButtonTapped))
         
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
@@ -140,7 +140,8 @@ extension AddThreadViewController: UITableViewDataSource {
                     make.height.width.equalTo(screenSize.height*(88/1920))
                 }
                 
-                rightImageView.addTapGestureRecognizer {
+//                rightImageView.addTapGestureRecognizer {
+                cell.addTapGestureRecognizer {
                     sender in
                     if self.openForumListFlag == false {
                         BBSJarvis.getForumList {
@@ -182,7 +183,8 @@ extension AddThreadViewController: UITableViewDataSource {
                     make.height.width.equalTo(screenSize.height*(88/1920))
                 }
                 
-                rightImageView.addTapGestureRecognizer {
+//                rightImageView.addTapGestureRecognizer {
+                cell.addTapGestureRecognizer {
                     sender in
                     if self.openBoardListFlag == false {
                         if let forum = self.selectedForum {
@@ -204,6 +206,7 @@ extension AddThreadViewController: UITableViewDataSource {
                     }
                 }
                 rightImageView.isHidden = !tableView.allowsSelection
+                cell.isUserInteractionEnabled = false
                 return cell
             } else {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "normalCell")

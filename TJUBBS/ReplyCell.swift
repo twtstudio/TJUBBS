@@ -85,7 +85,7 @@ class ReplyCell: UITableViewCell {
         }
         detailLabel.numberOfLines = 0
         
-        floorLabel.text = "第 \(post.floor) 楼"
+        floorLabel.text = "\(post.floor) 楼"
         floorLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(usernameLable)

@@ -39,7 +39,7 @@ struct BBSJarvis {
                 let signature = data["signature"],
                 let post_count = data["c_post"],
                 let thread_count = data["c_thread"],
-                let unread_count = data["c_unread"],
+//                let unread_count = data["c_unread"],
                 let tCreate = data["t_create"],
                 let points = data["points"],
                 let level = data["level"],
@@ -51,7 +51,7 @@ struct BBSJarvis {
                 //                BBSUser.shared.realName = real_name as? String
                 BBSUser.shared.signature = signature as? String
                 BBSUser.shared.postCount = post_count as? Int
-                BBSUser.shared.unreadCount = unread_count as? Int
+//                BBSUser.shared.unreadCount = unread_count as? Int
                 BBSUser.shared.points = points as? Int
                 BBSUser.shared.level = level as? Int
                 BBSUser.shared.cOnline = c_online as? Int

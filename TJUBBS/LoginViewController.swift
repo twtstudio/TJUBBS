@@ -191,7 +191,6 @@ class LoginViewController: UIViewController {
             return true
         }
         registerButton?.addTarget { _ in
-            // FIXME: 密码要求
             let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-6~30字节-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
                 if let result = result as? [String : String] {
                     if check(result) == true {

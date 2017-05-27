@@ -9,6 +9,7 @@
 import UIKit
 import PKHUD
 import Kingfisher
+import ObjectMapper
 
 class ReplyViewController: UIViewController {
     
@@ -86,7 +87,7 @@ class ReplyViewController: UIViewController {
         tableView?.snp.makeConstraints {
             make in
             make.top.left.right.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-56)
+            make.bottom.equalToSuperview().offset(-45)
         }
         tableView?.delegate = self
         tableView?.dataSource = self
@@ -105,8 +106,7 @@ class ReplyViewController: UIViewController {
         
         replyTextField = UITextField()
         replyView?.addSubview(replyTextField!)
-        replyTextField?.snp.makeConstraints {
-            make in
+        replyTextField?.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
             make.left.equalToSuperview().offset(16)
             make.width.equalTo(screenSize.width*(820/1080))
@@ -122,13 +122,15 @@ class ReplyViewController: UIViewController {
             make in
             make.top.equalToSuperview().offset(8)
             make.left.equalTo(replyTextField!.snp.right).offset(4)
-            make.right.equalToSuperview().offset(-16)
+            make.right.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-8)
         }
         replyButton?.addTarget(withBlock: {_ in
             if let text = self.replyTextField?.text, text != "" {
                 BBSJarvis.reply(threadID: self.thread!.id, content: text, toID: self.post?.id, success: { _ in
                     HUD.flash(.success)
+                    self.replyTextField?.text = ""
+                    let _ = self.navigationController?.popViewController(animated: true)
                 })
                 self.dismissKeyboard()
             } else {

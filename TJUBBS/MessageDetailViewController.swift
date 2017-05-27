@@ -141,7 +141,7 @@ extension MessageDetailViewController: UITableViewDataSource {
         case 0:
             let cell = MessageCell()
 //            cell.initUI(portraitImage: UIImage(named: data["portrait"]!), username: "\(data["username"]!)[\(data["label"]!)]", time: data["time"]!, detail: data["sign"]!)
-            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.t_create), detail: "")
+            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: "")
             let portraitImage = UIImage(named: "头像")
             
             let url = URL(string: BBSAPI.avatar(uid: model.authorId))

@@ -37,7 +37,8 @@ extension UIButton {
         button.setTitleColor(.white, for: .normal)
         button.setBackgroundImage(UIImage(color: .lightGray), for: .disabled)
         button.setBackgroundImage(UIImage(color: .BBSBlue), for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+//        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        button.titleLabel?.font = UIFont.flexibleFont(ofBaseSize: 15)
         button.layer.cornerRadius = 5.0
         button.clipsToBounds = true
         

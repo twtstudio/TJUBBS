@@ -41,7 +41,7 @@ struct DeviceStatus {
     }
 
     private static func getIPAddresses() -> [String: String] {
-        var addresses = [String: String]()
+        return [String: String]()
 //        
 //        // Get list of all interfaces on the local machine:
 //        var ifaddr : UnsafeMutablePointer<ifaddrs>?
@@ -72,7 +72,7 @@ struct DeviceStatus {
 //            }
 //        }
 //        freeifaddrs(ifaddr)
-        return addresses
+//        return addresses
     }
     
     static var deviceOSVersion: String {
@@ -97,7 +97,6 @@ struct DeviceStatus {
                 return address
             }
         }
-        // FIXME: Null IPv6 address?
         return preference ? "0.0.0.0": "::"
     }
     
