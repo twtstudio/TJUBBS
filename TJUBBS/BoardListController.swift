@@ -21,12 +21,14 @@ class BoardListController: UIViewController {
         //why this line cause nil forum
         //view.backgroundColor = .white
         self.forum = forum
-        
-        tableView = UITableView(frame: self.view.bounds, style: .grouped)
+        tableView = UITableView(frame: .zero, style: .grouped)
+        self.view.addSubview(tableView!)
+        tableView?.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         tableView?.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.94, alpha:1.00)
         tableView?.delegate = self
         tableView?.dataSource = self
-        self.view.addSubview(tableView!)
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.separatorStyle = .none
         tableView?.estimatedRowHeight = 120
