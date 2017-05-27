@@ -34,6 +34,7 @@ struct BBSBeacon {
         }
         // the next line absofuckinglutely sucks
 //         let para = parameters ?? [:]
+        Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 20
         if type == .get || type == .post || type == .put {
             Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseString { response in
                 switch response.result {
@@ -60,6 +61,8 @@ struct BBSBeacon {
                     failure?(error)
 //                    log.error(error)/
                 }
+//                            }.downloadProgress {_ in
+//                                HUD.flash(.progress)
             }
 
 //            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in

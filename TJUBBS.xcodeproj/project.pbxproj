@@ -183,6 +183,8 @@
 			isa = PBXGroup;
 			children = (
 				3699D16F1ECB34630013D2FD /* MessageModel.swift */,
+				68B683441EBEC17100F7A0BF /* MessageViewController.swift */,
+				68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -404,8 +406,7 @@
 				68F461511EBDCCE900D784F4 /* FavorateViewController.swift */,
 				68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */,
 				68F461551EBE264800D784F4 /* SettingViewController.swift */,
-				68B683441EBEC17100F7A0BF /* MessageViewController.swift */,
-				68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */,
+				68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
