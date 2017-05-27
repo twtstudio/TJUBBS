@@ -70,22 +70,6 @@ class ThreadDetailViewController: UIViewController {
         }
     }
     
-    func reloadPosts() {
-        BBSJarvis.getThread(threadID: self.thread!.id, page: 0) {
-            dict in
-            print(dict)
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let thread = data["thread"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>> {
-                
-                self.thread = ThreadModel(JSON: thread)
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
-            }
-            self.loadFlag = false
-            self.tableView.reloadSections([1], with: .middle)
-        }
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -93,9 +77,6 @@ class ThreadDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if loadFlag == true {
-            reloadPosts()
-        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -104,6 +85,7 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         view.addSubview(tableView)
+        tableView.keyboardDismissMode = .interactive
         tableView.snp.makeConstraints {
             make in
 //            make.bottom.equalToSuperview().offset(-56)
@@ -151,10 +133,11 @@ class ThreadDetailViewController: UIViewController {
         }
         replyButton?.addTarget(withBlock: {_ in
             if let text = self.replyTextField?.text, text != "" {
-                BBSJarvis.reply(threadID: self.thread!.id, content: text, success: { _ in
+                let noBBtext = text.replacingOccurrences(of: "[", with: "&amp;#91;").replacingOccurrences(of: "]", with: "&amp;#93;")
+                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, success: { _ in
                     HUD.flash(.success)
                     self.replyTextField?.text = ""
-                    self.reloadPosts()
+                    self.didReply()
                 })
                 self.dismissKeyboard()
             } else {
@@ -212,7 +195,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 make.left.equalTo(portraitImageView.snp.right).offset(8)
             }
             
-            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd")
+            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd HH:mm")
             let timeLabel = UILabel(text: timeString, fontSize: 14)
             cell.contentView.addSubview(timeLabel)
             timeLabel.snp.makeConstraints {
@@ -307,9 +290,11 @@ extension ThreadDetailViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 0 {
             let replyVC = ReplyViewController(thread: thread)
+            replyVC.delegate = self
             self.navigationController?.pushViewController(replyVC, animated: true)
         } else if indexPath.section == 1 {
             let replyVC = ReplyViewController(thread: thread, post: postList[indexPath.row])
+            replyVC.delegate = self
             self.navigationController?.pushViewController(replyVC, animated: true)
         }
     }
@@ -399,5 +384,23 @@ extension ThreadDetailViewController: UIGestureRecognizerDelegate {
             return false
         }
         return true
+    }
+}
+
+extension ThreadDetailViewController: ReplyViewDelegate {
+    func didReply() {
+        BBSJarvis.getThread(threadID: self.thread!.id, page: 0) {
+            dict in
+            print(dict)
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let thread = data["thread"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>> {
+                self.thread = ThreadModel(JSON: thread)
+                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+            }
+            self.loadFlag = false
+            self.tableView.reloadSections([1], with: .middle)
+            self.tableView.scrollToRow(at: IndexPath(row: self.postList.count-1, section: 1), at: .bottom, animated: false)
+        }
     }
 }

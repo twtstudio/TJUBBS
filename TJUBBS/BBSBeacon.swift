@@ -37,6 +37,7 @@ struct BBSBeacon {
         Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 20
         if type == .get || type == .post || type == .put {
             Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseString { response in
+                HUD.hide()
                 switch response.result {
                 case .success:
                     if let data = response.data {
@@ -63,6 +64,8 @@ struct BBSBeacon {
                 }
 //                            }.downloadProgress {_ in
 //                                HUD.flash(.progress)
+                } .downloadProgress { _ in
+                    HUD.show(.rotatingImage(UIImage(named: "progress")))
             }
 
 //            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in

@@ -181,6 +181,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 let contentView = UIView()
                 contentView.backgroundColor = UIColor.white
                 let textView = UITextView()
+                textView.font = UIFont.flexibleFont(ofBaseSize: 15)
                 contentView.addSubview(textView)
                 textView.snp.makeConstraints { make in
                     make.top.equalTo(contentView).offset(18)

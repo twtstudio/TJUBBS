@@ -232,12 +232,21 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
         }
         
+        postNumberLabel?.addTapGestureRecognizer { _ in
+            let detailVC = MyPostViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
+        
         let postNumberTitleLabel = UILabel(text: "发帖", color: .white, fontSize: 14)
         headerView?.addSubview(postNumberTitleLabel)
         postNumberTitleLabel.snp.makeConstraints {
             make in
             make.top.equalTo(postNumberLabel!.snp.bottom).offset(4*ratio)
             make.centerX.equalTo(postNumberLabel!)
+        }
+        postNumberTitleLabel.addTapGestureRecognizer { _ in
+            let detailVC = MyPostViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
         }
         
         pointLabel = UILabel(text: "\(BBSUser.shared.points ?? 0)", color: .white, fontSize: 20)

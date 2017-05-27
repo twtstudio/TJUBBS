@@ -147,7 +147,7 @@ class PostCell: UITableViewCell {
             make.bottom.equalToSuperview().offset(-16)
         }
         
-        let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd")
+        let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLablel.text = timeString
         timeLablel.snp.makeConstraints {
             make in

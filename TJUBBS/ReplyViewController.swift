@@ -11,6 +11,10 @@ import PKHUD
 import Kingfisher
 import ObjectMapper
 
+protocol ReplyViewDelegate {
+    func didReply()
+}
+
 class ReplyViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
@@ -34,7 +38,7 @@ class ReplyViewController: UIViewController {
     fileprivate var loadFlag = false
     var webView = UIWebView()
     var webViewHeight: CGFloat = 0
-    
+    var delegate: ReplyViewDelegate?
     
     convenience init(thread: ThreadModel?, post: PostModel?) {
         self.init()
@@ -115,6 +119,7 @@ class ReplyViewController: UIViewController {
         replyTextField?.borderStyle = .roundedRect
         replyTextField?.returnKeyType = .done
         replyTextField?.delegate = self
+        replyTextField?.placeholder = post != nil ? "回复 #\(post!.floor) \(post!.authorName) 的帖子" : nil
         
         replyButton = UIButton.confirmButton(title: "回复")
         replyView?.addSubview(replyButton!)
@@ -127,9 +132,24 @@ class ReplyViewController: UIViewController {
         }
         replyButton?.addTarget(withBlock: {_ in
             if let text = self.replyTextField?.text, text != "" {
-                BBSJarvis.reply(threadID: self.thread!.id, content: text, toID: self.post?.id, success: { _ in
+                // 添加回复
+                let noBBtext = text.replacingOccurrences(of: "[", with: "&amp;#91;").replacingOccurrences(of: "]", with: "&amp;#93;")
+                // TODO: 回复内容修正
+                var reply = noBBtext
+                if let post = self.post {
+                    var refText = post.content
+                    if post.content.characters.count >= 40 {
+                        // cut it down
+                        refText = post.content.substring(to: post.content.index(post.content.startIndex, offsetBy: 40)) + "\n..."
+                    }
+                    reply = noBBtext + "\n[quote]回复 #\(post.floor) \(post.authorName) 的帖子: \n\(refText)[/quote]"
+                }
+                
+                BBSJarvis.reply(threadID: self.thread!.id, content: reply, toID: self.post?.id, success: { _ in
                     HUD.flash(.success)
                     self.replyTextField?.text = ""
+                    self.delegate?.didReply()
+//                    if let delegate = delegate as? T
                     let _ = self.navigationController?.popViewController(animated: true)
                 })
                 self.dismissKeyboard()
