@@ -15,47 +15,8 @@ class LatestThreadViewController: UIViewController {
     
     var tableView: UITableView?
     var threadList: [ThreadModel] = []
-//    var dataList = [
-//        [
-//            "image": "portrait",
-//            "username": "wangcong",
-//            "category": "全站热点",
-//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "wangcong",
-//            "category": "全站热点",
-//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ]
-//        ] as Array<Dictionary<String, String>>
+    var curPage: Int = 0
+
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -74,7 +35,6 @@ class LatestThreadViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-
     }
     
     override func didReceiveMemoryWarning() {
@@ -162,3 +122,19 @@ extension LatestThreadViewController: UITableViewDelegate {
     }
 }
 
+// refresh
+extension LatestThreadViewController {
+    func refresh() {
+        BBSJarvis.getIndex {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let latest = data["latest"] as? Array<Dictionary<String, Any>> {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: latest) ?? []
+            }
+            if (self.tableView?.mj_header.isRefreshing())! {
+                self.tableView?.mj_header.endRefreshing()
+            }
+            self.tableView?.reloadData()
+        }
+    }
+}

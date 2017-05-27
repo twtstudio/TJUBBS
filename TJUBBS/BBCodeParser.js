@@ -1,5 +1,5 @@
 // aceptable BBcode tags, optionally prefixed with a slash
-var tagname_re = /^\/?(?:b|i|u|table|tr|td|font|\*|pre|center|left|right|samp|code|colou?r|backcolou?r|attimg|size|noparse|url|link|s|q|(block)?quote|img|list|align|float|li)$/i;
+var tagname_re = /^\/?(?:b|i|u|table|tr|td|font|\*|pre|center|left|right|samp|code|colou?r|backcolou?r|size|noparse|url|link|s|q|(block)?quote|img|list|float|align|li|attimg)$/i;
 // color names or hex color
 var color_re = /^(:?[A-Za-z]+|#(?:[0-9a-f]{3})?[0-9a-f]{3}|[A-Za-z]+\([0-9,%.]+\))$/i;
 // numbers
@@ -47,7 +47,7 @@ function BBCode (post, cb) {
           return "";
         case '\n':
           return "<br>";
-        default: 
+        default:
           break;
       }
     }
@@ -206,11 +206,23 @@ function BBCode (post, cb) {
     opentags = new Array(0);
   // run the text through main regular expression matcher
   if (post) {
-    post = post.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    post = post.trim().replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
     post = post.replace(/\[\*\](.*)/g, function (m0, m1) {
       return '[li]'+m1+'[/li]';
+    });
+
+    post = post.replace(/\[\attach(?:=(\d+))?\](.*?)\[\/\attach\]/g, function (m0, m1, m2) {
+      if (m1) {
+        return `<a href="https://bbs.twtstudio.com/attach/${m1}?name=${encodeURIComponent(m2)}" target="_blank">附件: ${m2}</a>`;
+      } else {
+        return `<a href="https://bbs.twtstudio.com/attach/${m1}" target="_blank">附件: <i>(未命名: ${m1})</i></a>`;
+      }
+    });
+
+    post = post.replace(/\[\attimg\](.*?)\[\/\attimg\]/g, function (m0, m1) {
+      return `<a href="https://bbs.twtstudio.com/api/img/${m1}" target="_blank"><img src="https://bbs.twtstudio.com/api/img/${m1}"></a>`;
     });
     // @todo: 附件使用情况统计
     /*

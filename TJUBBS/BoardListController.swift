@@ -21,12 +21,14 @@ class BoardListController: UIViewController {
         //why this line cause nil forum
         //view.backgroundColor = .white
         self.forum = forum
-        
-        tableView = UITableView(frame: self.view.bounds, style: .grouped)
+        tableView = UITableView(frame: .zero, style: .grouped)
+        self.view.addSubview(tableView!)
+        tableView?.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         tableView?.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.94, alpha:1.00)
         tableView?.delegate = self
         tableView?.dataSource = self
-        self.view.addSubview(tableView!)
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.separatorStyle = .none
         tableView?.estimatedRowHeight = 120
@@ -96,7 +98,6 @@ class BoardListController: UIViewController {
     
     func addButtonTapped() {
         let addVC = AddThreadViewController()
-//        let addVC = AddThreadViewController(forum: forum)
         self.navigationController?.pushViewController(addVC, animated: true)
     }
     
@@ -129,7 +130,7 @@ extension BoardListController: UITableViewDataSource {
         //        return ThreadCell(type: .none, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "lksjdlakjsdlkjaslkdjlaksjdlkasjdljaslaskldka;slkd;laskd;lkas;ldk;alskd;laksdhkajshdkjahkdjaslkjdlasjdklsl")
 //        let cell = ThreadCell(type: .single, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "你不是真正的快乐 你的笑只是你穿的保护色 你决定不恨了 也决定不爱了 把你的灵魂关在永远锁上的躯壳")
         let thread = threadList[indexPath.section][indexPath.row]
-        let cell = ThreadCell(type: .single, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: thread.content)
+        let cell = ThreadCell(type: .none, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: String.clearBBCode(string: thread.content))
         // FIXME: 替换图片
         cell.imgView?.image = UIImage(named: "封面")
         return cell

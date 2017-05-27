@@ -75,7 +75,7 @@ class PostCell: UITableViewCell {
         self.thread = thread
         
         let portraitImage = UIImage(named: "头像2")
-        print(BBSAPI.avatar(uid: thread.authorID))
+//        print(BBSAPI.avatar(uid: thread.authorID))
         let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
         let cacheKey = "\(thread.authorID)" + Date.today
         portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)

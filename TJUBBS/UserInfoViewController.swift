@@ -48,7 +48,10 @@ class UserInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        BBSJarvis.getHome(success: {
+            self.tableView?.reloadData()
+        }, failure: {})
+
         // 导航栏返回按钮文字为空
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
@@ -87,7 +90,7 @@ class UserInfoViewController: UIViewController {
         
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
-        portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像")
+        portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像2")
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
@@ -117,7 +120,7 @@ extension UserInfoViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? 5 : 0)
+//        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? (BBSUser.shared.unreadCount ?? 0) : 0)
         let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: 0)
         return cell
     }
@@ -218,7 +221,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
         }
         
-        postNumberLabel = UILabel(text: "\(BBSUser.shared.postCount ?? 0)", color: .white, fontSize: 20)
+        postNumberLabel = UILabel(text: "\(BBSUser.shared.threadCount ?? 0)", color: .white, fontSize: 20)
         headerView?.addSubview(postNumberLabel!)
         postNumberLabel?.snp.makeConstraints {
             make in
@@ -250,8 +253,10 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalTo(pointLabel!)
         }
         
+
 //        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
         ageLabel = UILabel(text: "\(TimeStampTransfer.daysString(time: BBSUser.shared.createTime ?? 1494797867))", color: .white, fontSize: 20)
+
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {
             make in

@@ -18,7 +18,8 @@ struct MessageModel: Mappable {
     var authorNickname = ""
     var tag = 0
     var read = -1
-    var t_create = 0
+    var createTime = 0
+    var detailContent: MessageContentModel?
     
     init?(map: Map) {}
     
@@ -30,7 +31,30 @@ struct MessageModel: Mappable {
         authorNickname <- map["author_nickname"]
         tag <- map["tag"]
         read <- map["read"]
-        t_create <- map["t_create"]
+        createTime <- map["t_create"]
     }
 
 }
+
+struct MessageContentModel: Mappable {
+    var id: Int = 0
+    var thread_id: Int = 0
+    var title: String = ""
+    var floor: Int = 0
+    var createTime: Int = 0
+    var modifyTime: Int = 0
+    var content: String = ""
+    
+    init?(map: Map) {}
+    
+    mutating func mapping(map: Map) {
+        id <- map["id"]
+        thread_id <- map["thread_id"]
+        title <- map["thread_title"]
+        content <- map["content"]
+        floor <- map["floor"]
+        createTime <- map["t_create"]
+        modifyTime <- map["t_modify"]
+    }
+}
+

@@ -138,7 +138,9 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
                 let detailAction = UIAlertAction(title: "查看大图", style: .default) { _ in
-                    let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar!)
+                    // TODO: 默认头像 or 错误
+                    let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar ?? UIImage(named: "头像")!)
+                        
                     self.modalPresentationStyle = .overFullScreen
                     self.present(detailVC, animated: true, completion: nil)
                 }
