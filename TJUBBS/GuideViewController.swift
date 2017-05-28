@@ -19,7 +19,7 @@ class GuideViewController: UIViewController {
     let pageNameList = ["启动页1", "启动页2", "启动页3"]
     var newUserButton = UIButton.borderButton(title: "我是新用户")
     var oldUserButton = UIButton.borderButton(title: "我是老用户")
-    var loginBtn = UIButton(title: "直接登录")
+    var loginBtn = UIButton(title: "直接登录>")
 
     
     override func viewDidLoad() {
@@ -178,10 +178,10 @@ class GuideViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-10)
         }
         loginBtn.addTarget { _ in
-            let loginVC = LoginViewController(para: 1)
             UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)
             let _ = self.navigationController?.popToRootViewController(animated: false)
-            self.present(loginVC, animated: true, completion: nil)
+            let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+            self.present(navigationController, animated: true, completion: nil)
         }
 
     }

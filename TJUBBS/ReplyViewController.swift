@@ -39,22 +39,15 @@ class ReplyViewController: UIViewController {
     var webView = UIWebView()
     var webViewHeight: CGFloat = 0
     var delegate: ReplyViewDelegate?
+    var anonymousView: UIView?
+    var anonymousSwitch: UISwitch?
+    var anonymousLabel: UILabel?
     
     convenience init(thread: ThreadModel?, post: PostModel?) {
         self.init()
         self.thread = thread
+        print(thread?.boardID)
         self.post = post
-        view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .lightContent
-        self.hidesBottomBarWhenPushed = true
-        self.title = "详情"
-        initUI()
-        becomeKeyboardObserver()
-    }
-    
-    convenience init(thread: ThreadModel?) {
-        self.init()
-        self.thread = thread
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
@@ -91,7 +84,7 @@ class ReplyViewController: UIViewController {
         tableView?.snp.makeConstraints {
             make in
             make.top.left.right.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-45)
+            make.bottom.equalToSuperview().offset(-80)
         }
         tableView?.delegate = self
         tableView?.dataSource = self
@@ -108,10 +101,37 @@ class ReplyViewController: UIViewController {
         }
         replyView?.backgroundColor = .white
         
+        anonymousLabel = UILabel()
+        replyView?.addSubview(anonymousLabel!)
+        anonymousLabel?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalToSuperview().offset(16)
+        }
+        if thread?.boardID == 193 {
+            anonymousLabel?.text = "匿名"
+        } else {
+            anonymousLabel?.text = "匿名不可用"
+        }
+        
+        anonymousSwitch = UISwitch()
+        replyView?.addSubview(anonymousSwitch!)
+        anonymousSwitch?.snp.makeConstraints {
+            make in
+            make.centerY.equalTo(anonymousLabel!)
+            make.right.equalToSuperview().offset(-16)
+        }
+        if thread?.boardID == 193 {
+            anonymousSwitch?.isEnabled = true
+        } else {
+            anonymousSwitch?.isEnabled = false
+        }
+        
         replyTextField = UITextField()
         replyView?.addSubview(replyTextField!)
-        replyTextField?.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(8)
+        replyTextField?.snp.remakeConstraints {
+            make in
+            make.top.equalTo(anonymousLabel!.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(16)
             make.width.equalTo(screenSize.width*(820/1080))
             make.bottom.equalToSuperview().offset(-8)
@@ -123,9 +143,9 @@ class ReplyViewController: UIViewController {
         
         replyButton = UIButton.confirmButton(title: "回复")
         replyView?.addSubview(replyButton!)
-        replyButton?.snp.makeConstraints {
+        replyButton?.snp.remakeConstraints {
             make in
-            make.top.equalToSuperview().offset(8)
+            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
             make.left.equalTo(replyTextField!.snp.right).offset(4)
             make.right.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-8)
@@ -160,7 +180,7 @@ class ReplyViewController: UIViewController {
                     reply = noBBtext + "\n[quote]回复 #\(post.floor) \(post.authorName) 的帖子: \n\(refText)[/quote]"
                 }
                 
-                BBSJarvis.reply(threadID: self.thread!.id, content: reply, toID: self.post?.id, success: { _ in
+                BBSJarvis.reply(threadID: self.thread!.id, content: reply, toID: self.post?.id, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
                     HUD.flash(.success)
                     self.replyTextField?.text = ""
                     self.delegate?.didReply()
@@ -213,7 +233,7 @@ extension ReplyViewController: UITableViewDataSource {
             portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
             portraitImageView.clipsToBounds = true
             
-            let usernameLabel = UILabel(text: thread!.authorName)
+            let usernameLabel = UILabel(text: thread!.id != 0 ? thread!.authorName : "匿名用户")
             cell.contentView.addSubview(usernameLabel)
             usernameLabel.snp.makeConstraints {
                 make in

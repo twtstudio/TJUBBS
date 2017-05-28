@@ -15,7 +15,7 @@ struct ThreadModel: Mappable {
     var title: String = ""
     var authorID: Int = 0
     var boardID: Int = 0
-    var authorName: String = ""
+    var authorName: String = "未知用户"
     var authorNickname: String = ""
     var isTop: Bool = false
     var isElite: Bool = false
