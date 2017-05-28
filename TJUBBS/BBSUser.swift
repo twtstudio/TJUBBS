@@ -45,6 +45,7 @@ class BBSUser {
     var avatar: UIImage?
     var tCreate: Int?
     var oldToken: String?
+    var resetPasswordToken: String?
     
 //    required init?(map: Map) {}
 //    

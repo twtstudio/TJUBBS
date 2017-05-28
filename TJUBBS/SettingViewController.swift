@@ -17,6 +17,7 @@ class SettingViewController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.title = "通用设置"
+        self.hidesBottomBarWhenPushed = true
         initUI()
     }
     

@@ -104,13 +104,16 @@ struct BBSJarvis {
     }
 
     
-    static func postThread(boardID: Int, title: String, content: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        let parameters = [
+    static func postThread(boardID: Int, title: String, anonymous: Bool = false, content: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        var parameters = [
             "title": title,
             "content": content
         ]
-        print("API:\(BBSAPI.postThread(boardID: boardID))")
-        print(parameters)
+        if anonymous == true {
+            parameters["anonymous"] = "1"
+        }
+//        print("API:\(BBSAPI.postThread(boardID: boardID))")
+//        print(parameters)
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
     }
     
@@ -119,10 +122,13 @@ struct BBSJarvis {
 //    }
     
 
-    static func reply(threadID: Int, content: String, toID: Int? = nil, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+    static func reply(threadID: Int, content: String, toID: Int? = nil, anonymous: Bool = false, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         var parameters = ["content": content]
         if let id = toID {
             parameters["reply"] = String(id)
+        }
+        if anonymous == true {
+            parameters["anonymous"] = "1"
         }
         BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: success)
     }
@@ -207,5 +213,28 @@ struct BBSJarvis {
         ]
         BBSBeacon.request(withType: .post, url: BBSAPI.appeal, parameters: parameters, success: success)
 
+    }
+    
+    static func retrieve(stunum: String?, username: String?, realName: String, cid: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        var parameters = [
+            "real_name": realName,
+            "cid": cid
+        ]
+        if stunum != nil {
+            parameters["stunum"] = stunum!
+        }
+        if username != nil {
+            parameters["username"] = username!
+        }
+        BBSBeacon.request(withType: .post, url: BBSAPI.retrieve, parameters: parameters, success: success)
+    }
+    
+    static func resetPassword(password: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        let parameters = [
+            "uid": String(BBSUser.shared.uid!),
+            "token": BBSUser.shared.resetPasswordToken!,
+            "password": password
+        ]
+        BBSBeacon.request(withType: .post, url: BBSAPI.resetPassword, parameters: parameters, success: success)
     }
 }

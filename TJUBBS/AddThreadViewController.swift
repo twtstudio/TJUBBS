@@ -14,6 +14,8 @@ class AddThreadViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
     var tableView = UITableView(frame: .zero, style: .grouped)
+    var anonymousSwitch = UISwitch()
+    var anonymouslabel = UILabel()
     var forumList: [ForumModel] = []
     var boardList: [BoardModel] = []
     var openForumListFlag = false
@@ -48,6 +50,9 @@ class AddThreadViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.delegate = self
+        view.addGestureRecognizer(tap)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -58,7 +63,6 @@ class AddThreadViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(doneButtonTapped))
-        
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
@@ -98,7 +102,7 @@ class AddThreadViewController: UIViewController {
             return
         }
 
-        BBSJarvis.postThread(boardID: selectedBoard!.id, title: themeCell.textField?.text ?? "", content: detailCell.textView?.text ?? "") { _ in
+        BBSJarvis.postThread(boardID: selectedBoard!.id, title: themeCell.textField?.text ?? "", anonymous: anonymousSwitch.isOn, content: detailCell.textView?.text ?? "") { _ in
             HUD.flash(.success)
             self.navigationController?.popViewController(animated: true)
         }
@@ -219,6 +223,21 @@ extension AddThreadViewController: UITableViewDataSource {
             if indexPath.row == 0 {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
                 cell.textLabel?.text = "帖子"
+                cell.contentView.addSubview(anonymousSwitch)
+                anonymousSwitch.snp.makeConstraints {
+                    make in
+                    make.right.equalToSuperview().offset(-16)
+                    make.centerY.equalToSuperview()
+                }
+                anonymousSwitch.alpha = 0
+                anonymouslabel = UILabel(text: "匿名", color: .black, fontSize: 15)
+                cell.contentView.addSubview(anonymouslabel)
+                anonymouslabel.snp.makeConstraints {
+                    make in
+                    make.right.equalTo(anonymousSwitch.snp.left).offset(-8)
+                    make.centerY.equalToSuperview()
+                }
+                anonymouslabel.alpha = 0
                 return cell
             } else if indexPath.row == 1 {
                 return themeCell
@@ -248,9 +267,26 @@ extension AddThreadViewController: UITableViewDelegate {
             tableView.cellForRow(at: indexPath)?.contentView.backgroundColor = .BBSLightBlue
         } else if indexPath.section == 1 && indexPath.row != 0 {
             selectedBoard = boardList[indexPath.row-1]
+            if selectedBoard?.id == 193 { //青年湖
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.anonymouslabel.alpha = 1
+                    self.anonymousSwitch.alpha = 1
+                })
+            }
+            
             tableView.cellForRow(at: indexPath)?.contentView.backgroundColor = .BBSLightBlue
         }
     }
 }
+
+extension AddThreadViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.superview is UITableViewCell {
+            return false
+        }
+        return true
+    }
+}
+
 
 
