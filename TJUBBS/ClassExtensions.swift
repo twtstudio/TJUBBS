@@ -45,6 +45,19 @@ extension UIButton {
         return button
     }
     
+    static func borderButton(title: String) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(.BBSBlue, for: .normal)
+        button.titleLabel?.font = UIFont.flexibleFont(ofBaseSize: 15)
+        button.layer.borderWidth = 1.0
+        button.backgroundColor = .clear
+        button.layer.borderColor = UIColor.BBSBlue.cgColor
+        button.layer.cornerRadius = 5.0
+        button.clipsToBounds = true
+        
+        return button
+    }
     convenience init(imageName: String) {
         self.init()
         self.setImage(UIImage(named: imageName), for: .normal)

@@ -42,19 +42,16 @@ class ForumListController: UIViewController {
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         HUD.show(.rotatingImage(UIImage(named: "progress")))
-        Alamofire.request("https://bbs.twtstudio.com/api/forum").responseJSON(completionHandler: {
-            response in
-            if let dataI = response.result.value,
-                let dict = dataI as? Dictionary<String, AnyObject>,
-                let data = dict["data"] as? Array<Dictionary<String, Any>> {
-                    print(data)
-                    self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
+        BBSJarvis.getForumList() { dict in
+            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+                print(data)
+                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
             }
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
             }
             HUD.hide()
-        })
+        }
     }
     
     override func didReceiveMemoryWarning() {
