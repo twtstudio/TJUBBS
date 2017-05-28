@@ -57,7 +57,7 @@ class UserInfoViewController: UIViewController {
         self.navigationItem.backBarButtonItem = backItem
         self.navigationItem.rightBarButtonItem = refreshItem
         refresh()
-        refreshMessage()
+//        refreshMessage()
         
     }
     
@@ -84,7 +84,7 @@ class UserInfoViewController: UIViewController {
     
     func refreshMessage() {
         print("refreshMessgae")
-        BBSJarvis.getMessage(page: 0, success: {
+        BBSJarvis.getMessageCount(page: 0, success: {
             dict in
             print(dict)
             let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
@@ -92,7 +92,8 @@ class UserInfoViewController: UIViewController {
                 data.count > 0,
                 let messageID = data[0]["id"] as? Int,
                 messageID > latestMessageID {
-                    self.messageFlag = true
+                self.messageFlag = true
+                UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
             }
             self.tableView?.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
         })
@@ -120,13 +121,14 @@ class UserInfoViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        refreshMessage()
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
         portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像2")
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
+        self.tableView?.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -378,6 +380,7 @@ extension UserInfoViewController: UITableViewDelegate {
         switch indexPath {
         case IndexPath(row: 0, section: 0):
             let detailVC = MessageViewController(para: 1)
+            messageFlag = false
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 1, section: 0):
             let detailVC = FavorateViewController()

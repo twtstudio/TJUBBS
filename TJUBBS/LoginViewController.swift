@@ -263,6 +263,7 @@ class LoginViewController: UIViewController {
     func visitorButtonTapped() {
         let tabBarVC = MainTabBarController(para: 1)
         // TODO: 有待商榷
+        UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
         tabBarVC.modalTransitionStyle = .crossDissolve
         self.present(tabBarVC, animated: false, completion: nil)
     }

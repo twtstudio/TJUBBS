@@ -182,9 +182,17 @@
 			name = Controller;
 			sourceTree = "<group>";
 		};
+		3633CEB21EDAE5D100F1B4DA /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		3699D16D1ECB344E0013D2FD /* Message */ = {
 			isa = PBXGroup;
 			children = (
+				3633CEB21EDAE5D100F1B4DA /* View */,
 				3633CEB11EDADEF500F1B4DA /* Controller */,
 				3699D16E1ECB34540013D2FD /* Model */,
 			);

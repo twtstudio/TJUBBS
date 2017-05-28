@@ -8,6 +8,9 @@
 
 import UIKit
 import Kingfisher
+import ObjectMapper
+import MJRefresh
+import PKHUD
 
 class MessageViewController: UIViewController {
     
@@ -37,6 +40,7 @@ class MessageViewController: UIViewController {
 //        ],
 //    ]
     var msgList: [MessageModel] = []
+    var page: Int = 0
     
     convenience init(para: Int) {
         self.init()
@@ -49,11 +53,6 @@ class MessageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        BBSJarvis.get(page: 0, success: { list in
-//            print(list)
-//            self.msgList = list
-//            self.tableView?.reloadData()
-//        })
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -89,6 +88,12 @@ class MessageViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 200
+        
+        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView?.mj_footer.isAutomaticallyHidden = true
+        self.tableView?.mj_header.beginRefreshing()
+
     }
 }
 
@@ -105,8 +110,12 @@ extension MessageViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell") as! MessageCell
         let model = msgList[indexPath.row]
-        cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: model.content)
-        let portraitImage = UIImage(named: "头像")
+        var content = model.content
+        if let detail = model.detailContent {
+            content = detail.content
+        }
+        cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: content)
+        let portraitImage = UIImage(named: "头像2")
         let url = URL(string: BBSAPI.avatar(uid: model.authorId))
         let cacheKey = "\(model.authorId)" + Date.today
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
@@ -128,8 +137,35 @@ extension MessageViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = MessageDetailViewController(para: 1)
-        detailVC.model = msgList[indexPath.row]
+        let detailVC = MessageDetailViewController(model: msgList[indexPath.row])
+//        detailVC.model = msgList[indexPath.row]
         self.navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
+
+
+extension MessageViewController {
+    func refresh() {
+        self.page = 0
+        BBSJarvis.getMessage(page: page, success: { list in
+            self.msgList = list.count == 0 ? self.msgList : list
+            self.tableView?.reloadData()
+            if (self.tableView?.mj_header.isRefreshing())! {
+                self.tableView?.mj_header.endRefreshing()
+            }
+        })
+        self.tableView?.reloadData()
+    }
+    
+    func load() {
+        self.page += 1
+        BBSJarvis.getMessage(page: page, success: { list in
+            self.msgList = list.count == 0 ? self.msgList : list
+            self.tableView?.reloadData()
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        })
+        self.tableView?.reloadData()
     }
 }

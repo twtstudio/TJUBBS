@@ -26,8 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
             
-            UserDefaults.standard.set(true, forKey: GUIDEKEY)
-            if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEKEY) as? Bool, userDidSeeGuide == true {
+
+//            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
+            if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {
                 BBSUser.load()
                 
                 // 如果token不为空

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import PKHUD
-let GUIDEKEY = "GuideKey"
+let GUIDEDIDSHOW = "GuideKey"
 
 class GuideViewController: UIViewController {
     
@@ -17,8 +17,10 @@ class GuideViewController: UIViewController {
     var scorllView = UIScrollView()
     let screenSize = UIScreen.main.bounds.size
     let pageNameList = ["启动页1", "启动页2", "启动页3"]
-    var newUserButton = UIButton.confirmButton(title: "我是新用户")
-    var oldUserButton = UIButton.confirmButton(title: "我是老用户")
+    var newUserButton = UIButton.borderButton(title: "我是新用户")
+    var oldUserButton = UIButton.borderButton(title: "我是老用户")
+    var loginBtn = UIButton(title: "直接登录")
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,6 +112,7 @@ class GuideViewController: UIViewController {
                 }
             }
             
+            
             // 坑人的需求魔改
             let manualView = UILabel(text: "验证遇到问题？点这里")
             manualView.font = UIFont.systemFont(ofSize: 14)
@@ -166,6 +169,21 @@ class GuideViewController: UIViewController {
             make.height.equalTo(screenSize.height*(100/1920))
             make.centerX.equalToSuperview().offset(screenSize.width/4)
         }
+        
+        loginBtn.setTitleColor(UIColor.BBSBlue, for: .normal)
+        loginBtn.alpha = 0
+        view.addSubview(loginBtn)
+        loginBtn.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-10)
+        }
+        loginBtn.addTarget { _ in
+            let loginVC = LoginViewController(para: 1)
+            UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)
+            let _ = self.navigationController?.popToRootViewController(animated: false)
+            self.present(loginVC, animated: true, completion: nil)
+        }
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -196,16 +214,18 @@ extension GuideViewController: UIScrollViewDelegate {
         pageControl.currentPage = Int(offset.x/screenSize.width)
         
         if pageControl.currentPage == pageNameList.count-1 {
-            UIView.animate(withDuration: 1.0, animations: {
+            UIView.animate(withDuration: 0.8, animations: {
                 self.newUserButton.alpha = 1
                 self.oldUserButton.alpha = 1
+                self.loginBtn.alpha = 1
                 self.pageControl.alpha = 0
             })
         } else {
-            UIView.animate(withDuration: 1.0, animations: {
+            UIView.animate(withDuration: 0.4, animations: {
                 self.newUserButton.alpha = 0
                 self.oldUserButton.alpha = 0
                 self.pageControl.alpha = 1
+                self.loginBtn.alpha = 0
             })
         }
     }

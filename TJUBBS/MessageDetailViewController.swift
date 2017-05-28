@@ -32,12 +32,13 @@ class MessageDetailViewController: UIViewController {
     var replyButton: UIButton?
     
     
-    convenience init(para: Int) {
+    convenience init(model: MessageModel) {
         self.init()
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         self.title = "详情"
+        self.model = model
         initUI()
         becomeKeyboardObserver()
     }
@@ -70,7 +71,7 @@ class MessageDetailViewController: UIViewController {
         tableView?.snp.makeConstraints {
             make in
             make.top.left.right.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-56)
+            make.bottom.equalToSuperview().offset(-45)
         }
         tableView?.delegate = self
         tableView?.dataSource = self
@@ -99,6 +100,8 @@ class MessageDetailViewController: UIViewController {
         replyTextField?.borderStyle = .roundedRect
         replyTextField?.returnKeyType = .done
         replyTextField?.delegate = self
+        replyTextField?.placeholder = "回复 " + model.authorName
+
         
         replyButton = UIButton.confirmButton(title: "回复")
         replyView?.addSubview(replyButton!)
@@ -106,13 +109,16 @@ class MessageDetailViewController: UIViewController {
             make in
             make.top.equalToSuperview().offset(8)
             make.left.equalTo(replyTextField!.snp.right).offset(4)
-            make.right.equalToSuperview().offset(-16)
+            make.right.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-8)
         }
-        replyButton?.addTarget(withBlock: {_ in 
-            HUD.flash(.success)
+        replyButton?.addTarget { _ in
+            BBSJarvis.sendMessage(uid: String(self.model.authorId), content: self.replyTextField?.text ?? "", success: { _ in
+                self.replyTextField?.text = ""
+                HUD.flash(.success)
+            })
             self.dismissKeyboard()
-        })
+        }
     }
     
     
@@ -133,10 +139,6 @@ extension MessageDetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let detailModel = model.detailContent else {
-            return UITableViewCell()
-        }
-        
         switch indexPath.row {
         case 0:
             let cell = MessageCell()
@@ -152,7 +154,21 @@ extension MessageDetailViewController: UITableViewDataSource {
             return cell
         case 1:
             let cell = UITableViewCell()
-            let detaillabel = UILabel(text: model.content, fontSize: 16)
+            guard let detailedModel = model.detailContent else {
+                let detaillabel = UILabel(text: model.content, fontSize: 16)
+                cell.contentView.addSubview(detaillabel)
+                detaillabel.snp.makeConstraints {
+                    make in
+                    make.top.equalToSuperview().offset(8)
+                    make.left.equalToSuperview().offset(16)
+                    make.right.equalToSuperview().offset(-16)
+                }
+                detaillabel.numberOfLines = 0
+                return cell
+            }
+            
+            let summary = "回复了你:\n" + String.clearBBCode(string: detailedModel.content)
+            let detaillabel = UILabel(text: summary, fontSize: 16)
             cell.contentView.addSubview(detaillabel)
             detaillabel.snp.makeConstraints {
                 make in
@@ -182,51 +198,54 @@ extension MessageDetailViewController: UITableViewDataSource {
             postView.backgroundColor = .BBSLightGray
             postView.addTapGestureRecognizer(block: { _ in
                 print("bang!!!!!")
-                let detailVC = ThreadDetailViewController()
-                self.navigationController?.pushViewController(detailVC, animated: true)
+//                let detailVC = ThreadDetailViewController(thread: )
+//                self.navigationController?.pushViewController(detailVC, animated: true)
             })
 //            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
 //            postView.addGestureRecognizer(tapRecognizer)
-            let portraitImage = UIImage(named: "头像")
-            if let detailModel = model.detailContent {
-                
-            }
-            let authorPortraitImageView = UIImageView()
-            postView.addSubview(authorPortraitImageView)
-            authorPortraitImageView.snp.makeConstraints {
-                make in
-                make.centerY.equalToSuperview()
-                make.width.height.equalTo(screenSize.width*(160/1080))
-                make.left.equalToSuperview().offset(16)
-            }
-            authorPortraitImageView.layer.cornerRadius = screenSize.width*(160/1080)/2
-            authorPortraitImageView.clipsToBounds = true
-            // TODO: 很晕 这个应该是帖子的作者
-            let url = URL(string: BBSAPI.avatar(uid: model.authorId))
-            let cacheKey = "\(model.authorId)" + Date.today
-            authorPortraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+//            let portraitImage = UIImage(named: "头像2")
+//            let authorPortraitImageView = UIImageView()
+//            postView.addSubview(authorPortraitImageView)
+//            authorPortraitImageView.snp.makeConstraints {
+//                make in
+//                make.centerY.equalToSuperview()
+//                make.width.height.equalTo(screenSize.width*(160/1080))
+//                make.left.equalToSuperview().offset(16)
+//            }
+//            authorPortraitImageView.layer.cornerRadius = screenSize.width*(160/1080)/2
+//            authorPortraitImageView.clipsToBounds = true
+//            // TODO: 很晕 这个应该是帖子的作者
+//            let url = URL(string: BBSAPI.avatar(uid: model.authorId))
+//            let cacheKey = "\(model.authorId)" + Date.today
+//            authorPortraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
             
 
             
-            let postTitleLabel = UILabel(text: detailModel.title)
+            let postTitleLabel = UILabel(text: "主题贴: " + detailedModel.title)
             postView.addSubview(postTitleLabel)
+//            postTitleLabel.snp.makeConstraints {
+//                make in
+//                make.top.equalTo(authorPortraitImageView.snp.top).offset(8)
+//                make.left.equalTo(authorPortraitImageView.snp.right).offset(8)
+//            }
             postTitleLabel.snp.makeConstraints {
                 make in
-                make.top.equalTo(authorPortraitImageView.snp.top).offset(8)
-                make.left.equalTo(authorPortraitImageView.snp.right).offset(8)
+                make.top.equalToSuperview().offset(8)
+                make.left.equalToSuperview().offset(8)
+                make.bottom.equalToSuperview().offset(-8)
             }
             
             // TODO: 获取那篇文章的作者
-            let authorLabel = UILabel(text: "作者: ", color: .darkGray, fontSize: 14)
-            postView.addSubview(authorLabel)
-            authorLabel.snp.makeConstraints {
-                make in
-                make.top.equalTo(postTitleLabel.snp.bottom).offset(8)
-                make.left.equalTo(authorPortraitImageView.snp.right).offset(8)
-                make.right.equalToSuperview().offset(-16)
-            }
+//            let authorLabel = UILabel(text: "作者: ", color: .darkGray, fontSize: 14)
+//            postView.addSubview(authorLabel)
+//            authorLabel.snp.makeConstraints {
+//                make in
+//                make.top.equalTo(postTitleLabel.snp.bottom).offset(8)
+//                make.left.equalTo(authorPortraitImageView.snp.right).offset(8)
+//                make.right.equalToSuperview().offset(-16)
+//            }
             
-            let timeString = TimeStampTransfer.string(from: String(detailModel.createTime), with: "MM-dd")
+            let timeString = TimeStampTransfer.string(from: String(detailedModel.createTime), with: "MM-dd")
             let timeLabel = UILabel(text: timeString, color: .lightGray)
             cell.contentView.addSubview(timeLabel)
             timeLabel.snp.makeConstraints {

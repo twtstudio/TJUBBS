@@ -127,9 +127,32 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: success)
     }
     
-    static func getMessage(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.reciveMessage(page: page), parameters: nil, success: success)
+    static func getMessageCount(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.message(page: page), parameters: nil, success: success)
     }
+    
+    static func getMessage(page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.message(page: page), parameters: nil, failure: failure) { dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                var msgList = Array<MessageModel>()
+                for msg in data {
+                    let model = MessageModel(JSON: msg)
+                    if var model = model {
+                        if (msg["content"] as? String) != nil {
+                            msgList.append(model)
+                        } else if let content = msg["content"] as? [String : Any] {
+                            let contentModel = MessageContentModel(JSON: content)
+                            model.detailContent = contentModel
+                            msgList.append(model)
+                        }
+                    }
+                }
+                success(msgList)
+            }
+        }
+    }
+
+    
     
     static func collect(threadID: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         let parameters = ["tid": "\(threadID)"]
@@ -167,6 +190,12 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.registerOld, parameters: parameters, success: success)
     }
     
+
+    static func sendMessage(uid: String, content: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        let para = ["to_uid": uid, "content": content]
+        BBSBeacon.request(withType: .post, url: BBSAPI.sendMessage, parameters: para, success: success)
+    }
+    
     static func appeal(username: String, cid: String, realName: String, studentNumber: String, email: String, message: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         let parameters = [
             "username": username,
@@ -177,5 +206,6 @@ struct BBSJarvis {
             "message": message
         ]
         BBSBeacon.request(withType: .post, url: BBSAPI.appeal, parameters: parameters, success: success)
+
     }
 }
