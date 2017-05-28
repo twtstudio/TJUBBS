@@ -19,6 +19,9 @@ struct BoardModel: Mappable {
     var admin: String = ""
     var threadCount: Int = 0
     var visibility: Int = 0
+    var anonymous: Bool = false
+    var forumID: Int = 0
+    var forumName: String = ""
     
     init?(map: Map) {}
     
@@ -29,5 +32,7 @@ struct BoardModel: Mappable {
         admin <- map["admin"]
         threadCount <- map["c_thread"]
         visibility <- map["visibility"]
+        forumID <- map["forum_id"]
+        forumName <- map["forum_name"]
     }
 }

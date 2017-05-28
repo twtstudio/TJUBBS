@@ -59,14 +59,14 @@ class LoginViewController: UIViewController {
     }
     
     func initUI() {
-        portraitImageView = UIImageView(image: UIImage(named: "portrait"))
+        portraitImageView = UIImageView(image: UIImage(named: "启动页0"))
         view.addSubview(portraitImageView!)
         portraitImageView?.snp.makeConstraints {
             make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(screenSize.height*(650/1920)-667)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.height.equalTo(screenSize.height*(650/1920))
+            make.height.equalTo(screenSize.height)
         }
         
         usernameTextField = UITextField()
@@ -136,13 +136,30 @@ class LoginViewController: UIViewController {
         // 这是个好用的方法 欢迎去看我的博客 www.halcao.me/tips-using-block-instead-of-selector-of-uibutton/
         
         forgetButton?.addTarget { _ in
-            let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号-schoolid", "身份证号-输入身份证号-cid"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证") { result in
-                // TODO: 判断逻辑
-                let vc = InfoModifyController(title: "密码重置", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "验证信息通过，请重置密码") { result in
+            let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号-schoolid", "真实姓名-输入真实姓名-realname", "身份证号-输入身份证号-cid"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证", handler: nil)
+            vc.handler =  { [weak vc] result in
+                if let result = result as? [String: String] {
                     print(result)
+                    BBSJarvis.retrieve(stunum: result["schoolid"]!, username: result["username"]!, realName: result["realname"]!, cid: result["cid"]!) {
+                        dict in
+                        if let data = dict["data"] as? [String: Any] {
+                            BBSUser.shared.uid = data["uid"] as? Int
+                            BBSUser.shared.resetPasswordToken = data["token"] as? String
+                            HUD.flash(.success)
+                            let resetVC = InfoModifyController(title: "密码重置", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "验证信息通过，请重置密码", handler: nil)
+                            resetVC.handler = { [weak resetVC] result in
+                                if let result = result as? [String: String] {
+                                    BBSJarvis.resetPassword(password: result["newpass"]!) {
+                                        dict in
+                                        resetVC?.navigationController?.popToRootViewController(animated: false)
+                                    }
+                                }
+                            }
+                            resetVC.doneText = "确认"
+                            vc?.navigationController?.pushViewController(resetVC, animated: true)
+                        }
+                    }
                 }
-                vc.doneText = "确认"
-                self.navigationController?.pushViewController(vc, animated: true)
             }
             vc.doneText = "验证"
             self.navigationController?.pushViewController(vc, animated: true)
@@ -182,6 +199,7 @@ class LoginViewController: UIViewController {
             make.top.equalTo(loginButton!.snp.bottom).offset(8)
             make.left.equalTo(loginButton!.snp.left)
         }
+        registerButton?.alpha = 0
         
         let check: ([String : String])->(Bool) = { result in
             guard result["repass"] == result["password"] else {
@@ -215,6 +233,7 @@ class LoginViewController: UIViewController {
             make.top.equalTo(loginButton!.snp.bottom).offset(8)
             make.right.equalTo(loginButton!.snp.right)
         }
+        authenticateButton?.alpha = 0
         authenticateButton?.addTarget { _ in
             let veteranCheckVC = InfoModifyController(title: "老用户认证", items: ["用户名-输入用户名-username", "姓名-输入姓名-name", "身份证号-输入身份证号-id"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证") { result in
                 print(result)

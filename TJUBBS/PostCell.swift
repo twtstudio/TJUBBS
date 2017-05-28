@@ -75,7 +75,6 @@ class PostCell: UITableViewCell {
         self.thread = thread
         
         let portraitImage = UIImage(named: "头像2")
-//        print(BBSAPI.avatar(uid: thread.authorID))
         let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
         let cacheKey = "\(thread.authorID)" + Date.today
         portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
@@ -87,7 +86,7 @@ class PostCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(80/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLabel.text = thread.authorName
+        usernameLabel.text = thread.id != 0 ? thread.authorName : "匿名用户"
         usernameLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView).offset(2)

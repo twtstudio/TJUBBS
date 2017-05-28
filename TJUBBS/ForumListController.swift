@@ -11,6 +11,7 @@ import ObjectMapper
 import Alamofire
 import PKHUD
 import Kingfisher
+import SnapKit
 
 class ForumListController: UIViewController {
     var collectionView: UICollectionView?
@@ -22,17 +23,19 @@ class ForumListController: UIViewController {
 //        view.backgroundColor = .white
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        let height = (self.view.bounds.height - 20 - (self.navigationController?.navigationBar.bounds.height)! - (self.tabBarController?.tabBar.bounds.height)!)/5.0
-        layout.itemSize = CGSize(width: (UIScreen.main.bounds.width)/2, height: height)
+//        let height = (self.view.bounds.height - 20 - (self.navigationController?.navigationBar.bounds.height)! - (self.tabBarController?.tabBar.bounds.height)!)/5.0
+        layout.itemSize = CGSize(width: (UIScreen.main.bounds.width)/2, height: (UIScreen.main.bounds.width)/2)
         //        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom:1, right: 1)
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
-        collectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        self.view.addSubview(collectionView!)
+        collectionView?.snp.makeConstraints { $0.edges.equalToSuperview() }
         collectionView?.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.96, alpha:1.00)
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionForumCell")
         collectionView?.delegate = self
         collectionView?.dataSource = self
-        self.view.addSubview(collectionView!)
+        
         // navigationBar 用
         self.title = "论坛区"
         // tabBar 用
@@ -73,9 +76,12 @@ extension ForumListController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionForumCell", for: indexPath)
+        print(cell.bounds.size)
         cell.backgroundView = UIImageView()
-        let url = URL(string: BBSAPI.forumCover(fid: indexPath.row))
+        let url = URL(string: BBSAPI.forumCover(fid: forumList[indexPath.row].id))
+        
         (cell.backgroundView as? UIImageView)?.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(indexPath.row)"), placeholder: UIImage(named: "ForumCover\(indexPath.row % 8)"))
+        cell.backgroundView?.contentMode = .scaleAspectFill
         let label = UILabel()
         if indexPath.row >= forumList.count {
             label.text = "敬请期待"
@@ -87,7 +93,7 @@ extension ForumListController: UICollectionViewDataSource {
         label.sizeToFit()
         cell.contentView.addSubview(label)
         label.snp.makeConstraints { make in
-            make.center.equalTo(cell.contentView.snp.center)
+            make.center.equalTo(cell.contentView)
         }
         return cell
     }
@@ -100,6 +106,7 @@ extension ForumListController: UICollectionViewDelegate {
             return
         }
         let blVC = BoardListController(forum: forumList[indexPath.row])
+        blVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(blVC, animated: true)
     }
 }

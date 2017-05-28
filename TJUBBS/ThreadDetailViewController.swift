@@ -24,15 +24,20 @@ class ThreadDetailViewController: UIViewController {
     //        //MARK: dangerous thing
     //        self.webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
     //    }()
+    var board: BoardModel?
     var thread: ThreadModel?
     var postList: [PostModel] = []
     var replyView: UIView?
     var replyTextField: UITextField?
     var replyButton: UIButton?
+    var anonymousView: UIView?
+    var anonymousSwitch: UISwitch?
+    var anonymousLabel: UILabel?
     
     convenience init(thread: ThreadModel) {
         self.init()
         self.thread = thread
+        print(thread.id)
         self.hidesBottomBarWhenPushed = true
     }
     
@@ -60,11 +65,14 @@ class ThreadDetailViewController: UIViewController {
             print(dict)
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let thread = data["thread"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>> {
+                let posts = data["post"] as? Array<Dictionary<String, Any>>,
+                let board = data["board"] as? [String: Any] {
                 
                 self.thread = ThreadModel(JSON: thread)
                 self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                self.board = BoardModel(JSON: board)
             }
+            self.thread?.boardID = self.board!.id
             self.loadFlag = false
             self.tableView.reloadData()
         }
@@ -89,7 +97,7 @@ class ThreadDetailViewController: UIViewController {
         tableView.snp.makeConstraints {
             make in
 //            make.bottom.equalToSuperview().offset(-56)
-            make.bottom.equalToSuperview().offset(-45)
+            make.bottom.equalToSuperview().offset(-80)
             make.top.left.right.equalToSuperview()
         }
         tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
@@ -109,11 +117,37 @@ class ThreadDetailViewController: UIViewController {
         }
         replyView?.backgroundColor = .white
         
-        replyTextField = UITextField()
-        replyView?.addSubview(replyTextField!)
-        replyTextField?.snp.makeConstraints {
+        anonymousLabel = UILabel()
+        replyView?.addSubview(anonymousLabel!)
+        anonymousLabel?.snp.makeConstraints {
             make in
             make.top.equalToSuperview().offset(8)
+            make.left.equalToSuperview().offset(16)
+        }
+        if thread?.boardID == 193 {
+            anonymousLabel?.text = "匿名"
+        } else {
+            anonymousLabel?.text = "匿名不可用"
+        }
+        
+        anonymousSwitch = UISwitch()
+        replyView?.addSubview(anonymousSwitch!)
+        anonymousSwitch?.snp.makeConstraints {
+            make in
+            make.centerY.equalTo(anonymousLabel!)
+            make.right.equalToSuperview().offset(-16)
+        }
+        if thread?.boardID == 193 {
+            anonymousSwitch?.isEnabled = true
+        } else {
+            anonymousSwitch?.isEnabled = false
+        }
+        
+        replyTextField = UITextField()
+        replyView?.addSubview(replyTextField!)
+        replyTextField?.snp.remakeConstraints {
+            make in
+            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(16)
             make.width.equalTo(screenSize.width*(820/1080))
             make.bottom.equalToSuperview().offset(-8)
@@ -124,9 +158,9 @@ class ThreadDetailViewController: UIViewController {
         
         replyButton = UIButton.confirmButton(title: "回复")
         replyView?.addSubview(replyButton!)
-        replyButton?.snp.makeConstraints {
+        replyButton?.snp.remakeConstraints {
             make in
-            make.top.equalToSuperview().offset(8)
+            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
             make.left.equalTo(replyTextField!.snp.right).offset(4)
             make.right.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-8)
@@ -148,7 +182,6 @@ class ThreadDetailViewController: UIViewController {
             }
             
             if let text = self.replyTextField?.text, text != "" {
-                // &amp;#93;
                 let noBBtext = text.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
                 BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, success: { _ in
                     HUD.flash(.success)
@@ -160,10 +193,11 @@ class ThreadDetailViewController: UIViewController {
                 HUD.flash(.label("内容不能为空"))
             }
         })
+        
     }
     
     func share() {
-        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "来BBS玩呀", URL(string: "https://bbs.twtstudio.com/")!], applicationActivities: [])
+        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "来BBS玩呀", URL(string: "https://bbs.twtstudio.com/forum/thread/\(thread!.id)")!], applicationActivities: [])
         present(vc, animated: true, completion: nil)
     }
 }
@@ -203,7 +237,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
             portraitImageView.clipsToBounds = true
             
-            let usernameLabel = UILabel(text: thread!.authorName)
+            let usernameLabel = UILabel(text: thread?.authorID != 0 ? thread!.authorName : "匿名用户")
             cell.contentView.addSubview(usernameLabel)
             usernameLabel.snp.makeConstraints {
                 make in
@@ -304,11 +338,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
 extension ThreadDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == 0 {
-            let replyVC = ReplyViewController(thread: thread)
-            replyVC.delegate = self
-            self.navigationController?.pushViewController(replyVC, animated: true)
-        } else if indexPath.section == 1 {
+        if indexPath.section == 1 {
             let replyVC = ReplyViewController(thread: thread, post: postList[indexPath.row])
             replyVC.delegate = self
             self.navigationController?.pushViewController(replyVC, animated: true)
