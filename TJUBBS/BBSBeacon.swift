@@ -34,7 +34,7 @@ struct BBSBeacon {
         }
         // the next line absofuckinglutely sucks
 //         let para = parameters ?? [:]
-        Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 20
+        Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 7
         if type == .get || type == .post || type == .put {
             Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseString { response in
                 HUD.hide()

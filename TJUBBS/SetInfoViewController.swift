@@ -69,7 +69,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 let cell = UITableViewCell(style: .value1, reuseIdentifier: "CustomValueCell")
                 let imgView = UIImageView(frame: CGRect(x: 15, y: 9, width: 60, height: 60))
                 cell.addSubview(imgView)
-                imgView.image = BBSUser.shared.avatar ?? UIImage(named: "头像")
+                imgView.image = BBSUser.shared.avatar ?? UIImage(named: "头像2")
                 imgView.layer.cornerRadius = 30
                 imgView.layer.masksToBounds = true
                 cell.accessoryType = .disclosureIndicator
@@ -139,7 +139,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
                 let detailAction = UIAlertAction(title: "查看大图", style: .default) { _ in
                     // TODO: 默认头像 or 错误
-                    let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar ?? UIImage(named: "头像")!)
+                    let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar ?? UIImage(named: "头像2")!)
                         
                     self.modalPresentationStyle = .overFullScreen
                     self.present(detailVC, animated: true, completion: nil)
