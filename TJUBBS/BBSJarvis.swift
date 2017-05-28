@@ -114,26 +114,9 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
     }
     
-    static func getMsgList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.message(page: page), parameters: nil, failure: failure) { dict in
-            if let data = dict["data"] as? [[String: Any]] {
-                var msgList = Array<MessageModel>()
-                for msg in data {
-                    let model = MessageModel(JSON: msg)
-                    if var model = model {
-                        if (msg["content"] as? String) != nil {
-                            msgList.append(model)
-                        } else if let content = msg["content"] as? [String : Any] {
-                            let contentModel = MessageContentModel(JSON: content)
-                            model.detailContent = contentModel
-                            msgList.append(model)
-                        }
-                    }
-                }
-                success(msgList)
-            }
-        }
-    }
+//    static func getMsgList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
+//        BBSBeacon.request(withType: .get, url: BBSAPI.reciveMessage(page: page), parameters: nil, success: success)
+//    }
     
 
     static func reply(threadID: Int, content: String, toID: Int? = nil, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
@@ -164,5 +147,22 @@ struct BBSJarvis {
     static func getMyThreadList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         print(BBSAPI.myThreadList(page: page))
         BBSBeacon.request(withType: .get, url: BBSAPI.myThreadList(page: page), parameters: nil, success: success)
+    }
+    
+    
+    static func loginOld(username: String, password: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        let parameters = ["username": username, "password": password]
+        BBSBeacon.request(withType: .post, url: BBSAPI.loginOld, parameters: parameters, success: success)
+    }
+    
+    static func registerOld(username: String, password: String, cid: String, realName: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        let parameters = ["username": username,
+                          "password": password,
+                          "cid": cid,
+                          "real_name": realName,
+                          "token": BBSUser.shared.oldToken!
+        ]
+        print(parameters)
+        BBSBeacon.request(withType: .post, url: BBSAPI.registerOld, parameters: parameters, success: success)
     }
 }

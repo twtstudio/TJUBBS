@@ -44,6 +44,7 @@ class BBSUser {
     var createTime: Int?
     var avatar: UIImage?
     var tCreate: Int?
+    var oldToken: String?
     
 //    required init?(map: Map) {}
 //    

@@ -12,7 +12,7 @@ class UserInfoTableViewCell: UITableViewCell {
     
     var iconImageView: UIImageView?
     var titleLabel: UILabel?
-    var badgeLabel: UILabel?
+    var badgeView: UIView?
     
     convenience init(iconName: String, title: String, badgeNumber: Int = 0) {
         self.init()
@@ -27,7 +27,7 @@ class UserInfoTableViewCell: UITableViewCell {
             make.width.height.equalTo(contentView.bounds.width*(57/1080))
         }
         
-//        titleLabel = UILabel(text: title, fontSize: 18)
+        //        titleLabel = UILabel(text: title, fontSize: 18)
         titleLabel = UILabel(text: title)
         titleLabel?.font = UIFont.flexibleFont(ofBaseSize: 15)
         contentView.addSubview(titleLabel!)
@@ -37,14 +37,28 @@ class UserInfoTableViewCell: UITableViewCell {
             make.centerY.equalToSuperview()
         }
         
-        if badgeNumber != 0 {
-            badgeLabel = UILabel.roundLabel(text: "\(badgeNumber)")
-            contentView.addSubview(badgeLabel!)
-            badgeLabel?.snp.makeConstraints {
+        //        if badgeNumber >= 0 {
+        //            badgeLabel = UILabel.roundLabel(text: "\(badgeNumber)")
+        //            contentView.addSubview(badgeLabel!)
+        //            badgeLabel?.snp.makeConstraints {
+        //                make in
+        //                make.left.equalTo(titleLabel!.snp.right).offset(8)
+        //                make.centerY.equalToSuperview()
+        //            }
+        //        }
+        
+        if badgeNumber > 0 {
+            badgeView = UIView()
+            badgeView?.backgroundColor = .BBSRed
+            contentView.addSubview(badgeView!)
+            badgeView?.snp.makeConstraints {
                 make in
                 make.left.equalTo(titleLabel!.snp.right).offset(8)
                 make.centerY.equalToSuperview()
+                make.width.height.equalTo(8)
             }
+            badgeView?.layer.cornerRadius = 4
+            badgeView?.clipsToBounds = true
         }
     }
     

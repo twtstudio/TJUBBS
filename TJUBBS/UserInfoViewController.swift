@@ -9,6 +9,7 @@
 import UIKit
 import Kingfisher
 import ObjectMapper
+let MESSAGEKEY = "messageKey"
 
 enum UserInfoViewControllerType {
     case myself
@@ -31,9 +32,10 @@ class UserInfoViewController: UIViewController {
     var postNumberLabel: UILabel?
     var ageLabel: UILabel?
     var tableView: UITableView?
-    let contentArray = [["我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
+    let contentArray = [["我的消息", "我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
     var messagePage: Int = 0
     var messageList: [MessageModel] = []
+    var messageFlag = false
     
     //bad way to make navigationBar translucent
     var fooNavigationBarImage: UIImage?
@@ -55,19 +57,32 @@ class UserInfoViewController: UIViewController {
         self.navigationItem.backBarButtonItem = backItem
         self.navigationItem.rightBarButtonItem = refreshItem
         refresh()
+        refreshMessage()
         
-//        BBSJarvis.getMessage(page: 0, success: {
-//            dict in
-//            if let data = dict["data"] as? [[String: Any]] {
-//                self.messageList = Mapper<MessageModel>().mapArray(JSONArray: data)!
-//            }
-//        })
     }
     
     func refresh() {
         BBSJarvis.getHome(success: {
             self.tableView?.reloadData()
         }, failure: {})
+        
+        refreshMessage()
+    }
+    
+    func refreshMessage() {
+        print("refreshMessgae")
+        BBSJarvis.getMessage(page: 0, success: {
+            dict in
+            print(dict)
+            let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
+            if let data = dict["data"] as? [[String: Any]],
+                data.count > 0,
+                let messageID = data[0]["id"] as? Int,
+                messageID > latestMessageID {
+                    self.messageFlag = true
+            }
+            self.tableView?.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        })
     }
     
     override func didReceiveMemoryWarning() {
@@ -124,8 +139,13 @@ extension UserInfoViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? (BBSUser.shared.unreadCount ?? 0) : 0)
-        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: 0)
-        return cell
+        if indexPath.section == 0 && indexPath.row == 0 && messageFlag == true {
+            let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: 1)
+            return cell
+        } else {
+            let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: 0)
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -328,16 +348,16 @@ extension UserInfoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
-//        case IndexPath(row: 0, section: 0):
-//            let detailVC = MessageViewController(para: 1)
-//            self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 0):
-            let detailVC = FavorateViewController()
+            let detailVC = MessageViewController(para: 1)
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 1, section: 0):
-            let detailVC = MyPostViewController(para: 1)
+            let detailVC = FavorateViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 2, section: 0):
+            let detailVC = MyPostViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 3, section: 0):
             let detailVC = SetInfoViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 1):
