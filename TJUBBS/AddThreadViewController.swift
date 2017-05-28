@@ -186,6 +186,7 @@ extension AddThreadViewController: UITableViewDataSource {
 //                rightImageView.addTapGestureRecognizer {
                 cell.addTapGestureRecognizer {
                     sender in
+//                    print("选板块啊")
                     if self.openBoardListFlag == false {
                         if let forum = self.selectedForum {
                             BBSJarvis.getBoardList(forumID: forum.id) {
@@ -206,7 +207,7 @@ extension AddThreadViewController: UITableViewDataSource {
                     }
                 }
                 rightImageView.isHidden = !tableView.allowsSelection
-                cell.isUserInteractionEnabled = false
+                cell.isUserInteractionEnabled = tableView.allowsSelection
                 return cell
             } else {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "normalCell")

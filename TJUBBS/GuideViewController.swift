@@ -61,7 +61,7 @@ class GuideViewController: UIViewController {
         newUserButton.alpha = 0
         newUserButton.addTarget { _ in
             let vc = InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-6~30字节-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息", handler: nil)
-            vc.handler = { result in
+            vc.handler = { [weak vc] result in
                 if let result = result as? [String: String] {
                     if check(result) == true {
                         var para = result
@@ -69,8 +69,9 @@ class GuideViewController: UIViewController {
                         BBSJarvis.register(parameters: para) { _ in
                             HUD.flash(.label("注册成功！🎉"), delay: 1.0)
                             BBSUser.shared.username = result["username"]
+                            UserDefaults.standard.set(true, forKey: GUIDEKEY)
                             let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                            vc.present(navigationController, animated: true, completion: nil)
+                            vc?.present(navigationController, animated: true, completion: nil)
                         }
                     }
                 }
@@ -82,7 +83,7 @@ class GuideViewController: UIViewController {
         oldUserButton.alpha = 0
         oldUserButton.addTarget { _ in
             let veteranCheckVC = InfoModifyController(title: "老用户认证", items: ["老用户名-输入用户名-username", "老密码-输入密码-password-s"], style: .bottom, headerMsg: "老用户登录", handler: nil)
-            veteranCheckVC.handler = { result in
+            veteranCheckVC.handler = { [weak veteranCheckVC] result in
                 if let result = result as? [String: String] {
                     BBSJarvis.loginOld(username: result["username"]!, password: result["password"]!) {
                         dict in
@@ -92,19 +93,20 @@ class GuideViewController: UIViewController {
                             BBSUser.shared.oldToken = data["token"] as? String
                             BBSUser.shared.username = result["username"]
                             let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "身份证号-输入身份证号-cid", "新密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎老用户！请填写以下信息", handler: nil)
-                            vc.handler = { result in
+                            vc.handler = { [weak vc] result in
                                 if let result = result as? [String: String],
                                     check(result) == true {
                                     BBSJarvis.registerOld(username: BBSUser.shared.username!, password: result["password"]!, cid: result["cid"]!, realName: result["real_name"]!) { dict in
                                         if let status = dict["err"] as? Int, status == 0 {
                                             HUD.flash(.success)
+                                            UserDefaults.standard.set(true, forKey: GUIDEKEY)
                                             let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                                            vc.present(navigationController, animated: true, completion: nil)
+                                            vc?.present(navigationController, animated: true, completion: nil)
                                         }
                                     }
                                 }
                             }
-                            veteranCheckVC.navigationController?.pushViewController(vc, animated: true)
+                            veteranCheckVC?.navigationController?.pushViewController(vc, animated: true)
                         }
                     }
                 }
@@ -119,9 +121,17 @@ class GuideViewController: UIViewController {
                 // 因为要索引到VC的某个View, 来加载 HUD
                 // 注意循环引用
                 manualCheckVC.handler = { [weak manualCheckVC] result in
-                    print(result)
+//                    print(result)
                     // TODO: 笑脸的图片
-                    HUD.flash(.label("验证信息已经发送至后台管理员，验证结果将会在 1 个工作日内发送至您的邮箱，请注意查收~"), onView: manualCheckVC?.tableView, delay: 4.0)
+                    if let result = result as? [String: String] {
+                        BBSJarvis.appeal(username: result["username"]!, cid: result["cid"]!, realName: result["realname"]!, studentNumber: result["stunum"]!, email: result["mail"]!, message: result["comment"]!) {
+                            dict in
+                            if let status = dict["err"] as? Int, status == 0 {
+                                HUD.flash(.label("验证信息已经发送至后台管理员，验证结果将会在 7 个工作日内发送至您的邮箱，请注意查收~"), delay: 4.0)
+                                manualCheckVC?.navigationController?.popToRootViewController(animated: false)
+                            }
+                        }
+                    }
                 }
                 manualCheckVC.doneText = "验证"
                 self.navigationController?.pushViewController(manualCheckVC, animated: true)

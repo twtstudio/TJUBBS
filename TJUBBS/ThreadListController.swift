@@ -78,6 +78,21 @@ class ThreadListController: UIViewController {
     }
     
     func addButtonTapped() {
+        
+        guard BBSUser.shared.token != nil else {
+            let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能发布消息", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alert.addAction(cancelAction)
+            let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                _ in
+                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                self.present(navigationController, animated: true, completion: nil)
+            }
+            alert.addAction(confirmAction)
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
+        
         let addVC = AddThreadViewController()
         addVC.selectedBoard = self.board
         addVC.tableView.allowsSelection = false

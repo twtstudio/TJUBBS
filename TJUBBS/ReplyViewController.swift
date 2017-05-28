@@ -131,6 +131,21 @@ class ReplyViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-8)
         }
         replyButton?.addTarget(withBlock: {_ in
+            
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能发布消息", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            
             if let text = self.replyTextField?.text, text != "" {
                 // 添加回复
                 let noBBtext = text.replacingOccurrences(of: "[", with: "&amp;#91;").replacingOccurrences(of: "]", with: "&amp;#93;")

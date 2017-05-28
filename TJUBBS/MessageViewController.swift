@@ -53,15 +53,6 @@ class MessageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        BBSJarvis.getMessage(page: 0, success: { dict in
-////            print(list)
-//            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
-////                print(data)
-//                self.msgList = Mapper<MessageModel>().mapArray(JSONArray: data) ?? []
-//                if let data
-//                self.tableView?.reloadData()
-//            }
-//        })
         // Do any additional setup after loading the view, typically from a nib.
     }
     

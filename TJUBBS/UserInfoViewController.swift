@@ -62,6 +62,19 @@ class UserInfoViewController: UIViewController {
     }
     
     func refresh() {
+        guard BBSUser.shared.token != nil else {
+            let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能查看个人信息", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alert.addAction(cancelAction)
+            let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                _ in
+                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                self.present(navigationController, animated: true, completion: nil)
+            }
+            alert.addAction(confirmAction)
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
         BBSJarvis.getHome(success: {
             self.tableView?.reloadData()
         }, failure: {})
@@ -349,6 +362,21 @@ extension UserInfoViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        guard BBSUser.shared.token != nil else {
+            let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能查看个人信息", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alert.addAction(cancelAction)
+            let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                _ in
+                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                self.present(navigationController, animated: true, completion: nil)
+            }
+            alert.addAction(confirmAction)
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
+        
         switch indexPath {
         case IndexPath(row: 0, section: 0):
             let detailVC = MessageViewController(para: 1)

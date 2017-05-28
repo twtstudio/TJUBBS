@@ -41,8 +41,8 @@ class MainTabBarController: UITabBarController {
     }
     
     func createBarItem(imageName: String) -> UITabBarItem {
-        let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 30, height: 30)).withRenderingMode(.alwaysOriginal)
-        let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 30, height: 30)).withRenderingMode(.alwaysOriginal)
+        let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)
+        let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)
         return UITabBarItem(title: nil, image: image, selectedImage: selectedImage)
     }
 }
