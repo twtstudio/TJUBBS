@@ -37,6 +37,7 @@
 		682A84831EB5C3BA00510FA4 /* TJUBBSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682A84821EB5C3BA00510FA4 /* TJUBBSUITests.swift */; };
 		6849ABBF1EC897B200042B5F /* EliteThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6849ABBE1EC897B200042B5F /* EliteThreadViewController.swift */; };
 		6849ABC11EC8BF8100042B5F /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6849ABC01EC8BF8100042B5F /* PostModel.swift */; };
+		6884B00F1EDAA77800FEA9BD /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6884B00E1EDAA77800FEA9BD /* GuideViewController.swift */; };
 		68B5A5281EB7305B00968FFD /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B5A5271EB7305B00968FFD /* MainTabBarController.swift */; };
 		68B5A52A1EBB162700968FFD /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B5A5291EBB162700968FFD /* UserInfoViewController.swift */; };
 		68B5A52D1EBB1FFB00968FFD /* UserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B5A52C1EBB1FFB00968FFD /* UserInfoTableViewCell.swift */; };
@@ -114,6 +115,7 @@
 		682A84841EB5C3BA00510FA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6849ABBE1EC897B200042B5F /* EliteThreadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EliteThreadViewController.swift; sourceTree = "<group>"; };
 		6849ABC01EC8BF8100042B5F /* PostModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
+		6884B00E1EDAA77800FEA9BD /* GuideViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
 		68B5A5271EB7305B00968FFD /* MainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		68B5A5291EBB162700968FFD /* UserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		68B5A52C1EBB1FFB00968FFD /* UserInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 				36FE25C41EB62A500090E805 /* Utilities */,
 				68B683501EC20F5000F7A0BF /* Shared */,
 				36FE25C11EB625D30090E805 /* Network */,
+				6884B00D1EDAA75A00FEA9BD /* Guide */,
 				682A84931EB5C5F100510FA4 /* HomePage */,
 				682A84921EB5C5EB00510FA4 /* BBS */,
 				682A84911EB5C5E100510FA4 /* User */,
@@ -366,6 +369,14 @@
 			name = Resource;
 			sourceTree = "<group>";
 		};
+		6884B00D1EDAA75A00FEA9BD /* Guide */ = {
+			isa = PBXGroup;
+			children = (
+				6884B00E1EDAA77800FEA9BD /* GuideViewController.swift */,
+			);
+			name = Guide;
+			sourceTree = "<group>";
+		};
 		68B5A52B1EBB1FD700968FFD /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -404,7 +415,6 @@
 				36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */,
 				368D36A21EBA224C002978C6 /* SetInfoViewController.swift */,
 				68F461511EBDCCE900D784F4 /* FavorateViewController.swift */,
-				68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */,
 				68F461551EBE264800D784F4 /* SettingViewController.swift */,
 				68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */,
 			);
@@ -626,6 +636,7 @@
 				36DA59221EC1DF8800B56F07 /* ThreadListController.swift in Sources */,
 				6826D7431EB5F561000F520B /* ClassExtensions.swift in Sources */,
 				68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */,
+				6884B00F1EDAA77800FEA9BD /* GuideViewController.swift in Sources */,
 				68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */,
 				6826D7451EB604F0000F520B /* AuthenticateViewController.swift in Sources */,
 				36DA59271EC1E1E700B56F07 /* ThreadModel.swift in Sources */,

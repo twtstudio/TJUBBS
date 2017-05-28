@@ -25,18 +25,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-            BBSUser.load()
             
-            // 如果token不为空
-            if let token = BBSUser.shared.token, token != "" {
-                BBSJarvis.getAvatar(success: { image in
-                    BBSUser.shared.avatar = image
-                }, failure: {})
-                let tabBarVC = MainTabBarController(para: 1)
-                tabBarVC.modalTransitionStyle = .crossDissolve
-                window.rootViewController = tabBarVC
+            UserDefaults.standard.set(false, forKey: GUIDEKEY)
+            if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEKEY) as? Bool, userDidSeeGuide == true {
+                BBSUser.load()
+                
+                // 如果token不为空
+                if let token = BBSUser.shared.token, token != "" {
+                    BBSJarvis.getAvatar(success: { image in
+                        BBSUser.shared.avatar = image
+                    }, failure: {})
+                    let tabBarVC = MainTabBarController(para: 1)
+                    tabBarVC.modalTransitionStyle = .crossDissolve
+                    window.rootViewController = tabBarVC
+                } else {
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    window.rootViewController = navigationController
+                }
             } else {
-                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                let navigationController = UINavigationController(rootViewController: GuideViewController())
                 window.rootViewController = navigationController
             }
             
