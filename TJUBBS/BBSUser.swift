@@ -89,6 +89,7 @@ class BBSUser {
         BBSUser.shared.token = nil
         BBSUser.shared.uid = nil
         BBSUser.shared.group = nil
+        BBSUser.shared.avatar = nil
         UserDefaults.standard.removeObject(forKey: BBSUSERSHAREDKEY)
     }
     
