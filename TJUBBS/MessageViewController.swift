@@ -148,8 +148,8 @@ extension MessageViewController {
     func refresh() {
         self.page = 0
         BBSJarvis.getMessage(page: page, failure: { _ in
-            if (self.tableView?.mj_footer.isRefreshing())! {
-                self.tableView?.mj_footer.endRefreshing()
+            if (self.tableView?.mj_header.isRefreshing())! {
+                self.tableView?.mj_header.endRefreshing()
             }
         }, success: { list in
             self.msgList = list.count == 0 ? self.msgList : list

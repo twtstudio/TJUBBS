@@ -77,7 +77,7 @@ class UserInfoViewController: UIViewController {
         }
         BBSJarvis.getHome(success: {
             self.tableView?.reloadData()
-        }, failure: {})
+        }, failure: { _ in })
         
         refreshMessage()
     }
@@ -86,7 +86,7 @@ class UserInfoViewController: UIViewController {
         print("refreshMessgae")
         BBSJarvis.getMessageCount(page: 0, success: {
             dict in
-            print(dict)
+//            print(dict)
             let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
             if let data = dict["data"] as? [[String: Any]],
                 data.count > 0,

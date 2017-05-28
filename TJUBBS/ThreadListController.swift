@@ -141,8 +141,8 @@ extension ThreadListController {
     func refresh() {
         self.curPage = 0
         BBSJarvis.getThreadList(boardID: board!.id, page: 0, failure: { _ in
-                if (self.tableView?.mj_footer.isRefreshing())! {
-                    self.tableView?.mj_footer.endRefreshing()
+                if (self.tableView?.mj_header.isRefreshing())! {
+                    self.tableView?.mj_header.endRefreshing()
                 }
         }) {
             dict in

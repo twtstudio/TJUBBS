@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let token = BBSUser.shared.token, token != "" {
                     BBSJarvis.getAvatar(success: { image in
                         BBSUser.shared.avatar = image
-                    }, failure: {})
+                    }, failure: { _ in })
                     let tabBarVC = MainTabBarController(para: 1)
                     tabBarVC.modalTransitionStyle = .crossDissolve
                     window.rootViewController = tabBarVC

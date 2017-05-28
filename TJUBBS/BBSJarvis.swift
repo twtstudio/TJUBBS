@@ -13,7 +13,7 @@ struct BBSJarvis {
     
     static func login(username: String, password: String, failure: ((Error)->())? = nil, success:@escaping ()->()) {
         let para: [String : String] = ["username": username, "password": password]
-        BBSBeacon.request(withType: .post, url: BBSAPI.login, parameters: para) { dict in
+        BBSBeacon.request(withType: .post, url: BBSAPI.login, parameters: para, failure: failure) { dict in
             if let data = dict["data"] as? [String: Any] {
                 BBSUser.shared.uid = data["uid"] as? Int
                 BBSUser.shared.group = data["group"] as? Int
@@ -30,8 +30,8 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.register, parameters: parameters, failure: failure, success: success)
     }
     
-    static func getHome(success: (()->())?, failure: @escaping ()->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil) { dict in
+    static func getHome(success: (()->())?, failure: @escaping (Error)->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil, failure: failure) { dict in
             if let data = dict["data"] as? [String: Any],
                 let name = data["name"],
                 let nickname = data["nickname"],
@@ -62,13 +62,13 @@ struct BBSJarvis {
 
                 BBSUser.save()
             } else if let err = dict["err"] as? Int, err == 0 {
-                failure()
+                failure(BBSError.custom)
             }
         }
     }
     
-    static func getAvatar(success:@escaping (UIImage)->(), failure: @escaping ()->()) {
-        BBSBeacon.requestImage(url: BBSAPI.avatar, success: success)
+    static func getAvatar(success:@escaping (UIImage)->(), failure: @escaping (Error)->()) {
+        BBSBeacon.requestImage(url: BBSAPI.avatar, failure: failure, success: success)
     }
     
     static func setAvatar(image: UIImage, success:@escaping ()->(), failure: @escaping (Error)->()) {
@@ -91,16 +91,16 @@ struct BBSJarvis {
     
     static func getThreadList(boardID: Int, page: Int, type: String = "", failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         print("API:\(BBSAPI.threadList(boardID: boardID, page: page, type: type))")
-        BBSBeacon.request(withType: .get, url: BBSAPI.threadList(boardID: boardID, page: page, type: type), parameters: nil, success: success)
+        BBSBeacon.request(withType: .get, url: BBSAPI.threadList(boardID: boardID, page: page, type: type), parameters: nil, failure: failure, success: success)
     }
 
     //TODO: cache Homepage
     static func getIndex(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.index, parameters: nil, success: success)
+        BBSBeacon.request(withType: .get, url: BBSAPI.index, parameters: nil, failure: failure, success: success)
     }
     
     static func getThread(threadID: Int, page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, success: success)
+        BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, failure: failure, success: success)
     }
 
     
@@ -111,7 +111,7 @@ struct BBSJarvis {
         ]
         print("API:\(BBSAPI.postThread(boardID: boardID))")
         print(parameters)
-        BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, failure: failure, success: success)
     }
     
 //    static func getMsgList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
