@@ -76,7 +76,7 @@ class MessageDetailViewController: UIViewController {
         tableView?.delegate = self
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 200
+        tableView?.estimatedRowHeight = 100
         tableView?.allowsSelection = false
         
         replyView = UIView()
@@ -162,47 +162,72 @@ extension MessageDetailViewController: UITableViewDataSource {
                     make.top.equalToSuperview().offset(8)
                     make.left.equalToSuperview().offset(16)
                     make.right.equalToSuperview().offset(-16)
+//                    make.bottom.equalToSuperview().offset(-8)
                 }
                 detaillabel.numberOfLines = 0
+                let timeString = TimeStampTransfer.string(from: String(model.createTime), with: "MM-dd HH:mm")
+                let timeLabel = UILabel(text: timeString, color: .lightGray)
+                cell.contentView.addSubview(timeLabel)
+                timeLabel.snp.makeConstraints {
+                    make in
+                    make.top.equalTo(detaillabel.snp.bottom).offset(8)
+                    make.right.equalToSuperview().offset(-16)
+                    make.bottom.equalToSuperview().offset(-8)
+                }
+                
                 return cell
             }
             
             let summary = "回复了你:\n" + String.clearBBCode(string: detailedModel.content)
-            let detaillabel = UILabel(text: summary, fontSize: 16)
-            cell.contentView.addSubview(detaillabel)
-            detaillabel.snp.makeConstraints {
+            let detailLabel = UILabel(text: summary, fontSize: 16)
+            detailLabel.numberOfLines = 0
+            cell.contentView.addSubview(detailLabel)
+            detailLabel.snp.makeConstraints {
                 make in
                 make.top.equalToSuperview().offset(8)
                 make.left.equalToSuperview().offset(16)
                 make.right.equalToSuperview().offset(-16)
             }
-            detaillabel.numberOfLines = 0
+            detailLabel.numberOfLines = 0
             
             let postLabel = UILabel(text: "原文：")
+            postLabel.sizeToFit()
             cell.contentView.addSubview(postLabel)
             postLabel.snp.makeConstraints {
                 make in
-                make.top.equalTo(detaillabel.snp.bottom).offset(8)
+                make.top.equalTo(detailLabel.snp.bottom).offset(8)
                 make.left.equalToSuperview().offset(16)
             }
             
-            let postView = UIImageView(image: UIImage(named: "框"))
+            let postView = UIView()
             cell.contentView.addSubview(postView)
-            postView.snp.makeConstraints {
-                make in
+            let titleLabel = UILabel(text: "主题贴: " + detailedModel.title)
+            titleLabel.numberOfLines = 0
+
+            postView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.97, alpha:1.00)
+            postView.layer.cornerRadius = 3
+            postView.layer.borderColor = UIColor(red:0.91, green:0.92, blue:0.92, alpha:1.00).cgColor
+            postView.layer.borderWidth = 2
+            
+            postView.addSubview(titleLabel)
+            titleLabel.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(8)
+                make.left.equalToSuperview().offset(8)
+                make.right.equalToSuperview().offset(-8)
+                make.bottom.equalToSuperview().offset(-8)
+            }
+            
+            postView.snp.makeConstraints { make in
                 make.top.equalTo(postLabel.snp.bottom).offset(8)
                 make.left.equalToSuperview().offset(16)
                 make.right.equalToSuperview().offset(-16)
-                make.height.equalTo(screenSize.height*(200/1920))
             }
-            postView.backgroundColor = .BBSLightGray
+            
             postView.addTapGestureRecognizer(block: { _ in
                 print("bang!!!!!")
                 let detailVC = ThreadDetailViewController(tid: detailedModel.thread_id)
                 self.navigationController?.pushViewController(detailVC, animated: true)
             })
-//            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(postViewTapped))
-//            postView.addGestureRecognizer(tapRecognizer)
 //            let portraitImage = UIImage(named: "头像2")
 //            let authorPortraitImageView = UIImageView()
 //            postView.addSubview(authorPortraitImageView)
@@ -220,20 +245,11 @@ extension MessageDetailViewController: UITableViewDataSource {
 //            authorPortraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
             
 
-            
-            let postTitleLabel = UILabel(text: "主题贴: " + detailedModel.title)
-            postView.addSubview(postTitleLabel)
 //            postTitleLabel.snp.makeConstraints {
 //                make in
 //                make.top.equalTo(authorPortraitImageView.snp.top).offset(8)
 //                make.left.equalTo(authorPortraitImageView.snp.right).offset(8)
 //            }
-            postTitleLabel.snp.makeConstraints {
-                make in
-                make.top.equalToSuperview().offset(8)
-                make.left.equalToSuperview().offset(8)
-                make.bottom.equalToSuperview().offset(-8)
-            }
             
             // TODO: 获取那篇文章的作者
 //            let authorLabel = UILabel(text: "作者: ", color: .darkGray, fontSize: 14)
@@ -245,11 +261,13 @@ extension MessageDetailViewController: UITableViewDataSource {
 //                make.right.equalToSuperview().offset(-16)
 //            }
             
-            let timeString = TimeStampTransfer.string(from: String(detailedModel.createTime), with: "MM-dd")
+            let timeString = TimeStampTransfer.string(from: String(detailedModel.createTime), with: "MM-dd HH:mm")
             let timeLabel = UILabel(text: timeString, color: .lightGray)
             cell.contentView.addSubview(timeLabel)
+            timeLabel.sizeToFit()
             timeLabel.snp.makeConstraints {
                 make in
+//                make.top.equalTo(postView.snp.bottom).offset(8)
                 make.top.equalTo(postView.snp.bottom).offset(8)
                 make.right.equalToSuperview().offset(-16)
                 make.bottom.equalToSuperview().offset(-8)

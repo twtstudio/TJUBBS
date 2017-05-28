@@ -77,7 +77,8 @@ class UserInfoViewController: UIViewController {
         }
         BBSJarvis.getHome(success: {
             self.tableView?.reloadData()
-        }, failure: { _ in })
+        }, failure: { _ in
+        })
         
         refreshMessage()
     }
