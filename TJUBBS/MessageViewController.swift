@@ -105,8 +105,7 @@ extension MessageViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell") as! MessageCell
         let model = msgList[indexPath.row]
-        // FIXME: 头像
-        cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.t_create), detail: model.content)
+        cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: model.content)
         let portraitImage = UIImage(named: "头像")
         let url = URL(string: BBSAPI.avatar(uid: model.authorId))
         let cacheKey = "\(model.authorId)" + Date.today

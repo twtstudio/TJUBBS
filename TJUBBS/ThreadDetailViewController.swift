@@ -30,49 +30,6 @@ class ThreadDetailViewController: UIViewController {
     var replyTextField: UITextField?
     var replyButton: UIButton?
     
-    //    var postDetail = [
-    //        "image": "头像",
-    //        "username": "lln(Elieen)",
-    //        "detail":"http://stackoverflow.com/questions/24170922/creating-custom-tableview-cells-in-swift",
-    //        "time": "1494061223"
-    //    ]
-    //    var replyList = [
-    //        [
-    //            "image": "头像",
-    //            "username": "lln(Elieen)",
-    //            "detail": "The asker of the original question has solved their problem. I am adding this answer as a mini self contained example project for others who are trying to do the same thing.",
-    //            "replyNumber": "20",
-    //            "time": "1494061223",
-    //            "subReply": [
-    //                [
-    //                    "username": "T.S.Eliot",
-    //                    "detail": "We shall not cease from exploration, and the end of all our exploring will be to arrive where we started and know the place for the first time.",
-    //                    "time": "1494061223"
-    //                ],
-    //                [
-    //                    "username": "T.S.Eliot",
-    //                    "detail": "We shall not cease from exploration, and the end of all our exploring will be to arrive where we started and know the place for the first time.",
-    //                    "time": "1494061223"
-    //                ],
-    //            ]
-    //        ],
-    //        [
-    //            "image": "头像",
-    //            "username": "lln(Elieen)",
-    //            "detail": "The asker of the original question has solved their problem. I am adding this answer as a mini self contained example project for others who are trying to do the same thing.",
-    //            "replyNumber": "20",
-    //            "time": "1494061223"
-    //        ],
-    //        [
-    //            "image": "头像",
-    //            "username": "lln(Elieen)",
-    //            "detail": "The asker of the original question has solved their problem. I am adding this answer as a mini self contained example project for others who are trying to do the same thing.",
-    //            "replyNumber": "20",
-    //            "time": "1494061223"
-    //        ]
-    //    ]
-    
-    
     convenience init(thread: ThreadModel) {
         self.init()
         self.thread = thread
@@ -83,7 +40,8 @@ class ThreadDetailViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         print("viewDidLoad")
-        self.title = "详情"
+        //        self.title = "详情"
+        self.title = thread?.title
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
@@ -93,7 +51,10 @@ class ThreadDetailViewController: UIViewController {
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
-        
+        refresh()
+    }
+    
+    func refresh() {
         BBSJarvis.getThread(threadID: thread!.id, page: 0) {
             dict in
             print(dict)
@@ -107,8 +68,6 @@ class ThreadDetailViewController: UIViewController {
             self.loadFlag = false
             self.tableView.reloadData()
         }
-        
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -126,9 +85,11 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         view.addSubview(tableView)
+        tableView.keyboardDismissMode = .interactive
         tableView.snp.makeConstraints {
             make in
-            make.bottom.equalToSuperview()
+//            make.bottom.equalToSuperview().offset(-56)
+            make.bottom.equalToSuperview().offset(-45)
             make.top.left.right.equalToSuperview()
         }
         tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
@@ -139,51 +100,54 @@ class ThreadDetailViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
         
-//        replyView = UIView()
-//        view.addSubview(replyView!)
-//        replyView?.snp.makeConstraints {
-//            make in
-//            make.top.equalTo(tableView.snp.bottom)
-//            make.left.right.bottom.equalToSuperview()
-//        }
-//        replyView?.backgroundColor = .white
-//        
-//        replyTextField = UITextField()
-//        replyView?.addSubview(replyTextField!)
-//        replyTextField?.snp.makeConstraints {
-//            make in
-//            make.top.equalToSuperview().offset(8)
-//            make.left.equalToSuperview().offset(16)
-//            make.width.equalTo(screenSize.width*(820/1080))
-//            make.bottom.equalToSuperview().offset(-8)
-//        }
-//        replyTextField?.borderStyle = .roundedRect
-//        replyTextField?.returnKeyType = .done
-//        replyTextField?.delegate = self
-//        
-//        replyButton = UIButton.confirmButton(title: "回复")
-//        replyView?.addSubview(replyButton!)
-//        replyButton?.snp.makeConstraints {
-//            make in
-//            make.top.equalToSuperview().offset(8)
-//            make.left.equalTo(replyTextField!.snp.right).offset(4)
-//            make.right.equalToSuperview().offset(-16)
-//            make.bottom.equalToSuperview().offset(-8)
-//        }
-//        replyButton?.addTarget(withBlock: {_ in
-//            if let text = self.replyTextField?.text, text != "" {
-//                BBSJarvis.reply(threadID: self.thread!.id, content: text, success: { _ in
-//                    HUD.flash(.success)
-//                })
-//                self.dismissKeyboard()
-//            } else {
-//                HUD.flash(.label("内容不能为空"))
-//            }
-//        })
+        replyView = UIView()
+        view.addSubview(replyView!)
+        replyView?.snp.makeConstraints {
+            make in
+            make.top.equalTo(tableView.snp.bottom)
+            make.left.right.bottom.equalToSuperview()
+        }
+        replyView?.backgroundColor = .white
+        
+        replyTextField = UITextField()
+        replyView?.addSubview(replyTextField!)
+        replyTextField?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalToSuperview().offset(16)
+            make.width.equalTo(screenSize.width*(820/1080))
+            make.bottom.equalToSuperview().offset(-8)
+        }
+        replyTextField?.borderStyle = .roundedRect
+        replyTextField?.returnKeyType = .done
+        replyTextField?.delegate = self
+        
+        replyButton = UIButton.confirmButton(title: "回复")
+        replyView?.addSubview(replyButton!)
+        replyButton?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(replyTextField!.snp.right).offset(4)
+            make.right.equalToSuperview().offset(-10)
+            make.bottom.equalToSuperview().offset(-8)
+        }
+        replyButton?.addTarget(withBlock: {_ in
+            if let text = self.replyTextField?.text, text != "" {
+                let noBBtext = text.replacingOccurrences(of: "[", with: "&amp;#91;").replacingOccurrences(of: "]", with: "&amp;#93;")
+                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, success: { _ in
+                    HUD.flash(.success)
+                    self.replyTextField?.text = ""
+                    self.didReply()
+                })
+                self.dismissKeyboard()
+            } else {
+                HUD.flash(.label("内容不能为空"))
+            }
+        })
     }
     
     func share() {
-        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "来BBS玩呀", URL(string: "http://169.254.178.242:8080/test.html")!], applicationActivities: [])
+        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "来BBS玩呀", URL(string: "https://bbs.twtstudio.com/")!], applicationActivities: [])
         present(vc, animated: true, completion: nil)
     }
 }
@@ -231,7 +195,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 make.left.equalTo(portraitImageView.snp.right).offset(8)
             }
             
-            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd")
+            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd HH:mm")
             let timeLabel = UILabel(text: timeString, fontSize: 14)
             cell.contentView.addSubview(timeLabel)
             timeLabel.snp.makeConstraints {
@@ -326,9 +290,11 @@ extension ThreadDetailViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 0 {
             let replyVC = ReplyViewController(thread: thread)
+            replyVC.delegate = self
             self.navigationController?.pushViewController(replyVC, animated: true)
         } else if indexPath.section == 1 {
             let replyVC = ReplyViewController(thread: thread, post: postList[indexPath.row])
+            replyVC.delegate = self
             self.navigationController?.pushViewController(replyVC, animated: true)
         }
     }
@@ -366,9 +332,15 @@ extension ThreadDetailViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.delegate = self
         view.addGestureRecognizer(tap)
         //        print("用的是我，口亨～")
     }
+    
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        super.touchesBegan(touches, with: event)
+//        dismissKeyboard()
+//    }
     
     func keyboardWillShow(notification: NSNotification) {
         
@@ -408,6 +380,27 @@ extension ThreadDetailViewController {
 
 extension ThreadDetailViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.superview is UITableViewCell {
+            return false
+        }
         return true
+    }
+}
+
+extension ThreadDetailViewController: ReplyViewDelegate {
+    func didReply() {
+        BBSJarvis.getThread(threadID: self.thread!.id, page: 0) {
+            dict in
+            print(dict)
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let thread = data["thread"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>> {
+                self.thread = ThreadModel(JSON: thread)
+                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+            }
+            self.loadFlag = false
+            self.tableView.reloadSections([1], with: .middle)
+            self.tableView.scrollToRow(at: IndexPath(row: self.postList.count-1, section: 1), at: .bottom, animated: false)
+        }
     }
 }

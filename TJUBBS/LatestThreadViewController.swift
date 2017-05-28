@@ -70,19 +70,19 @@ class LatestThreadViewController: UIViewController {
         tableView?.mj_header.beginRefreshing()
     }
     
-    func refresh() {
-        BBSJarvis.getIndex {
-            dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let latest = data["latest"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: latest) ?? []
-            }
-            if (self.tableView?.mj_header.isRefreshing())! {
-                self.tableView?.mj_header.endRefreshing()
-            }
-            self.tableView?.reloadData()
-        }
-    }
+//    func refresh() {
+//        BBSJarvis.getIndex {
+//            dict in
+//            if let data = dict["data"] as? Dictionary<String, Any>,
+//                let latest = data["latest"] as? Array<Dictionary<String, Any>> {
+//                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: latest) ?? []
+//            }
+//            if (self.tableView?.mj_header.isRefreshing())! {
+//                self.tableView?.mj_header.endRefreshing()
+//            }
+//            self.tableView?.reloadData()
+//        }
+//    }
 }
 
 extension LatestThreadViewController: UITableViewDataSource {

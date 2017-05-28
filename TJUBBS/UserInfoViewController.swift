@@ -48,14 +48,13 @@ class UserInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        BBSJarvis.getHome(success: {
-            self.tableView?.reloadData()
-        }, failure: {})
 
         // 导航栏返回按钮文字为空
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        let refreshItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.refresh))
         self.navigationItem.backBarButtonItem = backItem
-        // Do any additional setup after loading the view, typically from a nib.
+        self.navigationItem.rightBarButtonItem = refreshItem
+        refresh()
         
 //        BBSJarvis.getMessage(page: 0, success: {
 //            dict in
@@ -63,6 +62,12 @@ class UserInfoViewController: UIViewController {
 //                self.messageList = Mapper<MessageModel>().mapArray(JSONArray: data)!
 //            }
 //        })
+    }
+    
+    func refresh() {
+        BBSJarvis.getHome(success: {
+            self.tableView?.reloadData()
+        }, failure: {})
     }
     
     override func didReceiveMemoryWarning() {
@@ -87,15 +92,13 @@ class UserInfoViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
         portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像2")
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
-        tableView?.reloadData()
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -229,12 +232,21 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
         }
         
+        postNumberLabel?.addTapGestureRecognizer { _ in
+            let detailVC = MyPostViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
+        
         let postNumberTitleLabel = UILabel(text: "发帖", color: .white, fontSize: 14)
         headerView?.addSubview(postNumberTitleLabel)
         postNumberTitleLabel.snp.makeConstraints {
             make in
             make.top.equalTo(postNumberLabel!.snp.bottom).offset(4*ratio)
             make.centerX.equalTo(postNumberLabel!)
+        }
+        postNumberTitleLabel.addTapGestureRecognizer { _ in
+            let detailVC = MyPostViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
         }
         
         pointLabel = UILabel(text: "\(BBSUser.shared.points ?? 0)", color: .white, fontSize: 20)

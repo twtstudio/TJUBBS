@@ -66,7 +66,8 @@ class ReplyCell: UITableViewCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
+//        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
+        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLablel.text = timeString
         timeLablel.snp.makeConstraints {
             make in
@@ -85,7 +86,7 @@ class ReplyCell: UITableViewCell {
         }
         detailLabel.numberOfLines = 0
         
-        floorLabel.text = "第 \(post.floor) 楼"
+        floorLabel.text = "\(post.floor) 楼"
         floorLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(usernameLable)

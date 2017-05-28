@@ -37,7 +37,8 @@ extension UIButton {
         button.setTitleColor(.white, for: .normal)
         button.setBackgroundImage(UIImage(color: .lightGray), for: .disabled)
         button.setBackgroundImage(UIImage(color: .BBSBlue), for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+//        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        button.titleLabel?.font = UIFont.flexibleFont(ofBaseSize: 15)
         button.layer.cornerRadius = 5.0
         button.clipsToBounds = true
         
@@ -238,7 +239,7 @@ extension UIFont {
 extension String {
     static func clearBBCode(string: String) -> String {
         let regex = try! NSRegularExpression(pattern: "\\[.*?\\]", options: NSRegularExpression.Options.caseInsensitive)
-        let range = NSMakeRange(0, string.characters.count)
+        let range = NSMakeRange(0, string.utf16.count)
         var res = regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
         res = res.replacingOccurrences(of: "&amp;#91;", with: "[")
         res = res.replacingOccurrences(of: "&amp;#93;", with: "]")

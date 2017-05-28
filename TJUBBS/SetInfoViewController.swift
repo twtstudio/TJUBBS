@@ -154,7 +154,6 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     print("foo")
                 }
             case 1:
-                // FIXME: 旧昵称palceholder
                 let setUsernameVC = InfoModifyController(title: "编辑昵称", items: [" - -nickname"], style: .rightTop, handler: nil)
                 setUsernameVC.handler = { [weak setUsernameVC] result in
                     BBSJarvis.setInfo(para: result as! [String : String], success: {
@@ -182,6 +181,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 let contentView = UIView()
                 contentView.backgroundColor = UIColor.white
                 let textView = UITextView()
+                textView.font = UIFont.flexibleFont(ofBaseSize: 15)
                 contentView.addSubview(textView)
                 textView.snp.makeConstraints { make in
                     make.top.equalTo(contentView).offset(18)
@@ -190,7 +190,6 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     make.height.equalTo(100)
                 }
                 
-                // FIXME: 加载原签名
                 let label = UILabel()
                 label.text = "0/50字"
                 label.font = UIFont.systemFont(ofSize: 13)

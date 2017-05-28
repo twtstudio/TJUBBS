@@ -28,7 +28,7 @@ class ForumListController: UIViewController {
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         collectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
-        collectionView?.backgroundColor = .white
+        collectionView?.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.96, alpha:1.00)
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionForumCell")
         collectionView?.delegate = self
         collectionView?.dataSource = self
@@ -41,17 +41,6 @@ class ForumListController: UIViewController {
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
-        
-        //        BBSJarvis.getForumList(success: {
-        //            dict in
-        //            print("dict: \(dict)")
-        //            if let data = (dict["data"] as? Array<Dictionary<String, Any>>) {
-        //                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
-        //            }
-        ////            print("forumListCount: \(self.forumList.count)")
-        ////            print("id: \(String(describing: self.forumList[0].id))")
-        //            self.collectionView?.reloadData()
-        //        })
         HUD.show(.rotatingImage(UIImage(named: "progress")))
         Alamofire.request("https://bbs.twtstudio.com/api/forum").responseJSON(completionHandler: {
             response in
@@ -61,12 +50,6 @@ class ForumListController: UIViewController {
                     print(data)
                     self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
             }
-//<<<<<<< HEAD
-//            self.collectionView?.reloadData()
-//            HUD.hide()
-//=======
-//            print("forumListCount: \(self.forumList.count)")
-//            print("id: \(String(describing: self.forumList[0].id))")
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
             }
@@ -87,7 +70,8 @@ extension ForumListController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return forumList.count
+        return (forumList.count % 2 == 1) ? forumList.count + 1 : forumList.count
+//        return forumList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -95,7 +79,12 @@ extension ForumListController: UICollectionViewDataSource {
         cell.backgroundView = UIImageView()
         let url = URL(string: BBSAPI.forumCover(fid: indexPath.row))
         (cell.backgroundView as? UIImageView)?.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(indexPath.row)"), placeholder: UIImage(named: "ForumCover\(indexPath.row % 8)"))
-        let label = UILabel(text: forumList[indexPath.row].name)
+        let label = UILabel()
+        if indexPath.row >= forumList.count {
+            label.text = "敬请期待"
+        } else {
+            label.text = forumList[indexPath.row].name
+        }
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.white
         label.sizeToFit()
@@ -110,6 +99,9 @@ extension ForumListController: UICollectionViewDataSource {
 
 extension ForumListController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row >= forumList.count {
+            return
+        }
         let blVC = BoardListController(forum: forumList[indexPath.row])
         self.navigationController?.pushViewController(blVC, animated: true)
     }
