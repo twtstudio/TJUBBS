@@ -110,7 +110,11 @@ class EliteThreadViewController: UIViewController {
     }
     
     func refresh() {
-        BBSJarvis.getIndex {
+        BBSJarvis.getIndex(failure: { _ in
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let hot = data["hot"] as? Array<Dictionary<String, Any>> {

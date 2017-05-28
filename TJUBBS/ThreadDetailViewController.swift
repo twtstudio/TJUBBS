@@ -148,7 +148,8 @@ class ThreadDetailViewController: UIViewController {
             }
             
             if let text = self.replyTextField?.text, text != "" {
-                let noBBtext = text.replacingOccurrences(of: "[", with: "&amp;#91;").replacingOccurrences(of: "]", with: "&amp;#93;")
+                // &amp;#93;
+                let noBBtext = text.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
                 BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, success: { _ in
                     HUD.flash(.success)
                     self.replyTextField?.text = ""

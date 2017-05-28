@@ -147,7 +147,11 @@ extension MessageViewController: UITableViewDelegate {
 extension MessageViewController {
     func refresh() {
         self.page = 0
-        BBSJarvis.getMessage(page: page, success: { list in
+        BBSJarvis.getMessage(page: page, failure: { _ in
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }, success: { list in
             self.msgList = list.count == 0 ? self.msgList : list
             self.tableView?.reloadData()
             if (self.tableView?.mj_header.isRefreshing())! {
@@ -159,8 +163,12 @@ extension MessageViewController {
     
     func load() {
         self.page += 1
-        BBSJarvis.getMessage(page: page, success: { list in
-            self.msgList = list.count == 0 ? self.msgList : list
+        BBSJarvis.getMessage(page: page, failure: { _ in
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }, success: { list in
+            self.msgList += list
             self.tableView?.reloadData()
             if (self.tableView?.mj_footer.isRefreshing())! {
                 self.tableView?.mj_footer.endRefreshing()

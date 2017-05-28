@@ -140,7 +140,11 @@ extension ThreadListController: UITableViewDelegate {
 extension ThreadListController {
     func refresh() {
         self.curPage = 0
-        BBSJarvis.getThreadList(boardID: board!.id, page: 0) {
+        BBSJarvis.getThreadList(boardID: board!.id, page: 0, failure: { _ in
+                if (self.tableView?.mj_footer.isRefreshing())! {
+                    self.tableView?.mj_footer.endRefreshing()
+                }
+        }) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let threads = data["thread"] as? Array<Dictionary<String, Any>> {

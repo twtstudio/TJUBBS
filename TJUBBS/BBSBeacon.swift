@@ -32,12 +32,21 @@ struct BBSBeacon {
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
         }
+        
         // the next line absofuckinglutely sucks
 //         let para = parameters ?? [:]
-        Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 7
+        Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 7.0
+        
+        FuckingWrapper.shared.startTimer = Timer.scheduledTimer(timeInterval: 1.0, target: FuckingWrapper.shared, selector: #selector(FuckingWrapper.startLoading), userInfo: nil, repeats: false)
+        FuckingWrapper.shared.stopTimer = Timer.scheduledTimer(timeInterval: 7.0, target: FuckingWrapper.shared, selector: #selector(FuckingWrapper.stopLoading), userInfo: nil, repeats: false)
+        
         if type == .get || type == .post || type == .put {
             Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseString { response in
                 HUD.hide()
+                FuckingWrapper.shared.startTimer?.invalidate()
+                FuckingWrapper.shared.stopTimer = nil
+                FuckingWrapper.shared.stopTimer?.invalidate()
+                FuckingWrapper.shared.startTimer = nil
                 switch response.result {
                 case .success:
                     if let data = response.data {
@@ -55,43 +64,14 @@ struct BBSBeacon {
                             let errMsg = String(data: response.data!, encoding: .utf8)
                             HUD.flash(.labeledError(title: errMsg, subtitle: nil), delay: 1.2)
                             failure?(error)
-//                            log.error(error)/
+                            // log.error(error)/
                         }
                     }
                 case .failure(let error):
                     failure?(error)
-//                    log.error(error)/
+                    // log.error(error)/
                 }
-//                            }.downloadProgress {_ in
-//                                HUD.flash(.progress)
-                } .downloadProgress { _ in
-                    HUD.show(.rotatingImage(UIImage(named: "progress")))
             }
-
-//            Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
-//                switch response.result {
-//                case .success:
-//                    if let data = response.result.value, let dict = data as? Dictionary<String, AnyObject> {
-//                        if let err = dict["err"] as? Int, err == 0 {
-//                            success?(dict)
-//                        } else {
-//                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
-//                            failure?(BBSError.custom)
-//                        }
-//                    }
-//                case .failure(let error):
-//                    if let data = response.result.value  {
-//                        if let dict = data as? Dictionary<String, AnyObject> {
-//                            log.errorMessage(dict["data"] as? String)/
-//                            HUD.flash(.label(dict["data"] as? String), delay: 1.0)
-//                        }
-//                    }
-//                    failure?(error)
-//                    log.error(error)/
-//                }
-////            }.downloadProgress {_ in
-////                HUD.flash(.progress)
-//            }
             
         } else if type == .put {
             //
@@ -131,8 +111,6 @@ struct BBSBeacon {
             return
         }
         headers["authentication"] = String(uid) + "|" + tokenStr
-//        let defaultPolicy = Alamofire.SessionManager.default.session.configuration.requestCachePolicy
-//        Alamofire.SessionManager.default.session.configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         Alamofire.request(url, method: .get, parameters: nil, headers: headers).responseData { response in
             switch response.result {
             case .success:
@@ -142,7 +120,6 @@ struct BBSBeacon {
             case .failure(let error):
                 failure?(error)
             }
-//            Alamofire.SessionManager.default.session.configuration.requestCachePolicy = defaultPolicy
         }
     }
     
@@ -169,5 +146,19 @@ struct BBSBeacon {
                 print(error)
             }
         })
+    }
+}
+
+class FuckingWrapper: NSObject {
+    var startTimer: Timer?
+    var stopTimer: Timer?
+    
+    static let shared = FuckingWrapper()
+    override init() {}
+    func startLoading() {
+        HUD.show(.rotatingImage(UIImage(named: "progress")))
+    }
+    func stopLoading() {
+        HUD.hide()
     }
 }

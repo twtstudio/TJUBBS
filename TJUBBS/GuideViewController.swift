@@ -69,7 +69,7 @@ class GuideViewController: UIViewController {
                         BBSJarvis.register(parameters: para) { _ in
                             HUD.flash(.label("注册成功！🎉"), delay: 1.0)
                             BBSUser.shared.username = result["username"]
-                            UserDefaults.standard.set(true, forKey: GUIDEKEY)
+                            UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)
                             let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
                             vc?.present(navigationController, animated: true, completion: nil)
                         }
@@ -99,7 +99,7 @@ class GuideViewController: UIViewController {
                                     BBSJarvis.registerOld(username: BBSUser.shared.username!, password: result["password"]!, cid: result["cid"]!, realName: result["real_name"]!) { dict in
                                         if let status = dict["err"] as? Int, status == 0 {
                                             HUD.flash(.success)
-                                            UserDefaults.standard.set(true, forKey: GUIDEKEY)
+                                            UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)
                                             let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
                                             vc?.present(navigationController, animated: true, completion: nil)
                                         }

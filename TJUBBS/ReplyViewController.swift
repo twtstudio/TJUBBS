@@ -148,7 +148,7 @@ class ReplyViewController: UIViewController {
             
             if let text = self.replyTextField?.text, text != "" {
                 // 添加回复
-                let noBBtext = text.replacingOccurrences(of: "[", with: "&amp;#91;").replacingOccurrences(of: "]", with: "&amp;#93;")
+                let noBBtext = text.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
                 // TODO: 回复内容修正
                 var reply = noBBtext
                 if let post = self.post {

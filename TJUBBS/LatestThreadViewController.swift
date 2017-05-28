@@ -125,7 +125,11 @@ extension LatestThreadViewController: UITableViewDelegate {
 // refresh
 extension LatestThreadViewController {
     func refresh() {
-        BBSJarvis.getIndex {
+        BBSJarvis.getIndex(failure: { _ in
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let latest = data["latest"] as? Array<Dictionary<String, Any>> {
