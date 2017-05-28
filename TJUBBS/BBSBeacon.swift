@@ -156,7 +156,9 @@ class FuckingWrapper: NSObject {
     static let shared = FuckingWrapper()
     override init() {}
     func startLoading() {
-        HUD.show(.rotatingImage(UIImage(named: "progress")))
+        if startTimer != nil {
+            HUD.show(.rotatingImage(UIImage(named: "progress")))
+        }
     }
     func stopLoading() {
         HUD.hide()

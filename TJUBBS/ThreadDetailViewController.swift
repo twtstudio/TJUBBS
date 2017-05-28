@@ -36,6 +36,28 @@ class ThreadDetailViewController: UIViewController {
         self.hidesBottomBarWhenPushed = true
     }
     
+    convenience init(tid: Int) {
+        self.init()
+        self.hidesBottomBarWhenPushed = true
+        HUD.show(.rotatingImage(UIImage(named: "progress")), onView: self.view)
+//        HUD.show(.rotatingImage(UIImage(named: "progress")))
+        BBSJarvis.getThread(threadID: tid, page: 0) {
+            dict in
+            print(dict)
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let thread = data["thread"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>> {
+                
+                self.thread = ThreadModel(JSON: thread)
+                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                self.initUI()
+            }
+            self.loadFlag = false
+            self.tableView.reloadData()
+            HUD.hide()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -45,7 +67,10 @@ class ThreadDetailViewController: UIViewController {
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
-        initUI()
+        view.addSubview(tableView)
+        if thread != nil {
+            initUI()
+        }
         becomeKeyboardObserver()
         
         // 把返回换成空白
@@ -55,18 +80,20 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func refresh() {
-        BBSJarvis.getThread(threadID: thread!.id, page: 0) {
-            dict in
-            print(dict)
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let thread = data["thread"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>> {
-                
-                self.thread = ThreadModel(JSON: thread)
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+        if let thread = thread {
+            BBSJarvis.getThread(threadID: thread.id, page: 0) {
+                dict in
+                print(dict)
+                if let data = dict["data"] as? Dictionary<String, Any>,
+                    let thread = data["thread"] as? Dictionary<String, Any>,
+                    let posts = data["post"] as? Array<Dictionary<String, Any>> {
+                    
+                    self.thread = ThreadModel(JSON: thread)
+                    self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                }
+                self.loadFlag = false
+                self.tableView.reloadData()
             }
-            self.loadFlag = false
-            self.tableView.reloadData()
         }
     }
     
@@ -84,7 +111,6 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func initUI() {
-        view.addSubview(tableView)
         tableView.keyboardDismissMode = .interactive
         tableView.snp.makeConstraints {
             make in
