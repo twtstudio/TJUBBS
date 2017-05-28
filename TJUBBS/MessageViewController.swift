@@ -49,11 +49,11 @@ class MessageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        BBSJarvis.getMsgList(page: 0, success: { list in
-            print(list)
-            self.msgList = list
-            self.tableView?.reloadData()
-        })
+//        BBSJarvis.get(page: 0, success: { list in
+//            print(list)
+//            self.msgList = list
+//            self.tableView?.reloadData()
+//        })
         // Do any additional setup after loading the view, typically from a nib.
     }
     

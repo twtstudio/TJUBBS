@@ -20,16 +20,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="启动页0" translatesAutoresizingMaskIntoConstraints="NO" id="hf6-k2-gMi">
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="启动页0" translatesAutoresizingMaskIntoConstraints="NO" id="eaT-76-uOq">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="hf6-k2-gMi" secondAttribute="trailing" id="Alg-Cy-VGw"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="hf6-k2-gMi" secondAttribute="bottom" id="N3p-bV-5Qh"/>
-                            <constraint firstItem="hf6-k2-gMi" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="X8h-qj-5wv"/>
-                            <constraint firstItem="hf6-k2-gMi" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="qVR-xn-6fh"/>
+                            <constraint firstAttribute="trailing" secondItem="eaT-76-uOq" secondAttribute="trailing" id="TGl-yD-55p"/>
+                            <constraint firstItem="eaT-76-uOq" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Ubu-nc-qWp"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="eaT-76-uOq" secondAttribute="bottom" id="gRV-uh-OXG"/>
+                            <constraint firstItem="eaT-76-uOq" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="mZt-dz-hNx"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -39,6 +39,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="启动页0" width="375" height="667"/>
+        <image name="启动页0" width="1080" height="1920"/>
     </resources>
 </document>

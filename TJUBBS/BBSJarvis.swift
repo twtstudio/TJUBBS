@@ -156,13 +156,26 @@ struct BBSJarvis {
     }
     
     static func registerOld(username: String, password: String, cid: String, realName: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        let parameters = ["username": username,
-                          "password": password,
-                          "cid": cid,
-                          "real_name": realName,
-                          "token": BBSUser.shared.oldToken!
+        let parameters = [
+            "username": username,
+            "password": password,
+            "cid": cid,
+            "real_name": realName,
+            "token": BBSUser.shared.oldToken!
         ]
         print(parameters)
         BBSBeacon.request(withType: .post, url: BBSAPI.registerOld, parameters: parameters, success: success)
+    }
+    
+    static func appeal(username: String, cid: String, realName: String, studentNumber: String, email: String, message: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        let parameters = [
+            "username": username,
+            "cid": cid,
+            "real_name": realName,
+            "stunum": studentNumber,
+            "email": email,
+            "message": message
+        ]
+        BBSBeacon.request(withType: .post, url: BBSAPI.appeal, parameters: parameters, success: success)
     }
 }

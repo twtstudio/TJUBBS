@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
             
-            UserDefaults.standard.set(false, forKey: GUIDEKEY)
+            UserDefaults.standard.set(true, forKey: GUIDEKEY)
             if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEKEY) as? Bool, userDidSeeGuide == true {
                 BBSUser.load()
                 

@@ -43,9 +43,12 @@ class InfoModifyController: UIViewController {
         tableView.dataSource = self
 //        tableView.allowsSelection = false
         tableView.isScrollEnabled = false
-        
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 40
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.delegate = self
+        view.addGestureRecognizer(tap)
         
         self.view.addSubview(tableView)
         // 初始化完成操作View
@@ -326,4 +329,21 @@ extension InfoModifyController: UITextViewDelegate {
             return true
         }
     }
+    
+    override func dismissKeyboard() {
+        view.endEditing(true)
+        UIView.animate(withDuration: 0.3) {
+            self.tableView.frame = CGRect(x: 0, y: 0, width: self.tableView.frame.size.width, height: self.tableView.frame.size.height)
+        }
+    }
 }
+
+extension InfoModifyController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.superview is UITableViewCell {
+            return false
+        }
+        return true
+    }
+}
+
