@@ -169,6 +169,7 @@ class ThreadDetailViewController: UIViewController {
         if thread?.boardID == 193 {
             anonymousLabel?.text = "匿名"
         } else {
+            // TODO: 不显示 
             anonymousLabel?.text = "匿名不可用"
         }
         

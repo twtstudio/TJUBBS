@@ -13,7 +13,7 @@ class MessageCell: UITableViewCell {
     var portraitImageView = UIImageView()
     var usernameLabel = UILabel(text: "", fontSize: 18)
     var timeLabel = UILabel(text: "", color: .lightGray, fontSize: 16)
-    var detailLable = UILabel(text: "", color: .lightGray, fontSize: 16)
+    var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 16)
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -21,7 +21,7 @@ class MessageCell: UITableViewCell {
         contentView.addSubview(portraitImageView)
         contentView.addSubview(usernameLabel)
         contentView.addSubview(timeLabel)
-        contentView.addSubview(detailLable)
+        contentView.addSubview(detailLabel)
         
     }
     
@@ -66,12 +66,13 @@ class MessageCell: UITableViewCell {
             make.right.equalToSuperview().offset(-16)
         }
         
-        detailLable.text = detail
-        detailLable.snp.makeConstraints {
+        detailLabel.text = detail
+        detailLabel.snp.makeConstraints {
             make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(8)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
             make.right.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(8)
         }
     }
     
