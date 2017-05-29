@@ -11,6 +11,8 @@ import UIKit
 import ObjectMapper
 import Kingfisher
 import PKHUD
+import MJRefresh
+import Alamofire
 
 class ThreadDetailViewController: UIViewController {
     
@@ -33,6 +35,7 @@ class ThreadDetailViewController: UIViewController {
     var anonymousView: UIView?
     var anonymousSwitch: UISwitch?
     var anonymousLabel: UILabel?
+    var page = 0
     
     convenience init(thread: ThreadModel) {
         self.init()
@@ -44,23 +47,6 @@ class ThreadDetailViewController: UIViewController {
     convenience init(tid: Int) {
         self.init()
         self.hidesBottomBarWhenPushed = true
-        HUD.show(.rotatingImage(UIImage(named: "progress")), onView: self.view)
-//        HUD.show(.rotatingImage(UIImage(named: "progress")))
-        BBSJarvis.getThread(threadID: tid, page: 0) {
-            dict in
-            print(dict)
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let thread = data["thread"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>> {
-                
-                self.thread = ThreadModel(JSON: thread)
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
-                self.initUI()
-            }
-            self.loadFlag = false
-            self.tableView.reloadData()
-            HUD.hide()
-        }
     }
     
     override func viewDidLoad() {
@@ -85,20 +71,46 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func refresh() {
+        page = 0
         if let thread = thread {
-            BBSJarvis.getThread(threadID: thread.id, page: 0) {
+            BBSJarvis.getThread(threadID: thread.id, page: page) {
                 dict in
-                print(dict)
                 if let data = dict["data"] as? Dictionary<String, Any>,
                     let thread = data["thread"] as? Dictionary<String, Any>,
-                    let posts = data["post"] as? Array<Dictionary<String, Any>> {
+                    let posts = data["post"] as? Array<Dictionary<String, Any>>,
+                    let board = data["board"] as? [String: Any] {
                     
+                    self.board = BoardModel(JSON: board)
                     self.thread = ThreadModel(JSON: thread)
+                    self.thread?.boardID = self.board!.id
                     self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                }
+                if (self.tableView.mj_header.isRefreshing()) {
+                    self.tableView.mj_header.endRefreshing()
                 }
                 self.loadFlag = false
                 self.tableView.reloadData()
             }
+        }
+    }
+    
+    func load() {
+        page += 1
+        BBSJarvis.getThread(threadID: thread!.id, page: page) {
+            dict in
+//            print(dict)
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>>{
+                
+                for post in posts {
+                    self.postList.append(PostModel(JSON: post)!)
+                }
+            }
+            if (self.tableView.mj_footer.isRefreshing()) {
+                self.tableView.mj_footer.endRefreshing()
+            }
+            self.loadFlag = false
+            self.tableView.reloadSections([1], with: .none)
         }
     }
     
@@ -129,7 +141,14 @@ class ThreadDetailViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
         
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView.mj_footer.isAutomaticallyHidden = true
+        
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+        
+        
         
         replyView = UIView()
         view.addSubview(replyView!)

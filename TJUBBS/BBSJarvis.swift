@@ -174,7 +174,6 @@ struct BBSJarvis {
     }
     
     static func getMyThreadList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        print(BBSAPI.myThreadList(page: page))
         BBSBeacon.request(withType: .get, url: BBSAPI.myThreadList(page: page), parameters: nil, success: success)
     }
     
@@ -192,7 +191,6 @@ struct BBSJarvis {
             "real_name": realName,
             "token": BBSUser.shared.oldToken!
         ]
-        print(parameters)
         BBSBeacon.request(withType: .post, url: BBSAPI.registerOld, parameters: parameters, success: success)
     }
     

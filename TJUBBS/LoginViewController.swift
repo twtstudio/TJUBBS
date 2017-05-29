@@ -236,7 +236,6 @@ class LoginViewController: UIViewController {
         authenticateButton?.alpha = 0
         authenticateButton?.addTarget { _ in
             let veteranCheckVC = InfoModifyController(title: "老用户认证", items: ["用户名-输入用户名-username", "姓名-输入姓名-name", "身份证号-输入身份证号-id"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证") { result in
-                print(result)
                 // TODO: 逻辑判断
                 let resetVC =  InfoModifyController(title: "老用户认证", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "请重置密码，以同步您的个人数据") { result in
                     print(result)
