@@ -74,8 +74,9 @@ class MyPostViewController: UIViewController {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
                 let fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
-                for thread in fooThreadList {
-                    self.threadList.append(thread)
+                self.threadList += fooThreadList
+                if fooThreadList.count == 0 {
+                    self.tableView?.mj_footer.endRefreshingWithNoMoreData()
                 }
             }
             if (self.tableView?.mj_footer.isRefreshing())! {
@@ -134,6 +135,7 @@ extension MyPostViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         var thread = threadList[indexPath.row]
         thread.authorID = BBSUser.shared.uid!
+        thread.authorName = BBSUser.shared.username ?? thread.authorName
         cell.initUI(thread: thread)
         return cell
     }

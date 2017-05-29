@@ -73,7 +73,11 @@ class ThreadDetailViewController: UIViewController {
     func refresh() {
         page = 0
         if let thread = thread {
-            BBSJarvis.getThread(threadID: thread.id, page: page) {
+            BBSJarvis.getThread(threadID: thread.id, page: page, failure: { _ in
+                if (self.tableView.mj_header.isRefreshing()) {
+                    self.tableView.mj_header.endRefreshing()
+                }
+            }) {
                 dict in
                 if let data = dict["data"] as? Dictionary<String, Any>,
                     let thread = data["thread"] as? Dictionary<String, Any>,
@@ -84,6 +88,10 @@ class ThreadDetailViewController: UIViewController {
                     self.thread = ThreadModel(JSON: thread)
                     self.thread?.boardID = self.board!.id
                     self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                }
+                if self.postList.count < 49 {
+                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    self.tableView.mj_footer.isAutomaticallyHidden = true
                 }
                 if (self.tableView.mj_header.isRefreshing()) {
                     self.tableView.mj_header.endRefreshing()
@@ -101,16 +109,26 @@ class ThreadDetailViewController: UIViewController {
 //            print(dict)
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let posts = data["post"] as? Array<Dictionary<String, Any>>{
-                
                 for post in posts {
-                    self.postList.append(PostModel(JSON: post)!)
+                    if let model = PostModel(JSON: post) {
+                        self.postList.append(model)
+                    }
+                }
+                if posts.count < 49 {
+                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    self.tableView.mj_footer.isAutomaticallyHidden = true
                 }
             }
             if (self.tableView.mj_footer.isRefreshing()) {
                 self.tableView.mj_footer.endRefreshing()
             }
             self.loadFlag = false
-            self.tableView.reloadSections([1], with: .none)
+//            self.tableView.reloadSections([1], with: .none)
+            UIView.performWithoutAnimation {
+//                self.tableView.reloadSections([1], with: .none)
+//                self.tableView.reloadSections([1], with: .automatic)
+                self.tableView.reloadData()
+            }
         }
     }
     
@@ -129,10 +147,12 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         tableView.keyboardDismissMode = .interactive
+        let bottomHeight = thread?.boardID == 193 ? -80 : -50
         tableView.snp.makeConstraints {
             make in
 //            make.bottom.equalToSuperview().offset(-56)
-            make.bottom.equalToSuperview().offset(-80)
+//            make.bottom.equalToSuperview().offset(-80)
+            make.bottom.equalToSuperview().offset(bottomHeight)
             make.top.left.right.equalToSuperview()
         }
         tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
@@ -149,7 +169,6 @@ class ThreadDetailViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
         
         
-        
         replyView = UIView()
         view.addSubview(replyView!)
         replyView?.snp.makeConstraints {
@@ -160,37 +179,54 @@ class ThreadDetailViewController: UIViewController {
         replyView?.backgroundColor = .white
         
         anonymousLabel = UILabel()
-        replyView?.addSubview(anonymousLabel!)
-        anonymousLabel?.snp.makeConstraints {
-            make in
-            make.top.equalToSuperview().offset(8)
-            make.left.equalToSuperview().offset(16)
-        }
+//        replyView?.addSubview(anonymousLabel!)
         if thread?.boardID == 193 {
             anonymousLabel?.text = "匿名"
         } else {
             // TODO: 不显示 
             anonymousLabel?.text = "匿名不可用"
         }
-        
         anonymousSwitch = UISwitch()
-        replyView?.addSubview(anonymousSwitch!)
+//        replyView?.addSubview(anonymousSwitch!)
+        let anonymousView = UIView()
+        anonymousView.addSubview(anonymousLabel!)
+        anonymousView.addSubview(anonymousSwitch!)
+        replyView?.addSubview(anonymousView)
+        anonymousLabel?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalToSuperview().offset(16)
+        }
         anonymousSwitch?.snp.makeConstraints {
             make in
             make.centerY.equalTo(anonymousLabel!)
             make.right.equalToSuperview().offset(-16)
         }
+
         if thread?.boardID == 193 {
             anonymousSwitch?.isEnabled = true
+            anonymousView.snp.makeConstraints { make in
+                make.top.equalToSuperview()
+                make.left.equalToSuperview()
+                make.right.equalToSuperview()
+                make.height.equalTo(24)
+            }
         } else {
+            anonymousView.alpha = 0
+            anonymousView.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(8)
+                make.height.equalTo(0.1).priority(.high)
+            }
             anonymousSwitch?.isEnabled = false
         }
+        
         
         replyTextField = UITextField()
         replyView?.addSubview(replyTextField!)
         replyTextField?.snp.remakeConstraints {
             make in
-            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
+//            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
+            make.top.equalTo(anonymousView.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(16)
             make.width.equalTo(screenSize.width*(820/1080))
             make.bottom.equalToSuperview().offset(-8)
@@ -203,7 +239,7 @@ class ThreadDetailViewController: UIViewController {
         replyView?.addSubview(replyButton!)
         replyButton?.snp.remakeConstraints {
             make in
-            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
+            make.top.equalTo(anonymousView.snp.bottom).offset(8)
             make.left.equalTo(replyTextField!.snp.right).offset(4)
             make.right.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-8)
