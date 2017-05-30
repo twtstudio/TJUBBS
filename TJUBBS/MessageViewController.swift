@@ -157,6 +157,11 @@ extension MessageViewController {
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
             }
+            if self.msgList.count < 49 {
+                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+            } else {
+                self.tableView?.mj_footer.resetNoMoreData()
+            }
         })
         self.tableView?.reloadData()
     }

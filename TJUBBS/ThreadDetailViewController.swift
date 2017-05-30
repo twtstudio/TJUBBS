@@ -61,12 +61,17 @@ class ThreadDetailViewController: UIViewController {
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         view.addSubview(tableView)
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView.mj_footer.isAutomaticallyHidden = true
+        
         if thread != nil {
             initUI()
         }
         becomeKeyboardObserver()
         
         // 把返回换成空白
+        
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         refresh()
@@ -86,12 +91,16 @@ class ThreadDetailViewController: UIViewController {
                 let board = data["board"] as? [String: Any] {
                 
                 self.board = BoardModel(JSON: board)
-                let flag = self.thread == nil
+                let flag = self.thread == nil // thread nil flag
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
                 self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
                 if flag {
                     self.initUI()
+                }
+                if posts.count < 49 {
+                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    self.tableView.mj_footer.isAutomaticallyHidden = true
                 }
             }
             
@@ -113,7 +122,7 @@ class ThreadDetailViewController: UIViewController {
                         self.postList.append(model)
                     }
                 }
-                if posts.count < 49 {
+                if (posts.count < 49)&&(self.page == 0) || (posts.count < 50)&&(self.page != 0) {
                     self.tableView.mj_footer.endRefreshingWithNoMoreData()
                     self.tableView.mj_footer.isAutomaticallyHidden = true
                 }
@@ -162,20 +171,7 @@ class ThreadDetailViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
         
-        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView.mj_footer.isAutomaticallyHidden = true
-        
-        if self.postList.count < 49 {
-            self.tableView.mj_footer.endRefreshingWithNoMoreData()
-            self.tableView.mj_footer.isAutomaticallyHidden = true
-        }
-        if (self.tableView.mj_header.isRefreshing()) {
-            self.tableView.mj_header.endRefreshing()
-        }
-
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
-        
         
         replyView = UIView()
         view.addSubview(replyView!)
@@ -381,8 +377,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 // replace " with \\"
                 // replace < with &lt;
                 // replace > with &gt;
-                
-                let loadString = "<head><meta name=\"viewport\" content=\"width=device-width; initial-scale=1.0; maximum-scale=1.0;\"> </head> <script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
+                let loadString = "<style> img {max-width:100%;height:auto !important;width:auto !important;}; </style> <script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
                 print(loadString)
                 webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
                 webView.scrollView.isScrollEnabled = false

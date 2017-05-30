@@ -61,6 +61,12 @@ class MyPostViewController: UIViewController {
             if let data = dict["data"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
             }
+            if self.threadList.count < 49 {
+                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+            } else {
+                self.tableView?.mj_footer.resetNoMoreData()
+            }
+
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
             }
