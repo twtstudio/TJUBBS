@@ -94,7 +94,7 @@ class ThreadDetailViewController: UIViewController {
                 let flag = self.thread == nil // thread nil flag
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) 
                 if flag {
                     self.initUI()
                 }
@@ -280,7 +280,7 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func share() {
-        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "来BBS玩呀", URL(string: "https://bbs.twtstudio.com/forum/thread/\(thread!.id)")!], applicationActivities: [])
+        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "[求实BBS] \(thread!.title)", URL(string: "https://bbs.twtstudio.com/forum/thread/\(thread!.id)")!], applicationActivities: [])
         present(vc, animated: true, completion: nil)
     }
 }
@@ -377,7 +377,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 // replace " with \\"
                 // replace < with &lt;
                 // replace > with &gt;
-                let loadString = "<style> img {max-width:100%;height:auto !important;width:auto !important;}; </style> <script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
+                let loadString = "<head><link rel=\"stylesheet\" href=\"editor.css\"></head><div class = \"thread-content\"><script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script></div>"
                 print(loadString)
                 webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
                 webView.scrollView.isScrollEnabled = false
@@ -524,7 +524,7 @@ extension ThreadDetailViewController: ReplyViewDelegate {
                 let thread = data["thread"] as? Dictionary<String, Any>,
                 let posts = data["post"] as? Array<Dictionary<String, Any>> {
                 self.thread = ThreadModel(JSON: thread)
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) 
             }
             self.loadFlag = false
             self.tableView.reloadSections([1], with: .middle)

@@ -9,7 +9,7 @@ var uri_re = /^[-;/?:@&=+$,_.!~*'()%0-9a-z]{1,512}$/i;
 // main regular expression: CRLF, [tag=option], [tag="option"] [tag] or [/tag]
 var postfmt_re = /([\r\n])|(?:\[([a-z@#]{1,16})(?:=([^\x00-\x1F<>[\]]{1,256}))?\])|(?:\[\/([a-z]{1,16})\])/ig;
 
-function BBCode (post, cb) {
+function BBCode(post, cb) {
   // var attimg = [];
   var opentags = []; // open tag stack
   var crlf2br = true; // convert CRLF to <br>?
@@ -213,16 +213,16 @@ function BBCode (post, cb) {
       return '[li]'+m1+'[/li]';
     });
 
-    post = post.replace(/\[\attach(?:=(\d+))?\](.*?)\[\/\attach\]/g, function (m0, m1, m2) {
+    post = post.replace(/\[attach(?:=(\d+))?\](.*?)\[\/attach\]/g, function (m0, m1, m2) {
       if (m1) {
-        return `<a href="https://bbs.twtstudio.com/attach/${m1}?name=${encodeURIComponent(m2)}" target="_blank">附件: ${m2}</a>`;
+        return `<a href="https://bbs.twtstudio.com/api/attach/${m1}?name=${encodeURIComponent(m2)}" target="_blank">附件: ${m2}</a>`;
       } else {
-        return `<a href="https://bbs.twtstudio.com/attach/${m1}" target="_blank">附件: <i>(未命名: ${m1})</i></a>`;
+        return `<a href="https://bbs.twtstudio.com/api/attach/${m1}" target="_blank">附件: <i>(未命名: ${m1})</i></a>`;
       }
     });
 
-    post = post.replace(/\[\attimg\](.*?)\[\/\attimg\]/g, function (m0, m1) {
-      return `<a href="https://bbs.twtstudio.com/api/img/${m1}" target="_blank"><img src="https://bbs.twtstudio.com/api/img/${m1}"></a>`;
+    post = post.replace(/\[attimg\](.*?)\[\/attimg\]/g, function (m0, m1) {
+      return `<img src="https://bbs.twtstudio.com/api/img/${m1}"></a>`;
     });
     // @todo: 附件使用情况统计
     /*
@@ -247,5 +247,8 @@ function BBCode (post, cb) {
         endtags += opentags.pop().etag;
     }
   }
-  return endtags ? result + endtags : result;
+
+  result = endtags ? result + endtags : result;
+  // & has been escaped to &amp; before processing, 
+  return result.replace(/&amp;#91;/g, '[').replace(/&amp;#93;/g, ']');
 }

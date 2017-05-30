@@ -46,7 +46,7 @@ class ReplyViewController: UIViewController {
     convenience init(thread: ThreadModel?, post: PostModel?) {
         self.init()
         self.thread = thread
-        print(thread?.boardID)
+//        print(thread?.boardID)
         self.post = post
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent

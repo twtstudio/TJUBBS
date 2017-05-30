@@ -59,7 +59,7 @@ class MyPostViewController: UIViewController {
         BBSJarvis.getMyThreadList(page: page) {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
             if self.threadList.count < 49 {
                 self.tableView?.mj_footer.endRefreshingWithNoMoreData()
@@ -79,7 +79,7 @@ class MyPostViewController: UIViewController {
         BBSJarvis.getMyThreadList(page: page) {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
-                let fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: data)!
+                let fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
                 self.threadList += fooThreadList
                 if fooThreadList.count == 0 {
                     self.tableView?.mj_footer.endRefreshingWithNoMoreData()
