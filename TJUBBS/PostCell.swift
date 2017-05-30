@@ -146,8 +146,10 @@ class PostCell: UITableViewCell {
             make.bottom.equalToSuperview().offset(-16)
         }
         
-        let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
-        timeLablel.text = timeString
+//        let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
+//        let timeString = TimeStampTransfer.string(from: String(thread.replyTime), with: "yyyy-MM-dd HH:mm")
+        let timeStr = TimeStampTransfer.timeLabelSince(time: thread.replyTime)
+        timeLablel.text = timeStr
         timeLablel.snp.makeConstraints {
             make in
             make.centerY.equalTo(replyNumberLabel)

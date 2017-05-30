@@ -22,6 +22,7 @@ struct ThreadModel: Mappable {
     var visibility: Int = 0 // 0 for always, 1 for logged in users, 2 for never
     var createTime: Int = 0
     var modifyTime: Int = 0
+    var replyTime: Int = 0
     var content: String = ""
     var category: String = ""
     var replyNumber: Int = 0
@@ -42,6 +43,7 @@ struct ThreadModel: Mappable {
         visibility <- map["visibility"]
         createTime <- map["t_create"]
         modifyTime <- map["t_modify"]
+        replyTime <- map["t_reply"]
         content <- map["content"]
         category <- map["category"]
         inCollection <- map["in_collection"]

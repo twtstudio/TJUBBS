@@ -36,6 +36,7 @@ class ThreadDetailViewController: UIViewController {
     var anonymousSwitch: UISwitch?
     var anonymousLabel: UILabel?
     var page = 0
+    var tid = 0
     
     convenience init(thread: ThreadModel) {
         self.init()
@@ -46,6 +47,7 @@ class ThreadDetailViewController: UIViewController {
     
     convenience init(tid: Int) {
         self.init()
+        self.tid = tid
         self.hidesBottomBarWhenPushed = true
     }
     
@@ -72,33 +74,30 @@ class ThreadDetailViewController: UIViewController {
     
     func refresh() {
         page = 0
-        if let thread = thread {
-            BBSJarvis.getThread(threadID: thread.id, page: page, failure: { _ in
-                if (self.tableView.mj_header.isRefreshing()) {
-                    self.tableView.mj_header.endRefreshing()
-                }
-            }) {
-                dict in
-                if let data = dict["data"] as? Dictionary<String, Any>,
-                    let thread = data["thread"] as? Dictionary<String, Any>,
-                    let posts = data["post"] as? Array<Dictionary<String, Any>>,
-                    let board = data["board"] as? [String: Any] {
-                    
-                    self.board = BoardModel(JSON: board)
-                    self.thread = ThreadModel(JSON: thread)
-                    self.thread?.boardID = self.board!.id
-                    self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
-                }
-                if self.postList.count < 49 {
-                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
-                    self.tableView.mj_footer.isAutomaticallyHidden = true
-                }
-                if (self.tableView.mj_header.isRefreshing()) {
-                    self.tableView.mj_header.endRefreshing()
-                }
-                self.loadFlag = false
-                self.tableView.reloadData()
+        tid = thread?.id ?? tid
+        BBSJarvis.getThread(threadID: tid, page: page, failure: { _ in
+            if (self.tableView.mj_header.isRefreshing()) {
+                self.tableView.mj_header.endRefreshing()
             }
+        }) { dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let thread = data["thread"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>>,
+                let board = data["board"] as? [String: Any] {
+                
+                self.board = BoardModel(JSON: board)
+                let flag = self.thread == nil
+                self.thread = ThreadModel(JSON: thread)
+                self.thread?.boardID = self.board!.id
+                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                if flag {
+                    self.initUI()
+                }
+            }
+            
+            self.loadFlag = false
+            self.tableView.reloadData()
+            self.replyView?.setNeedsLayout()
         }
     }
     
@@ -128,6 +127,7 @@ class ThreadDetailViewController: UIViewController {
 //                self.tableView.reloadSections([1], with: .none)
 //                self.tableView.reloadSections([1], with: .automatic)
                 self.tableView.reloadData()
+                self.replyView?.setNeedsLayout()
             }
         }
     }
@@ -146,6 +146,7 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func initUI() {
+        self.title = thread?.title
         tableView.keyboardDismissMode = .interactive
         let bottomHeight = thread?.boardID == 193 ? -80 : -50
         tableView.snp.makeConstraints {
@@ -165,7 +166,14 @@ class ThreadDetailViewController: UIViewController {
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         self.tableView.mj_footer.isAutomaticallyHidden = true
         
-        
+        if self.postList.count < 49 {
+            self.tableView.mj_footer.endRefreshingWithNoMoreData()
+            self.tableView.mj_footer.isAutomaticallyHidden = true
+        }
+        if (self.tableView.mj_header.isRefreshing()) {
+            self.tableView.mj_header.endRefreshing()
+        }
+
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
         
         
@@ -183,10 +191,10 @@ class ThreadDetailViewController: UIViewController {
         if thread?.boardID == 193 {
             anonymousLabel?.text = "匿名"
         } else {
-            // TODO: 不显示 
             anonymousLabel?.text = "匿名不可用"
         }
         anonymousSwitch = UISwitch()
+        anonymousSwitch?.onTintColor = .BBSBlue
 //        replyView?.addSubview(anonymousSwitch!)
         let anonymousView = UIView()
         anonymousView.addSubview(anonymousLabel!)
@@ -209,7 +217,7 @@ class ThreadDetailViewController: UIViewController {
                 make.top.equalToSuperview()
                 make.left.equalToSuperview()
                 make.right.equalToSuperview()
-                make.height.equalTo(24)
+                make.height.equalTo(32)
             }
         } else {
             anonymousView.alpha = 0
@@ -374,7 +382,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 // replace < with &lt;
                 // replace > with &gt;
                 
-                let loadString = "<script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
+                let loadString = "<head><meta name=\"viewport\" content=\"width=device-width; initial-scale=1.0; maximum-scale=1.0;\"> </head> <script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
                 print(loadString)
                 webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
                 webView.scrollView.isScrollEnabled = false

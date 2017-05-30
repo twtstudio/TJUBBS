@@ -62,7 +62,7 @@ class UserInfoViewController: UIViewController {
     }
     
     func refresh() {
-        guard BBSUser.shared.token != nil else {
+        guard let token = BBSUser.shared.token, token != "" else {
             let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能查看个人信息", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alert.addAction(cancelAction)
@@ -77,7 +77,8 @@ class UserInfoViewController: UIViewController {
         }
         BBSJarvis.getHome(success: {
             self.tableView?.reloadData()
-        }, failure: { _ in
+        }, failure: { error in
+            print(error)
         })
         
         refreshMessage()
@@ -96,7 +97,9 @@ class UserInfoViewController: UIViewController {
                 self.messageFlag = true
                 UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
             }
-            self.tableView?.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+            UIView.performWithoutAnimation {
+                self.tableView?.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+            }
         })
     }
     
@@ -303,7 +306,7 @@ extension UserInfoViewController: UITableViewDataSource {
         
 
 //        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
-        ageLabel = UILabel(text: "\(TimeStampTransfer.daysString(time: BBSUser.shared.createTime ?? 1494797867))", color: .white, fontSize: 20)
+        ageLabel = UILabel(text: "\(TimeStampTransfer.daysSince(time: BBSUser.shared.createTime ?? 1494797867))", color: .white, fontSize: 20)
 
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {

@@ -32,6 +32,12 @@ class AddThreadViewController: UIViewController {
         didSet {
             openBoardListFlag = false
             boardString = "板块：\(selectedBoard?.name ?? " ")"
+            if selectedBoard?.id == 193 { //青年湖
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.anonymouslabel.alpha = 1
+                    self.anonymousSwitch.alpha = 1
+                })
+            }
             tableView.reloadSections([1], with: .automatic)
         }
     }
@@ -224,6 +230,7 @@ extension AddThreadViewController: UITableViewDataSource {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
                 cell.textLabel?.text = "帖子"
                 cell.contentView.addSubview(anonymousSwitch)
+                anonymousSwitch.onTintColor = .BBSBlue
                 anonymousSwitch.snp.makeConstraints {
                     make in
                     make.right.equalToSuperview().offset(-16)
@@ -238,6 +245,13 @@ extension AddThreadViewController: UITableViewDataSource {
                     make.centerY.equalToSuperview()
                 }
                 anonymouslabel.alpha = 0
+                if selectedBoard?.id == 193 { //青年湖
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.anonymouslabel.alpha = 1
+                        self.anonymousSwitch.alpha = 1
+                    })
+                }
+                
                 return cell
             } else if indexPath.row == 1 {
                 return themeCell

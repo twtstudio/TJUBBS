@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ObjectMapper
 
 let BBSUSERSHAREDKEY = "BBSUserSharedKey"
 
@@ -65,6 +66,17 @@ class BBSUser {
 //    }
     
     
+    static func load(wrapper: UserWrapper) {
+        BBSUser.shared.username = wrapper.username
+        BBSUser.shared.nickname = wrapper.nickname
+        BBSUser.shared.signature = wrapper.signature
+        BBSUser.shared.postCount = wrapper.postCount
+        BBSUser.shared.threadCount = wrapper.threadCount
+        BBSUser.shared.points = wrapper.points
+        BBSUser.shared.cOnline = wrapper.cOnline
+        BBSUser.shared.group = wrapper.group
+        BBSUser.shared.tCreate = wrapper.tCreate
+    }
     
     static func save() {
         let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1]
@@ -98,5 +110,32 @@ class BBSUser {
 //        BBSBeacon.request(withType: .get, url: BBSAPI.userInfo, token: token, parameters: nil, success: { dict in
 //        }, failure: nil)
 //    }
+}
+
+class UserWrapper: NSObject, Mappable {
+    var username: String?
+    var nickname: String?
+    var signature: String?
+    var postCount: Int?
+    var threadCount: Int?
+    var points: Int?
+    var level: Int?
+    var cOnline: Int?
+    var group: Int?
+    var tCreate: Int?
+    
+    required init?(map: Map) {}
+    
+    func mapping(map: Map) {
+        username <- map["name"]
+        nickname <- map["nickname"]
+        signature <- map["signature"]
+        postCount <- map["c_post"]
+        threadCount <- map["c_thread"]
+        points <- map["points"]
+        cOnline <- map["c_online"]
+        group <- map["group"]
+        tCreate <- map["t_create"]
+    }
 }
 

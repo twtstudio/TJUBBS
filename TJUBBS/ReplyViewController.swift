@@ -115,6 +115,7 @@ class ReplyViewController: UIViewController {
         }
         
         anonymousSwitch = UISwitch()
+        anonymousSwitch?.onTintColor = .BBSBlue
         replyView?.addSubview(anonymousSwitch!)
         anonymousSwitch?.snp.makeConstraints {
             make in
