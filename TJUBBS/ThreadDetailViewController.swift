@@ -148,7 +148,7 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func loadToBottom() {
-        page = self.thread!.replyNumber/50-1
+        page = (self.thread!.replyNumber/50-1 >= 0) ? self.thread!.replyNumber/50-1 : 0
         BBSJarvis.getThread(threadID: thread!.id, page: page) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
@@ -206,23 +206,23 @@ class ThreadDetailViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
         
-        bottomButton = UIButton(imageName: "down")
-        view.addSubview(bottomButton!)
-        bottomButton?.snp.makeConstraints {
-            make in
-            make.right.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(-88)
-            make.height.width.equalTo(screenSize.width*(104/1080))
-        }
-        bottomButton?.alpha = 0
-        bottomButton?.addTarget {
-            _ in
-            UIView.animate(withDuration: 0.5, animations: {
-                self.bottomButton?.alpha = 0
-            })
-            self.loadToBottom()
-        }
-        
+//        bottomButton = UIButton(imageName: "down")
+//        view.addSubview(bottomButton!)
+//        bottomButton?.snp.makeConstraints {
+//            make in
+//            make.right.equalToSuperview().offset(-16)
+//            make.bottom.equalToSuperview().offset(-88)
+//            make.height.width.equalTo(screenSize.width*(104/1080))
+//        }
+//        bottomButton?.alpha = 0
+//        bottomButton?.addTarget {
+//            _ in
+//            UIView.animate(withDuration: 0.5, animations: {
+//                self.bottomButton?.alpha = 0
+//            })
+//            self.loadToBottom()
+//        }
+//        
         replyView = UIView()
         view.addSubview(replyView!)
         replyView?.snp.makeConstraints {
@@ -482,13 +482,13 @@ extension ThreadDetailViewController: UITableViewDelegate {
         }
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if bottomButton?.alpha == 0 {
-            UIView.animate(withDuration: 0.5, animations: {
-                self.bottomButton?.alpha = 0.8
-            })
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        if bottomButton?.alpha == 0 {
+//            UIView.animate(withDuration: 0.5, animations: {
+//                self.bottomButton?.alpha = 0.8
+//            })
+//        }
+//    }
     
     
 }
