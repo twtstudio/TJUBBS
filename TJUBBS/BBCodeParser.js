@@ -140,7 +140,7 @@ function BBCode(post, cb) {
         case "quote":
         case "blockquote":
           var qTag = (m2l === "q") ? "q" : "blockquote";
-          opentags.push(taginfo_t(m2l, "</" + qTag + ">"));
+          opentags.push(taginfo_t (m2l, "</" + qTag + ">"));
           return m3 && m3.length && uri_re.test(m3) ? "<" + qTag + " cite=\"" + m3 + "\">" : "<" + qTag + ">";
         case "list":
           var lTtag = m3 && m3 === '1' ? 'ol' : 'ul';
@@ -215,15 +215,20 @@ function BBCode(post, cb) {
 
     post = post.replace(/\[attach(?:=(\d+))?\](.*?)\[\/attach\]/g, function (m0, m1, m2) {
       if (m1) {
-        return `<a href="https://bbs.twtstudio.com/api/attach/${m1}?name=${encodeURIComponent(m2)}" target="_blank">附件: ${m2}</a>`;
+        return `<a href="https://bbs.tju.edu.cn/api/attach/${m1}?name=${encodeURIComponent(m2)}" target="_blank">附件: ${m2}</a>`;
       } else {
-        return `<a href="https://bbs.twtstudio.com/api/attach/${m1}" target="_blank">附件: <i>(未命名: ${m1})</i></a>`;
+        return `<a href="https://bbs.tju.edu.cn/api/attach/${m1}" target="_blank">附件: <i>(未命名: ${m1})</i></a>`;
       }
     });
 
     post = post.replace(/\[attimg\](.*?)\[\/attimg\]/g, function (m0, m1) {
-      return `<img src="https://bbs.twtstudio.com/api/img/${m1}"></a>`;
+      return `<img src="https://bbs.tju.edu.cn/api/img/${m1}">`;
     });
+                                     
+    post = post.replace(/\[img\]\/api\/img\/(\d+?)\[\/img\]/g, function (m0, m1) {
+      return `<img src="https://bbs.tju.edu.cn/api/img/${m1}">`;
+    });
+
     // @todo: 附件使用情况统计
     /*
     post = _post.replace(/\[attimg\][/attimg]/g, function (m0, m1) {

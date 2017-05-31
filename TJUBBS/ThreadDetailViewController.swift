@@ -37,6 +37,7 @@ class ThreadDetailViewController: UIViewController {
     var anonymousLabel: UILabel?
     var page = 0
     var tid = 0
+    var bottomButton: UIButton?
     
     convenience init(thread: ThreadModel) {
         self.init()
@@ -98,10 +99,14 @@ class ThreadDetailViewController: UIViewController {
                 if flag {
                     self.initUI()
                 }
-                if posts.count < 49 {
-                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
-                    self.tableView.mj_footer.isAutomaticallyHidden = true
+//                if posts.count < 49 {
+//                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+//                    self.tableView.mj_footer.isAutomaticallyHidden = true
+//                }
+                if self.tableView.mj_header.isRefreshing() {
+                    self.tableView.mj_header.endRefreshing()
                 }
+                
             }
             
             self.loadFlag = false
@@ -123,7 +128,8 @@ class ThreadDetailViewController: UIViewController {
                     }
                 }
                 if (posts.count < 49)&&(self.page == 0) || (posts.count < 50)&&(self.page != 0) {
-                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+//                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    self.tableView.mj_footer.endRefreshing()
                     self.tableView.mj_footer.isAutomaticallyHidden = true
                 }
             }
@@ -138,6 +144,33 @@ class ThreadDetailViewController: UIViewController {
                 self.tableView.reloadData()
                 self.replyView?.setNeedsLayout()
             }
+        }
+    }
+    
+    func loadToBottom() {
+        page = self.thread!.replyNumber/50-1
+        BBSJarvis.getThread(threadID: thread!.id, page: page) {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>>{
+                for post in posts {
+                    if let model = PostModel(JSON: post) {
+                        self.postList.append(model)
+                    }
+                }
+                self.tableView.mj_footer.endRefreshing()
+                self.tableView.mj_footer.isAutomaticallyHidden = true
+            }
+            if (self.tableView.mj_footer.isRefreshing()) {
+                self.tableView.mj_footer.endRefreshing()
+            }
+            self.loadFlag = false
+            
+            UIView.performWithoutAnimation {
+                self.tableView.reloadData()
+                self.replyView?.setNeedsLayout()
+            }
+            self.tableView.scrollToRow(at: IndexPath(row: self.postList.count-1, section: 1), at: .bottom, animated: true)
         }
     }
     
@@ -156,7 +189,7 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         self.title = thread?.title
-        tableView.keyboardDismissMode = .interactive
+//        tableView.keyboardDismissMode = .interactive
         let bottomHeight = thread?.boardID == 193 ? -80 : -50
         tableView.snp.makeConstraints {
             make in
@@ -165,13 +198,30 @@ class ThreadDetailViewController: UIViewController {
             make.bottom.equalToSuperview().offset(bottomHeight)
             make.top.left.right.equalToSuperview()
         }
-        tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
+        tableView.register(ReplyCell.self, forCellReuseIdentifier: "replyCell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+        
+        bottomButton = UIButton(imageName: "down")
+        view.addSubview(bottomButton!)
+        bottomButton?.snp.makeConstraints {
+            make in
+            make.right.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-88)
+            make.height.width.equalTo(screenSize.width*(104/1080))
+        }
+        bottomButton?.alpha = 0
+        bottomButton?.addTarget {
+            _ in
+            UIView.animate(withDuration: 0.5, animations: {
+                self.bottomButton?.alpha = 0
+            })
+            self.loadToBottom()
+        }
         
         replyView = UIView()
         view.addSubview(replyView!)
@@ -266,7 +316,7 @@ class ThreadDetailViewController: UIViewController {
             
             if let text = self.replyTextField?.text, text != "" {
                 let noBBtext = text.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
-                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, success: { _ in
+                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
                     HUD.flash(.success)
                     self.replyTextField?.text = ""
                     self.didReply()
@@ -280,7 +330,7 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func share() {
-        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "[求实BBS] \(thread!.title)", URL(string: "https://bbs.twtstudio.com/forum/thread/\(thread!.id)")!], applicationActivities: [])
+        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "[求实BBS] \(thread!.title)", URL(string: "https://bbs.tju.edu.cn/forum/thread/\(thread!.id)")!], applicationActivities: [])
         present(vc, animated: true, completion: nil)
     }
 }
@@ -396,7 +446,12 @@ extension ThreadDetailViewController: UITableViewDataSource {
             return cell
         } else {
             let post = postList[indexPath.row]
-            let cell = ReplyCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: "replyCell") as! ReplyCell
+            cell.accessoryType = .disclosureIndicator
+            cell.accessoryView?.snp.makeConstraints {
+                make in
+                make.centerX.equalTo(cell.floorLabel)
+            }
             cell.initUI(post: post)
             return cell
         }
@@ -426,6 +481,16 @@ extension ThreadDetailViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(replyVC, animated: true)
         }
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if bottomButton?.alpha == 0 {
+            UIView.animate(withDuration: 0.5, animations: {
+                self.bottomButton?.alpha = 0.8
+            })
+        }
+    }
+    
+    
 }
 
 extension ThreadDetailViewController: UIWebViewDelegate {
@@ -517,9 +582,9 @@ extension ThreadDetailViewController: UIGestureRecognizerDelegate {
 
 extension ThreadDetailViewController: ReplyViewDelegate {
     func didReply() {
+        //FIXME: more than 1 page after reply
         BBSJarvis.getThread(threadID: self.thread!.id, page: 0) {
             dict in
-            print(dict)
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let thread = data["thread"] as? Dictionary<String, Any>,
                 let posts = data["post"] as? Array<Dictionary<String, Any>> {

@@ -20,6 +20,7 @@ class LoginViewController: UIViewController {
     var loginButton: UIButton?
     var registerButton: UIButton?
     var authenticateButton: UIButton?
+    var registerGuideButton: UIButton?
     var forgetButton: UIButton?
     var visitorButton: UIButton?
     var EULATitleLabel: UILabel?
@@ -277,6 +278,26 @@ class LoginViewController: UIViewController {
         passwordTextField?.spellCheckingType = .no
         passwordTextField?.isSecureTextEntry = true
         
+        registerGuideButton = UIButton(title: "注册或认证?", color: .BBSRed)
+        view.addSubview(registerGuideButton!)
+        registerGuideButton?.snp.makeConstraints {
+            make in
+            make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
+            make.left.equalTo(passwordTextField!.snp.left)
+        }
+        registerGuideButton?.addTarget(withBlock: {
+            _ in
+            let alert = UIAlertController(title: "抱歉", message: "求实BBS APP 暂时无法提供注册功能，请在浏览器中打开\nhttps://bbs.tju.edu.cn 注册", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alert.addAction(cancelAction)
+            let confirmAction = UIAlertAction(title: "复制", style: .default) {
+                _ in
+                UIPasteboard.general.string = "https://bbs.tju.edu.cn"
+            }
+            alert.addAction(confirmAction)
+            self.present(alert, animated: true, completion: nil)
+        })
+        
         forgetButton = UIButton(title: "忘记密码?")
         view.addSubview(forgetButton!)
         forgetButton?.snp.makeConstraints {
@@ -388,7 +409,7 @@ class LoginViewController: UIViewController {
             return true
         }
         registerButton?.addTarget { _ in
-            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-6~30字节-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
+            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-2~12个字母-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
                 if let result = result as? [String : String] {
                     if check(result) == true {
                         var para = result

@@ -59,7 +59,7 @@ class ReplyCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLable.text = post.authorName
+        usernameLable.text = post.authorID != 0 ? post.authorName : "匿名用户"
         usernameLable.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView)
@@ -90,7 +90,7 @@ class ReplyCell: UITableViewCell {
         floorLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(usernameLable)
-            make.right.equalToSuperview().offset(-16)
+            make.right.equalToSuperview().offset(-8)
         }
         
         replyNumberLabel.text = "回复(\(post.replyNumber))"

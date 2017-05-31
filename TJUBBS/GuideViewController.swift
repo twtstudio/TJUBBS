@@ -19,8 +19,8 @@ class GuideViewController: UIViewController {
     let pageNameList = ["启动页1", "启动页2", "启动页3"]
     var newUserButton = UIButton.borderButton(title: "我是新用户")
     var oldUserButton = UIButton.borderButton(title: "我是老用户")
-    var loginBtn = UIButton(title: "直接登录>")
-
+//    var loginBtn = UIButton(title: "直接登录>")
+    var loginBtn = UIButton.borderButton(title: "马上体验")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,7 +60,7 @@ class GuideViewController: UIViewController {
         }
         newUserButton.alpha = 0
         newUserButton.addTarget { _ in
-            let vc = InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-身份证号仅用于身份验证-cid", "用户名-6~30字节-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息", handler: nil)
+            let vc = InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-身份证号仅用于身份验证-cid", "用户名-2～12个字母-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息", handler: nil)
             vc.handler = { [weak vc] result in
                 if let result = result as? [String: String] {
                     if check(result) == true {
@@ -175,7 +175,9 @@ class GuideViewController: UIViewController {
         view.addSubview(loginBtn)
         loginBtn.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-10)
+            make.width.equalTo(screenSize.width*(360/1080))
+            make.height.equalTo(screenSize.height*(100/1920))
+            make.bottom.equalToSuperview().offset(-48)
         }
         loginBtn.addTarget { _ in
             UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)
@@ -215,15 +217,15 @@ extension GuideViewController: UIScrollViewDelegate {
         
         if pageControl.currentPage == pageNameList.count-1 {
             UIView.animate(withDuration: 0.8, animations: {
-                self.newUserButton.alpha = 1
-                self.oldUserButton.alpha = 1
+//                self.newUserButton.alpha = 1
+//                self.oldUserButton.alpha = 1
                 self.loginBtn.alpha = 1
                 self.pageControl.alpha = 0
             })
         } else {
             UIView.animate(withDuration: 0.4, animations: {
-                self.newUserButton.alpha = 0
-                self.oldUserButton.alpha = 0
+//                self.newUserButton.alpha = 0
+//                self.oldUserButton.alpha = 0
                 self.pageControl.alpha = 1
                 self.loginBtn.alpha = 0
             })
