@@ -306,7 +306,7 @@ extension UserInfoViewController: UITableViewDataSource {
         
 
 //        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
-        ageLabel = UILabel(text: "\(TimeStampTransfer.daysSince(time: BBSUser.shared.createTime ?? 1494797867))", color: .white, fontSize: 20)
+        ageLabel = UILabel(text: "\(TimeStampTransfer.daysSince(time: BBSUser.shared.tCreate ?? 1494797867))", color: .white, fontSize: 20)
 
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {
