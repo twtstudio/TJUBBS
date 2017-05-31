@@ -34,6 +34,7 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil, failure: failure) { dict in
             if let data = dict["data"] as? [String: Any], let wrapper = Mapper<UserWrapper>().map(JSON: data) {
                 BBSUser.load(wrapper: wrapper)
+                success?()
             } else if let err = dict["err"] as? Int, err == 0 {
                 failure(BBSError.custom)
             }
