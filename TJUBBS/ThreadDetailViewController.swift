@@ -112,7 +112,11 @@ class ThreadDetailViewController: UIViewController {
     
     func load() {
         page += 1
-        BBSJarvis.getThread(threadID: thread!.id, page: page) {
+        BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
+            if (self.tableView.mj_footer.isRefreshing()) {
+                self.tableView.mj_footer.endRefreshing()
+            }
+        }) {
             dict in
 //            print(dict)
             if let data = dict["data"] as? Dictionary<String, Any>,
