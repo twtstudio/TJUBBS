@@ -162,6 +162,8 @@ class LoginViewController: UIViewController {
         content += "6.3 无论因何种原因导致本协议中部分无效或不可执行，其余条款仍对双方有效。\n"
         content += "6.4 本协议中所有标题仅作索引使用，不能作为解释协议内容的依据。"
         EULATextView?.text = content
+        EULATextView?.isEditable = false
+        
         
         EULACancelButton?.addTarget(withBlock: { _ in
             UIView.animate(withDuration: 0.8, animations: {
