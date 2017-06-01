@@ -19,8 +19,8 @@ class GuideViewController: UIViewController {
     let pageNameList = ["启动页1", "启动页2", "启动页3"]
     var newUserButton = UIButton.borderButton(title: "我是新用户")
     var oldUserButton = UIButton.borderButton(title: "我是老用户")
-//    var loginBtn = UIButton(title: "直接登录>")
-    var loginBtn = UIButton.borderButton(title: "马上体验")
+    var loginBtn = UIButton(title: "直接登录>")
+//    var loginBtn = UIButton.borderButton(title: "马上体验")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -177,7 +177,7 @@ class GuideViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.width.equalTo(screenSize.width*(360/1080))
             make.height.equalTo(screenSize.height*(100/1920))
-            make.bottom.equalToSuperview().offset(-48)
+            make.bottom.equalToSuperview().offset(-8)
         }
         loginBtn.addTarget { _ in
             UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)
@@ -217,15 +217,15 @@ extension GuideViewController: UIScrollViewDelegate {
         
         if pageControl.currentPage == pageNameList.count-1 {
             UIView.animate(withDuration: 0.8, animations: {
-//                self.newUserButton.alpha = 1
-//                self.oldUserButton.alpha = 1
+                self.newUserButton.alpha = 1
+                self.oldUserButton.alpha = 1
                 self.loginBtn.alpha = 1
                 self.pageControl.alpha = 0
             })
         } else {
             UIView.animate(withDuration: 0.4, animations: {
-//                self.newUserButton.alpha = 0
-//                self.oldUserButton.alpha = 0
+                self.newUserButton.alpha = 0
+                self.oldUserButton.alpha = 0
                 self.pageControl.alpha = 1
                 self.loginBtn.alpha = 0
             })

@@ -278,25 +278,25 @@ class LoginViewController: UIViewController {
         passwordTextField?.spellCheckingType = .no
         passwordTextField?.isSecureTextEntry = true
         
-        registerGuideButton = UIButton(title: "注册或认证?", color: .BBSRed)
-        view.addSubview(registerGuideButton!)
-        registerGuideButton?.snp.makeConstraints {
-            make in
-            make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
-            make.left.equalTo(passwordTextField!.snp.left)
-        }
-        registerGuideButton?.addTarget(withBlock: {
-            _ in
-            let alert = UIAlertController(title: "抱歉", message: "求实BBS APP 暂时无法提供注册功能，请在浏览器中打开\nhttps://bbs.tju.edu.cn 注册", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-            alert.addAction(cancelAction)
-            let confirmAction = UIAlertAction(title: "复制", style: .default) {
-                _ in
-                UIPasteboard.general.string = "https://bbs.tju.edu.cn"
-            }
-            alert.addAction(confirmAction)
-            self.present(alert, animated: true, completion: nil)
-        })
+//        registerGuideButton = UIButton(title: "注册或认证?", color: .BBSRed)
+//        view.addSubview(registerGuideButton!)
+//        registerGuideButton?.snp.makeConstraints {
+//            make in
+//            make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
+//            make.left.equalTo(passwordTextField!.snp.left)
+//        }
+//        registerGuideButton?.addTarget(withBlock: {
+//            _ in
+//            let alert = UIAlertController(title: "抱歉", message: "求实BBS APP 暂时无法提供注册功能，请在浏览器中打开\nhttps://bbs.tju.edu.cn 注册", preferredStyle: .alert)
+//            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+//            alert.addAction(cancelAction)
+//            let confirmAction = UIAlertAction(title: "复制", style: .default) {
+//                _ in
+//                UIPasteboard.general.string = "https://bbs.tju.edu.cn"
+//            }
+//            alert.addAction(confirmAction)
+//            self.present(alert, animated: true, completion: nil)
+//        })
         
         forgetButton = UIButton(title: "忘记密码?")
         view.addSubview(forgetButton!)
