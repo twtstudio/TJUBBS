@@ -13,6 +13,7 @@ import Kingfisher
 import PKHUD
 import MJRefresh
 import Alamofire
+import DTCoreText
 
 class ThreadDetailViewController: UIViewController {
     
@@ -358,44 +359,78 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 }
             }
             
-            cell.contentView.addSubview(webView)
-            if loadFlag == false {
-                webView.snp.makeConstraints {
-                    make in
-                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-                    make.left.equalToSuperview().offset(16)
-                    make.right.equalToSuperview().offset(-16)
-                    make.bottom.equalToSuperview().offset(-8)
-                    make.height.equalTo(1)
+            let attributedLabel = DTAttributedLabel()
+            attributedLabel.numberOfLines = 0
+            attributedLabel.lineBreakMode = .byCharWrapping
+            let html = BBCodeParser.parse(string: thread!.content)
+            let data = html.data(using: .utf8)
+            let aStringa = NSAttributedString(htmlData: data, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+//            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType
+//            let htmlData = NSData(base64Encoded: html, options: .ignoreUnknownCharacters)
+////            let data = Data(base64Encoded: html)
+//            let aString = NSAttributedString(htmlData: data, documentAttributes: nil)
+//            let nString = NSString(string: html)
+//            do {
+//                let nData = nString.data(using: String.Encoding.utf8.rawValue)
+////                let aStringa = NSAttributedString(string: html)
+//                let aStringa = try? NSAttributedString(data: nData!, options: [:], documentAttributes: nil)
+////                let aStringa = try? NSAttributedString(data: data!, options: [:], documentAttributes: nil)
+                attributedLabel.attributedString = aStringa
+                cell.contentView.addSubview(attributedLabel)
+                let layouter = DTCoreTextLayouter(attributedString: aStringa)
+                let maxRect = CGRect(x: 0, y: 0, width: self.view.bounds.width-30, height: CGFloat(CGFLOAT_HEIGHT_UNKNOWN))
+                if let aStringa = aStringa {
+                    let range = NSMakeRange(0, aStringa.length)
+                    let frame = DTCoreTextLayoutFrame(frame: maxRect, layouter: layouter, range: range)
+                    if let frame = frame {
+                        attributedLabel.snp.makeConstraints { make in
+                            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+                            make.left.equalToSuperview().offset(16)
+                            make.right.equalToSuperview().offset(-16)
+                            make.bottom.equalToSuperview().offset(-8)
+                            make.height.equalTo(frame.frame.size.height)
+                        }
+                    }
                 }
-                webView.delegate = self
-                //webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
-                var content = thread!.content
-                content = content.replacingOccurrences(of: "\r", with: "")
-                content = content.replacingOccurrences(of: "\\", with: "\\\\")
-                content = content.replacingOccurrences(of: "\"", with: "\\\\\"")
-                content = content.replacingOccurrences(of: "<", with: "&lt")
-                content = content.replacingOccurrences(of: ">", with: "&gt")
-                content = content.replacingOccurrences(of: "\n", with: "\\n")
-                // replace \\ with \\\\
-                // replace " with \\"
-                // replace < with &lt;
-                // replace > with &gt;
-                let loadString = "<style> img {max-width:100%;height:auto !important;width:auto !important;}; </style> <script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
-                print(loadString)
-                webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
-                webView.scrollView.isScrollEnabled = false
-                webView.scrollView.bounces = false
-            } else {
-                webView.snp.remakeConstraints {
-                    make in
-                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-                    make.left.equalToSuperview().offset(16)
-                    make.right.equalToSuperview().offset(-16)
-                    make.bottom.equalToSuperview().offset(-8)
-                    make.height.equalTo(webViewHeight)
-                }
-            }
+//            }
+//            cell.contentView.addSubview(webView)
+//            if loadFlag == false {
+//                webView.snp.makeConstraints {
+//                    make in
+//                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//                    make.left.equalToSuperview().offset(16)
+//                    make.right.equalToSuperview().offset(-16)
+//                    make.bottom.equalToSuperview().offset(-8)
+//                    make.height.equalTo(1)
+//                }
+//                webView.delegate = self
+//                //webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
+//                var content = thread!.content
+//                content = content.replacingOccurrences(of: "\r", with: "")
+//                content = content.replacingOccurrences(of: "\\", with: "\\\\")
+//                content = content.replacingOccurrences(of: "\"", with: "\\\\\"")
+//                content = content.replacingOccurrences(of: "<", with: "&lt")
+//                content = content.replacingOccurrences(of: ">", with: "&gt")
+//                content = content.replacingOccurrences(of: "\n", with: "\\n")
+//                // replace \\ with \\\\
+//                // replace " with \\"
+//                // replace < with &lt;
+//                // replace > with &gt;
+//                let loadString = "<style> img {max-width:100%;height:auto !important;width:auto !important;}; </style> <script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
+//                print(loadString)
+//                webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
+//                webView.scrollView.isScrollEnabled = false
+//                webView.scrollView.bounces = false
+//            } else {
+//                webView.snp.remakeConstraints {
+//                    make in
+//                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//                    make.left.equalToSuperview().offset(16)
+//                    make.right.equalToSuperview().offset(-16)
+//                    make.bottom.equalToSuperview().offset(-8)
+//                    make.height.equalTo(webViewHeight)
+//                }
+//            }
             
             return cell
         } else {
