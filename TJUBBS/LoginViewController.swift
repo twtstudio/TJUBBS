@@ -44,7 +44,6 @@ class LoginViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         initUI()
-        addTargetAction()
         
         EULATitleLabel = UILabel(text: "用户许可协议", color: .BBSBlue, fontSize: 16)
         EULABackground = UIView()
@@ -363,6 +362,7 @@ class LoginViewController: UIViewController {
                 BBSJarvis.login(username: username, password: password) {
                     HUD.hide()
                     HUD.flash(.success, onView: self?.portraitImageView, delay: 1.2, completion: nil)
+                    BBSUser.shared.isVisitor = false
                     let tabBarVC = MainTabBarController(para: 1)
                     tabBarVC.modalTransitionStyle = .crossDissolve
                     self?.present(tabBarVC, animated: false, completion: nil)
@@ -479,18 +479,15 @@ class LoginViewController: UIViewController {
         } else {
             visitorButton?.isEnabled = false
         }
-    }
-    
-    func addTargetAction() {
-        visitorButton?.addTarget(self, action: #selector(visitorButtonTapped), for: .touchUpInside)
-    }
-    
-    func visitorButtonTapped() {
-        let tabBarVC = MainTabBarController(para: 1)
-        // TODO: 有待商榷
-        UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
-        tabBarVC.modalTransitionStyle = .crossDissolve
-        self.present(tabBarVC, animated: false, completion: nil)
+        visitorButton?.addTarget {
+            _ in
+            BBSUser.shared.isVisitor = true
+            let tabBarVC = MainTabBarController(para: 1)
+            // TODO: 有待商榷
+            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
+            tabBarVC.modalTransitionStyle = .crossDissolve
+            self.present(tabBarVC, animated: false, completion: nil)
+        }
     }
     
     deinit {

@@ -47,6 +47,7 @@ class BBSUser {
     var tCreate: Int?
     var oldToken: String?
     var resetPasswordToken: String?
+    var isVisitor: Bool = false
     
 //    required init?(map: Map) {}
 //    

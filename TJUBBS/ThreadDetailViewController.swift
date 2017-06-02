@@ -78,7 +78,6 @@ class ThreadDetailViewController: UIViewController {
         view.addSubview(tableView)
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-//        self.tableView.mj_footer.
         self.tableView.mj_footer.isAutomaticallyHidden = true
         
         if thread != nil {
@@ -94,6 +93,7 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func refresh() {
+        self.pastPageList = []
         page = 0
         tid = thread?.id ?? tid
         BBSJarvis.getThread(threadID: tid, page: page, failure: { _ in
@@ -110,64 +110,53 @@ class ThreadDetailViewController: UIViewController {
                 let flag = self.thread == nil // thread nil flag
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
-                self.pastPageList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
                 if flag {
                     self.initUI()
                 }
-//                if posts.count < 49 {
-//                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
-//                    self.tableView.mj_footer.isAutomaticallyHidden = true
-//                }
-                if self.tableView.mj_header.isRefreshing() {
-                    self.tableView.mj_header.endRefreshing()
-                }
-                
             }
-            
+            if self.tableView.mj_header.isRefreshing() {
+                self.tableView.mj_header.endRefreshing()
+            }
             self.loadFlag = false
+            self.postList = self.currentPageList + self.pastPageList
             self.tableView.reloadData()
             self.replyView?.setNeedsLayout()
         }
     }
     
     func load() {
-//        HUD.show(.label("ka  si ni!"))
         guard refreshFlag == true else {
             return
         }
-
-        page += 1
+        self.refreshFlag = false
+        if (self.currentPageList.count < 49 && self.page == 0) || (self.currentPageList.count < 50 && self.page != 0) {//request current page again
+            
+        } else {//request next page
+            pastPageList += currentPageList
+            currentPageList = []
+            page += 1
+        }
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
             if (self.tableView.mj_footer.isRefreshing()) {
                 self.tableView.mj_footer.endRefreshing()
             }
         }) {
             dict in
-//            print(dict)
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>>{
-                self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+            if let data = dict["data"] as? [String: Any],
+            let posts = data["post"] as? [[String: Any]] {
+                self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
                 if (self.currentPageList.count < 49)&&(self.page == 0) || (self.currentPageList.count < 50)&&(self.page != 0) {
-//                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
                     HUD.flash(.label("滑到底部了哟🌚"), delay: 0.7)
-                    self.page -= 1
-                    self.postList = self.pastPageList + self.currentPageList
-                    self.tableView.mj_footer.endRefreshing()
-                    self.tableView.mj_footer.isAutomaticallyHidden = true
-                } else {
-                    self.pastPageList += self.currentPageList
-                    self.postList = self.pastPageList
-                    self.tableView.mj_footer.endRefreshing()
-                    self.tableView.mj_footer.isAutomaticallyHidden = true
                 }
             }
+            if self.tableView.mj_footer.isRefreshing() {
+                self.tableView.mj_footer.endRefreshing()
+                self.tableView.mj_footer.isAutomaticallyHidden = true
+            }
             self.loadFlag = false
-            self.refreshFlag = false
-//            self.tableView.reloadSections([1], with: .none)
+            self.postList = self.pastPageList + self.currentPageList
             UIView.performWithoutAnimation {
-//                self.tableView.reloadSections([1], with: .none)
-//                self.tableView.reloadSections([1], with: .automatic)
                 self.tableView.reloadData()
                 self.replyView?.setNeedsLayout()
             }
@@ -175,21 +164,24 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func loadToBottom() {
+        self.pastPageList = []
         page = self.thread!.replyNumber/50
-        BBSJarvis.getThread(threadID: thread!.id, page: page) {
-            dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>>{
-                self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
-                self.tableView.mj_footer.endRefreshing()
-                self.tableView.mj_footer.isAutomaticallyHidden = true
-            }
+        BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
             if (self.tableView.mj_footer.isRefreshing()) {
                 self.tableView.mj_footer.endRefreshing()
             }
+        }) {
+            dict in
+            if let data = dict["data"] as? [String: Any],
+            let posts = data["post"] as? [[String: Any]]{
+                self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
+            }
+            if (self.tableView.mj_footer.isRefreshing()) {
+                self.tableView.mj_footer.endRefreshing()
+                self.tableView.mj_footer.isAutomaticallyHidden = true
+            }
             self.loadFlag = false
-            self.pastPageList = self.currentPageList
-            self.postList = self.currentPageList
+            self.postList = self.pastPageList + self.currentPageList
             UIView.performWithoutAnimation {
                 self.tableView.reloadData()
                 self.replyView?.setNeedsLayout()
@@ -200,7 +192,6 @@ class ThreadDetailViewController: UIViewController {
                     self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                 }
             }
-            self.page -= 1
         }
     }
     
@@ -219,7 +210,7 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         self.title = thread?.title
-//        tableView.keyboardDismissMode = .interactive
+        tableView.keyboardDismissMode = .interactive
         let bottomHeight = thread?.boardID == 193 ? -80 : -50
         tableView.snp.makeConstraints {
             make in
@@ -386,14 +377,14 @@ extension ThreadDetailViewController: UITableViewDataSource {
         let key = NSString(format: "%ld-%ld-reply", indexPath.section, indexPath.row) // Cache requires NSObject
 //        var cell = cellCache.object(forKey: key)
 //        if cell == nil {
-           var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell-\(indexPath.row)") as? RichPostCell
-            if cell == nil {
-                cell = RichPostCell(reuseIdentifier: "RichReplyCell-\(indexPath.row)")
-            }
-            cell?.hasFixedRowHeight = false
-            cellCache.setObject(cell!, forKey: key)
-            cell?.delegate = self
-            cell?.selectionStyle = .none
+        var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell-\(indexPath.row)") as? RichPostCell
+        if cell == nil {
+            cell = RichPostCell(reuseIdentifier: "RichReplyCell-\(indexPath.row)")
+        }
+        cell?.hasFixedRowHeight = false
+        cellCache.setObject(cell!, forKey: key)
+        cell?.delegate = self
+        cell?.selectionStyle = .none
 //        }
         let html = BBCodeParser.parse(string: post.content)
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -403,7 +394,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.setHTMLString(html, options: option)
 //        cell?.setHTMLString(html)
         cell?.initUI(post: post)
-        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         cell?.attributedTextContextView.shouldDrawImages = true
         return cell!
     }

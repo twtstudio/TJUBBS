@@ -48,7 +48,7 @@ class ForumListController: UIViewController {
         BBSJarvis.getForumList() { dict in
             if let data = dict["data"] as? Array<Dictionary<String, Any>> {
                 print(data)
-                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
+                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) 
             }
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()

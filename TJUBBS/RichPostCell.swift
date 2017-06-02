@@ -20,7 +20,7 @@ class RichPostCell: DTAttributedTextCell {
     
     let portraitImageView = UIImageView()
     let usernameLabel = UILabel(text: "")
-    let timeLabel = UILabel(text: "", fontSize: 14)
+    let timeLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     let favorButton = UIButton(imageName: "收藏")
     var floorLabel = UILabel(text: "", fontSize: 14)
 

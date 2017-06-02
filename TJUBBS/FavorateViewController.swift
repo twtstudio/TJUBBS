@@ -74,7 +74,7 @@ class FavorateViewController: UIViewController {
         BBSJarvis.getCollectionList {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data) ?? []
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data) 
             }
             self.tableView?.reloadData()
         }

@@ -29,7 +29,7 @@ class HomepageMainController: WMPageController {
         titleColorNormal = .white;
         menuItemWidth = self.view.frame.size.width/2;
         bounces = true;
-//        menuHeight = 44;
+        //        menuHeight = 44;
         menuHeight = 35;
         menuViewBottomSpace = -(self.menuHeight + 64.0 + 9);
     }
@@ -39,10 +39,12 @@ class HomepageMainController: WMPageController {
         progressColor = .yellow
         
         super.viewDidLoad()
-        BBSJarvis.getHome(success: nil, failure: { _ in 
-//            self.present(UINavigationController(rootViewController: LoginViewController(para: 1)), animated: true, completion: nil)
-        })
-
+        if BBSUser.shared.isVisitor == false {
+            BBSJarvis.getHome(success: nil, failure: {
+                _ in
+            })
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

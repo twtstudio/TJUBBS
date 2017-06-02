@@ -50,14 +50,14 @@ class UserInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // 导航栏返回按钮文字为空
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         let refreshItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.refresh))
         self.navigationItem.backBarButtonItem = backItem
         self.navigationItem.rightBarButtonItem = refreshItem
         refresh()
-//        refreshMessage()
+        //        refreshMessage()
         
     }
     
@@ -75,20 +75,20 @@ class UserInfoViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
             return
         }
-        BBSJarvis.getHome(success: {
-            self.tableView?.reloadData()
-        }, failure: { error in
-            print(error)
-        })
-        
-        refreshMessage()
+        if BBSUser.shared.isVisitor == false {
+            BBSJarvis.getHome(success: {
+                self.tableView?.reloadData()
+            }, failure: { error in
+                print(error)
+            })
+        }
     }
     
     func refreshMessage() {
-        print("refreshMessgae")
+//        print("refreshMessgae")
         BBSJarvis.getMessageCount(page: 0, success: {
             dict in
-//            print(dict)
+            //            print(dict)
             let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
             if let data = dict["data"] as? [[String: Any]],
                 data.count > 0,
@@ -125,7 +125,9 @@ class UserInfoViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        refreshMessage()
+        if BBSUser.shared.isVisitor == false {
+            refreshMessage()
+        }
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
         portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像2")
@@ -141,7 +143,7 @@ class UserInfoViewController: UIViewController {
         self.navigationController?.navigationBar.setBackgroundImage(fooNavigationBarImage, for: .default)
         self.navigationController?.navigationBar.shadowImage = fooNavigationBarShadowImage
         self.navigationController?.navigationBar.isTranslucent = false
-    
+        
     }
     
 }
@@ -157,7 +159,7 @@ extension UserInfoViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? (BBSUser.shared.unreadCount ?? 0) : 0)
+        //        let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: (indexPath.section == 0 && indexPath.row == 0) ? (BBSUser.shared.unreadCount ?? 0) : 0)
         if indexPath.section == 0 && indexPath.row == 0 && messageFlag == true {
             let cell = UserInfoTableViewCell(iconName: contentArray[indexPath.section][indexPath.row], title: contentArray[indexPath.section][indexPath.row], badgeNumber: 1)
             return cell
@@ -187,7 +189,7 @@ extension UserInfoViewController: UITableViewDataSource {
         headerView?.addSubview(avatarBackground)
         avatarBackground.backgroundColor = .white
         avatarBackground.clipsToBounds = true
-
+        
         // TODO: 默认头像
         portraitImageView = UIImageView()
         let url = URL(string: BBSAPI.avatar)
@@ -199,7 +201,7 @@ extension UserInfoViewController: UITableViewDataSource {
         }
         portraitImageView?.clipsToBounds = true
         avatarBackground.addSubview(portraitImageView!)
-
+        
         
         if screenSize.width > 320 {
             avatarBackground.snp.makeConstraints {
@@ -305,11 +307,11 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalTo(pointLabel!)
         }
         
-
-//        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
+        
+        //        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
         
         ageLabel = UILabel(text: "\(TimeStampTransfer.daysSince(time: BBSUser.shared.tCreate ?? Int(Date().timeIntervalSince1970)))", color: .white, fontSize: 20)
-
+        
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {
             make in
@@ -358,7 +360,7 @@ extension UserInfoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
             return screenSize.height*(magicNumber/1920)
-//            return screenSize.height*(820/1920)
+            //            return screenSize.height*(820/1920)
         }
         return 0
     }
@@ -420,7 +422,7 @@ extension UserInfoViewController: UITableViewDelegate {
         let height = screenSize.height*(magicNumber/1920)+y
         let width = height*ratio
         let x = -(width-screenSize.width)/2.0
-
+        
         headerViewBackground?.frame = CGRect(x: x, y: -y, width: width, height: height)
     }
 }

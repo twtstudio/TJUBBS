@@ -152,7 +152,7 @@ extension ThreadListController {
                     self.tableView?.mj_header.endRefreshing()
                 }
                 self.curPage = 0
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) 
             }
             DispatchQueue.main.async {
                 self.tableView?.reloadData()
@@ -174,7 +174,7 @@ extension ThreadListController {
                 if (self.tableView?.mj_footer.isRefreshing())! {
                     self.tableView?.mj_footer.endRefreshing()
                 }
-                let newList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
+                let newList = Mapper<ThreadModel>().mapArray(JSONArray: threads) 
                 if newList.count == 0 {
                     self.tableView?.mj_footer.endRefreshingWithNoMoreData()
                 }

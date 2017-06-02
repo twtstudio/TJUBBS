@@ -118,7 +118,7 @@ class EliteThreadViewController: UIViewController {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let hot = data["hot"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) ?? []
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) 
             }
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
