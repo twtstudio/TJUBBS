@@ -214,6 +214,11 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         
         return button
     }
+    
+//    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewForLink url: URL!, identifier: String!, frame: CGRect) -> UIView! {
+//        print(url)
+//    }
+    
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
             // FIXME: may Crash
@@ -238,7 +243,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         }
         return nil
     }
-    
+        
     // MARK: DTLazyImageViewDelegate
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)

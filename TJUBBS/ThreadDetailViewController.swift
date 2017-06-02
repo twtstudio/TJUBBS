@@ -600,6 +600,14 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
 //        if cell.floorLabel.isHidden {
             self.tableView.reloadData()
 //        }
+        for imgView in cell.imageViews {
+            imgView.addTapGestureRecognizer { _ in 
+                let detailVC = ImageDetailViewController(image: imgView.image ?? UIImage(named: "progress")!)
+                
+                self.modalPresentationStyle = .overFullScreen
+                self.present(detailVC, animated: true, completion: nil)
+            }
+        }
     }
 }
 
