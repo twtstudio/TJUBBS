@@ -21,6 +21,7 @@
 		36DA59271EC1E1E700B56F07 /* ThreadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DA59261EC1E1E700B56F07 /* ThreadModel.swift */; };
 		36DA59291EC1EB8700B56F07 /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DA59281EC1EB8700B56F07 /* ThreadCell.swift */; };
 		36DDCA031EC0682E00E3AB63 /* ForumListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DDCA021EC0682E00E3AB63 /* ForumListController.swift */; };
+		36F451E01EE11F7F009BA627 /* RichPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F451DF1EE11F7F009BA627 /* RichPostCell.swift */; };
 		36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C21EB625F20090E805 /* BBSBeacon.swift */; };
 		36FE25C61EB62A630090E805 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C51EB62A630090E805 /* log.swift */; };
 		36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C71EB62A790090E805 /* DeviceStatus.swift */; };
@@ -94,6 +95,7 @@
 		36DA59261EC1E1E700B56F07 /* ThreadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadModel.swift; sourceTree = "<group>"; };
 		36DA59281EC1EB8700B56F07 /* ThreadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
 		36DDCA021EC0682E00E3AB63 /* ForumListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListController.swift; sourceTree = "<group>"; };
+		36F451DF1EE11F7F009BA627 /* RichPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RichPostCell.swift; sourceTree = "<group>"; };
 		36FE25C21EB625F20090E805 /* BBSBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSBeacon.swift; sourceTree = "<group>"; };
 		36FE25C51EB62A630090E805 /* log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = "<group>"; };
 		36FE25C71EB62A790090E805 /* DeviceStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStatus.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 			isa = PBXGroup;
 			children = (
 				36DA59281EC1EB8700B56F07 /* ThreadCell.swift */,
+				36F451DF1EE11F7F009BA627 /* RichPostCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -681,6 +684,7 @@
 				3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */,
 				68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */,
 				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
+				36F451E01EE11F7F009BA627 /* RichPostCell.swift in Sources */,
 				68B683561EC2F29100F7A0BF /* SubReplyView.swift in Sources */,
 				36FE25C81EB62A790090E805 /* DeviceStatus.swift in Sources */,
 			);

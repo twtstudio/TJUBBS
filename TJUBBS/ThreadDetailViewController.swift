@@ -38,7 +38,9 @@ class ThreadDetailViewController: UIViewController {
     var anonymousLabel: UILabel?
     var page = 0
     var tid = 0
-    
+    var imageViews = [DTLazyImageView]()
+    var cellCache = NSCache<NSString, RichPostCell>()
+
     convenience init(thread: ThreadModel) {
         self.init()
         self.thread = thread
@@ -51,6 +53,13 @@ class ThreadDetailViewController: UIViewController {
         self.tid = tid
         self.hidesBottomBarWhenPushed = true
     }
+    
+    deinit {
+        for imageView in imageViews {
+            imageView.delegate = nil
+        }
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -170,11 +179,12 @@ class ThreadDetailViewController: UIViewController {
             make.bottom.equalToSuperview().offset(bottomHeight)
             make.top.left.right.equalToSuperview()
         }
-        tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
+//        tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
+//        tableView.register(ReplyCell.self, forCellReuseIdentifier: "postCell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 300
+        tableView.estimatedRowHeight = 340
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
         
@@ -307,92 +317,155 @@ extension ThreadDetailViewController: UITableViewDataSource {
         }
     }
     
+    func prepareReplyCellForIndexPath(tableView: UITableView, indexPath: IndexPath, post: PostModel) -> RichPostCell {
+        let key = NSString(format: "%ld-%ld-reply", indexPath.section, indexPath.row) // Cache requires NSObject
+//        var cell = cellCache.object(forKey: key)
+//        if cell == nil {
+           var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell-\(indexPath.row)") as? RichPostCell
+            if cell == nil {
+                cell = RichPostCell(reuseIdentifier: "RichReplyCell-\(indexPath.row)")
+            }
+            cell?.hasFixedRowHeight = false
+            cellCache.setObject(cell!, forKey: key)
+            cell?.delegate = self
+            cell?.selectionStyle = .none
+//        }
+        let html = BBCodeParser.parse(string: post.content)
+        cell?.setHTMLString(html)
+        cell?.initUI(post: post)
+        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        cell?.attributedTextContextView.shouldDrawImages = true
+        return cell!
+    }
+    
+    func prepareCellForIndexPath(tableView: UITableView, indexPath: IndexPath) -> RichPostCell {
+//        let key = "\(indexPath.section)-\(indexPath.row)"
+//        let key = NSString(format: "%ld-%ld-post", indexPath.section, indexPath.row) // Cache requires NSObject
+//        var cell = cellCache.object(forKey: key)
+//        if cell == nil {
+           var cell = tableView.dequeueReusableCell(withIdentifier: "RichPostCell") as? RichPostCell
+            if cell == nil {
+                cell = RichPostCell(reuseIdentifier: "RichPostCell")
+            }
+            cell?.hasFixedRowHeight = false
+//            cellCache.setObject(cell!, forKey: key)
+            cell?.delegate = self
+            cell?.selectionStyle = .none
+//        }
+        let html = BBCodeParser.parse(string: thread!.content)
+        cell?.setHTMLString(html)
+        cell?.initUI(thread: self.thread!)
+        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        cell?.attributedTextContextView.shouldDrawImages = true
+        return cell!
+    }
+
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        if let cell = tableView.cellForRow(at: indexPath) as? RichPostCell {
+//            return cell.requiredRowHeight(in: tableView)
+//        }
+//        return 1
+//    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
-            let cell = UITableViewCell()
-            let portraitImageView = UIImageView()
-            let portraitImage = UIImage(named: "头像2")
-            let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
-            let cacheKey = "\(thread!.authorID)" + Date.today
-            portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
-            cell.contentView.addSubview(portraitImageView)
-            portraitImageView.snp.makeConstraints {
-                make in
-                make.top.equalToSuperview().offset(8)
-                make.left.equalToSuperview().offset(16)
-                make.width.height.equalTo(screenSize.height*(120/1920))
-            }
-            portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
-            portraitImageView.clipsToBounds = true
-            
-            let usernameLabel = UILabel(text: thread?.authorID != 0 ? thread!.authorName : "匿名用户")
-            cell.contentView.addSubview(usernameLabel)
-            usernameLabel.snp.makeConstraints {
-                make in
-                make.top.equalTo(portraitImageView)
-                make.left.equalTo(portraitImageView.snp.right).offset(8)
-            }
-            
-            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd HH:mm")
-            let timeLabel = UILabel(text: timeString, fontSize: 14)
-            cell.contentView.addSubview(timeLabel)
-            timeLabel.snp.makeConstraints {
-                make in
-                make.top.equalTo(usernameLabel.snp.bottom).offset(4)
-                make.left.equalTo(portraitImageView.snp.right).offset(8)
-            }
-            
-            let favorButton = UIButton(imageName: "收藏")
-            cell.contentView.addSubview(favorButton)
-            favorButton.snp.makeConstraints {
-                make in
-                make.centerY.equalTo(portraitImageView)
-                make.right.equalToSuperview()
-                make.width.height.equalTo(screenSize.height*(144/1920))
-            }
-            favorButton.addTarget { button in
-                if let button = button as? UIButton {
-                    BBSJarvis.collect(threadID: self.thread!.id) {_ in
-                        button.setImage(UIImage(named: "已收藏"), for: .normal)
-                        button.tag = 1
-                    }
-                }
-            }
-            
-            let attributedLabel = DTAttributedLabel()
-            attributedLabel.numberOfLines = 0
-            attributedLabel.lineBreakMode = .byCharWrapping
-            let html = BBCodeParser.parse(string: thread!.content)
-            let data = html.data(using: .utf8)
-            let aStringa = NSAttributedString(htmlData: data, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-//            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType
-//            let htmlData = NSData(base64Encoded: html, options: .ignoreUnknownCharacters)
-////            let data = Data(base64Encoded: html)
-//            let aString = NSAttributedString(htmlData: data, documentAttributes: nil)
-//            let nString = NSString(string: html)
-//            do {
-//                let nData = nString.data(using: String.Encoding.utf8.rawValue)
-////                let aStringa = NSAttributedString(string: html)
-//                let aStringa = try? NSAttributedString(data: nData!, options: [:], documentAttributes: nil)
-////                let aStringa = try? NSAttributedString(data: data!, options: [:], documentAttributes: nil)
-                attributedLabel.attributedString = aStringa
-                cell.contentView.addSubview(attributedLabel)
-                let layouter = DTCoreTextLayouter(attributedString: aStringa)
-                let maxRect = CGRect(x: 0, y: 0, width: self.view.bounds.width-30, height: CGFloat(CGFLOAT_HEIGHT_UNKNOWN))
-                if let aStringa = aStringa {
-                    let range = NSMakeRange(0, aStringa.length)
-                    let frame = DTCoreTextLayoutFrame(frame: maxRect, layouter: layouter, range: range)
-                    if let frame = frame {
-                        attributedLabel.snp.makeConstraints { make in
-                            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-                            make.left.equalToSuperview().offset(16)
-                            make.right.equalToSuperview().offset(-16)
-                            make.bottom.equalToSuperview().offset(-8)
-                            make.height.equalTo(frame.frame.size.height)
-                        }
-                    }
-                }
+            return prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
+//            let cell = UITableViewCell()
+//            let portraitImageView = UIImageView()
+//            let portraitImage = UIImage(named: "头像2")
+//            let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
+//            let cacheKey = "\(thread!.authorID)" + Date.today
+//            portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+//            cell.contentView.addSubview(portraitImageView)
+//            portraitImageView.snp.makeConstraints {
+//                make in
+//                make.top.equalToSuperview().offset(8)
+//                make.left.equalToSuperview().offset(16)
+//                make.width.height.equalTo(screenSize.height*(120/1920))
 //            }
+//            portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
+//            portraitImageView.clipsToBounds = true
+//            
+//            let usernameLabel = UILabel(text: thread?.authorID != 0 ? thread!.authorName : "匿名用户")
+//            cell.contentView.addSubview(usernameLabel)
+//            usernameLabel.snp.makeConstraints {
+//                make in
+//                make.top.equalTo(portraitImageView)
+//                make.left.equalTo(portraitImageView.snp.right).offset(8)
+//            }
+//            
+//            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd HH:mm")
+//            let timeLabel = UILabel(text: timeString, fontSize: 14)
+//            cell.contentView.addSubview(timeLabel)
+//            timeLabel.snp.makeConstraints {
+//                make in
+//                make.top.equalTo(usernameLabel.snp.bottom).offset(4)
+//                make.left.equalTo(portraitImageView.snp.right).offset(8)
+//            }
+//            
+//            let favorButton = UIButton(imageName: "收藏")
+//            cell.contentView.addSubview(favorButton)
+//            favorButton.snp.makeConstraints {
+//                make in
+//                make.centerY.equalTo(portraitImageView)
+//                make.right.equalToSuperview()
+//                make.width.height.equalTo(screenSize.height*(144/1920))
+//            }
+//            favorButton.addTarget { button in
+//                if let button = button as? UIButton {
+//                    BBSJarvis.collect(threadID: self.thread!.id) {_ in
+//                        button.setImage(UIImage(named: "已收藏"), for: .normal)
+//                        button.tag = 1
+//                    }
+//                }
+//            }
+//            
+//            let attributedLabel = DTAttributedLabel()
+//            attributedLabel.numberOfLines = 0
+//            attributedLabel.lineBreakMode = .byCharWrapping
+//            let html = BBCodeParser.parse(string: thread!.content)
+//            let data = html.data(using: .utf8)
+//            let aStringa = NSAttributedString(htmlData: data, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
+////            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType
+////            let htmlData = NSData(base64Encoded: html, options: .ignoreUnknownCharacters)
+//////            let data = Data(base64Encoded: html)
+////            let aString = NSAttributedString(htmlData: data, documentAttributes: nil)
+////            let nString = NSString(string: html)
+////            do {
+////                let nData = nString.data(using: String.Encoding.utf8.rawValue)
+//////                let aStringa = NSAttributedString(string: html)
+////                let aStringa = try? NSAttributedString(data: nData!, options: [:], documentAttributes: nil)
+//////                let aStringa = try? NSAttributedString(data: data!, options: [:], documentAttributes: nil)
+//                attributedLabel.attributedString = aStringa
+//                attributedLabel.delegate = self
+//                cell.contentView.addSubview(attributedLabel)
+//                let layouter = DTCoreTextLayouter(attributedString: aStringa)
+//                let maxRect = CGRect(x: 0, y: 0, width: self.view.bounds.width-30, height: CGFloat(CGFLOAT_HEIGHT_UNKNOWN))
+//                if let aStringa = aStringa {
+//                    let range = NSMakeRange(0, aStringa.length)
+//                    let frame = DTCoreTextLayoutFrame(frame: maxRect, layouter: layouter, range: range)
+//                    if let frame = frame {
+//                        attributedLabel.snp.makeConstraints { make in
+//                            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//                            make.left.equalToSuperview().offset(16)
+//                            make.right.equalToSuperview().offset(-16)
+//                            make.bottom.equalToSuperview().offset(-8)
+//                            make.height.equalTo(frame.frame.size.height)
+//                        }
+//                    }
+//                } else {
+//                    webView.snp.makeConstraints {
+//                        make in
+//                        make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//                        make.left.equalToSuperview().offset(16)
+//                        make.right.equalToSuperview().offset(-16)
+//                        make.bottom.equalToSuperview().offset(-8)
+//                        make.height.equalTo(1)
+//                    }
+//                    
+//            }
+            
+            //            }
 //            cell.contentView.addSubview(webView)
 //            if loadFlag == false {
 //                webView.snp.makeConstraints {
@@ -432,11 +505,12 @@ extension ThreadDetailViewController: UITableViewDataSource {
 //                }
 //            }
             
-            return cell
+//            return cell
         } else {
             let post = postList[indexPath.row]
-            let cell = ReplyCell()
-            cell.initUI(post: post)
+//            let cell = ReplyCell()
+            let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
+//            cell.initUI(post: post)
             return cell
         }
     }
@@ -571,3 +645,67 @@ extension ThreadDetailViewController: ReplyViewDelegate {
         }
     }
 }
+extension ThreadDetailViewController: HtmlContentCellDelegate {
+    func htmlContentCell(cell: RichPostCell, linkDidPress link:NSURL) {
+        print("tapped")
+        print(link)
+    }
+    func htmlContentCellSizeDidChange(cell: RichPostCell) {
+//        if cell.floorLabel.isHidden {
+            self.tableView.reloadData()
+//        }
+    }
+}
+
+//extension ThreadDetailViewController: DTAttributedTextContentViewDelegate, DTLazyImageViewDelegate {
+//    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
+//        if let attachment = attachment as? DTImageTextAttachment {
+//            let aspectFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
+//            let imageView = DTLazyImageView(frame: aspectFrame)
+//            
+//            imageView.delegate = self
+//            imageView.url = attachment.contentURL
+//            imageView.contentMode = UIViewContentMode.scaleAspectFill
+//            imageView.clipsToBounds = true
+//            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
+//            imageView.shouldShowProgressiveDownload = true
+//            imageViews.append(imageView)
+//            
+//            return imageView
+//        }
+//        return UIView()
+////        let imgView = UIImageView(frame: frame)
+////        if attachment is DTImageTextAttachment {
+////            imgView.kf.setImage(with: ImageResource(downloadURL: attachment.contentURL, cacheKey: attachment.contentURL.absoluteString), placeholder: UIImage(named: "progress"))
+////        }
+////        return imgView
+//    }
+//    func lazyImageView(lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
+//        
+//        let url = lazyImageView.url
+//        let pred = NSPredicate(format: "contentURL == %@", url as! CVarArg)
+////        
+////        var needsNotifyNewImageSize = false
+////        if let layoutFrame = self.attributedTextContextView.layoutFrame {
+////            var attachments = layoutFrame.textAttachmentsWithPredicate(pred)
+////            
+////            for i in 0 ..< attachments.count {
+////                if let one = attachments[i] as? DTImageTextAttachment {
+////                    
+////                    if CGSizeEqualToSize(one.originalSize, CGSizeZero) {
+////                        one.originalSize = aspectFitImageSize(size)
+////                        needsNotifyNewImageSize = true
+////                        
+////                    }
+////                }
+////            }
+////        }
+////        
+////        if needsNotifyNewImageSize {
+////            self.attributedTextContextView.layouter = nil
+////            self.attributedTextContextView.relayoutText()
+////            self.delegate?.htmlContentCellSizeDidChange(self)
+////        }
+//    }
+//    
+//}

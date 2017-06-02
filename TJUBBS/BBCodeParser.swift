@@ -11,6 +11,7 @@
 
 import UIKit
 
+let base = "https://bbs.tju.edu.cn"
 struct BBCodeParser {
     private static var map: [String : String] {
         get {
@@ -41,12 +42,13 @@ struct BBCodeParser {
                 "\\[align=(.+?)\\](.+?)\\[/align\\]":"<div align=\"$1\">$2",
                 "\\[color=(.+?)\\](.+?)\\[/color\\]":"<font color='$1'>$2</font>",
                 "\\[size=(.+?)\\](.+?)\\[/size\\]":"<font size=\"$1\">$2</span>",
-                "\\[img\\](.+?)\\[/img\\]":"<img src=\"" + BBSAPI.base + "$1\" />",
+//                "\\[img\\](.+?)\\[/img\\]":"<img src=\"\(base)$1\" width=\"100\" height=\"100\"/>",
+                "\\[img\\](.+?)\\[/img\\]":"<img src=\"\(base)$1\"/>",
                 
                 //乔成骚改的
-                "\\[attimg\\](.+?)\\[/attimg\\]":"<img src=\"" + BBSAPI.base + "/api/attach/$1\" />",
+                "\\[attimg\\](.+?)\\[/attimg\\]":"<img src=\"\(base)/api/attach/$1\" />",
                 
-                "\\[img=(.+?),(.+?)\\](.+?)\\[/img\\]":"<img width=\"$1\" height=\"$2\" src=\"$3\" />",
+                "\\[img=(.+?),(.+?)\\](.+?)\\[/img\\]":"<img width=\"$1\" height=\"$2\" src=\"\(base)$3\" />",
                 "\\[email\\](.+?)\\[/email\\]":"<a href=\"mailto:$1\">$1</a>",
                 "\\[email=(.+?)\\](.+?)\\[/email\\]":"<a href=\"mailto:$1\">$2</a>",
                 "\\[url\\](.+?)\\[/url\\]":"<a href=\"$1\">$1</a>",
@@ -83,8 +85,9 @@ struct BBCodeParser {
                 "\\[ALIGN=(.+?)\\](.+?)\\[/ALIGN\\]":"<DIV ALIGN=\"$1\">$2",
                 "\\[COLOR=(.+?)\\](.+?)\\[/COLOR\\]":"<FONT COLOR='$1'>$2</FONT>",
                 "\\[SIZE=(.+?)\\](.+?)\\[/SIZE\\]":"<SPAN STYLE=\"FONT-SIZE:$1;\">$2</SPAN>",
-                "\\[IMG\\](.+?)\\[/IMG\\]":"<IMG SRC=\"$1\" />",
-                "\\[IMG=(.+?),(.+?)\\](.+?)\\[/IMG\\]":"<IMG WIDTH=\"$1\" HEIGHT=\"$2\" SRC=\"$3\" />",
+//                "\\[IMG\\](.+?)\\[/IMG\\]":"<IMG SRC=\"\(base)$1\" width=\"100\" height=\"100\"/>",
+                "\\[IMG\\](.+?)\\[/IMG\\]":"<IMG SRC=\"\(base)$1\"/>",
+                "\\[IMG=(.+?),(.+?)\\](.+?)\\[/IMG\\]":"<IMG WIDTH=\"$1\" HEIGHT=\"$2\" SRC=\"\(base)$3\" />",
                 "\\[EMAIL\\](.+?)\\[/EMAIL\\]":"<A HREF=\"MAILTO:$1\">$1</A>",
                 "\\[EMAIL=(.+?)\\](.+?)\\[/EMAIL\\]":"<A HREF=\"MAILTO:$1\">$2</A>",
                 "\\[URL\\](.+?)\\[/URL\\]":"<A HREF=\"$1\">$1</A>",
@@ -102,6 +105,9 @@ struct BBCodeParser {
     }
     
     static func parse(string: String) -> String {
+        guard string != "" else {
+            return ""
+        }
         var result = string
         for pattern in Array(map.keys) {
             let regex = try! NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)

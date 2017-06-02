@@ -89,7 +89,7 @@ class ReplyViewController: UIViewController {
         tableView?.delegate = self
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 200
+        tableView?.estimatedRowHeight = 250
         tableView?.allowsSelection = false
         
         replyView = UIView()
@@ -212,7 +212,28 @@ extension ReplyViewController: UITableViewDataSource {
         return 1
     }
     
+    func prepareReplyCellForIndexPath(tableView: UITableView, indexPath: IndexPath, post: PostModel) -> RichPostCell {
+        let key = NSString(format: "%ld-%ld-reply", indexPath.section, indexPath.row) // Cache requires NSObject
+        var cell = RichPostCell(reuseIdentifier: "RichReplyCell")
+        //            }
+        cell?.hasFixedRowHeight = false
+//        cellCache.setObject(cell!, forKey: key)
+        cell?.delegate = self
+        cell?.selectionStyle = .none
+        //        }
+        let html = BBCodeParser.parse(string: post.content)
+        cell?.setHTMLString(html)
+        cell?.initUI(post: post)
+        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        cell?.attributedTextContextView.shouldDrawImages = true
+        return cell!
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post!)
+    }
+    
+    func tableView1(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if post != nil {
             let cell = ReplyCell()
             cell.initUI(post: post!)
@@ -386,5 +407,16 @@ extension ReplyViewController: UIWebViewDelegate {
         webViewHeight = actualSize.height
         //        print("actualSize.height: \(actualSize.height)")
         tableView?.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+    }
+}
+
+
+extension ReplyViewController: HtmlContentCellDelegate {
+    func htmlContentCell(cell: RichPostCell, linkDidPress link:NSURL) {
+        print("tapped")
+        print(link)
+    }
+    func htmlContentCellSizeDidChange(cell: RichPostCell) {
+        self.tableView?.reloadData()
     }
 }
