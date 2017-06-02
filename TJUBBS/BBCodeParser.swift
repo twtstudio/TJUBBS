@@ -44,6 +44,7 @@ struct BBCodeParser {
                 "\\[size=(.+?)\\](.+?)\\[/size\\]":"<font size=\"$1\">$2</span>",
 //                "\\[img\\](.+?)\\[/img\\]":"<img src=\"\(base)$1\" width=\"100\" height=\"100\"/>",
                 "\\[img\\](.+?)\\[/img\\]":"<img src=\"\(base)$1\"/>",
+                "\\[font=(.+?)\\](.+?)\\[/font\\]":"<span style=\"font-family: $1\">$2</a>",
                 
                 //乔成骚改的
                 "\\[attimg\\](.+?)\\[/attimg\\]":"<img src=\"\(base)/api/attach/$1\" />",
