@@ -179,7 +179,7 @@ class RichPostCell: DTAttributedTextCell {
 
 extension RichPostCell {
     
-    func aspectFitSizeForURL(url: NSURL) -> CGSize {
+    func aspectFitSizeForURL() -> CGSize {
         //        let imageSize = imageSizes[url] ?? CGSizeMake(4, 3)
         let imageSize = CGSize(width: 4, height: 3)
         return self.aspectFitImageSize(size: imageSize)
@@ -216,7 +216,8 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     }
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
-            let size = self.aspectFitSizeForURL(url: attachment.contentURL as NSURL)
+            // FIXME: may Crash
+            let size = self.aspectFitSizeForURL()
             let aspectFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: size.width, height: size.height)
             
             let imageView = DTLazyImageView(frame: aspectFrame)

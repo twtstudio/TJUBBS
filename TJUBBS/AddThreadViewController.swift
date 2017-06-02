@@ -158,7 +158,7 @@ extension AddThreadViewController: UITableViewDataSource {
                             dict in
                             self.openForumListFlag = true
                             if let data = dict["data"] as? [[String: Any]] {
-                                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) 
+                                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
                             }
                             var indexPathArray: [IndexPath] = []
                             for i in 1...self.forumList.count {
@@ -204,7 +204,7 @@ extension AddThreadViewController: UITableViewDataSource {
                                 self.openBoardListFlag = true
                                 if let data = dict["data"] as? [String: Any],
                                     let boards = data["boards"] as? [[String: Any]] {
-                                    self.boardList = Mapper<BoardModel>().mapArray(JSONArray: boards) 
+                                    self.boardList = Mapper<BoardModel>().mapArray(JSONArray: boards) ?? []
                                 }
                                 tableView.reloadSections([1], with: .none)
                             }

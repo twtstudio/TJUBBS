@@ -396,7 +396,12 @@ extension ThreadDetailViewController: UITableViewDataSource {
             cell?.selectionStyle = .none
 //        }
         let html = BBCodeParser.parse(string: post.content)
-        cell?.setHTMLString(html)
+        let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                      DTDefaultFontSize: 14.0,
+                      DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
+                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+        cell?.setHTMLString(html, options: option)
+//        cell?.setHTMLString(html)
         cell?.initUI(post: post)
         cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
         cell?.attributedTextContextView.shouldDrawImages = true
@@ -418,7 +423,13 @@ extension ThreadDetailViewController: UITableViewDataSource {
             cell?.selectionStyle = .none
 //        }
         let html = BBCodeParser.parse(string: thread!.content)
-        cell?.setHTMLString(html)
+//        cell?.setHTMLString(html)
+        let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                      DTDefaultFontSize: 14.0,
+                      DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
+                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+        cell?.setHTMLString(html, options: option)
+
         cell?.initUI(thread: self.thread!)
         cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
         cell?.attributedTextContextView.shouldDrawImages = true
