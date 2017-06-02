@@ -45,7 +45,7 @@ class BoardListController: UIViewController {
                     //2 threads
                     var fooThreadList: [ThreadModel] = []
                     if let threads = board["threads"] as? Array<Dictionary<String, Any>> {
-                        fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) ?? []
+                        fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) 
                     }
                     self.threadList.append(fooThreadList)
                 }

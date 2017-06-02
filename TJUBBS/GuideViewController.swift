@@ -20,7 +20,7 @@ class GuideViewController: UIViewController {
     var newUserButton = UIButton.borderButton(title: "我是新用户")
     var oldUserButton = UIButton.borderButton(title: "我是老用户")
     var loginBtn = UIButton(title: "直接登录>")
-
+//    var loginBtn = UIButton.borderButton(title: "马上体验")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,7 +60,7 @@ class GuideViewController: UIViewController {
         }
         newUserButton.alpha = 0
         newUserButton.addTarget { _ in
-            let vc = InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-6~30字节-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息", handler: nil)
+            let vc = InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-身份证号仅用于身份验证-cid", "用户名-2～12个字母-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息", handler: nil)
             vc.handler = { [weak vc] result in
                 if let result = result as? [String: String] {
                     if check(result) == true {
@@ -92,7 +92,7 @@ class GuideViewController: UIViewController {
                             HUD.flash(.success)
                             BBSUser.shared.oldToken = data["token"] as? String
                             BBSUser.shared.username = result["username"]
-                            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "身份证号-输入身份证号-cid", "新密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎老用户！请填写以下信息", handler: nil)
+                            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "身份证号-身份证号仅用于身份验证-cid", "新密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎老用户！请填写以下信息", handler: nil)
                             vc.handler = { [weak vc] result in
                                 if let result = result as? [String: String],
                                     check(result) == true {
@@ -117,7 +117,7 @@ class GuideViewController: UIViewController {
             let manualView = UILabel(text: "验证遇到问题？点这里")
             manualView.font = UIFont.systemFont(ofSize: 14)
             manualView.addTapGestureRecognizer { _ in
-                let manualCheckVC = InfoModifyController(title: "人工验证", items: ["学号-输入学号-stunum", "姓名-输入姓名-realname", "身份证号-输入身份证号-cid", "用户名-输入以前的用户名-username", "邮箱-输入邮箱-mail", "备注-补充说明其他信息证明您的身份，如曾经发过的帖子名、注册时间、注册邮箱、注册时所填住址等-comment-v"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证", handler: nil)
+                let manualCheckVC = InfoModifyController(title: "人工验证", items: ["学号-输入学号-stunum", "姓名-输入姓名-realname", "身份证号-身份证号仅用于身份验证-cid", "用户名-输入以前的用户名-username", "邮箱-输入邮箱-mail", "备注-补充说明其他信息证明您的身份，如曾经发过的帖子名、注册时间、注册邮箱、注册时所填住址等-comment-v"], style: .bottom, headerMsg: "老用户（即已拥有BBS账号）请填写以下信息认证", handler: nil)
                 // 因为要索引到VC的某个View, 来加载 HUD
                 // 注意循环引用
                 manualCheckVC.handler = { [weak manualCheckVC] result in
@@ -175,7 +175,9 @@ class GuideViewController: UIViewController {
         view.addSubview(loginBtn)
         loginBtn.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-10)
+            make.width.equalTo(screenSize.width*(360/1080))
+            make.height.equalTo(screenSize.height*(100/1920))
+            make.bottom.equalToSuperview().offset(-8)
         }
         loginBtn.addTarget { _ in
             UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)

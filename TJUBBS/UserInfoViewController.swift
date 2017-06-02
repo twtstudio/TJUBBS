@@ -245,6 +245,7 @@ extension UserInfoViewController: UITableViewDataSource {
             make.centerX.equalToSuperview()
             make.centerY.equalTo(avatarBackground.snp.bottom)
         }
+        portraitBadgeLabel?.alpha = 0
         
         // FIXME: placeholder
         usernameLabel = UILabel(text: BBSUser.shared.nickname ?? "null", color: .white, fontSize: 18)
@@ -306,7 +307,8 @@ extension UserInfoViewController: UITableViewDataSource {
         
 
 //        ageLabel = UILabel(text: "\(BBSUser.shared.cOnline ?? 0)", color: .white, fontSize: 20)
-        ageLabel = UILabel(text: "\(TimeStampTransfer.daysSince(time: BBSUser.shared.tCreate ?? 1494797867))", color: .white, fontSize: 20)
+        
+        ageLabel = UILabel(text: "\(TimeStampTransfer.daysSince(time: BBSUser.shared.tCreate ?? Int(Date().timeIntervalSince1970)))", color: .white, fontSize: 20)
 
         headerView?.addSubview(ageLabel!)
         ageLabel?.snp.makeConstraints {

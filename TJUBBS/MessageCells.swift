@@ -10,6 +10,7 @@ import UIKit
 
 class MessageCell: UITableViewCell {
     
+    var screenSize = UIScreen.main.bounds.size
     var portraitImageView = UIImageView()
     var usernameLabel = UILabel(text: "", fontSize: 18)
     var timeLabel = UILabel(text: "", color: .lightGray, fontSize: 16)
@@ -44,11 +45,11 @@ class MessageCell: UITableViewCell {
             make in
             make.top.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().offset(-16)
-            make.width.height.equalTo(contentView.bounds.width*(160/1080))
+            make.width.height.equalTo(screenSize.width*(160/1080))
             make.left.equalToSuperview().offset(16)
         }
         
-        portraitImageView.layer.cornerRadius = contentView.bounds.width*(160/1080)/2
+        portraitImageView.layer.cornerRadius = screenSize.width*(160/1080)/2
         portraitImageView.clipsToBounds = true
         
         usernameLabel.text = username

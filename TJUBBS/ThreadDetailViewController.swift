@@ -30,6 +30,8 @@ class ThreadDetailViewController: UIViewController {
     var board: BoardModel?
     var thread: ThreadModel?
     var postList: [PostModel] = []
+    var pastPageList: [PostModel] = []
+    var currentPageList: [PostModel] = []
     var replyView: UIView?
     var replyTextField: UITextField?
     var replyButton: UIButton?
@@ -41,6 +43,9 @@ class ThreadDetailViewController: UIViewController {
     var imageViews = [DTLazyImageView]()
     var cellCache = NSCache<NSString, RichPostCell>()
 
+    var bottomButton: UIButton?
+    var refreshFlag = true
+    
     convenience init(thread: ThreadModel) {
         self.init()
         self.thread = thread
@@ -73,6 +78,7 @@ class ThreadDetailViewController: UIViewController {
         view.addSubview(tableView)
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+//        self.tableView.mj_footer.
         self.tableView.mj_footer.isAutomaticallyHidden = true
         
         if thread != nil {
@@ -105,13 +111,18 @@ class ThreadDetailViewController: UIViewController {
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
                 self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                self.pastPageList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
                 if flag {
                     self.initUI()
                 }
-                if posts.count < 49 {
-                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
-                    self.tableView.mj_footer.isAutomaticallyHidden = true
+//                if posts.count < 49 {
+//                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+//                    self.tableView.mj_footer.isAutomaticallyHidden = true
+//                }
+                if self.tableView.mj_header.isRefreshing() {
+                    self.tableView.mj_header.endRefreshing()
                 }
+                
             }
             
             self.loadFlag = false
@@ -121,6 +132,11 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func load() {
+//        HUD.show(.label("ka  si ni!"))
+        guard refreshFlag == true else {
+            return
+        }
+
         page += 1
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
             if (self.tableView.mj_footer.isRefreshing()) {
@@ -131,20 +147,23 @@ class ThreadDetailViewController: UIViewController {
 //            print(dict)
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let posts = data["post"] as? Array<Dictionary<String, Any>>{
-                for post in posts {
-                    if let model = PostModel(JSON: post) {
-                        self.postList.append(model)
-                    }
-                }
-                if (posts.count < 49)&&(self.page == 0) || (posts.count < 50)&&(self.page != 0) {
-                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                if (self.currentPageList.count < 49)&&(self.page == 0) || (self.currentPageList.count < 50)&&(self.page != 0) {
+//                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    HUD.flash(.label("滑到底部了哟🌚"), delay: 0.7)
+                    self.page -= 1
+                    self.postList = self.pastPageList + self.currentPageList
+                    self.tableView.mj_footer.endRefreshing()
+                    self.tableView.mj_footer.isAutomaticallyHidden = true
+                } else {
+                    self.pastPageList += self.currentPageList
+                    self.postList = self.pastPageList
+                    self.tableView.mj_footer.endRefreshing()
                     self.tableView.mj_footer.isAutomaticallyHidden = true
                 }
             }
-            if (self.tableView.mj_footer.isRefreshing()) {
-                self.tableView.mj_footer.endRefreshing()
-            }
             self.loadFlag = false
+            self.refreshFlag = false
 //            self.tableView.reloadSections([1], with: .none)
             UIView.performWithoutAnimation {
 //                self.tableView.reloadSections([1], with: .none)
@@ -152,6 +171,36 @@ class ThreadDetailViewController: UIViewController {
                 self.tableView.reloadData()
                 self.replyView?.setNeedsLayout()
             }
+        }
+    }
+    
+    func loadToBottom() {
+        page = self.thread!.replyNumber/50
+        BBSJarvis.getThread(threadID: thread!.id, page: page) {
+            dict in
+            if let data = dict["data"] as? Dictionary<String, Any>,
+                let posts = data["post"] as? Array<Dictionary<String, Any>>{
+                self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
+                self.tableView.mj_footer.endRefreshing()
+                self.tableView.mj_footer.isAutomaticallyHidden = true
+            }
+            if (self.tableView.mj_footer.isRefreshing()) {
+                self.tableView.mj_footer.endRefreshing()
+            }
+            self.loadFlag = false
+            self.pastPageList = self.currentPageList
+            self.postList = self.currentPageList
+            UIView.performWithoutAnimation {
+                self.tableView.reloadData()
+                self.replyView?.setNeedsLayout()
+            }
+            if self.tableView.numberOfRows(inSection: 1) != 0 {
+                let indexPath = IndexPath(row: (self.tableView.numberOfRows(inSection: 1))-1, section: 1)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                }
+            }
+            self.page -= 1
         }
     }
     
@@ -170,7 +219,7 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         self.title = thread?.title
-        tableView.keyboardDismissMode = .interactive
+//        tableView.keyboardDismissMode = .interactive
         let bottomHeight = thread?.boardID == 193 ? -80 : -50
         tableView.snp.makeConstraints {
             make in
@@ -179,14 +228,30 @@ class ThreadDetailViewController: UIViewController {
             make.bottom.equalToSuperview().offset(bottomHeight)
             make.top.left.right.equalToSuperview()
         }
-//        tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
-//        tableView.register(ReplyCell.self, forCellReuseIdentifier: "postCell")
+//        tableView.register(ReplyCell.self, forCellReuseIdentifier: "replyCell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 340
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+        
+        bottomButton = UIButton(imageName: "down")
+        view.addSubview(bottomButton!)
+        bottomButton?.snp.makeConstraints {
+            make in
+            make.right.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-88)
+            make.height.width.equalTo(screenSize.width*(104/1080))
+        }
+        bottomButton?.alpha = 0
+        bottomButton?.addTarget {
+            _ in
+            UIView.animate(withDuration: 0.5, animations: {
+                self.bottomButton?.alpha = 0
+            })
+            self.loadToBottom()
+        }
         
         replyView = UIView()
         view.addSubview(replyView!)
@@ -281,7 +346,7 @@ class ThreadDetailViewController: UIViewController {
             
             if let text = self.replyTextField?.text, text != "" {
                 let noBBtext = text.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
-                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, success: { _ in
+                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
                     HUD.flash(.success)
                     self.replyTextField?.text = ""
                     self.didReply()
@@ -295,7 +360,7 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func share() {
-        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "来BBS玩呀", URL(string: "https://bbs.twtstudio.com/forum/thread/\(thread!.id)")!], applicationActivities: [])
+        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "[求实BBS] \(thread!.title)", URL(string: "https://bbs.tju.edu.cn/forum/thread/\(thread!.id)")!], applicationActivities: [])
         present(vc, animated: true, completion: nil)
     }
 }
@@ -370,147 +435,13 @@ extension ThreadDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
             return prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
-//            let cell = UITableViewCell()
-//            let portraitImageView = UIImageView()
-//            let portraitImage = UIImage(named: "头像2")
-//            let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
-//            let cacheKey = "\(thread!.authorID)" + Date.today
-//            portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
-//            cell.contentView.addSubview(portraitImageView)
-//            portraitImageView.snp.makeConstraints {
-//                make in
-//                make.top.equalToSuperview().offset(8)
-//                make.left.equalToSuperview().offset(16)
-//                make.width.height.equalTo(screenSize.height*(120/1920))
-//            }
-//            portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
-//            portraitImageView.clipsToBounds = true
-//            
-//            let usernameLabel = UILabel(text: thread?.authorID != 0 ? thread!.authorName : "匿名用户")
-//            cell.contentView.addSubview(usernameLabel)
-//            usernameLabel.snp.makeConstraints {
-//                make in
-//                make.top.equalTo(portraitImageView)
-//                make.left.equalTo(portraitImageView.snp.right).offset(8)
-//            }
-//            
-//            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd HH:mm")
-//            let timeLabel = UILabel(text: timeString, fontSize: 14)
-//            cell.contentView.addSubview(timeLabel)
-//            timeLabel.snp.makeConstraints {
-//                make in
-//                make.top.equalTo(usernameLabel.snp.bottom).offset(4)
-//                make.left.equalTo(portraitImageView.snp.right).offset(8)
-//            }
-//            
-//            let favorButton = UIButton(imageName: "收藏")
-//            cell.contentView.addSubview(favorButton)
-//            favorButton.snp.makeConstraints {
-//                make in
-//                make.centerY.equalTo(portraitImageView)
-//                make.right.equalToSuperview()
-//                make.width.height.equalTo(screenSize.height*(144/1920))
-//            }
-//            favorButton.addTarget { button in
-//                if let button = button as? UIButton {
-//                    BBSJarvis.collect(threadID: self.thread!.id) {_ in
-//                        button.setImage(UIImage(named: "已收藏"), for: .normal)
-//                        button.tag = 1
-//                    }
-//                }
-//            }
-//            
-//            let attributedLabel = DTAttributedLabel()
-//            attributedLabel.numberOfLines = 0
-//            attributedLabel.lineBreakMode = .byCharWrapping
-//            let html = BBCodeParser.parse(string: thread!.content)
-//            let data = html.data(using: .utf8)
-//            let aStringa = NSAttributedString(htmlData: data, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-////            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType
-////            let htmlData = NSData(base64Encoded: html, options: .ignoreUnknownCharacters)
-//////            let data = Data(base64Encoded: html)
-////            let aString = NSAttributedString(htmlData: data, documentAttributes: nil)
-////            let nString = NSString(string: html)
-////            do {
-////                let nData = nString.data(using: String.Encoding.utf8.rawValue)
-//////                let aStringa = NSAttributedString(string: html)
-////                let aStringa = try? NSAttributedString(data: nData!, options: [:], documentAttributes: nil)
-//////                let aStringa = try? NSAttributedString(data: data!, options: [:], documentAttributes: nil)
-//                attributedLabel.attributedString = aStringa
-//                attributedLabel.delegate = self
-//                cell.contentView.addSubview(attributedLabel)
-//                let layouter = DTCoreTextLayouter(attributedString: aStringa)
-//                let maxRect = CGRect(x: 0, y: 0, width: self.view.bounds.width-30, height: CGFloat(CGFLOAT_HEIGHT_UNKNOWN))
-//                if let aStringa = aStringa {
-//                    let range = NSMakeRange(0, aStringa.length)
-//                    let frame = DTCoreTextLayoutFrame(frame: maxRect, layouter: layouter, range: range)
-//                    if let frame = frame {
-//                        attributedLabel.snp.makeConstraints { make in
-//                            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//                            make.left.equalToSuperview().offset(16)
-//                            make.right.equalToSuperview().offset(-16)
-//                            make.bottom.equalToSuperview().offset(-8)
-//                            make.height.equalTo(frame.frame.size.height)
-//                        }
-//                    }
-//                } else {
-//                    webView.snp.makeConstraints {
-//                        make in
-//                        make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//                        make.left.equalToSuperview().offset(16)
-//                        make.right.equalToSuperview().offset(-16)
-//                        make.bottom.equalToSuperview().offset(-8)
-//                        make.height.equalTo(1)
-//                    }
-//                    
-//            }
-            
-            //            }
-//            cell.contentView.addSubview(webView)
-//            if loadFlag == false {
-//                webView.snp.makeConstraints {
-//                    make in
-//                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//                    make.left.equalToSuperview().offset(16)
-//                    make.right.equalToSuperview().offset(-16)
-//                    make.bottom.equalToSuperview().offset(-8)
-//                    make.height.equalTo(1)
-//                }
-//                webView.delegate = self
-//                //webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
-//                var content = thread!.content
-//                content = content.replacingOccurrences(of: "\r", with: "")
-//                content = content.replacingOccurrences(of: "\\", with: "\\\\")
-//                content = content.replacingOccurrences(of: "\"", with: "\\\\\"")
-//                content = content.replacingOccurrences(of: "<", with: "&lt")
-//                content = content.replacingOccurrences(of: ">", with: "&gt")
-//                content = content.replacingOccurrences(of: "\n", with: "\\n")
-//                // replace \\ with \\\\
-//                // replace " with \\"
-//                // replace < with &lt;
-//                // replace > with &gt;
-//                let loadString = "<style> img {max-width:100%;height:auto !important;width:auto !important;}; </style> <script src=\"BBCodeParser.js\"></script><script>document.write(BBCode(\"\(content)\"));</script>"
-//                print(loadString)
-//                webView.loadHTMLString(loadString, baseURL: URL(fileURLWithPath: Bundle.main.resourcePath!))
-//                webView.scrollView.isScrollEnabled = false
-//                webView.scrollView.bounces = false
-//            } else {
-//                webView.snp.remakeConstraints {
-//                    make in
-//                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//                    make.left.equalToSuperview().offset(16)
-//                    make.right.equalToSuperview().offset(-16)
-//                    make.bottom.equalToSuperview().offset(-8)
-//                    make.height.equalTo(webViewHeight)
-//                }
-//            }
-            
-//            return cell
+
         } else {
             let post = postList[indexPath.row]
 //            let cell = ReplyCell()
             let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
 //            cell.initUI(post: post)
+            cell.initUI(post: post)
             return cell
         }
     }
@@ -539,6 +470,22 @@ extension ThreadDetailViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(replyVC, animated: true)
         }
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if bottomButton?.alpha == 0 {
+            UIView.animate(withDuration: 0.5, animations: {
+                self.bottomButton?.alpha = 0.8
+            })
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        refreshFlag = true
+        if (self.tableView.mj_footer.isRefreshing()) {
+            self.tableView.mj_footer.endRefreshing()
+        }
+    }
+    
 }
 
 extension ThreadDetailViewController: UIWebViewDelegate {
@@ -630,19 +577,7 @@ extension ThreadDetailViewController: UIGestureRecognizerDelegate {
 
 extension ThreadDetailViewController: ReplyViewDelegate {
     func didReply() {
-        BBSJarvis.getThread(threadID: self.thread!.id, page: 0) {
-            dict in
-            print(dict)
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let thread = data["thread"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>> {
-                self.thread = ThreadModel(JSON: thread)
-                self.postList = Mapper<PostModel>().mapArray(JSONArray: posts) ?? []
-            }
-            self.loadFlag = false
-            self.tableView.reloadSections([1], with: .middle)
-            self.tableView.scrollToRow(at: IndexPath(row: self.postList.count-1, section: 1), at: .bottom, animated: false)
-        }
+        //FIXME: more than 1 page after reply
     }
 }
 extension ThreadDetailViewController: HtmlContentCellDelegate {

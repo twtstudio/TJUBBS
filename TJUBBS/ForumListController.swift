@@ -32,7 +32,7 @@ class ForumListController: UIViewController {
         self.view.addSubview(collectionView!)
         collectionView?.snp.makeConstraints { $0.edges.equalToSuperview() }
         collectionView?.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.96, alpha:1.00)
-        collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionForumCell")
+        collectionView?.register(ForumCoverCell.self, forCellWithReuseIdentifier: "UICollectionForumCell")
         collectionView?.delegate = self
         collectionView?.dataSource = self
         
@@ -48,7 +48,7 @@ class ForumListController: UIViewController {
         BBSJarvis.getForumList() { dict in
             if let data = dict["data"] as? Array<Dictionary<String, Any>> {
                 print(data)
-                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) ?? []
+                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) 
             }
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
@@ -75,25 +75,18 @@ extension ForumListController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionForumCell", for: indexPath)
-        print(cell.bounds.size)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionForumCell", for: indexPath) as! ForumCoverCell
+        
         cell.backgroundView = UIImageView()
         let url = URL(string: BBSAPI.forumCover(fid: forumList[indexPath.row].id))
-        
         (cell.backgroundView as? UIImageView)?.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: "\(indexPath.row)"), placeholder: UIImage(named: "ForumCover\(indexPath.row % 8)"))
         cell.backgroundView?.contentMode = .scaleAspectFill
-        let label = UILabel()
+        
+        
         if indexPath.row >= forumList.count {
-            label.text = "敬请期待"
+            cell.titlelabel.text = "敬请期待"
         } else {
-            label.text = forumList[indexPath.row].name
-        }
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor.white
-        label.sizeToFit()
-        cell.contentView.addSubview(label)
-        label.snp.makeConstraints { make in
-            make.center.equalTo(cell.contentView)
+            cell.titlelabel.text = forumList[indexPath.row].name
         }
         return cell
     }
@@ -108,5 +101,26 @@ extension ForumListController: UICollectionViewDelegate {
         let blVC = BoardListController(forum: forumList[indexPath.row])
         blVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(blVC, animated: true)
+    }
+}
+
+class ForumCoverCell: UICollectionViewCell {
+    
+    var titlelabel = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.contentView.addSubview(titlelabel)
+        titlelabel.snp.makeConstraints {
+            make in
+            make.center.equalToSuperview()
+        }
+        titlelabel.font = UIFont.systemFont(ofSize: 20)
+        titlelabel.textColor = UIColor.white
+        titlelabel.sizeToFit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

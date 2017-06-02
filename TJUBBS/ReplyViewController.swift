@@ -46,7 +46,7 @@ class ReplyViewController: UIViewController {
     convenience init(thread: ThreadModel?, post: PostModel?) {
         self.init()
         self.thread = thread
-        print(thread?.boardID)
+//        print(thread?.boardID)
         self.post = post
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
@@ -178,14 +178,15 @@ class ReplyViewController: UIViewController {
                         // cut it down
                         refText = post.content.substring(to: post.content.index(post.content.startIndex, offsetBy: 40)) + "\n..."
                     }
-                    reply = noBBtext + "\n[quote]回复 #\(post.floor) \(post.authorName) 的帖子: \n\(refText)[/quote]"
+                    reply = noBBtext + "\n\n[quote]回复 #\(post.floor) \(post.authorName) 的帖子: \n\(refText)[/quote]"
                 }
                 
-                BBSJarvis.reply(threadID: self.thread!.id, content: reply, toID: self.post?.id, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
+                BBSJarvis.reply(threadID: self.thread!.id, content: reply, toID: self.post?.id, anonymous: self.anonymousSwitch?.isOn ?? false, success: {
+                    dict in
+                    print(dict)
                     HUD.flash(.success)
                     self.replyTextField?.text = ""
                     self.delegate?.didReply()
-//                    if let delegate = delegate as? T
                     let _ = self.navigationController?.popViewController(animated: true)
                 })
                 self.dismissKeyboard()

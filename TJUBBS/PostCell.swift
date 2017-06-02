@@ -86,7 +86,7 @@ class PostCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(80/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLabel.text = thread.id != 0 ? thread.authorName : "匿名用户"
+        usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
         usernameLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView).offset(2)
