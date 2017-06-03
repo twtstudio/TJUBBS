@@ -159,6 +159,12 @@ class RichPostCell: DTAttributedTextCell {
         }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.updateConstraintsIfNeeded()
+        contentView.setNeedsUpdateConstraints()
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -218,6 +224,12 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
 //    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewForLink url: URL!, identifier: String!, frame: CGRect) -> UIView! {
 //        print(url)
 //    }
+    
+    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, didDraw layoutFrame: DTCoreTextLayoutFrame!, in context: CGContext!) {
+        attributedTextContextView.layouter = nil
+        attributedTextContextView.relayoutText()
+        self.layoutIfNeeded()
+    }
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {

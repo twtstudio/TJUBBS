@@ -422,6 +422,14 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.setHTMLString(html, options: option)
 
         cell?.initUI(thread: self.thread!)
+        
+        cell?.portraitImageView.addTapGestureRecognizer { _ in
+            let detailVC = ImageDetailViewController(image: cell?.portraitImageView.image ?? UIImage(named: "progress")!)
+            
+            self.modalPresentationStyle = .overFullScreen
+            self.present(detailVC, animated: true, completion: nil)
+        }
+
         cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
         cell?.attributedTextContextView.shouldDrawImages = true
         return cell!
@@ -444,6 +452,12 @@ extension ThreadDetailViewController: UITableViewDataSource {
             let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
 //            cell.initUI(post: post)
             cell.initUI(post: post)
+            cell.portraitImageView.addTapGestureRecognizer { _ in
+                let detailVC = ImageDetailViewController(image: cell.portraitImageView.image ?? UIImage(named: "progress")!)
+                
+                self.modalPresentationStyle = .overFullScreen
+                self.present(detailVC, animated: true, completion: nil)
+            }
             return cell
         }
     }
