@@ -224,7 +224,8 @@ extension ReplyViewController: UITableViewDataSource {
         //        }
         let html = BBCodeParser.parse(string: post.content)
         cell?.setHTMLString(html)
-        cell?.initUI(post: post)
+        cell?.load(post: post)
+//        cell?.initUI(post: post)
         cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         cell?.attributedTextContextView.shouldDrawImages = true
         return cell!

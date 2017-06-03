@@ -110,7 +110,7 @@ class AddThreadViewController: UIViewController {
 
         BBSJarvis.postThread(boardID: selectedBoard!.id, title: themeCell.textField?.text ?? "", anonymous: anonymousSwitch.isOn, content: detailCell.textView?.text ?? "") { _ in
             HUD.flash(.success)
-            self.navigationController?.popViewController(animated: true)
+            let _ = self.navigationController?.popViewController(animated: true)
         }
     }
 }
@@ -295,6 +295,7 @@ extension AddThreadViewController: UITableViewDelegate {
 
 extension AddThreadViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // dismiss keyboard
         if touch.view?.superview is UITableViewCell {
             return false
         }

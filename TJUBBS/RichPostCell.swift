@@ -18,7 +18,7 @@ protocol HtmlContentCellDelegate: class {
 
 class RichPostCell: DTAttributedTextCell {
     
-    let portraitImageView = UIImageView()
+    let portraitImageView = UIImageView(image: UIImage(named: "头像2"))
     let usernameLabel = UILabel(text: "")
     let timeLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     let favorButton = UIButton(imageName: "收藏")
@@ -40,6 +40,7 @@ class RichPostCell: DTAttributedTextCell {
         super.awakeFromNib()
         // Initialization code
         textDelegate = self
+        initLayout()
     }
     
     public override init!(reuseIdentifier: String!) {
@@ -53,69 +54,10 @@ class RichPostCell: DTAttributedTextCell {
         favorButton.isHidden = true
         favorButton.isUserInteractionEnabled = false
         floorLabel.isHidden = true
+        initLayout()
     }
     
-    func initUI(thread: ThreadModel) {
-        let portraitImage = UIImage(named: "头像2")
-        let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
-        let cacheKey = "\(thread.authorID)" + Date.today
-        portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
-        portraitImageView.snp.makeConstraints {
-            make in
-            make.top.equalToSuperview().offset(8)
-            make.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(screenSize.height*(120/1920))
-        }
-        portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
-        portraitImageView.clipsToBounds = true
-        
-        usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
-        usernameLabel.snp.makeConstraints {
-            make in
-            make.top.equalTo(portraitImageView)
-            make.left.equalTo(portraitImageView.snp.right).offset(8)
-        }
-        
-        let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
-        timeLabel.text = timeString
-        timeLabel.snp.makeConstraints {
-            make in
-            make.top.equalTo(usernameLabel.snp.bottom).offset(4)
-            make.left.equalTo(portraitImageView.snp.right).offset(8)
-        }
-        
-        floorLabel.isHidden = true
-        favorButton.isHidden = false
-        favorButton.isUserInteractionEnabled = true
-        favorButton.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(portraitImageView)
-            make.right.equalToSuperview()
-            make.width.height.equalTo(screenSize.height*(144/1920))
-        }
-        favorButton.addTarget { button in
-            if let button = button as? UIButton {
-                BBSJarvis.collect(threadID: thread.id) {_ in
-                    button.setImage(UIImage(named: "已收藏"), for: .normal)
-                    button.tag = 1
-                }
-            }
-        }
-        
-        self.attributedTextContextView.snp.makeConstraints { make in
-            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-            make.left.equalToSuperview().offset(16)
-            make.right.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(-8)
-//            make.height.equalTo(attr)
-        }
-    }
-    
-    func initUI(post: PostModel) {
-        let portraitImage = UIImage(named: "头像2")
-        let url = URL(string: BBSAPI.avatar(uid: post.authorID))
-        let cacheKey = "\(post.authorID)" + Date.today
-        portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+    func initLayout() {
         portraitImageView.snp.makeConstraints {
             make in
             make.top.left.equalToSuperview().offset(16)
@@ -124,7 +66,6 @@ class RichPostCell: DTAttributedTextCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLabel.text = post.authorName
         usernameLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView)
@@ -132,31 +73,63 @@ class RichPostCell: DTAttributedTextCell {
         }
         
         //        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
-        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
-        timeLabel.text = timeString
         timeLabel.snp.makeConstraints {
             make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(4)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        favorButton.isHidden = true
-        floorLabel.isHidden = false
-        floorLabel.text = "\(post.floor) 楼"
         floorLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(usernameLabel)
             make.right.equalToSuperview().offset(-16)
         }
         
-        self.attributedTextContextView.snp.makeConstraints {
+        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
+        attributedTextContextView.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
             make.right.equalToSuperview().offset(-24)
-            make.bottom.equalToSuperview().offset(-8)
-            
+            make.bottom.equalToSuperview().offset(-2)
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        portraitImageView.kf.cancelDownloadTask()
+    }
+    
+    func load(thread: ThreadModel) {
+        usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
+        attributedTextContextView.shouldDrawImages = true
+        let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
+        timeLabel.text = timeString
+        
+        floorLabel.isHidden = true
+        favorButton.isHidden = false
+        favorButton.addTarget { button in
+            if let button = button as? UIButton {
+                BBSJarvis.collect(threadID: thread.id) {_ in
+                    button.setImage(UIImage(named: "已收藏"), for: .normal)
+                    button.tag = 1
+                }
+            }
+        }
+        favorButton.isUserInteractionEnabled = true
+        attributedTextContextView.relayoutText()
+    }
+    
+    func load(post: PostModel) {
+        attributedTextContextView.shouldDrawImages = true
+        usernameLabel.text = post.authorName
+        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
+        timeLabel.text = timeString
+        floorLabel.text = "\(post.floor) 楼"
+        floorLabel.isHidden = false
+        favorButton.isHidden = true
+        attributedTextContextView.relayoutText()
+//        self.delegate?.htmlContentCellSizeDidChange(cell: self)
     }
     
     override func layoutSubviews() {
@@ -246,7 +219,8 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
             imageView.shouldShowProgressiveDownload = true
             imageViews.append(imageView)
-            
+//            self.delegate?.htmlContentCellSizeDidChange(cell: self)
+
             return imageView
         }else if let attachment = attachment as? DTIframeTextAttachment {
             let videoView = DTWebVideoView(frame: frame)
@@ -260,6 +234,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)
         let attachments = attributedTextContextView.layoutFrame.textAttachments(with: predicate) as? [DTImageTextAttachment] ?? []
+        var shouldUpdate = false
         for attachment in attachments {
             attachment.originalSize = size
             let v = attributedTextContextView!
@@ -267,35 +242,14 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             if size.width > maxWidth {
                 let scale = maxWidth / size.width
                 attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
+                shouldUpdate = true
             }
         }
+        //        if shouldUpdate {
         attributedTextContextView.layouter = nil
         attributedTextContextView.relayoutText()
+        contentView.layoutSubviews()
         self.delegate?.htmlContentCellSizeDidChange(cell: self)
-
-//
-//        let url = lazyImageView.url
-//        //        let pred = NSPredicate(format: "contentURL == %@", url as! CVarArg)
-//        let pred = NSPredicate(format: "contentURL == %@", argumentArray: [url as Any])
-//        
-//        var needsNotifyNewImageSize = false
-//        if let layoutFrame = self.attributedTextContextView.layoutFrame {
-//            let attachments = layoutFrame.textAttachments(with: pred)
-//            
-//            for one in attachments! {
-//                if let one = one as? DTImageTextAttachment {
-//                    if one.originalSize.equalTo(.zero) {
-//                        one.originalSize = aspectFitImageSize(size: size)
-//                        needsNotifyNewImageSize = true
-//                    }
-//                }
-//            }
-//            
-//            if needsNotifyNewImageSize {
-//                self.attributedTextContextView.layouter = nil
-//                self.attributedTextContextView.relayoutText()
-//                self.delegate?.htmlContentCellSizeDidChange(cell: self)
-//            }
-//        }
+        //        }
     }
 }

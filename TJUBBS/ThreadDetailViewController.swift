@@ -42,7 +42,8 @@ class ThreadDetailViewController: UIViewController {
     var tid = 0
     var imageViews = [DTLazyImageView]()
     var cellCache = NSCache<NSString, RichPostCell>()
-
+    let defultAvatar = UIImage(named: "头像2")
+    
     var bottomButton: UIButton?
     var refreshFlag = true
     
@@ -374,28 +375,35 @@ extension ThreadDetailViewController: UITableViewDataSource {
     }
     
     func prepareReplyCellForIndexPath(tableView: UITableView, indexPath: IndexPath, post: PostModel) -> RichPostCell {
-        let key = NSString(format: "%ld-%ld-reply", indexPath.section, indexPath.row) // Cache requires NSObject
-//        var cell = cellCache.object(forKey: key)
-//        if cell == nil {
-        var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell-\(indexPath.row)") as? RichPostCell
+        //        let key = NSString(format: "%ld-%ld-reply", indexPath.section, indexPath.row) // Cache requires NSObject
+        //        var cell = cellCache.object(forKey: key)
+        //        if cell == nil {
+        //        var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell-\(indexPath.row)") as? RichPostCell
+        var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell") as? RichPostCell
         if cell == nil {
-            cell = RichPostCell(reuseIdentifier: "RichReplyCell-\(indexPath.row)")
+            // cell = RichPostCell(reuseIdentifier: "RichReplyCell-\(indexPath.row)")
+            cell = RichPostCell(reuseIdentifier: "RichReplyCell")
         }
         cell?.hasFixedRowHeight = false
-        cellCache.setObject(cell!, forKey: key)
+        //            cellCache.setObject(cell!, forKey: key)
         cell?.delegate = self
         cell?.selectionStyle = .none
-//        }
+        //        }
         let html = BBCodeParser.parse(string: post.content)
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
                       DTDefaultFontSize: 14.0,
                       DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
         cell?.setHTMLString(html, options: option)
-//        cell?.setHTMLString(html)
-        cell?.initUI(post: post)
-        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        cell?.load(post: post)
+        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
         cell?.attributedTextContextView.shouldDrawImages = true
+//        cell?.setHTMLString(html)
+//        cell?.initUI(post: post)
+        let url = URL(string: BBSAPI.avatar(uid: post.authorID))
+        let cacheKey = "\(post.authorID)" + Date.today
+//        cell?.portraitImageView.kf.indicatorType = .activity
+        cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: self.defultAvatar)
         return cell!
     }
     
@@ -414,44 +422,38 @@ extension ThreadDetailViewController: UITableViewDataSource {
             cell?.selectionStyle = .none
 //        }
         let html = BBCodeParser.parse(string: thread!.content)
-//        cell?.setHTMLString(html)
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
                       DTDefaultFontSize: 14.0,
                       DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+//        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
         cell?.setHTMLString(html, options: option)
-
-        cell?.initUI(thread: self.thread!)
-        
-        cell?.portraitImageView.addTapGestureRecognizer { _ in
-            let detailVC = ImageDetailViewController(image: cell?.portraitImageView.image ?? UIImage(named: "progress")!)
-            
-            self.modalPresentationStyle = .overFullScreen
-            self.present(detailVC, animated: true, completion: nil)
-        }
-
-        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
         cell?.attributedTextContextView.shouldDrawImages = true
+        cell?.load(thread: self.thread!)
+//        cell?.initUI(thread: self.thread!)
+        
+        let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
+        let cacheKey = "\(thread!.authorID)" + Date.today
+        cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: self.defultAvatar)
         return cell!
     }
 
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        if let cell = tableView.cellForRow(at: indexPath) as? RichPostCell {
-//            return cell.requiredRowHeight(in: tableView)
-//        }
-//        return 1
-//    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
-            return prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
-
+            let cell = prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
+            cell.portraitImageView.addTapGestureRecognizer { _ in
+                let detailVC = ImageDetailViewController(image: cell.portraitImageView.image ?? UIImage(named: "progress")!)
+                self.modalPresentationStyle = .overFullScreen
+                self.present(detailVC, animated: true, completion: nil)
+            }
+            return cell
         } else {
             let post = postList[indexPath.row]
 //            let cell = ReplyCell()
             let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
 //            cell.initUI(post: post)
-            cell.initUI(post: post)
+//            cell.initUI(post: post)
             cell.portraitImageView.addTapGestureRecognizer { _ in
                 let detailVC = ImageDetailViewController(image: cell.portraitImageView.image ?? UIImage(named: "progress")!)
                 
@@ -462,6 +464,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
         }
     }
     
+    
     //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
@@ -471,9 +474,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
         return 0.1
     }
     
-    //    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    //        return 300
-    //    }
     
 }
 
@@ -602,9 +602,11 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         print(link)
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
-//        if cell.floorLabel.isHidden {
+        if let _ = tableView.indexPath(for: cell) {
             self.tableView.reloadData()
-//        }
+        }
+    
+        // image viewer
         for imgView in cell.imageViews {
             imgView.addTapGestureRecognizer { _ in 
                 let detailVC = ImageDetailViewController(image: imgView.image ?? UIImage(named: "progress")!)
@@ -615,56 +617,3 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         }
     }
 }
-
-//extension ThreadDetailViewController: DTAttributedTextContentViewDelegate, DTLazyImageViewDelegate {
-//    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
-//        if let attachment = attachment as? DTImageTextAttachment {
-//            let aspectFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
-//            let imageView = DTLazyImageView(frame: aspectFrame)
-//            
-//            imageView.delegate = self
-//            imageView.url = attachment.contentURL
-//            imageView.contentMode = UIViewContentMode.scaleAspectFill
-//            imageView.clipsToBounds = true
-//            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
-//            imageView.shouldShowProgressiveDownload = true
-//            imageViews.append(imageView)
-//            
-//            return imageView
-//        }
-//        return UIView()
-////        let imgView = UIImageView(frame: frame)
-////        if attachment is DTImageTextAttachment {
-////            imgView.kf.setImage(with: ImageResource(downloadURL: attachment.contentURL, cacheKey: attachment.contentURL.absoluteString), placeholder: UIImage(named: "progress"))
-////        }
-////        return imgView
-//    }
-//    func lazyImageView(lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
-//        
-//        let url = lazyImageView.url
-//        let pred = NSPredicate(format: "contentURL == %@", url as! CVarArg)
-////        
-////        var needsNotifyNewImageSize = false
-////        if let layoutFrame = self.attributedTextContextView.layoutFrame {
-////            var attachments = layoutFrame.textAttachmentsWithPredicate(pred)
-////            
-////            for i in 0 ..< attachments.count {
-////                if let one = attachments[i] as? DTImageTextAttachment {
-////                    
-////                    if CGSizeEqualToSize(one.originalSize, CGSizeZero) {
-////                        one.originalSize = aspectFitImageSize(size)
-////                        needsNotifyNewImageSize = true
-////                        
-////                    }
-////                }
-////            }
-////        }
-////        
-////        if needsNotifyNewImageSize {
-////            self.attributedTextContextView.layouter = nil
-////            self.attributedTextContextView.relayoutText()
-////            self.delegate?.htmlContentCellSizeDidChange(self)
-////        }
-//    }
-//    
-//}
