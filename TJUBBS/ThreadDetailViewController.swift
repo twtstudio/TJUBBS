@@ -424,6 +424,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             let cell = prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
             cell.portraitImageView.addTapGestureRecognizer { _ in
                 let detailVC = ImageDetailViewController(image: cell.portraitImageView.image ?? UIImage(named: "progress")!)
+                detailVC.showSaveBtn = true
                 self.modalPresentationStyle = .overFullScreen
                 self.present(detailVC, animated: true, completion: nil)
             }
@@ -436,7 +437,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
 //            cell.initUI(post: post)
             cell.portraitImageView.addTapGestureRecognizer { _ in
                 let detailVC = ImageDetailViewController(image: cell.portraitImageView.image ?? UIImage(named: "progress")!)
-                
+                detailVC.showSaveBtn = true
                 self.modalPresentationStyle = .overFullScreen
                 self.present(detailVC, animated: true, completion: nil)
             }
@@ -595,7 +596,7 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         for imgView in cell.imageViews {
             imgView.addTapGestureRecognizer { _ in 
                 let detailVC = ImageDetailViewController(image: imgView.image ?? UIImage(named: "progress")!)
-                
+                detailVC.showSaveBtn = true
                 self.modalPresentationStyle = .overFullScreen
                 self.present(detailVC, animated: true, completion: nil)
             }
