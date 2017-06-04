@@ -120,4 +120,16 @@ struct BBCodeParser {
         }
         return result
     }
+    
+    private func cleanHtml(html: String!) -> String! {
+        var htmlVariable: String = html
+        htmlVariable = htmlVariable.replacingOccurrences(of: "style=\"[\\s\\S]*?\"", with: "", options: .regularExpression, range: nil)
+        htmlVariable = htmlVariable.replacingOccurrences(of: "height=\"[\\s\\S]*?\"", with: "", options: .regularExpression, range: nil)
+        htmlVariable = htmlVariable.replacingOccurrences(of: "width=\"[\\s\\S]*?\"", with: "", options: .regularExpression, range: nil)
+        htmlVariable = htmlVariable.replacingOccurrences(of: "border=\"[\\s\\S]*?\"", with: "", options: .regularExpression, range: nil)
+        htmlVariable = htmlVariable.replacingOccurrences(of: "<div><br /></div>", with: "<br/>", options: .regularExpression, range: nil)
+        htmlVariable = htmlVariable.replacingOccurrences(of: "<b[r][^>]*/>", with: "<br \\>", options: .regularExpression, range: nil)
+        htmlVariable = htmlVariable.replacingOccurrences(of: "<!--(.*?)-->", with: "nil", options: .regularExpression, range: nil)
+        return htmlVariable
+    }
 }

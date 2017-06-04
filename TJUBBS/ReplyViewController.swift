@@ -414,10 +414,11 @@ extension ReplyViewController: UIWebViewDelegate {
 
 
 extension ReplyViewController: HtmlContentCellDelegate {
-    func htmlContentCell(cell: RichPostCell, linkDidPress link:NSURL) {
+    func htmlContentCell(cell: RichPostCell, linkDidPress link: URL) {
         print("tapped")
         print(link)
     }
+
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
         self.tableView?.reloadData()
     }

@@ -11,7 +11,7 @@ import DTCoreText
 import Kingfisher
 
 protocol HtmlContentCellDelegate: class {
-    func htmlContentCell(cell: RichPostCell, linkDidPress link:NSURL)
+    func htmlContentCell(cell: RichPostCell, linkDidPress link: URL)
     func htmlContentCellSizeDidChange(cell: RichPostCell)
 }
 
@@ -20,7 +20,7 @@ class RichPostCell: DTAttributedTextCell {
     
     let portraitImageView = UIImageView(image: UIImage(named: "头像2"))
     let usernameLabel = UILabel(text: "")
-    let timeLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
+    let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
     let favorButton = UIButton(imageName: "收藏")
     var floorLabel = UILabel(text: "", fontSize: 14)
 
@@ -60,12 +60,14 @@ class RichPostCell: DTAttributedTextCell {
     func initLayout() {
         portraitImageView.snp.makeConstraints {
             make in
-            make.top.left.equalToSuperview().offset(16)
+            make.top.equalToSuperview().offset(16)
+            make.left.equalToSuperview().offset(16)
             make.width.height.equalTo(screenSize.height*(120/1920))
         }
         portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
         portraitImageView.clipsToBounds = true
         
+        usernameLabel.sizeToFit()
         usernameLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView)
@@ -73,12 +75,14 @@ class RichPostCell: DTAttributedTextCell {
         }
         
         //        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
+        timeLabel.sizeToFit()
         timeLabel.snp.makeConstraints {
             make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(4)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
+        floorLabel.sizeToFit()
         floorLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(usernameLabel)
@@ -86,6 +90,7 @@ class RichPostCell: DTAttributedTextCell {
         }
         
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
+        attributedTextContextView.sizeToFit()
         attributedTextContextView.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
@@ -101,6 +106,16 @@ class RichPostCell: DTAttributedTextCell {
     }
     
     func load(thread: ThreadModel) {
+        let html = BBCodeParser.parse(string: thread.content)
+        let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                      DTDefaultFontSize: 14.0,
+                      DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
+                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+        setHTMLString(html, options: option)
+        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
+        attributedTextContextView.shouldDrawImages = true
+
+        
         usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
         attributedTextContextView.shouldDrawImages = true
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
@@ -121,6 +136,16 @@ class RichPostCell: DTAttributedTextCell {
     }
     
     func load(post: PostModel) {
+        let html = BBCodeParser.parse(string: post.content)
+        let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                      DTDefaultFontSize: 14.0,
+                      DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
+                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+        setHTMLString(html, options: option)
+        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
+        attributedTextContextView.shouldDrawImages = true
+
+        
         attributedTextContextView.shouldDrawImages = true
         usernameLabel.text = post.authorName
         let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
@@ -129,6 +154,19 @@ class RichPostCell: DTAttributedTextCell {
         floorLabel.isHidden = false
         favorButton.isHidden = true
         attributedTextContextView.relayoutText()
+
+//        let width = attributedTextContextView.bounds.width - attributedTextContextView.edgeInsets.left - attributedTextContextView.edgeInsets.right
+//        let viewSize =
+//            attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: width)
+//        attributedTextContextView.snp.remakeConstraints {
+//            make in
+//            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//            make.left.equalTo(portraitImageView.snp.right).offset(8)
+//            make.right.equalToSuperview().offset(-24)
+//            make.bottom.equalToSuperview().offset(-2)
+//            make.height.equalTo(viewSize.height)
+//        }
+
 //        self.delegate?.htmlContentCellSizeDidChange(cell: self)
     }
     
@@ -153,6 +191,9 @@ class RichPostCell: DTAttributedTextCell {
         for imageView in imageViews {
             imageView.delegate = nil
         }
+        self.imageViews.removeAll()
+        self.delegate = nil
+        self.textDelegate = nil
     }
 }
 
@@ -178,16 +219,16 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor string: NSAttributedString!, frame: CGRect) -> UIView! {
         
         let attributes = string.attributes(at: 0, effectiveRange: nil)
-        let url = attributes[DTLinkAttribute] as? NSURL
+        let url = attributes[DTLinkAttribute]
         let identifier = attributes[DTGUIDAttribute] as? String
         
         let button = DTLinkButton(frame: frame)
-        button.url = url as URL!
+        button.url = url as! URL!
         button.guid = identifier
         button.minimumHitSize = CGSize(width: 25, height: 25)
         button.addTarget { sender in
             if let url = (sender as? DTLinkButton)?.url {
-                self.delegate?.htmlContentCell(cell: self, linkDidPress: url as NSURL)
+                self.delegate?.htmlContentCell(cell: self, linkDidPress: url)
             }
         }
         
@@ -201,7 +242,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, didDraw layoutFrame: DTCoreTextLayoutFrame!, in context: CGContext!) {
         attributedTextContextView.layouter = nil
         attributedTextContextView.relayoutText()
-        self.layoutIfNeeded()
+//        self.
     }
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
@@ -229,7 +270,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         }
         return nil
     }
-        
+    
     // MARK: DTLazyImageViewDelegate
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)
@@ -248,7 +289,19 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         //        if shouldUpdate {
         attributedTextContextView.layouter = nil
         attributedTextContextView.relayoutText()
-        contentView.layoutSubviews()
+//        if shouldUpdate {
+//            let width = attributedTextContextView.bounds.width - attributedTextContextView.edgeInsets.left - attributedTextContextView.edgeInsets.right
+//            let viewSize =
+//                attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: width)
+//            attributedTextContextView.snp.remakeConstraints {
+//                make in
+//                make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//                make.left.equalTo(portraitImageView.snp.right).offset(8)
+//                make.right.equalToSuperview().offset(-24)
+//                make.bottom.equalToSuperview().offset(-2)
+//                make.height.equalTo(viewSize.height)
+//            }
+//        }
         self.delegate?.htmlContentCellSizeDidChange(cell: self)
         //        }
     }
