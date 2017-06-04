@@ -375,53 +375,21 @@ extension ThreadDetailViewController: UITableViewDataSource {
     }
     
     func prepareReplyCellForIndexPath(tableView: UITableView, indexPath: IndexPath, post: PostModel) -> RichPostCell {
-//        if BBCodeParser.parse(string: post.content).contains("img") {
-//            let cell = RichPostCell(reuseIdentifier: "RichReplyCell")
-//            cell?.hasFixedRowHeight = false
-//            //            cellCache.setObject(cell!, forKey: key)
-//            cell?.delegate = self
-//            cell?.selectionStyle = .none
-//            //        }
-//            let html = BBCodeParser.parse(string: post.content)
-//            let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-//                          DTDefaultFontSize: 14.0,
-//                          DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
-//                          DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
-//            cell?.setHTMLString(html, options: option)
-//            cell?.load(post: post)
-//            cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
-//            cell?.attributedTextContextView.shouldDrawImages = true
-//            //        cell?.setHTMLString(html)
-//            //        cell?.initUI(post: post)
-//            let url = URL(string: BBSAPI.avatar(uid: post.authorID))
-//            let cacheKey = "\(post.authorID)" + Date.today
-//            //        cell?.portraitImageView.kf.indicatorType = .activity
-//            cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: self.defultAvatar)
-//            return cell!
-//
-//        }
-
-        //        let key = NSString(format: "%ld-%ld-reply", indexPath.section, indexPath.row) // Cache requires NSObject
-        //        var cell = cellCache.object(forKey: key)
-        //        if cell == nil {
-        //        var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell-\(indexPath.row)") as? RichPostCell
         var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell") as? RichPostCell
         if cell == nil {
             // cell = RichPostCell(reuseIdentifier: "RichReplyCell-\(indexPath.row)")
             cell = RichPostCell(reuseIdentifier: "RichReplyCell")
-            NotificationCenter.default.addObserver(self, selector: #selector(self.attributedTextContentViewDidFinishLayout(notification:)), name: Notification.Name.DTAttributedTextContentViewDidFinishLayout, object: cell?.attributedTextContextView)
         }
         cell?.hasFixedRowHeight = false
         //            cellCache.setObject(cell!, forKey: key)
         cell?.delegate = self
         cell?.selectionStyle = .none
         //        }
-        let html = BBCodeParser.parse(string: post.content)
-        let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                      DTDefaultFontSize: 14.0,
-                      DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
-                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
         cell?.load(post: post)
+        cell?.attributedTextContextView.setNeedsLayout()
+        cell?.attributedTextContextView.layoutIfNeeded()
+        cell?.contentView.setNeedsLayout()
+        cell?.contentView.layoutIfNeeded()
         let url = URL(string: BBSAPI.avatar(uid: post.authorID))
         let cacheKey = "\(post.authorID)" + Date.today
         cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: self.defultAvatar)
@@ -475,68 +443,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             return cell
         }
     }
-    func attributedTextContentViewDidFinishLayout(notification: Notification) {
-        print(notification)
-        if let aView = notification.object as? DTAttributedTextContentView {
-            if aView.layoutFrame.textAttachments().count > 0 {
-                if let cell = aView.superview?.superview as? RichPostCell, let indexPath = tableView.indexPath(for: cell) {
-//                    tableView.reloadRows(at: [indexPath], with: .automatic)
-//                    cell.initLayout()
-                    
-//                    tableView.reloadData()
-                }
-            }
-        }
-//        self.tableView.reloadData()
-    }
-    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        struct _Static {
-//            static var id = "0"
-//            static var cell: RichPostCell!
-//        }
-//        DispatchQueue.once(token: _Static.id) { [weak self] in
-//            if let self_ = self {
-//                _Static.cell = RichPostCell(reuseIdentifier: "TEMPCELL")
-//                NotificationCenter.default.addObserver(self_, selector: #selector(self_.attributedTextContentViewDidFinishLayout(notification:)), name: Notification.Name.DTAttributedTextContentViewDidFinishLayout, object: _Static.cell.attributedTextContextView)
-//                // FIXME: remove observer
-////                _Static.cell.addObserver(, forKeyPath: , options: , context: )
-////                NSNotificationCenter.defaultCenter().addObserver(self_, selector: "attributedTextContentViewDidFinishLayout:", name: NSNotification.Name.DTAttributedTextContentViewDidFinishLayout, object: c.attributedTextContextView)
-//
-//                _Static.cell.hasFixedRowHeight = false
-//                _Static.cell.delegate = self_
-//                _Static.cell.selectionStyle = .none
-//            }
-//        }
-//        switch indexPath.section {
-//        case 0:
-//            let html = BBCodeParser.parse(string: thread!.content)
-//            let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-//                          DTDefaultFontSize: 14.0,
-//                          DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
-//                          DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
-//            _Static.cell.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
-//            _Static.cell.setHTMLString(html, options: option)
-//            _Static.cell.load(thread: thread!)
-//            _Static.cell.attributedTextContextView.shouldDrawImages = true
-//            return _Static.cell.contentView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-//        case 1:
-//            let post = postList[indexPath.row]
-//            let html = BBCodeParser.parse(string: post.content)
-//            let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-//                          DTDefaultFontSize: 14.0,
-//                          DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
-//                          DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
-//            _Static.cell.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
-//            _Static.cell.setHTMLString(html, options: option)
-//            _Static.cell.load(post: post)
-//            _Static.cell.attributedTextContextView.shouldDrawImages = true
-//            return _Static.cell.contentView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-//        default:
-//            return 0.1
-//        }
-//    }
-    
+
     //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
@@ -613,10 +520,6 @@ extension ThreadDetailViewController {
         //        print("用的是我，口亨～")
     }
     
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        super.touchesBegan(touches, with: event)
-//        dismissKeyboard()
-//    }
     
     func keyboardWillShow(notification: NSNotification) {
         

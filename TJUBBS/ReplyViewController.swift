@@ -36,8 +36,8 @@ class ReplyViewController: UIViewController {
     var post: PostModel?
     var thread: ThreadModel?
     fileprivate var loadFlag = false
-    var webView = UIWebView()
-    var webViewHeight: CGFloat = 0
+//    var webView = UIWebView()
+//    var webViewHeight: CGFloat = 0
     var delegate: ReplyViewDelegate?
     var anonymousView: UIView?
     var anonymousSwitch: UISwitch?
@@ -214,108 +214,24 @@ extension ReplyViewController: UITableViewDataSource {
     }
     
     func prepareReplyCellForIndexPath(tableView: UITableView, indexPath: IndexPath, post: PostModel) -> RichPostCell {
-        let key = NSString(format: "%ld-%ld-reply", indexPath.section, indexPath.row) // Cache requires NSObject
-        var cell = RichPostCell(reuseIdentifier: "RichReplyCell")
-        //            }
+        let cell = RichPostCell(reuseIdentifier: "RichReplyCell")
         cell?.hasFixedRowHeight = false
-//        cellCache.setObject(cell!, forKey: key)
         cell?.delegate = self
         cell?.selectionStyle = .none
-        //        }
-        let html = BBCodeParser.parse(string: post.content)
-        cell?.setHTMLString(html)
         cell?.load(post: post)
 //        cell?.initUI(post: post)
         cell?.attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         cell?.attributedTextContextView.shouldDrawImages = true
+        cell?.attributedTextContextView.setNeedsLayout()
+        cell?.attributedTextContextView.layoutIfNeeded()
+        cell?.contentView.setNeedsLayout()
+        cell?.contentView.layoutIfNeeded()
+
         return cell!
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post!)
-    }
-    
-    func tableView1(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if post != nil {
-            let cell = ReplyCell()
-            cell.initUI(post: post!)
-            return cell
-        } else if thread != nil {
-            let cell = UITableViewCell()
-            let portraitImageView = UIImageView()
-            let portraitImage = UIImage(named: "头像2")
-            let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
-            let cacheKey = "\(thread!.authorID)" + Date.today
-            portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
-            cell.contentView.addSubview(portraitImageView)
-            portraitImageView.snp.makeConstraints {
-                make in
-                make.top.equalToSuperview().offset(8)
-                make.left.equalToSuperview().offset(16)
-                make.width.height.equalTo(screenSize.height*(120/1920))
-            }
-            portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
-            portraitImageView.clipsToBounds = true
-            
-            let usernameLabel = UILabel(text: thread!.id != 0 ? thread!.authorName : "匿名用户")
-            cell.contentView.addSubview(usernameLabel)
-            usernameLabel.snp.makeConstraints {
-                make in
-                make.top.equalTo(portraitImageView)
-                make.left.equalTo(portraitImageView.snp.right).offset(8)
-            }
-            
-            let timeString = TimeStampTransfer.string(from: String(thread!.createTime), with: "yyyy-MM-dd")
-            let timeLabel = UILabel(text: timeString, fontSize: 14)
-            cell.contentView.addSubview(timeLabel)
-            timeLabel.snp.makeConstraints {
-                make in
-                make.top.equalTo(usernameLabel.snp.bottom).offset(4)
-                make.left.equalTo(portraitImageView.snp.right).offset(8)
-            }
-            
-            let favorButton = UIButton(imageName: "收藏")
-            cell.contentView.addSubview(favorButton)
-            favorButton.snp.makeConstraints {
-                make in
-                make.centerY.equalTo(portraitImageView)
-                make.right.equalToSuperview()
-                make.width.height.equalTo(screenSize.height*(144/1920))
-            }
-            favorButton.addTarget { button in
-                (button as? UIButton)?.setImage(UIImage(named: "已收藏"), for: .normal)
-            }
-            
-            cell.contentView.addSubview(webView)
-            if loadFlag == false {
-                webView.snp.makeConstraints {
-                    make in
-                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-                    make.left.equalToSuperview().offset(16)
-                    make.right.equalToSuperview().offset(-16)
-                    make.bottom.equalToSuperview().offset(-8)
-                    make.height.equalTo(1)
-                }
-                webView.delegate = self
-                //webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
-                webView.loadHTMLString(thread!.content, baseURL: nil)
-                webView.scrollView.isScrollEnabled = false
-                webView.scrollView.bounces = false
-            } else {
-                webView.snp.remakeConstraints {
-                    make in
-                    make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-                    make.left.equalToSuperview().offset(16)
-                    make.right.equalToSuperview().offset(-16)
-                    make.bottom.equalToSuperview().offset(-8)
-                    make.height.equalTo(webViewHeight)
-                }
-            }
-            
-            return cell
-        } else {
-            return UITableViewCell()
-        }
     }
     
     //TODO: Better way to hide first headerView
@@ -395,20 +311,6 @@ extension ReplyViewController {
         } else {
             animations()
         }
-    }
-}
-
-extension ReplyViewController: UIWebViewDelegate {
-    func webViewDidFinishLoad(_ webView: UIWebView) {
-        loadFlag = true
-        let actualSize = webView.sizeThatFits(.zero)
-        //        var newFrame = webView.frame
-        //
-        //        webView.frame = newFrame
-        //        print("-------------\(newFrame.size.height)")
-        webViewHeight = actualSize.height
-        //        print("actualSize.height: \(actualSize.height)")
-        tableView?.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
 }
 
