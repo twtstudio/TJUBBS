@@ -107,9 +107,11 @@ class RichPostCell: DTAttributedTextCell {
     
     func load(thread: ThreadModel) {
         let html = BBCodeParser.parse(string: thread.content)
+        
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
                       DTDefaultFontSize: 14.0,
                       DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
+                      DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
         setHTMLString(html, options: option)
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)

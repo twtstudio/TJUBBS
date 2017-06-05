@@ -21,12 +21,6 @@ class ThreadDetailViewController: UIViewController {
     
     var tableView = UITableView(frame: .zero, style: .grouped)
     fileprivate var loadFlag = false
-    var webView = UIWebView()
-    var webViewHeight: CGFloat = 0
-    //    lazy var webViewLoad: Void = {
-    //        //MARK: dangerous thing
-    //        self.webView.loadRequest(URLRequest(url: URL(string: "https://www.baidu.com/")!))
-    //    }()
     var board: BoardModel?
     var thread: ThreadModel?
     var postList: [PostModel] = []
@@ -43,6 +37,10 @@ class ThreadDetailViewController: UIViewController {
     var imageViews = [DTLazyImageView]()
     var cellCache = NSCache<NSString, RichPostCell>()
     let defultAvatar = UIImage(named: "头像2")
+    var centerTextView: UIView! = nil
+    var headerView: UIView? = nil
+    var boardLabel = UILabel()
+//    var lastOffsetY: CGFloat = 0
     
     var bottomButton: UIButton?
     var refreshFlag = true
@@ -66,6 +64,54 @@ class ThreadDetailViewController: UIViewController {
         }
     }
 
+    func setNavigationSubview() {
+        self.title = self.thread!.category
+        centerTextView = UIView()
+        var x: CGFloat = 0
+        let y: CGFloat = 64
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+        let title = NSString(string: self.thread!.title)
+//        let desc = NSString(string: self.thread!.category)
+        let titleSize = title.size(attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
+//        let descSize = desc.size(attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 11)])
+//        width = titleSize.width > descSize.width ? titleSize.width : descSize.width
+//        width = max(titleSize.width, descSize.width)
+//        height = titleSize.height + descSize.height + 10
+        width = min(titleSize.width, 250)
+        height = titleSize.height
+        x = (UIScreen.main.bounds.width - width)/2
+        centerTextView.frame = CGRect(x: x, y: y, width: width, height: height)
+        let titleLabel = UILabel()
+        titleLabel.tag = 1
+        titleLabel.textAlignment = .center
+        titleLabel.text = title as String
+        titleLabel.font = UIFont.systemFont(ofSize: 14)
+        titleLabel.textColor = .white
+        titleLabel.frame = CGRect(x: 0, y: 0, width: width, height: titleSize.height)
+        titleLabel.numberOfLines = 1
+//        let descLabel = UILabel()
+//        descLabel.text = title as String
+//        descLabel.tag = 0
+//        descLabel.textAlignment = .center
+//        descLabel.font = UIFont.systemFont(ofSize: 11)
+//        descLabel.textColor = .white
+//        descLabel.frame = CGRect(x: 0, y: titleSize.height + 5, width: width, height: descSize.height)
+        
+        centerTextView.addSubview(titleLabel)
+        
+        boardLabel.text = self.board?.name ?? "详情"
+        boardLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        boardLabel.textColor = .white
+        boardLabel.sizeToFit()
+        boardLabel.width = width
+        boardLabel.textAlignment = .center
+        self.navigationItem.titleView = boardLabel
+        boardLabel.alpha = 1.0
+
+//        centerTextView.addSubview(descLabel)
+//        self.navigationItem.titleView = centerTextView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,6 +126,7 @@ class ThreadDetailViewController: UIViewController {
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         self.tableView.mj_footer.isAutomaticallyHidden = true
+        
         
         if thread != nil {
             initUI()
@@ -111,6 +158,7 @@ class ThreadDetailViewController: UIViewController {
                 let flag = self.thread == nil // thread nil flag
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
+                self.boardLabel.text = self.board?.name
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
                 if flag {
                     self.initUI()
@@ -211,6 +259,32 @@ class ThreadDetailViewController: UIViewController {
     
     func initUI() {
         self.title = thread?.title
+        
+        if headerView == nil {
+            headerView = UIView()
+            headerView!.backgroundColor = .white
+            let label = UILabel()
+            label.text = thread!.title
+            label.textColor = .black
+            label.textAlignment = .center
+            label.text = self.thread!.title
+            label.font = UIFont.boldSystemFont(ofSize: 15)
+            label.numberOfLines = 0
+            headerView!.addSubview(label)
+            label.sizeToFit()
+            label.snp.makeConstraints { make in
+                make.left.top.right.bottom.equalToSuperview()
+            }
+            headerView!.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+25)
+//            headerView?.snp.makeConstraints { make in
+//                make.width.equalTo(tableView.width)
+//                make.height.equalTo()
+//            }
+        }
+        
+        setNavigationSubview()
+        
+        
         tableView.keyboardDismissMode = .interactive
         let bottomHeight = thread?.boardID == 193 ? -80 : -50
         tableView.snp.makeConstraints {
@@ -447,10 +521,17 @@ extension ThreadDetailViewController: UITableViewDataSource {
 
     //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 0 {
+            return headerView
+        }
         return UIView(frame: .zero)
     }
     
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return headerView?.height ?? 30
+        }
         return 0.1
     }
     
@@ -468,6 +549,63 @@ extension ThreadDetailViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let headerHeight = headerView?.height ?? 30
+        let titleHeight = centerTextView.height
+        
+        let ratio: CGFloat = 0.4
+        
+        if offsetY <= 0.2 {
+            boardLabel.alpha = 1
+        }
+        
+        if offsetY <= headerHeight*ratio && offsetY > 0.2 {
+            let progress = offsetY/(headerHeight*ratio)
+            self.navigationItem.titleView = boardLabel
+            boardLabel.alpha = 1 - progress
+        }
+        
+        if offsetY > headerHeight*ratio && offsetY < headerHeight {
+            self.navigationItem.titleView = centerTextView
+            let progress = offsetY - headerHeight*ratio
+            self.centerTextView.y = 10 + titleHeight - titleHeight*(progress/(headerHeight*(1-ratio)))
+            centerTextView.alpha = progress/headerHeight < 0.17 ? 0 : progress/(headerHeight*(1-ratio))
+        }
+        
+        if offsetY >= headerHeight {
+            centerTextView.alpha = 1
+        }
+//        lastOffsetY = offsetY
+//        let delta = offsetY
+//        let margin: CGFloat = 44
+//        let height = centerTextView.height
+//        let ratio =
+        
+//        if delta > margin && delta < margin+height {
+//            centerTextView.y = centerTextView.height - (delta-margin)
+//            centerTextView.alpha = 1.0
+//        }
+        
+//        if delta > margin+39 {
+//            centerTextView.y = 25
+//            centerTextView.alpha = 1.0
+//        }
+//        if delta > margin+height {
+//            centerTextView.y = 0
+//            centerTextView.alpha = 1.0
+//        }
+//        
+//        if delta <= margin {
+////            let categoryLabel = UILabel()
+////            self.navigationItem =
+//            centerTextView.alpha = 0.0
+//        }
+//        
+//        if delta <= 0 {
+//            centerTextView.y = 44
+//            centerTextView.alpha = 0.0
+//        }
+        
         if bottomButton?.alpha == 0 {
             UIView.animate(withDuration: 0.5, animations: {
                 self.bottomButton?.alpha = 0.8
@@ -482,20 +620,6 @@ extension ThreadDetailViewController: UITableViewDelegate {
         }
     }
     
-}
-
-extension ThreadDetailViewController: UIWebViewDelegate {
-    func webViewDidFinishLoad(_ webView: UIWebView) {
-        loadFlag = true
-        let actualSize = webView.sizeThatFits(.zero)
-        //        var newFrame = webView.frame
-        //
-        //        webView.frame = newFrame
-        //        print("-------------\(newFrame.size.height)")
-        webViewHeight = actualSize.height
-//        print("actualSize.height: \(actualSize.height)")
-        tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-    }
 }
 
 extension ThreadDetailViewController: UITextFieldDelegate {
@@ -603,3 +727,4 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         }
     }
 }
+

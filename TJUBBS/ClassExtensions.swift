@@ -293,3 +293,41 @@ public extension DispatchQueue {
         block()
     }
 }
+
+extension UIView {
+    var x: CGFloat {
+        set(newValue) {
+            self.frame = CGRect(x: newValue, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
+        }
+        get {
+            return frame.origin.x
+        }
+    }
+    
+    var y: CGFloat {
+        set(newValue) {
+            self.frame = CGRect(x: frame.origin.x, y: newValue, width: frame.size.width, height: frame.size.height)
+        }
+        get {
+            return frame.origin.y
+        }
+    }
+    
+    var height: CGFloat {
+        set(newValue) {
+            self.frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: newValue)
+        }
+        get {
+            return frame.size.height
+        }
+    }
+    
+    var width: CGFloat {
+        set(newValue) {
+            self.frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: newValue, height: frame.size.height)
+        }
+        get {
+            return frame.size.width
+        }
+    }
+}
