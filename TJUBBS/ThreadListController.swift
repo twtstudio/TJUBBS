@@ -34,6 +34,7 @@ class ThreadListController: UIViewController {
         
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        self.title = board?.name
     }
     
     override func didReceiveMemoryWarning() {

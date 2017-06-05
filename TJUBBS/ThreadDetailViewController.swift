@@ -275,7 +275,27 @@ class ThreadDetailViewController: UIViewController {
             label.snp.makeConstraints { make in
                 make.left.top.right.bottom.equalToSuperview()
             }
-            headerView!.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+25)
+            
+            let spaceView = UIView()
+            headerView?.addSubview(spaceView)
+            spaceView.backgroundColor = tableView.backgroundColor
+            spaceView.snp.makeConstraints { make in
+                make.left.right.equalToSuperview()
+                make.bottom.equalToSuperview()
+                make.height.equalTo(6)
+            }
+            
+            let separator = UIView()
+            separator.backgroundColor = UIColor(red:0.89, green:0.89, blue:0.90, alpha:1.00)
+            headerView?.addSubview(separator)
+            separator.snp.makeConstraints { make in
+                make.left.right.equalToSuperview()
+                make.bottom.equalTo(spaceView.snp.top)
+                make.height.equalTo(1)
+            }
+
+            
+            headerView!.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+32)
 //            headerView?.snp.makeConstraints { make in
 //                make.width.equalTo(tableView.width)
 //                make.height.equalTo()
@@ -485,6 +505,14 @@ extension ThreadDetailViewController: UITableViewDataSource {
             cell?.selectionStyle = .none
 //        }
         cell?.load(thread: self.thread!)
+        cell?.floorLabel.isHidden = false
+        cell?.floorLabel.addTapGestureRecognizer { [weak self] _ in
+            let boardVC = ThreadListController(board: self?.board)
+            self?.navigationController?.pushViewController(boardVC, animated: true)
+        }
+        let boardName = NSAttributedString(string: board?.name ?? "", attributes: [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
+            NSForegroundColorAttributeName: UIColor.BBSBlue])
+        cell?.floorLabel.attributedText = boardName
 //        cell?.initUI(thread: self.thread!)
         
         let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
