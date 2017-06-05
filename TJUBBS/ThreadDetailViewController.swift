@@ -78,7 +78,7 @@ class ThreadDetailViewController: UIViewController {
 //        width = titleSize.width > descSize.width ? titleSize.width : descSize.width
 //        width = max(titleSize.width, descSize.width)
 //        height = titleSize.height + descSize.height + 10
-        width = min(titleSize.width, 250)
+        width = min(titleSize.width, UIScreen.main.bounds.width-125)
         height = titleSize.height
         x = (UIScreen.main.bounds.width - width)/2
         centerTextView.frame = CGRect(x: x, y: y, width: width, height: height)
