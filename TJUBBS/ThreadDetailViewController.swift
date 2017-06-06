@@ -196,7 +196,8 @@ class ThreadDetailViewController: UIViewController {
             let posts = data["post"] as? [[String: Any]] {
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
                 if (self.currentPageList.count < 49)&&(self.page == 0) || (self.currentPageList.count < 50)&&(self.page != 0) {
-                    HUD.flash(.label("滑到底部了哟🌚"), delay: 0.7)
+//                    HUD.flash(.label("滑到底部了哟🌚"), delay: 0.7)
+                    HUD.flash(.label("滑到底部了哟🌚"), onView: self.view, delay: 0.4)
                 }
             }
             if self.tableView.mj_footer.isRefreshing() {
@@ -477,7 +478,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.hasFixedRowHeight = false
         //            cellCache.setObject(cell!, forKey: key)
         cell?.delegate = self
-        cell?.selectionStyle = .none
+//        cell?.selectionStyle = .none
         //        }
         cell?.load(post: post)
         cell?.attributedTextContextView.setNeedsLayout()
@@ -505,6 +506,10 @@ extension ThreadDetailViewController: UITableViewDataSource {
             cell?.selectionStyle = .none
 //        }
         cell?.load(thread: self.thread!)
+        cell?.attributedTextContextView.setNeedsLayout()
+        cell?.attributedTextContextView.layoutIfNeeded()
+        cell?.contentView.setNeedsLayout()
+        cell?.contentView.layoutIfNeeded()
         cell?.floorLabel.isHidden = false
         cell?.floorLabel.addTapGestureRecognizer { [weak self] _ in
             let boardVC = ThreadListController(board: self?.board)
@@ -584,6 +589,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
         let ratio: CGFloat = 0.4
         
         if offsetY <= 0.2 {
+            self.navigationItem.titleView = boardLabel
             boardLabel.alpha = 1
         }
         
@@ -601,38 +607,9 @@ extension ThreadDetailViewController: UITableViewDelegate {
         }
         
         if offsetY >= headerHeight {
+            self.navigationItem.titleView = centerTextView
             centerTextView.alpha = 1
         }
-//        lastOffsetY = offsetY
-//        let delta = offsetY
-//        let margin: CGFloat = 44
-//        let height = centerTextView.height
-//        let ratio =
-        
-//        if delta > margin && delta < margin+height {
-//            centerTextView.y = centerTextView.height - (delta-margin)
-//            centerTextView.alpha = 1.0
-//        }
-        
-//        if delta > margin+39 {
-//            centerTextView.y = 25
-//            centerTextView.alpha = 1.0
-//        }
-//        if delta > margin+height {
-//            centerTextView.y = 0
-//            centerTextView.alpha = 1.0
-//        }
-//        
-//        if delta <= margin {
-////            let categoryLabel = UILabel()
-////            self.navigationItem =
-//            centerTextView.alpha = 0.0
-//        }
-//        
-//        if delta <= 0 {
-//            centerTextView.y = 44
-//            centerTextView.alpha = 0.0
-//        }
         
         if bottomButton?.alpha == 0 {
             UIView.animate(withDuration: 0.5, animations: {

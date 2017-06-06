@@ -14,6 +14,7 @@ class ImageDetailViewController: UIViewController {
     var imgView: UIImageView! = nil
     var image: UIImage! = nil
     let saveBtn = UIButton(type: .roundedRect)
+    var lastPos: CGPoint = CGPoint()
     var showSaveBtn: Bool = false {
         didSet {
             if showSaveBtn {
@@ -75,6 +76,17 @@ class ImageDetailViewController: UIViewController {
 //            make.width.height.equalTo(self.view.bounds.size.width)
 //        }
         self.view.addSubview(scrollView)
+//        let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeDismiss(recognizer:)))
+//        swipeUpGesture.direction = .up
+//        
+//        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeDismiss(recognizer:)))
+//        swipeDownGesture.direction = .down
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.swipeDismiss(recognizer:)))
+        imgView.addGestureRecognizer(panGesture)
+        
+//        imgView.addGestureRecognizer(swipeUpGesture)
+//        imgView.addGestureRecognizer(swipeDownGesture)
+        
         let doubleGesture = UITapGestureRecognizer(target: self, action: #selector(self.doubleClicked(recognizer:)))
         doubleGesture.numberOfTapsRequired = 2
         imgView.addGestureRecognizer(doubleGesture)
@@ -88,6 +100,21 @@ class ImageDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
 
+    func swipeDismiss(recognizer: UIPanGestureRecognizer) {
+        let position = recognizer.translation(in: imgView)
+        if recognizer.state == .began {
+            lastPos = position
+        } else if recognizer.state == .ended {
+            if abs(position.y-lastPos.y) > 100 {
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
+//        if recognizer.
+//        if recognizer.direction == .up || recognizer.direction == .down {
+//            self.dismiss(animated: true, completion: nil)
+//        }
+    }
+    
     func doubleClicked(recognizer: UITapGestureRecognizer) {
         recognizer.numberOfTapsRequired = 2
         if self.scrollView.zoomScale > CGFloat(1.0) {

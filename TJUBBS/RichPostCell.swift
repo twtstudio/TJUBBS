@@ -114,7 +114,8 @@ class RichPostCell: DTAttributedTextCell {
                       DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
         setHTMLString(html, options: option)
-        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
+//        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
+        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         attributedTextContextView.shouldDrawImages = true
 
         
@@ -144,7 +145,8 @@ class RichPostCell: DTAttributedTextCell {
                       DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
         setHTMLString(html, options: option)
-        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
+        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
+//        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
         attributedTextContextView.shouldDrawImages = true
 
         
@@ -156,20 +158,6 @@ class RichPostCell: DTAttributedTextCell {
         floorLabel.isHidden = false
         favorButton.isHidden = true
         attributedTextContextView.relayoutText()
-
-//        let width = attributedTextContextView.bounds.width - attributedTextContextView.edgeInsets.left - attributedTextContextView.edgeInsets.right
-//        let viewSize =
-//            attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: width)
-//        attributedTextContextView.snp.remakeConstraints {
-//            make in
-//            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//            make.left.equalTo(portraitImageView.snp.right).offset(8)
-//            make.right.equalToSuperview().offset(-24)
-//            make.bottom.equalToSuperview().offset(-2)
-//            make.height.equalTo(viewSize.height)
-//        }
-
-//        self.delegate?.htmlContentCellSizeDidChange(cell: self)
     }
     
     override func layoutSubviews() {

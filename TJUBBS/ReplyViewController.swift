@@ -227,6 +227,9 @@ extension ReplyViewController: UITableViewDataSource {
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
 
+        let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
+        let cacheKey = "\(thread!.authorID)" + Date.today
+        cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey))
         return cell!
     }
     

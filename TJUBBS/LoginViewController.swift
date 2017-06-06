@@ -279,26 +279,6 @@ class LoginViewController: UIViewController {
         passwordTextField?.spellCheckingType = .no
         passwordTextField?.isSecureTextEntry = true
         
-//        registerGuideButton = UIButton(title: "注册或认证?", color: .BBSRed)
-//        view.addSubview(registerGuideButton!)
-//        registerGuideButton?.snp.makeConstraints {
-//            make in
-//            make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
-//            make.left.equalTo(passwordTextField!.snp.left)
-//        }
-//        registerGuideButton?.addTarget(withBlock: {
-//            _ in
-//            let alert = UIAlertController(title: "抱歉", message: "求实BBS APP 暂时无法提供注册功能，请在浏览器中打开\nhttps://bbs.tju.edu.cn 注册", preferredStyle: .alert)
-//            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-//            alert.addAction(cancelAction)
-//            let confirmAction = UIAlertAction(title: "复制", style: .default) {
-//                _ in
-//                UIPasteboard.general.string = "https://bbs.tju.edu.cn"
-//            }
-//            alert.addAction(confirmAction)
-//            self.present(alert, animated: true, completion: nil)
-//        })
-        
         forgetButton = UIButton(title: "忘记密码?")
         view.addSubview(forgetButton!)
         forgetButton?.snp.makeConstraints {
@@ -307,30 +287,41 @@ class LoginViewController: UIViewController {
             make.right.equalTo(passwordTextField!.snp.right)
         }
         
+        let check: ([String : String])->(Bool) = { result in
+            guard result["repass"] == result["password"] else {
+                HUD.flash(.label("两次密码不符！请重新输入👀"), delay: 1.2)
+                return false
+            }
+            return true
+        }
+        
         // 这是个好用的方法 欢迎去看我的博客 www.halcao.me/tips-using-block-instead-of-selector-of-uibutton/
+        
         
         forgetButton?.addTarget { _ in
             let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号-schoolid", "真实姓名-输入真实姓名-realname", "身份证号-身份证号仅用于身份验证-cid"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证", handler: nil)
             vc.handler =  { [weak vc] result in
                 if let result = result as? [String: String] {
                     print(result)
-                    BBSJarvis.retrieve(stunum: result["schoolid"]!, username: result["username"]!, realName: result["realname"]!, cid: result["cid"]!) {
-                        dict in
-                        if let data = dict["data"] as? [String: Any] {
-                            BBSUser.shared.uid = data["uid"] as? Int
-                            BBSUser.shared.resetPasswordToken = data["token"] as? String
-                            HUD.flash(.success)
-                            let resetVC = InfoModifyController(title: "密码重置", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "验证信息通过，请重置密码", handler: nil)
-                            resetVC.handler = { [weak resetVC] result in
-                                if let result = result as? [String: String] {
-                                    BBSJarvis.resetPassword(password: result["newpass"]!) {
-                                        dict in
-                                        resetVC?.navigationController?.popToRootViewController(animated: false)
+                    if check(result) == true {
+                        BBSJarvis.retrieve(stunum: result["schoolid"]!, username: result["username"]!, realName: result["realname"]!, cid: result["cid"]!) {
+                            dict in
+                            if let data = dict["data"] as? [String: Any] {
+                                BBSUser.shared.uid = data["uid"] as? Int
+                                BBSUser.shared.resetPasswordToken = data["token"] as? String
+                                HUD.flash(.success)
+                                let resetVC = InfoModifyController(title: "密码重置", items: ["新密码-输入新密码-newpass-s", "再次确认-输入新密码-ensure-s"], style: .bottom, headerMsg: "验证信息通过，请重置密码", handler: nil)
+                                resetVC.handler = { [weak resetVC] result in
+                                    if let result = result as? [String: String] {
+                                        BBSJarvis.resetPassword(password: result["newpass"]!) {
+                                            dict in
+                                            resetVC?.navigationController?.popToRootViewController(animated: false)
+                                        }
                                     }
                                 }
+                                resetVC.doneText = "确认"
+                                vc?.navigationController?.pushViewController(resetVC, animated: true)
                             }
-                            resetVC.doneText = "确认"
-                            vc?.navigationController?.pushViewController(resetVC, animated: true)
                         }
                     }
                 }
@@ -403,13 +394,6 @@ class LoginViewController: UIViewController {
         }
         registerButton?.alpha = 0
         
-        let check: ([String : String])->(Bool) = { result in
-            guard result["repass"] == result["password"] else {
-                HUD.flash(.label("两次密码不符！请重新输入👀"), delay: 1.2)
-                return false
-            }
-            return true
-        }
         registerButton?.addTarget { _ in
             let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-2~12个字母-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
                 if let result = result as? [String : String] {
