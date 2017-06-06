@@ -703,6 +703,13 @@ extension ThreadDetailViewController: ReplyViewDelegate {
 }
 extension ThreadDetailViewController: HtmlContentCellDelegate {
     func htmlContentCell(cell: RichPostCell, linkDidPress link: URL) {
+//        if let tid = Int(link.absoluteString.replacingOccurrences(of: "(.*?)bbs.tju.edu.cn/forum/thread/(.[0-9]+$)", with: "$2", options: .regularExpression, range: nil)) {
+        if let tid = Int(link.absoluteString.replacingOccurrences(of: "(.*?)bbs.tju.edu.cn/forum/thread/(.[0-9]*?)|/page/[0-9]*", with: "$2", options: .regularExpression, range: nil)) {
+            let detailVC = ThreadDetailViewController(tid: tid)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+            return
+        }
+    
         let ac = UIAlertController(title: "链接", message: link.absoluteString, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "跳转到 Safari", style: .default) {
             action in
