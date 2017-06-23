@@ -93,6 +93,7 @@ class EliteThreadViewController: UIViewController {
     
     func initUI() {
         tableView = UITableView(frame: .zero, style: .grouped)
+        registerForPreviewing(with: self, sourceView: tableView!)
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints {
             make in
@@ -165,3 +166,16 @@ extension EliteThreadViewController: UITableViewDelegate {
     }
 }
 
+extension EliteThreadViewController: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = tableView?.indexPathForRow(at: location) {
+            let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
+            return detailVC
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
+    }
+}

@@ -55,12 +55,17 @@ class ThreadListController: UIViewController {
     
     func initUI() {
         tableView = UITableView(frame: .zero, style: .grouped)
+        
+        // 3D Touch
+        registerForPreviewing(with: self, sourceView: self.tableView!)
+        
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints {
             make in
             make.top.equalToSuperview().offset(0)
             make.left.right.bottom.equalToSuperview()
         }
+        registerForPreviewing(with: self, sourceView: tableView!)
         tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
         tableView?.delegate = self
         tableView?.dataSource = self
@@ -185,5 +190,20 @@ extension ThreadListController {
                 self.tableView?.reloadData()
             }
         }
+    }
+}
+
+extension ThreadListController: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = tableView?.indexPathForRow(at: location) {
+            let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
+            return detailVC
+            //        previewingContext.sourceRect =
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
     }
 }

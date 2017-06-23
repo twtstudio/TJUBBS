@@ -30,6 +30,7 @@ class ForumListController: UIViewController {
         layout.minimumLineSpacing = 0
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         self.view.addSubview(collectionView!)
+        registerForPreviewing(with: self, sourceView: collectionView!)
         collectionView?.snp.makeConstraints { $0.edges.equalToSuperview() }
         collectionView?.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.96, alpha:1.00)
         collectionView?.register(ForumCoverCell.self, forCellWithReuseIdentifier: "UICollectionForumCell")
@@ -122,5 +123,19 @@ class ForumCoverCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension ForumListController: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = collectionView?.indexPathForItem(at: location) {
+            let blVC = BoardListController(forum: forumList[indexPath.row])
+            return blVC
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
     }
 }

@@ -277,7 +277,7 @@ class ThreadDetailViewController: UIViewController {
 //                make.left.top.right.bottom.equalToSuperview()
 //                make.left.top.right.equalToSuperview()
                 make.bottom.equalToSuperview().offset(-3)
-                make.top.equalToSuperview()
+                make.top.equalToSuperview() 
                 make.left.equalToSuperview().offset(10)
                 make.right.equalToSuperview().offset(-10)
             }

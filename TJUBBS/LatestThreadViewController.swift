@@ -55,6 +55,7 @@ class LatestThreadViewController: UIViewController {
     func initUI() {
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
+        registerForPreviewing(with: self, sourceView: tableView!)
         tableView?.snp.makeConstraints {
             make in
             make.top.equalToSuperview().offset(108)
@@ -142,3 +143,18 @@ extension LatestThreadViewController {
         }
     }
 }
+
+extension LatestThreadViewController: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = tableView?.indexPathForRow(at: location) {
+            let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
+            return detailVC
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
+    }
+}
+

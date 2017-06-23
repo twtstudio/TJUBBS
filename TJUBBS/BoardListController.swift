@@ -22,6 +22,7 @@ class BoardListController: UIViewController {
         //view.backgroundColor = .white
         self.forum = forum
         tableView = UITableView(frame: .zero, style: .grouped)
+        registerForPreviewing(with: self, sourceView: tableView!)
         self.view.addSubview(tableView!)
         tableView?.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -119,12 +120,10 @@ class BoardListController: UIViewController {
 }
 
 extension BoardListController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section][indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
-        
     }
 }
 
@@ -180,3 +179,18 @@ extension BoardListController: UITableViewDataSource {
         return 36
     }
 }
+
+extension BoardListController: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = tableView?.indexPathForRow(at: location) {
+            let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section][indexPath.row])
+            return detailVC
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
+    }
+}
+
