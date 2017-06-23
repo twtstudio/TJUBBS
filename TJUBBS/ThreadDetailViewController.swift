@@ -40,7 +40,6 @@ class ThreadDetailViewController: UIViewController {
     var centerTextView: UIView! = nil
     var headerView: UIView? = nil
     var boardLabel = UILabel()
-//    var lastOffsetY: CGFloat = 0
     
     var bottomButton: UIButton?
     var refreshFlag = true
@@ -264,17 +263,23 @@ class ThreadDetailViewController: UIViewController {
         if headerView == nil {
             headerView = UIView()
             headerView!.backgroundColor = .white
+            // label in header
             let label = UILabel()
-            label.text = thread!.title
+            label.text = thread!.title // + "\n"
             label.textColor = .black
             label.textAlignment = .center
             label.text = self.thread!.title
-            label.font = UIFont.boldSystemFont(ofSize: 15)
+            label.font = UIFont.boldSystemFont(ofSize: 16)
             label.numberOfLines = 0
             headerView!.addSubview(label)
             label.sizeToFit()
             label.snp.makeConstraints { make in
-                make.left.top.right.bottom.equalToSuperview()
+//                make.left.top.right.bottom.equalToSuperview()
+//                make.left.top.right.equalToSuperview()
+                make.bottom.equalToSuperview().offset(-3)
+                make.top.equalToSuperview()
+                make.left.equalToSuperview().offset(10)
+                make.right.equalToSuperview().offset(-10)
             }
             
             let spaceView = UIView()
@@ -296,7 +301,7 @@ class ThreadDetailViewController: UIViewController {
             }
 
             
-            headerView!.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+32)
+            headerView!.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+36)
 //            headerView?.snp.makeConstraints { make in
 //                make.width.equalTo(tableView.width)
 //                make.height.equalTo()
@@ -578,6 +583,19 @@ extension ThreadDetailViewController: UITableViewDelegate {
             let replyVC = ReplyViewController(thread: thread, post: postList[indexPath.row])
             replyVC.delegate = self
             self.navigationController?.pushViewController(replyVC, animated: true)
+        }
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let offsetY = scrollView.contentOffset.y
+        let headerHeight = headerView?.height ?? 30
+        
+        if velocity.y < 0.1 && velocity.y > -0.1 {
+            if offsetY > headerHeight/CGFloat(2.0) && offsetY < headerHeight { // more than half, scroll down
+                self.tableView.setContentOffset(CGPoint(x: 0, y: headerHeight), animated: true)
+            } else if offsetY < headerHeight/CGFloat(2.0) && offsetY > 0 { // scroll up
+                self.tableView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+            }
         }
     }
     
