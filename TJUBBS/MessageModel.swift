@@ -13,12 +13,19 @@ import ObjectMapper
 struct MessageModel: Mappable {
     var id = 0
     var content = ""
-    var authorId = 0
+    var authorId: Int = 0 {
+        didSet(newValue) {
+            if authorId != BBSUser.shared.uid {
+                type = .received
+            }
+        }
+    }
     var authorName = ""
     var authorNickname = ""
     var tag = 0
     var read = -1
     var createTime = 0
+    var type: CellType = .sent
     var detailContent: MessageContentModel?
     
     init?(map: Map) {}
@@ -34,6 +41,14 @@ struct MessageModel: Mappable {
         createTime <- map["t_create"]
     }
 
+    init(string: String, timestamp: Int, type: CellType, palName: String, palNickName: String, palID: Int, id: Int) {
+        self.id = id
+        self.content = string
+        self.authorId = palID
+        self.authorName = palName
+        self.authorNickname = palNickName
+        self.createTime = timestamp
+    }
 }
 
 struct MessageContentModel: Mappable {

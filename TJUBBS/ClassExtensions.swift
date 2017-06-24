@@ -95,6 +95,13 @@ extension UILabel {
         
         return label
     }
+    
+    convenience init(text: String, boldFontSize: CGFloat) {
+        self.init()
+        self.text = text
+        self.font = UIFont.boldSystemFont(ofSize: boldFontSize)
+        self.sizeToFit()
+    }
 }
 
 
@@ -123,6 +130,16 @@ extension UIColor {
         return UIColor(red: 244.0/255, green: 244.0/255, blue: 246.0/255, alpha: 1.0)
     }
 
+    public convenience init(hex6: UInt32, alpha: CGFloat = 1) {
+        // TODO: below
+        // Store Hex converted UIColours (R, G, B, A) to a persistent file (.plist)
+        // And when initializing the app, read from the plist into the memory as a static struct (Metadata.Color)
+        let divisor = CGFloat(255)
+        let r = CGFloat((hex6 & 0xFF0000) >> 16) / divisor
+        let g = CGFloat((hex6 & 0x00FF00) >>  8) / divisor
+        let b = CGFloat( hex6 & 0x0000FF       ) / divisor
+        self.init(red: r, green: g, blue: b, alpha: alpha)
+    }
 }
 
 extension UIViewController {
@@ -331,3 +348,124 @@ extension UIView {
         }
     }
 }
+
+extension String {
+    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        
+        return boundingBox.height
+    }
+    
+    var glyphCount: Int {
+        
+        let richText = NSAttributedString(string: self)
+        let line = CTLineCreateWithAttributedString(richText)
+        return CTLineGetGlyphCount(line)
+    }
+    
+    var isSingleEmoji: Bool {
+        
+        return glyphCount == 1 && containsEmoji
+    }
+    
+    var containsEmoji: Bool {
+        
+        return !unicodeScalars.filter { $0.isEmoji }.isEmpty
+    }
+    
+    var containsOnlyEmoji: Bool {
+        
+        return unicodeScalars.first(where: { !$0.isEmoji && !$0.isZeroWidthJoiner }) == nil
+    }
+    
+    // The next tricks are mostly to demonstrate how tricky it can be to determine emoji's
+    // If anyone has suggestions how to improve this, please let me know
+    var emojiString: String {
+        
+        return emojiScalars.map { String($0) }.reduce("", +)
+    }
+    
+    var emojis: [String] {
+        
+        var scalars: [[UnicodeScalar]] = []
+        var currentScalarSet: [UnicodeScalar] = []
+        var previousScalar: UnicodeScalar?
+        
+        for scalar in emojiScalars {
+            
+            if let prev = previousScalar, !prev.isZeroWidthJoiner && !scalar.isZeroWidthJoiner {
+                
+                scalars.append(currentScalarSet)
+                currentScalarSet = []
+            }
+            currentScalarSet.append(scalar)
+            
+            previousScalar = scalar
+        }
+        
+        scalars.append(currentScalarSet)
+        
+        return scalars.map { $0.map{ String($0) } .reduce("", +) }
+    }
+    
+    fileprivate var emojiScalars: [UnicodeScalar] {
+        
+        var chars: [UnicodeScalar] = []
+        var previous: UnicodeScalar?
+        for cur in unicodeScalars {
+            
+            if let previous = previous, previous.isZeroWidthJoiner && cur.isEmoji {
+                chars.append(previous)
+                chars.append(cur)
+                
+            } else if cur.isEmoji {
+                chars.append(cur)
+            }
+            
+            previous = cur
+        }
+        
+        return chars
+    }
+    
+    var containsChineseCharacters: Bool {
+        return self.range(of: "\\p{Han}", options: .regularExpression) != nil
+    }
+}
+
+extension UnicodeScalar {
+    
+    var isEmoji: Bool {
+        
+        switch value {
+        case 0x3030, 0x00AE, 0x00A9, // Special Characters
+        0x1D000 ... 0x1F77F, // Emoticons
+        0x2100 ... 0x27BF, // Misc symbols and Dingbats
+        0xFE00 ... 0xFE0F, // Variation Selectors
+        0x1F900 ... 0x1F9FF: // Supplemental Symbols and Pictographs
+            return true
+            
+        default: return false
+        }
+    }
+    
+    var isZeroWidthJoiner: Bool {
+        
+        return value == 8205
+    }
+}
+
+
+extension UIImageView {
+    convenience init?(imageName: String, desiredSize: CGSize) {
+        guard var foo = UIImage(named: imageName) else {
+            return nil
+        }
+        foo = UIImage.resizedImage(image: foo, scaledToSize: desiredSize)
+        self.init()
+        image = foo
+    }
+}
+
+

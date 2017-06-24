@@ -32,7 +32,7 @@ class UserInfoViewController: UIViewController {
     var postNumberLabel: UILabel?
     var ageLabel: UILabel?
     var tableView: UITableView?
-    let contentArray = [["我的消息", "我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
+    let contentArray = [["我的消息", "我的好友", "我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
     var messagePage: Int = 0
     var messageList: [MessageModel] = []
     var messageFlag = false
@@ -391,12 +391,15 @@ extension UserInfoViewController: UITableViewDelegate {
             messageFlag = false
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 1, section: 0):
-            let detailVC = FavorateViewController()
+            let detailVC = FriendsListController(para: 0)
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 2, section: 0):
-            let detailVC = MyPostViewController(para: 1)
+            let detailVC = FavorateViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 3, section: 0):
+            let detailVC = MyPostViewController(para: 1)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 4, section: 0):
             let detailVC = SetInfoViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 1):

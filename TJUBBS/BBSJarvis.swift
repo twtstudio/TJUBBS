@@ -244,4 +244,22 @@ struct BBSJarvis {
         ]
         BBSBeacon.request(withType: .post, url: BBSAPI.resetPassword, parameters: parameters, success: success)
     }
+    
+    static func getFriendList(failure: ((Error)->())? = nil, success: @escaping ([UserWrapper])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.friendList, parameters: nil) { dict in
+            if let data = dict["data"] as? [[String : Any]] {
+                let friends = Mapper<UserWrapper>().mapArray(JSONArray: data)
+                success(friends)
+            }
+        }
+    }
+    
+    static func getDialog(uid: Int, page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.dialog(uid: uid, page: page), parameters: nil) { dict in
+            if let data = dict["data"] as? [[String : Any]] {
+                let messages = Mapper<MessageModel>().mapArray(JSONArray: data)
+                success(messages.reversed())
+            }
+        }
+    }
 }

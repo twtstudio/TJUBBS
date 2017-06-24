@@ -124,6 +124,8 @@ class UserWrapper: NSObject, Mappable {
     var cOnline: Int?
     var group: Int?
     var tCreate: Int?
+    var uid: Int?
+    var status: Int?
     
     required init?(map: Map) {}
     
@@ -137,6 +139,8 @@ class UserWrapper: NSObject, Mappable {
         cOnline <- map["c_online"]
         group <- map["group"]
         tCreate <- map["t_create"]
+        uid <- map["uid"]
+        status <- map["status"]
     }
 }
 
