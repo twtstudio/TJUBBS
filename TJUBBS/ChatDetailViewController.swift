@@ -236,24 +236,47 @@ extension ChatDetailViewController {
     
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if tableView.isDragging {
-            
+        
+        if tableView.isDragging { // ?
+        
             if scrollOrientation == .down {
                 cell.contentView.layer.transform = CATransform3DMakeTranslation(0, 30, 0)
             } else {
                 cell.contentView.layer.transform = CATransform3DMakeTranslation(0, -30, 0)
             }
-            UIView.animate(withDuration: 0.5, delay: 0.1, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [], animations: {
+            UIView.animate(withDuration: 0.2, delay: 0.1, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [], animations: {
                 cell.contentView.layer.transform = CATransform3DIdentity
             }, completion: nil)
         }
     }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        super.scrollViewDidScroll(scrollView)
         
-        scrollOrientation = scrollView.contentOffset.y > tableViewLastPosition.y ? .down : .up
+        let count = tableView!.visibleCells.count
+        // (0->index) ---> (0.8->1.0)
+        for (index, cell) in (tableView?.visibleCells.enumerated())! {
+            cell.alpha = CGFloat(index)*0.25/CGFloat(count)+0.75
+        }
+        if (tableView?.visibleCells.count)! > 0 {
+            let cell = tableView!.visibleCells[0]
+            if tableView!.isDragging { // ?
+                
+                if scrollOrientation == .down {
+                    cell.contentView.layer.transform = CATransform3DMakeTranslation(0, 30, 0)
+                } else {
+                    cell.contentView.layer.transform = CATransform3DMakeTranslation(0, -30, 0)
+                }
+                UIView.animate(withDuration: 0.1, delay: 0.1, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [], animations: {
+                    cell.contentView.layer.transform = CATransform3DIdentity
+                }, completion: nil)
+            }
+        }
+
         
-        tableViewLastPosition = scrollView.contentOffset
+//        scrollOrientation = scrollView.contentOffset.y > tableViewLastPosition.y ? .down : .up
+//        
+//        tableViewLastPosition = scrollView.contentOffset
         
         //        if (tableView?.isDragging)! {
         //
@@ -333,8 +356,5 @@ extension ChatDetailViewController {
         
         super.didPressRightButton(sender)
     }
-    
-    
-    
     
 }

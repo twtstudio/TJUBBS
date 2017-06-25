@@ -122,6 +122,19 @@ struct BBCodeParser {
         return result
     }
     
+    static func cleanBBCode(string: String) -> String {
+        guard string != "" else {
+            return ""
+        }
+        var result = string
+        for pattern in Array(map.keys) {
+            let regex = try! NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+            let range = NSMakeRange(0, result.utf16.count)
+            result = regex.stringByReplacingMatches(in: result, options: [], range: range, withTemplate: "")
+        }
+        return result
+    }
+    
     private func cleanHtml(html: String!) -> String! {
         var htmlVariable: String = html
         htmlVariable = htmlVariable.replacingOccurrences(of: "style=\"[\\s\\S]*?\"", with: "", options: .regularExpression, range: nil)

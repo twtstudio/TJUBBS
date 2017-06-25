@@ -178,6 +178,7 @@ class ReplyViewController: UIViewController {
                         // cut it down
                         refText = post.content.substring(to: post.content.index(post.content.startIndex, offsetBy: 40)) + "\n..."
                     }
+                    // FIXME:  回复markdown模版
                     reply = noBBtext + "\n\n[quote]回复 #\(post.floor) \(post.authorName) 的帖子: \n\(refText)[/quote]"
                 }
                 
