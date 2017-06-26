@@ -174,12 +174,12 @@ class ReplyViewController: UIViewController {
                 var reply = noBBtext
                 if let post = self.post {
                     var refText = post.content
-                    if post.content.characters.count >= 40 {
+                    if post.content.characters.count >= 50 {
                         // cut it down
-                        refText = post.content.substring(to: post.content.index(post.content.startIndex, offsetBy: 40)) + "\n..."
+                        refText = post.content.substring(to: post.content.index(post.content.startIndex, offsetBy: 50)) + "\n..."
                     }
                     // FIXME:  回复markdown模版
-                    reply = noBBtext + "\n\n[quote]回复 #\(post.floor) \(post.authorName) 的帖子: \n\(refText)[/quote]"
+                    reply = noBBtext + "\n>回复 #\(post.floor) \(post.authorName): \n\(refText)\n\n"
                 }
                 
                 BBSJarvis.reply(threadID: self.thread!.id, content: reply, toID: self.post?.id, anonymous: self.anonymousSwitch?.isOn ?? false, success: {

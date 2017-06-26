@@ -433,7 +433,7 @@ class ThreadDetailViewController: UIViewController {
         }
 //        replyTextField?.borderStyle = .roundedRect
         replyTextField?.layer.borderWidth = 0.8
-        replyTextField?.layer.borderColor = UIColor.gray.cgColor
+        replyTextField?.layer.borderColor = UIColor.lightGray.cgColor
         replyTextField?.layer.cornerRadius = 3.0
         replyTextField?.returnKeyType = .done
 //        replyTextField?.delegate = self
@@ -463,11 +463,13 @@ class ThreadDetailViewController: UIViewController {
                 return
             }
             
-            if let text = self.replyTextField?.text, text != "" {
-                let noBBtext = text.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
+            //            if let text = self.replyTextField?.text, text != "" {
+            if !self.textStorage.string.isEmpty {
+                let noBBtext = self.textStorage.string.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
                 BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
                     HUD.flash(.success)
-                    self.replyTextField?.text = ""
+//                    self.replyTextField?.text = ""
+                    self.textStorage.setAttributedString(NSMutableAttributedString(string: ""))
                     self.didReply()
                 })
                 self.dismissKeyboard()
@@ -484,9 +486,11 @@ class ThreadDetailViewController: UIViewController {
     }
     
     func scrollToCaret(_ textView: UITextView, animated: Bool) {
-        var rect = textView.caretRect(for: textView.selectedTextRange!.end)
-        rect.size.height = rect.size.height + textView.textContainerInset.bottom
-        textView.scrollRectToVisible(rect, animated: animated)
+        // FIXME: how to
+        // TODO: if line > 1 then scroll out
+//        var rect = textView.caretRect(for: textView.selectedTextRange!.end)
+//        rect.size.height = rect.size.height + textView.textContainerInset.bottom
+//        textView.scrollRectToVisible(rect, animated: animated)
     }
 }
 
@@ -764,7 +768,7 @@ extension ThreadDetailViewController {
 
 extension ThreadDetailViewController: UITextViewDelegate {
 //    func textViewDidChange(_ textView: UITextView) {
-//        <#code#>
+//
 //    }
 }
 
