@@ -15,12 +15,13 @@ import MJRefresh
 import Alamofire
 import DTCoreText
 import Marklight
+import SlackTextViewController
 
-class ThreadDetailViewController: UIViewController {
+class ThreadDetailViewController: SLKTextViewController {
     
     let screenSize = UIScreen.main.bounds.size
     var rawText: NSString = ""
-    var tableView = UITableView(frame: .zero, style: .grouped)
+//    var tableView = UITableView(frame: .zero, style: .grouped)
     fileprivate var loadFlag = false
     var board: BoardModel?
     var thread: ThreadModel?
@@ -48,14 +49,15 @@ class ThreadDetailViewController: UIViewController {
     var refreshFlag = true
     
     convenience init(thread: ThreadModel) {
-        self.init()
+        self.init(tableViewStyle: .grouped)
         self.thread = thread
         print(thread.id)
         self.hidesBottomBarWhenPushed = true
     }
     
     convenience init(tid: Int) {
-        self.init()
+//        self.init()
+        self.init(tableViewStyle: .grouped)
         self.tid = tid
         self.hidesBottomBarWhenPushed = true
     }
@@ -120,20 +122,55 @@ class ThreadDetailViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         print("viewDidLoad")
         //        self.title = "详情"
+        
+        self.isInverted = false
+        bounces = true
+        isKeyboardPanningEnabled = true
+        textView.layer.borderColor = UIColor(colorLiteralRed: 217.0/255.0, green: 217.0/255.0, blue: 217.0/255.0, alpha: 1.0).cgColor
+//        textView.placeholder = "Message"
+        textView.placeholderColor = .gray
+        
+        textView.backgroundColor = .white
+        textInputbar.backgroundColor = .white
+        textInputbar.editorRightButton.tintColor = Metadata.Color.accentColor
+        textInputbar.rightButton.tintColor = Metadata.Color.accentColor
+        textInputbar.isTranslucent = false
+//        textInputbar.clipsToBounds = true
+        textInputbar.autoHideRightButton = false
+//        textInputbar.maxCharCount = 256
+        //        textInputbar.leftButton.isHidden = true
+        // TODO: send photo
+        leftButton.setImage(#imageLiteral(resourceName: "icn_upload"), for: .normal)
+        leftButton.addTarget { btn in
+            if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
+                let imagePicker = UIImagePickerController()
+                imagePicker.delegate = self
+                imagePicker.allowsEditing = true
+                imagePicker.sourceType = .savedPhotosAlbum
+                self.present(imagePicker, animated: true) {
+                    
+                }
+            } else {
+                HUD.flash(.label("相册不可用🤒请在设置中打开 BBS 的相册权限"), delay: 2.0)
+            }
+        }
+        leftButton.tintColor = .gray
+        rightButton.setTitle("send", for: .normal)
+
+        
         self.title = thread?.title
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
-        view.addSubview(tableView)
-        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
 //        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.isRefreshingTitleHidden = true
 //        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.stateLabel.isHidden = true
-        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("- 这是我的底线 -", for: .idle)
-        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("滑到底部了哟🌝", for: .noMoreData)
-        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("加加加加加载中...", for: .refreshing)
+        (self.tableView?.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("- 已经是我的底线了 -", for: .idle)
+        (self.tableView?.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("滑到底部了哟🌝", for: .noMoreData)
+        (self.tableView?.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("加加加加加载中...", for: .refreshing)
 
-        self.tableView.mj_footer.isAutomaticallyHidden = true
+        self.tableView?.mj_footer.isAutomaticallyHidden = true
         
         
         if thread != nil {
@@ -154,8 +191,8 @@ class ThreadDetailViewController: UIViewController {
         page = 0
         tid = thread?.id ?? tid
         BBSJarvis.getThread(threadID: tid, page: page, failure: { _ in
-            if (self.tableView.mj_header.isRefreshing()) {
-                self.tableView.mj_header.endRefreshing()
+            if (self.tableView?.mj_header.isRefreshing())! {
+                self.tableView?.mj_header.endRefreshing()
             }
         }) { dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
@@ -173,12 +210,12 @@ class ThreadDetailViewController: UIViewController {
                     self.initUI()
                 }
             }
-            if self.tableView.mj_header.isRefreshing() {
-                self.tableView.mj_header.endRefreshing()
+            if (self.tableView?.mj_header.isRefreshing())! {
+                self.tableView?.mj_header.endRefreshing()
             }
             self.loadFlag = false
             self.postList = self.currentPageList + self.pastPageList
-            self.tableView.reloadData()
+            self.tableView?.reloadData()
             self.replyView?.setNeedsLayout()
         }
     }
@@ -196,8 +233,8 @@ class ThreadDetailViewController: UIViewController {
             page += 1
         }
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
-            if (self.tableView.mj_footer.isRefreshing()) {
-                self.tableView.mj_footer.endRefreshing()
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
             }
         }) {
             dict in
@@ -209,14 +246,14 @@ class ThreadDetailViewController: UIViewController {
 //                    HUD.flash(.label("滑到底部了哟🌚"), onView: self.view, delay: 0.4)
                 }
             }
-            if self.tableView.mj_footer.isRefreshing() {
-                self.tableView.mj_footer.endRefreshing()
-                self.tableView.mj_footer.isAutomaticallyHidden = true
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+                self.tableView?.mj_footer.isAutomaticallyHidden = true
             }
             self.loadFlag = false
             self.postList = self.pastPageList + self.currentPageList
             UIView.performWithoutAnimation {
-                self.tableView.reloadData()
+                self.tableView?.reloadData()
                 self.replyView?.setNeedsLayout()
             }
         }
@@ -226,8 +263,8 @@ class ThreadDetailViewController: UIViewController {
         self.pastPageList = []
         page = self.thread!.replyNumber/50
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
-            if (self.tableView.mj_footer.isRefreshing()) {
-                self.tableView.mj_footer.endRefreshing()
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
             }
         }) {
             dict in
@@ -235,20 +272,20 @@ class ThreadDetailViewController: UIViewController {
             let posts = data["post"] as? [[String: Any]]{
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
             }
-            if (self.tableView.mj_footer.isRefreshing()) {
-                self.tableView.mj_footer.endRefreshing()
-                self.tableView.mj_footer.isAutomaticallyHidden = true
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+                self.tableView?.mj_footer.isAutomaticallyHidden = true
             }
             self.loadFlag = false
             self.postList = self.pastPageList + self.currentPageList
             UIView.performWithoutAnimation {
-                self.tableView.reloadData()
+                self.tableView?.reloadData()
                 self.replyView?.setNeedsLayout()
             }
-            if self.tableView.numberOfRows(inSection: 1) != 0 {
-                let indexPath = IndexPath(row: (self.tableView.numberOfRows(inSection: 1))-1, section: 1)
+            if self.tableView?.numberOfRows(inSection: 1) != 0 {
+                let indexPath = IndexPath(row: (self.tableView?.numberOfRows(inSection: 1))!-1, section: 1)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                    self.tableView?.scrollToRow(at: indexPath, at: .top, animated: true)
                 }
             }
         }
@@ -294,7 +331,7 @@ class ThreadDetailViewController: UIViewController {
             
             let spaceView = UIView()
             headerView?.addSubview(spaceView)
-            spaceView.backgroundColor = tableView.backgroundColor
+            spaceView.backgroundColor = tableView?.backgroundColor
             spaceView.snp.makeConstraints { make in
                 make.left.right.equalToSuperview()
                 make.bottom.equalToSuperview()
@@ -311,9 +348,9 @@ class ThreadDetailViewController: UIViewController {
             }
 
             
-            headerView!.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+36)
+            headerView!.frame = CGRect(x: 0, y: 0, width: (tableView?.width)!, height: label.height+36)
 //            headerView?.snp.makeConstraints { make in
-//                make.width.equalTo(tableView.width)
+//                make.width.equalTo(tableView?.width)
 //                make.height.equalTo()
 //            }
         }
@@ -321,162 +358,207 @@ class ThreadDetailViewController: UIViewController {
         setNavigationSubview()
         
         
-        tableView.keyboardDismissMode = .interactive
-        let bottomHeight = thread?.boardID == 193 ? -80 : -50
-        tableView.snp.makeConstraints {
-            make in
-//            make.bottom.equalToSuperview().offset(-56)
-//            make.bottom.equalToSuperview().offset(-80)
-            make.bottom.equalToSuperview().offset(bottomHeight)
-            make.top.left.right.equalToSuperview()
-        }
-//        tableView.register(ReplyCell.self, forCellReuseIdentifier: "replyCell")
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 340
+        tableView?.rowHeight = UITableViewAutomaticDimension
+        tableView?.estimatedRowHeight = 340
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
-        
-        bottomButton = UIButton(imageName: "down")
-        view.addSubview(bottomButton!)
-        bottomButton?.snp.makeConstraints {
-            make in
-            make.right.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(-88)
-            make.height.width.equalTo(screenSize.width*(104/1080))
-        }
-        bottomButton?.alpha = 0
-        bottomButton?.addTarget {
-            _ in
-            UIView.animate(withDuration: 0.5, animations: {
-                self.bottomButton?.alpha = 0
-            })
-            self.loadToBottom()
-        }
-        
-        replyView = UIView()
-        view.addSubview(replyView!)
-        replyView?.snp.makeConstraints {
-            make in
-            make.top.equalTo(tableView.snp.bottom)
-            make.left.right.bottom.equalToSuperview()
-        }
-        replyView?.backgroundColor = .white
-        
-        anonymousLabel = UILabel()
-//        replyView?.addSubview(anonymousLabel!)
-        if thread?.boardID == 193 {
-            anonymousLabel?.text = "匿名"
-        } else {
-            anonymousLabel?.text = "匿名不可用"
-        }
-        anonymousSwitch = UISwitch()
-        anonymousSwitch?.onTintColor = .BBSBlue
-//        replyView?.addSubview(anonymousSwitch!)
-        let anonymousView = UIView()
-        anonymousView.addSubview(anonymousLabel!)
-        anonymousView.addSubview(anonymousSwitch!)
-        replyView?.addSubview(anonymousView)
-        anonymousLabel?.snp.makeConstraints {
-            make in
-            make.top.equalToSuperview().offset(8)
-            make.left.equalToSuperview().offset(16)
-        }
-        anonymousSwitch?.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(anonymousLabel!)
-            make.right.equalToSuperview().offset(-16)
+        textStorage.addLayoutManager(textView.layoutManager)
+//         Partial fixes to a long standing bug, to keep the caret inside the `UITextView` always visible
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textInputbar.textView, queue: OperationQueue.main) { (notification) -> Void in
+            
+//            textStorage
+//            if (self.textInputbar.textView.textStorage.string.hasSuffix("\n")) {
+//                CATransaction.setCompletionBlock({ () -> Void in
+//                    self.scrollToCaret(self.textInputbar.textView, animated: false)
+//                })
+//            } else {
+//                self.scrollToCaret(self.textInputbar.textView, animated: false)
+//            }
         }
 
-        if thread?.boardID == 193 {
-            anonymousSwitch?.isEnabled = true
-            anonymousView.snp.makeConstraints { make in
-                make.top.equalToSuperview()
-                make.left.equalToSuperview()
-                make.right.equalToSuperview()
-                make.height.equalTo(32)
-            }
-        } else {
-            anonymousView.alpha = 0
-            anonymousView.snp.makeConstraints { make in
+
+        if self.thread?.boardID == 193 {
+            let anonymousLabel = UILabel()
+            anonymousLabel.text = "匿名"
+            anonymousLabel.sizeToFit()
+            let anonymousSwitch = UISwitch()
+            anonymousSwitch.onTintColor = .BBSBlue
+            //        replyView?.addSubview(anonymousSwitch!)
+            let anonymousView = SLKInputAccessoryView()
+//            register
+            anonymousView.addSubview(anonymousLabel)
+            anonymousView.addSubview(anonymousSwitch)
+            anonymousLabel.snp.makeConstraints {
+                make in
                 make.top.equalToSuperview().offset(8)
-                make.height.equalTo(0.1).priority(.high)
+                make.left.equalToSuperview().offset(16)
             }
-            anonymousSwitch?.isEnabled = false
+            anonymousSwitch.snp.makeConstraints {
+                make in
+                make.centerY.equalTo(anonymousLabel)
+                make.right.equalToSuperview().offset(-16)
+            }
+            anonymousView.sizeToFit()
+            textInputbar.inputAccessoryView = anonymousView
         }
         
         
-        //        replyTextField = UITextField()
-        replyTextField = UITextView()
-        textStorage.addLayoutManager(replyTextField!.layoutManager)
-        // Partial fixes to a long standing bug, to keep the caret inside the `UITextView` always visible
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: replyTextField, queue: OperationQueue.main) { (notification) -> Void in
-            if (self.replyTextField?.textStorage.string.hasSuffix("\n"))! {
-                CATransaction.setCompletionBlock({ () -> Void in
-                    self.scrollToCaret(self.replyTextField!, animated: false)
-                })
-            } else {
-                self.scrollToCaret(self.replyTextField!, animated: false)
-            }
-        }
 
-        replyTextField?.delegate = self
-        replyView?.addSubview(replyTextField!)
-        replyTextField?.snp.remakeConstraints {
-            make in
-//            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
-            make.top.equalTo(anonymousView.snp.bottom).offset(8)
-            make.left.equalToSuperview().offset(16)
-            make.width.equalTo(screenSize.width*(820/1080))
-            make.bottom.equalToSuperview().offset(-8)
-        }
-//        replyTextField?.borderStyle = .roundedRect
-        replyTextField?.layer.borderWidth = 0.8
-        replyTextField?.layer.borderColor = UIColor.lightGray.cgColor
-        replyTextField?.layer.cornerRadius = 3.0
-        replyTextField?.returnKeyType = .done
+//        tableView?.keyboardDismissMode = .interactive
+//        let bottomHeight = thread?.boardID == 193 ? -80 : -50
+//        tableView?.snp.makeConstraints {
+//            make in
+////            make.bottom.equalToSuperview().offset(-56)
+////            make.bottom.equalToSuperview().offset(-80)
+//            make.bottom.equalToSuperview().offset(bottomHeight)
+//            make.top.left.right.equalToSuperview()
+//        }
+////        tableView?.register(ReplyCell.self, forCellReuseIdentifier: "replyCell")
+//        tableView?.delegate = self
+//        tableView?.dataSource = self
+//        tableView?.rowHeight = UITableViewAutomaticDimension
+//        tableView?.estimatedRowHeight = 340
+//        
+//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+//        
+//        bottomButton = UIButton(imageName: "down")
+//        view.addSubview(bottomButton!)
+//        bottomButton?.snp.makeConstraints {
+//            make in
+//            make.right.equalToSuperview().offset(-16)
+//            make.bottom.equalToSuperview().offset(-88)
+//            make.height.width.equalTo(screenSize.width*(104/1080))
+//        }
+//        bottomButton?.alpha = 0
+//        bottomButton?.addTarget {
+//            _ in
+//            UIView.animate(withDuration: 0.5, animations: {
+//                self.bottomButton?.alpha = 0
+//            })
+//            self.loadToBottom()
+//        }
+//        
+//        replyView = UIView()
+//        view.addSubview(replyView!)
+//        replyView?.snp.makeConstraints {
+//            make in
+//            make.top.equalTo((tableView?.snp.bottom)!)
+//            make.left.right.bottom.equalToSuperview()
+//        }
+//        replyView?.backgroundColor = .white
+//        
+//        anonymousLabel = UILabel()
+////        replyView?.addSubview(anonymousLabel!)
+//        if thread?.boardID == 193 {
+//            anonymousLabel?.text = "匿名"
+//        } else {
+//            anonymousLabel?.text = "匿名不可用"
+//        }
+//        anonymousSwitch = UISwitch()
+//        anonymousSwitch?.onTintColor = .BBSBlue
+////        replyView?.addSubview(anonymousSwitch!)
+//        let anonymousView = UIView()
+//        anonymousView.addSubview(anonymousLabel!)
+//        anonymousView.addSubview(anonymousSwitch!)
+//        replyView?.addSubview(anonymousView)
+//        anonymousLabel?.snp.makeConstraints {
+//            make in
+//            make.top.equalToSuperview().offset(8)
+//            make.left.equalToSuperview().offset(16)
+//        }
+//        anonymousSwitch?.snp.makeConstraints {
+//            make in
+//            make.centerY.equalTo(anonymousLabel!)
+//            make.right.equalToSuperview().offset(-16)
+//        }
+//
+//        if thread?.boardID == 193 {
+//            anonymousSwitch?.isEnabled = true
+//            anonymousView.snp.makeConstraints { make in
+//                make.top.equalToSuperview()
+//                make.left.equalToSuperview()
+//                make.right.equalToSuperview()
+//                make.height.equalTo(32)
+//            }
+//        } else {
+//            anonymousView.alpha = 0
+//            anonymousView.snp.makeConstraints { make in
+//                make.top.equalToSuperview().offset(8)
+//                make.height.equalTo(0.1).priority(.high)
+//            }
+//            anonymousSwitch?.isEnabled = false
+//        }
+//        
+//        
+//        //        replyTextField = UITextField()
+//        replyTextField = UITextView()
+//        textStorage.addLayoutManager(replyTextField!.layoutManager)
+//        // Partial fixes to a long standing bug, to keep the caret inside the `UITextView` always visible
+//        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: replyTextField, queue: OperationQueue.main) { (notification) -> Void in
+//            if (self.replyTextField?.textStorage.string.hasSuffix("\n"))! {
+//                CATransaction.setCompletionBlock({ () -> Void in
+//                    self.scrollToCaret(self.replyTextField!, animated: false)
+//                })
+//            } else {
+//                self.scrollToCaret(self.replyTextField!, animated: false)
+//            }
+//        }
+//
 //        replyTextField?.delegate = self
-        
-        replyButton = UIButton.confirmButton(title: "回复")
-        replyView?.addSubview(replyButton!)
-        replyButton?.snp.remakeConstraints {
-            make in
-            make.top.equalTo(anonymousView.snp.bottom).offset(8)
-            make.left.equalTo(replyTextField!.snp.right).offset(4)
-            make.right.equalToSuperview().offset(-10)
-            make.bottom.equalToSuperview().offset(-8)
-        }
-        replyButton?.addTarget(withBlock: {_ in
-            
-            guard BBSUser.shared.token != nil else {
-                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-                alert.addAction(cancelAction)
-                let confirmAction = UIAlertAction(title: "好的", style: .default) {
-                    _ in
-                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                    self.present(navigationController, animated: true, completion: nil)
-                }
-                alert.addAction(confirmAction)
-                self.present(alert, animated: true, completion: nil)
-                return
-            }
-            
-            //            if let text = self.replyTextField?.text, text != "" {
-            if !self.textStorage.string.isEmpty {
-                let noBBtext = self.textStorage.string.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
-                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
-                    HUD.flash(.success)
-//                    self.replyTextField?.text = ""
-                    self.textStorage.setAttributedString(NSMutableAttributedString(string: ""))
-                    self.didReply()
-                })
-                self.dismissKeyboard()
-            } else {
-                HUD.flash(.label("内容不能为空"))
-            }
-        })
+//        replyView?.addSubview(replyTextField!)
+//        replyTextField?.snp.remakeConstraints {
+//            make in
+////            make.top.equalTo(anonymousSwitch!.snp.bottom).offset(8)
+//            make.top.equalTo(anonymousView.snp.bottom).offset(8)
+//            make.left.equalToSuperview().offset(16)
+//            make.width.equalTo(screenSize.width*(820/1080))
+//            make.bottom.equalToSuperview().offset(-8)
+//        }
+////        replyTextField?.borderStyle = .roundedRect
+//        replyTextField?.layer.borderWidth = 0.8
+//        replyTextField?.layer.borderColor = UIColor.lightGray.cgColor
+//        replyTextField?.layer.cornerRadius = 3.0
+//        replyTextField?.returnKeyType = .done
+////        replyTextField?.delegate = self
+//        
+//        replyButton = UIButton.confirmButton(title: "回复")
+//        replyView?.addSubview(replyButton!)
+//        replyButton?.snp.remakeConstraints {
+//            make in
+//            make.top.equalTo(anonymousView.snp.bottom).offset(8)
+//            make.left.equalTo(replyTextField!.snp.right).offset(4)
+//            make.right.equalToSuperview().offset(-10)
+//            make.bottom.equalToSuperview().offset(-8)
+//        }
+//        replyButton?.addTarget(withBlock: {_ in
+//            
+//            guard BBSUser.shared.token != nil else {
+//                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+//                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+//                alert.addAction(cancelAction)
+//                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+//                    _ in
+//                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+//                    self.present(navigationController, animated: true, completion: nil)
+//                }
+//                alert.addAction(confirmAction)
+//                self.present(alert, animated: true, completion: nil)
+//                return
+//            }
+//            
+//            //            if let text = self.replyTextField?.text, text != "" {
+//            if !self.textStorage.string.isEmpty {
+//                let noBBtext = self.textStorage.string.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
+//                BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
+//                    HUD.flash(.success)
+////                    self.replyTextField?.text = ""
+//                    self.textStorage.setAttributedString(NSMutableAttributedString(string: ""))
+//                    self.didReply()
+//                })
+//                self.dismissKeyboard()
+//            } else {
+//                HUD.flash(.label("内容不能为空"))
+//            }
+//        })
         
     }
     
@@ -494,13 +576,14 @@ class ThreadDetailViewController: UIViewController {
     }
 }
 
-extension ThreadDetailViewController: UITableViewDataSource {
+// : UITableViewDataSource
+extension ThreadDetailViewController {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
             return 1
@@ -568,7 +651,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
         return cell!
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
             let cell = prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
             cell.portraitImageView.addTapGestureRecognizer { _ in
@@ -595,7 +678,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
     }
 
     //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
             return headerView
         }
@@ -603,7 +686,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
     }
     
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
             return headerView?.height ?? 30
         }
@@ -612,9 +695,9 @@ extension ThreadDetailViewController: UITableViewDataSource {
     
     
 }
-
-extension ThreadDetailViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+// : UITableViewDelegate
+extension ThreadDetailViewController {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1 {
             let replyVC = ReplyViewController(thread: thread, post: postList[indexPath.row])
@@ -623,60 +706,65 @@ extension ThreadDetailViewController: UITableViewDelegate {
         }
     }
     
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let offsetY = scrollView.contentOffset.y
-        let headerHeight = headerView?.height ?? 30
-        
-        if velocity.y < 0.1 && velocity.y > -0.1 {
-            if offsetY > headerHeight/CGFloat(2.0) && offsetY < headerHeight { // more than half, scroll down
-                self.tableView.setContentOffset(CGPoint(x: 0, y: headerHeight), animated: true)
-            } else if offsetY < headerHeight/CGFloat(2.0) && offsetY > 0 { // scroll up
-                self.tableView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if scrollView is UITableView {
+            
+            let offsetY = scrollView.contentOffset.y
+            let headerHeight = headerView?.height ?? 30
+            
+            if velocity.y < 0.1 && velocity.y > -0.1 {
+                if offsetY > headerHeight/CGFloat(2.0) && offsetY < headerHeight { // more than half, scroll down
+                    self.tableView?.setContentOffset(CGPoint(x: 0, y: headerHeight), animated: true)
+                } else if offsetY < headerHeight/CGFloat(2.0) && offsetY > 0 { // scroll up
+                    self.tableView?.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                }
             }
         }
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let headerHeight = headerView?.height ?? 30
-        let titleHeight = centerTextView.height
-        
-        let ratio: CGFloat = 0.4
-        
-        if offsetY <= 0.2 {
-            self.navigationItem.titleView = boardLabel
-            boardLabel.alpha = 1
-        }
-        
-        if offsetY <= headerHeight*ratio && offsetY > 0.2 {
-            let progress = offsetY/(headerHeight*ratio)
-            self.navigationItem.titleView = boardLabel
-            boardLabel.alpha = 1 - progress
-        }
-        
-        if offsetY > headerHeight*ratio && offsetY < headerHeight {
-            self.navigationItem.titleView = centerTextView
-            let progress = offsetY - headerHeight*ratio
-            self.centerTextView.y = 10 + titleHeight - titleHeight*(progress/(headerHeight*(1-ratio)))
-            centerTextView.alpha = progress/headerHeight < 0.17 ? 0 : progress/(headerHeight*(1-ratio))
-        }
-        
-        if offsetY >= headerHeight {
-            self.navigationItem.titleView = centerTextView
-            centerTextView.alpha = 1
-        }
-        
-        if bottomButton?.alpha == 0 {
-            UIView.animate(withDuration: 0.5, animations: {
-                self.bottomButton?.alpha = 0.8
-            })
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView is UITableView {
+            let offsetY = scrollView.contentOffset.y
+            let headerHeight = headerView?.height ?? 30
+            let titleHeight = centerTextView.height
+            
+            let ratio: CGFloat = 0.4
+            
+            if offsetY <= 0.2 {
+                self.navigationItem.titleView = boardLabel
+                boardLabel.alpha = 1
+            }
+            
+            if offsetY <= headerHeight*ratio && offsetY > 0.2 {
+                let progress = offsetY/(headerHeight*ratio)
+                self.navigationItem.titleView = boardLabel
+                boardLabel.alpha = 1 - progress
+            }
+            
+            if offsetY > headerHeight*ratio && offsetY < headerHeight {
+                self.navigationItem.titleView = centerTextView
+                let progress = offsetY - headerHeight*ratio
+                self.centerTextView.y = 10 + titleHeight - titleHeight*(progress/(headerHeight*(1-ratio)))
+                centerTextView.alpha = progress/headerHeight < 0.17 ? 0 : progress/(headerHeight*(1-ratio))
+            }
+            
+            if offsetY >= headerHeight {
+                self.navigationItem.titleView = centerTextView
+                centerTextView.alpha = 1
+            }
+            
+            if bottomButton?.alpha == 0 {
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.bottomButton?.alpha = 0.8
+                })
+            }
         }
     }
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         refreshFlag = true
-        if (self.tableView.mj_footer.isRefreshing()) {
-            self.tableView.mj_footer.endRefreshing()
+        if (self.tableView?.mj_footer.isRefreshing())! {
+            self.tableView?.mj_footer.endRefreshing()
         }
     }
     
@@ -723,9 +811,9 @@ extension ThreadDetailViewController {
     override func becomeKeyboardObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.delegate = self
-        view.addGestureRecognizer(tap)
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+//        tap.delegate = self
+//        view.addGestureRecognizer(tap)
         //        print("用的是我，口亨～")
     }
     
@@ -766,14 +854,14 @@ extension ThreadDetailViewController {
     
 }
 
-extension ThreadDetailViewController: UITextViewDelegate {
-//    func textViewDidChange(_ textView: UITextView) {
-//
-//    }
-}
-
-extension ThreadDetailViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+//extension ThreadDetailViewController: UITextViewDelegate {
+////    func textViewDidChange(_ textView: UITextView) {
+////
+////    }
+//}
+// UIGestureRecognizerDelegate
+extension ThreadDetailViewController {
+    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         if touch.view?.superview is UITableViewCell {
             return false
         }
@@ -809,8 +897,8 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         present(ac, animated: true, completion: nil)
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
-        if let _ = tableView.indexPath(for: cell) {
-            self.tableView.reloadData()
+        if let _ = tableView?.indexPath(for: cell) {
+            self.tableView?.reloadData()
         }
     
         // image viewer
@@ -825,3 +913,32 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
     }
 }
 
+extension ThreadDetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            //            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+            //
+            //            attachment.image = [self scaleImage:info[@"UIImagePickerControllerOriginalImage"]];
+            //
+            //            NSAttributedString *textAttachmentString = [NSAttributedString attributedStringWithAttachment:attachment];
+            //
+            //            NSMutableAttributedString *string = [[NSMutableAttributedString alloc]initWithAttributedString:self.textView.attributedText];
+            //
+            //            [string insertAttributedString:textAttachmentString atIndex:self.textView.selectedRange.location];
+            //            
+            //            self.textView.attributedText = string;
+            let smallerImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: 60, height: 60))
+
+            let attachment = NSTextAttachment()
+            attachment.image = smallerImage
+            let attributedString = NSAttributedString(attachment: attachment)
+            textStorage.append(attributedString)
+            picker.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+
+}
