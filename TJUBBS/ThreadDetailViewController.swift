@@ -124,6 +124,12 @@ class ThreadDetailViewController: UIViewController {
         view.addSubview(tableView)
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+//        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.isRefreshingTitleHidden = true
+//        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.stateLabel.isHidden = true
+        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("- 这是我的底线 -", for: .idle)
+        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("滑到底部了哟🌝", for: .noMoreData)
+        (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("加加加加加载中...", for: .refreshing)
+
         self.tableView.mj_footer.isAutomaticallyHidden = true
         
         
@@ -196,7 +202,7 @@ class ThreadDetailViewController: UIViewController {
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
                 if (self.currentPageList.count < 49)&&(self.page == 0) || (self.currentPageList.count < 50)&&(self.page != 0) {
 //                    HUD.flash(.label("滑到底部了哟🌚"), delay: 0.7)
-                    HUD.flash(.label("滑到底部了哟🌚"), onView: self.view, delay: 0.4)
+//                    HUD.flash(.label("滑到底部了哟🌚"), onView: self.view, delay: 0.4)
                 }
             }
             if self.tableView.mj_footer.isRefreshing() {

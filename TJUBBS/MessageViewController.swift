@@ -39,7 +39,23 @@ class MessageViewController: UIViewController {
 //            "time": "1493165223"
 //        ],
 //    ]
-    var msgList: [MessageModel] = []
+    var msgList: [MessageModel] = [] {
+        didSet {
+            var authorIDs: [Int] = [] // exclude the same authorID
+            msgList = msgList.filter { msg in
+                if msg.detailContent == nil { // simple Post Message(PM): so-called "站内信"
+                    if authorIDs.contains(msg.authorId) {
+                        return false
+                    } else {
+                        authorIDs.append(msg.authorId)
+                        return true
+                    }
+                } else { // system message or so // detailed
+                    return true
+                }
+            }
+        }
+    }
     var page: Int = 0
     
     convenience init(para: Int) {
@@ -137,9 +153,16 @@ extension MessageViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = MessageDetailViewController(model: msgList[indexPath.row])
-//        detailVC.model = msgList[indexPath.row]
-        self.navigationController?.pushViewController(detailVC, animated: true)
+        let model = msgList[indexPath.row]
+        if model.detailContent == nil { // simple Post Message(PM): so-called "站内信"
+            let dialogVC = ChatDetailViewController()
+            let pal = UserWrapper(JSONString: "{\"uid\": \(model.authorId) ,\"username\": \"\(model.authorName)\", \"nickname\": \"\(model.authorNickname)\"}")
+            dialogVC.pal = pal
+            self.navigationController?.pushViewController(dialogVC, animated: true)
+        } else {
+            let detailVC = MessageDetailViewController(model: msgList[indexPath.row])
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
 }
 

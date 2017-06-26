@@ -238,6 +238,7 @@
 		36D0BC811EFE594300265D8B /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				36D0BC841EFE5B4800265D8B /* FriendsListController.swift */,
 				36D0BC8C1EFE6D1700265D8B /* ChatDetailViewController.swift */,
 			);
 			name = Controller;
@@ -263,7 +264,6 @@
 			isa = PBXGroup;
 			children = (
 				36DDCA021EC0682E00E3AB63 /* ForumListController.swift */,
-				36D0BC841EFE5B4800265D8B /* FriendsListController.swift */,
 				36DA591D1EC1D54E00B56F07 /* BoardListController.swift */,
 				36DA59211EC1DF8800B56F07 /* ThreadListController.swift */,
 				6802E4D21EC9984B00D3EE70 /* AddThreadViewController.swift */,

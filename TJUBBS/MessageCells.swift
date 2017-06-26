@@ -73,7 +73,8 @@ class MessageCell: UITableViewCell {
             make.top.equalTo(usernameLabel.snp.bottom).offset(8)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
             make.right.equalToSuperview().offset(-16)
-            make.bottom.equalToSuperview().offset(8)
+//            make.bottom.equalToSuperview().offset(8)
+            make.bottom.equalToSuperview().offset(-16)
         }
     }
     
