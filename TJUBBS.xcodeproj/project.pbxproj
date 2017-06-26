@@ -53,7 +53,7 @@
 		68B5A52A1EBB162700968FFD /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B5A5291EBB162700968FFD /* UserInfoViewController.swift */; };
 		68B5A52D1EBB1FFB00968FFD /* UserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B5A52C1EBB1FFB00968FFD /* UserInfoTableViewCell.swift */; };
 		68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683441EBEC17100F7A0BF /* MessageViewController.swift */; };
-		68B683471EBEC36400F7A0BF /* MessageCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683461EBEC36400F7A0BF /* MessageCells.swift */; };
+		68B683471EBEC36400F7A0BF /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683461EBEC36400F7A0BF /* MessageCell.swift */; };
 		68B683491EC1F24600F7A0BF /* MessageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */; };
 		68B6834D1EC200D800F7A0BF /* MyPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */; };
 		68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */; };
@@ -140,7 +140,7 @@
 		68B5A5291EBB162700968FFD /* UserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		68B5A52C1EBB1FFB00968FFD /* UserInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoTableViewCell.swift; sourceTree = "<group>"; };
 		68B683441EBEC17100F7A0BF /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
-		68B683461EBEC36400F7A0BF /* MessageCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCells.swift; sourceTree = "<group>"; };
+		68B683461EBEC36400F7A0BF /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageDetailViewController.swift; sourceTree = "<group>"; };
 		68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostViewController.swift; sourceTree = "<group>"; };
 		68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomepageMainController.swift; sourceTree = "<group>"; };
@@ -453,7 +453,7 @@
 			isa = PBXGroup;
 			children = (
 				68B5A52C1EBB1FFB00968FFD /* UserInfoTableViewCell.swift */,
-				68B683461EBEC36400F7A0BF /* MessageCells.swift */,
+				68B683461EBEC36400F7A0BF /* MessageCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -733,7 +733,7 @@
 				6823C49B1EBC077D00FBB5C7 /* PostCell.swift in Sources */,
 				36DA591E1EC1D54E00B56F07 /* BoardListController.swift in Sources */,
 				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
-				68B683471EBEC36400F7A0BF /* MessageCells.swift in Sources */,
+				68B683471EBEC36400F7A0BF /* MessageCell.swift in Sources */,
 				68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */,
 				68B6834D1EC200D800F7A0BF /* MyPostViewController.swift in Sources */,
 				68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */,

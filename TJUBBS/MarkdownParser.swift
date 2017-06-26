@@ -1362,8 +1362,8 @@ public struct Markdown {
                            evaluator: { self.blockQuoteEvaluator2($0) },
                            options: RegexOptions.IgnorePatternWhitespace.union(RegexOptions.Singleline))
         
-//        bq = "<blockquote>\n\(bq)\n</blockquote>"
-        bq = "<div style=\"padding: 10px; margin: 10px; border-radius: 3px; background-color: #eee;\">\(bq)</div>"
+//        bq = "<blockquote style=\"padding: 10px 10px 5px 15px; margin: 10px; border-radius: 2px; border-left: 4px solid #2565ac; background-color: #f3f3f3;\">\n\(bq)\n</blockquote>"
+        bq = "<div style=\"padding: 10px 10px 5px 15px; margin: 10px; border-radius: 2px; border-left-color: #2565ac; border-left-width: 4px; background-color: #f3f3f3;\">\(bq)</div>"
 
 //        bq = "<blockquote>\n\(bq)\n</blockquote>"
         let key = Markdown.getHashKey(bq, isHtmlBlock: true)

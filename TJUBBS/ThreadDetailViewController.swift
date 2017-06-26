@@ -14,11 +14,12 @@ import PKHUD
 import MJRefresh
 import Alamofire
 import DTCoreText
+import Marklight
 
 class ThreadDetailViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
-    
+    var rawText: NSString = ""
     var tableView = UITableView(frame: .zero, style: .grouped)
     fileprivate var loadFlag = false
     var board: BoardModel?
@@ -27,7 +28,9 @@ class ThreadDetailViewController: UIViewController {
     var pastPageList: [PostModel] = []
     var currentPageList: [PostModel] = []
     var replyView: UIView?
-    var replyTextField: UITextField?
+//    var replyTextField: UITextField?
+    var replyTextField: UITextView?
+    let textStorage = MarklightTextStorage()
     var replyButton: UIButton?
     var anonymousView: UIView?
     var anonymousSwitch: UISwitch?
@@ -143,6 +146,7 @@ class ThreadDetailViewController: UIViewController {
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         refresh()
+    
     }
     
     func refresh() {
@@ -403,7 +407,21 @@ class ThreadDetailViewController: UIViewController {
         }
         
         
-        replyTextField = UITextField()
+        //        replyTextField = UITextField()
+        replyTextField = UITextView()
+        textStorage.addLayoutManager(replyTextField!.layoutManager)
+        // Partial fixes to a long standing bug, to keep the caret inside the `UITextView` always visible
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: replyTextField, queue: OperationQueue.main) { (notification) -> Void in
+            if (self.replyTextField?.textStorage.string.hasSuffix("\n"))! {
+                CATransaction.setCompletionBlock({ () -> Void in
+                    self.scrollToCaret(self.replyTextField!, animated: false)
+                })
+            } else {
+                self.scrollToCaret(self.replyTextField!, animated: false)
+            }
+        }
+
+        replyTextField?.delegate = self
         replyView?.addSubview(replyTextField!)
         replyTextField?.snp.remakeConstraints {
             make in
@@ -413,9 +431,12 @@ class ThreadDetailViewController: UIViewController {
             make.width.equalTo(screenSize.width*(820/1080))
             make.bottom.equalToSuperview().offset(-8)
         }
-        replyTextField?.borderStyle = .roundedRect
+//        replyTextField?.borderStyle = .roundedRect
+        replyTextField?.layer.borderWidth = 0.8
+        replyTextField?.layer.borderColor = UIColor.gray.cgColor
+        replyTextField?.layer.cornerRadius = 3.0
         replyTextField?.returnKeyType = .done
-        replyTextField?.delegate = self
+//        replyTextField?.delegate = self
         
         replyButton = UIButton.confirmButton(title: "回复")
         replyView?.addSubview(replyButton!)
@@ -460,6 +481,12 @@ class ThreadDetailViewController: UIViewController {
     func share() {
         let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "[求实BBS] \(thread!.title)", URL(string: "https://bbs.tju.edu.cn/forum/thread/\(thread!.id)")!], applicationActivities: [])
         present(vc, animated: true, completion: nil)
+    }
+    
+    func scrollToCaret(_ textView: UITextView, animated: Bool) {
+        var rect = textView.caretRect(for: textView.selectedTextRange!.end)
+        rect.size.height = rect.size.height + textView.textContainerInset.bottom
+        textView.scrollRectToVisible(rect, animated: animated)
     }
 }
 
@@ -652,6 +679,30 @@ extension ThreadDetailViewController: UITableViewDelegate {
 }
 
 extension ThreadDetailViewController: UITextFieldDelegate {
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        if let text = textField.attributedText?.mutableCopy() as? NSMutableAttributedString {
+//            //        let text = ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string)
+//            //        rawText = rawText.replacingCharacters(in: range, with: string) as NSString
+//            if let _ = textField.text {
+//                let html = Markdown.parse(string: text)
+//                let data = html.data(using: .utf8)
+//                //            let data = Data(base64Encoded: html, options: .ignoreUnknownCharacters)
+//                let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+//                              DTDefaultFontSize: 14.0,
+//                              DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
+//                              DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
+//                              DTUseiOS6Attributes: true,
+//                              DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+//                
+//                
+//                if let attributedString = NSAttributedString(htmlData: data, options: option, documentAttributes: nil) {
+//                    //                textField.typingAttributes =
+//                    textField.attributedText = attributedString
+//                }
+//            }
+//        }
+//        return true
+//    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == replyTextField {
@@ -709,6 +760,12 @@ extension ThreadDetailViewController {
         }
     }
     
+}
+
+extension ThreadDetailViewController: UITextViewDelegate {
+//    func textViewDidChange(_ textView: UITextView) {
+//        <#code#>
+//    }
 }
 
 extension ThreadDetailViewController: UIGestureRecognizerDelegate {

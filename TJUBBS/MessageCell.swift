@@ -1,5 +1,5 @@
 //
-//  MessageCells.swift
+//  MessageCell.swift
 //  TJUBBS
 //
 //  Created by JinHongxu on 2017/5/7.

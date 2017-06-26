@@ -11,4 +11,5 @@ target 'TJUBBS' do
   pod 'SlackTextViewController'
   pod 'Kingfisher'
   pod 'DTCoreText'
+  pod 'Marklight'
 end
