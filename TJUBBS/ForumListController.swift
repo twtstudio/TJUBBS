@@ -128,7 +128,8 @@ class ForumCoverCell: UICollectionViewCell {
 
 extension ForumListController: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = collectionView?.indexPathForItem(at: location) {
+        if let indexPath = collectionView?.indexPathForItem(at: location), let cell = collectionView?.cellForItem(at: indexPath) {
+            previewingContext.sourceRect = cell.frame
             let blVC = BoardListController(forum: forumList[indexPath.row])
             return blVC
         }

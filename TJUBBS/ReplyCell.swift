@@ -14,7 +14,7 @@ class ReplyCell: UITableViewCell {
     
     let screenSize = UIScreen.main.bounds.size
     var portraitImageView = UIImageView()
-    var usernameLable = UILabel(text: "", color: .black)
+    var usernameLabel = UILabel(text: "", color: .black)
     var timeLablel = UILabel(text: "", color: .lightGray)
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
@@ -25,7 +25,7 @@ class ReplyCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.addSubview(portraitImageView)
-        contentView.addSubview(usernameLable)
+        contentView.addSubview(usernameLabel)
         contentView.addSubview(detailLabel)
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
@@ -59,19 +59,29 @@ class ReplyCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLable.text = post.authorID != 0 ? post.authorName : "匿名用户"
-        usernameLable.snp.makeConstraints {
+        usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
+        usernameLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
+        
+        let nickNameLabel = UILabel(text: "", color: .BBSLightGray)
+        self.addSubview(nickNameLabel)
+        nickNameLabel.text = post.authorID != 0 ? post.authorNickname : "匿名用户"
+        nickNameLabel.snp.makeConstraints {
+            make in
+            make.centerY.equalTo(usernameLabel)
+            make.left.equalTo(usernameLabel.snp.right).offset(3)
+        }
+
         
 //        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
         let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLablel.text = timeString
         timeLablel.snp.makeConstraints {
             make in
-            make.top.equalTo(usernameLable.snp.bottom).offset(4)
+            make.top.equalTo(usernameLabel.snp.bottom).offset(4)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
@@ -89,7 +99,7 @@ class ReplyCell: UITableViewCell {
         floorLabel.text = "\(post.floor) 楼"
         floorLabel.snp.makeConstraints {
             make in
-            make.centerY.equalTo(usernameLable)
+            make.centerY.equalTo(usernameLabel)
             make.right.equalToSuperview().offset(-8)
         }
         

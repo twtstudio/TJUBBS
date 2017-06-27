@@ -182,7 +182,8 @@ extension BoardListController: UITableViewDataSource {
 
 extension BoardListController: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = tableView?.indexPathForRow(at: location) {
+        if let indexPath = tableView?.indexPathForRow(at: location), let cell = tableView?.cellForRow(at: indexPath) {
+            previewingContext.sourceRect = cell.frame
             let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section][indexPath.row])
             return detailVC
         }

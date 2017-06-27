@@ -195,7 +195,8 @@ extension ThreadListController {
 
 extension ThreadListController: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = tableView?.indexPathForRow(at: location) {
+        if let indexPath = tableView?.indexPathForRow(at: location), let cell = tableView?.cellForRow(at: indexPath) {
+            previewingContext.sourceRect = cell.frame
             let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
             return detailVC
             //        previewingContext.sourceRect =
@@ -206,4 +207,5 @@ extension ThreadListController: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         show(viewControllerToCommit, sender: self)
     }
+
 }

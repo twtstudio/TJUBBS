@@ -125,11 +125,12 @@ class ThreadDetailViewController: SLKTextViewController {
         
         self.isInverted = false
         bounces = true
-        isKeyboardPanningEnabled = true
+//        isKeyboardPanningEnabled = true
         textView.layer.borderColor = UIColor(colorLiteralRed: 217.0/255.0, green: 217.0/255.0, blue: 217.0/255.0, alpha: 1.0).cgColor
 //        textView.placeholder = "Message"
         textView.placeholderColor = .gray
-        
+        textView.autocapitalizationType = .none
+        textView.returnKeyType = .default
         textView.backgroundColor = .white
         textInputbar.backgroundColor = .white
         textInputbar.editorRightButton.tintColor = Metadata.Color.accentColor
@@ -155,8 +156,9 @@ class ThreadDetailViewController: SLKTextViewController {
             }
         }
         leftButton.tintColor = .gray
-        rightButton.setTitle("send", for: .normal)
-
+        rightButton.setTitleColor(.BBSBlue, for: .normal)
+        rightButton.setTitle("回复", for: .normal)
+        didPressRightButton(rightButton)
         
         self.title = thread?.title
         view.backgroundColor = .lightGray
@@ -361,10 +363,13 @@ class ThreadDetailViewController: SLKTextViewController {
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 340
         
+//        textStorage
         textStorage.addLayoutManager(textView.layoutManager)
 //         Partial fixes to a long standing bug, to keep the caret inside the `UITextView` always visible
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textInputbar.textView, queue: OperationQueue.main) { (notification) -> Void in
-            
+//        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textInputbar.textView, queue: OperationQueue.main) { (notification) -> Void in
+//            print("----storage--: "+self.textStorage.string)
+//            print("----textView--: "+self.textView.text)
+//            print("----manager--: "+self.textView.layoutManager.textContainers[0].description)
 //            textStorage
 //            if (self.textInputbar.textView.textStorage.string.hasSuffix("\n")) {
 //                CATransaction.setCompletionBlock({ () -> Void in
@@ -373,33 +378,32 @@ class ThreadDetailViewController: SLKTextViewController {
 //            } else {
 //                self.scrollToCaret(self.textInputbar.textView, animated: false)
 //            }
-        }
-
-
-        if self.thread?.boardID == 193 {
-            let anonymousLabel = UILabel()
-            anonymousLabel.text = "匿名"
-            anonymousLabel.sizeToFit()
-            let anonymousSwitch = UISwitch()
-            anonymousSwitch.onTintColor = .BBSBlue
-            //        replyView?.addSubview(anonymousSwitch!)
-            let anonymousView = SLKInputAccessoryView()
-//            register
-            anonymousView.addSubview(anonymousLabel)
-            anonymousView.addSubview(anonymousSwitch)
-            anonymousLabel.snp.makeConstraints {
-                make in
-                make.top.equalToSuperview().offset(8)
-                make.left.equalToSuperview().offset(16)
-            }
-            anonymousSwitch.snp.makeConstraints {
-                make in
-                make.centerY.equalTo(anonymousLabel)
-                make.right.equalToSuperview().offset(-16)
-            }
-            anonymousView.sizeToFit()
-            textInputbar.inputAccessoryView = anonymousView
-        }
+//        }
+//
+//        if self.thread?.boardID == 193 {
+//            let anonymousLabel = UILabel()
+//            anonymousLabel.text = "匿名"
+//            anonymousLabel.sizeToFit()
+//            let anonymousSwitch = UISwitch()
+//            anonymousSwitch.onTintColor = .BBSBlue
+//            //        replyView?.addSubview(anonymousSwitch!)
+//            let anonymousView = SLKInputAccessoryView()
+////            register
+//            anonymousView.addSubview(anonymousLabel)
+//            anonymousView.addSubview(anonymousSwitch)
+//            anonymousLabel.snp.makeConstraints {
+//                make in
+//                make.top.equalToSuperview().offset(8)
+//                make.left.equalToSuperview().offset(16)
+//            }
+//            anonymousSwitch.snp.makeConstraints {
+//                make in
+//                make.centerY.equalTo(anonymousLabel)
+//                make.right.equalToSuperview().offset(-16)
+//            }
+//            anonymousView.sizeToFit()
+//            textInputbar.inputAccessoryView = anonymousView
+//        }
         
         
 
@@ -693,8 +697,36 @@ extension ThreadDetailViewController {
         return 0.1
     }
     
-    
 }
+extension ThreadDetailViewController {
+    override func canPressRightButton() -> Bool {
+        let result = super.canPressRightButton()
+        if result || !textStorage.string.isEmpty {
+            //            textInputbar.rightButton.
+            return true
+        } else {
+            return false
+        }
+    }
+
+    override func didPressReturnKey(_ keyCommand: UIKeyCommand?) {
+        super.didPressReturnKey(keyCommand)
+//        let attributedString = NSAttributedString(string: "\n")
+//        textStorage.replaceCharacters(in: textView.selectedRange, with: "\n")
+//        textStorage.insert(attributedString, at: textView.selectedRange.location)
+//        textStorage.appendString("\n")
+//        textView.selectedRange = NSMakeRange(textView.selectedRange.location+attributedString.length, 0)
+    }
+    
+    
+    override func didPressRightButton(_ sender: Any?) {
+        super.didPressRightButton(sender)
+        if !textStorage.string.isEmpty {
+            print(textStorage.string)
+        }
+    }
+}
+
 // : UITableViewDelegate
 extension ThreadDetailViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -709,14 +741,14 @@ extension ThreadDetailViewController {
     override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView is UITableView {
             
-            let offsetY = scrollView.contentOffset.y
-            let headerHeight = headerView?.height ?? 30
+            let offsetY = scrollView.contentOffset.y + 64
+            let headerHeight = (headerView?.height ?? 30)
             
             if velocity.y < 0.1 && velocity.y > -0.1 {
                 if offsetY > headerHeight/CGFloat(2.0) && offsetY < headerHeight { // more than half, scroll down
-                    self.tableView?.setContentOffset(CGPoint(x: 0, y: headerHeight), animated: true)
+                    self.tableView?.setContentOffset(CGPoint(x: 0, y: headerHeight-64), animated: true)
                 } else if offsetY < headerHeight/CGFloat(2.0) && offsetY > 0 { // scroll up
-                    self.tableView?.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                    self.tableView?.setContentOffset(CGPoint(x: 0, y: -64), animated: true)
                 }
             }
         }
@@ -724,7 +756,7 @@ extension ThreadDetailViewController {
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView is UITableView {
-            let offsetY = scrollView.contentOffset.y
+            let offsetY = scrollView.contentOffset.y + 64
             let headerHeight = headerView?.height ?? 30
             let titleHeight = centerTextView.height
             
@@ -759,6 +791,7 @@ extension ThreadDetailViewController {
                 })
             }
         }
+        super.scrollViewDidScroll(scrollView)
     }
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -766,6 +799,7 @@ extension ThreadDetailViewController {
         if (self.tableView?.mj_footer.isRefreshing())! {
             self.tableView?.mj_footer.endRefreshing()
         }
+        super.scrollViewDidEndDecelerating(scrollView)
     }
     
 }
@@ -796,63 +830,63 @@ extension ThreadDetailViewController: UITextFieldDelegate {
 //        return true
 //    }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == replyTextField {
-            textField.text = ""
-            self.dismissKeyboard()
-        }
-        return true
-    }
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        if textField == replyTextField {
+//            textField.text = ""
+//            self.dismissKeyboard()
+//        }
+//        return true
+//    }
 }
 
 //keyboard layout
-extension ThreadDetailViewController {
-    
-    override func becomeKeyboardObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-//        tap.delegate = self
-//        view.addGestureRecognizer(tap)
-        //        print("用的是我，口亨～")
-    }
-    
-    
-    func keyboardWillShow(notification: NSNotification) {
-        
-        let userInfo  = notification.userInfo! as Dictionary
-        let keyboardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        let deltaY = keyboardBounds.size.height
-        let animations:(() -> Void) = {
-            self.replyView?.transform = CGAffineTransform(translationX: 0, y: -deltaY)
-        }
-        if duration > 0 {
-            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
-            UIView.animate(withDuration: duration, delay: 0, options: options, animations: animations, completion: nil)
-        } else {
-            animations()
-        }
-    }
-    
-    func keyboardWillHide(notification: NSNotification) {
-        
-        let userInfo  = notification.userInfo! as Dictionary
-        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        
-        let animations:(() -> Void) = {
-            self.replyView?.transform = CGAffineTransform(translationX: 0, y: 0)
-        }
-        
-        if duration > 0 {
-            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
-            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
-        } else {
-            animations()
-        }
-    }
-    
-}
+//extension ThreadDetailViewController {
+//    
+////    override func becomeKeyboardObserver() {
+////        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
+////        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+//////        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+//////        tap.delegate = self
+//////        view.addGestureRecognizer(tap)
+////        //        print("用的是我，口亨～")
+////    }
+//    
+//    
+//    func keyboardWillShow(notification: NSNotification) {
+//        
+//        let userInfo  = notification.userInfo! as Dictionary
+//        let keyboardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+//        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+//        let deltaY = keyboardBounds.size.height
+//        let animations:(() -> Void) = {
+//            self.replyView?.transform = CGAffineTransform(translationX: 0, y: -deltaY)
+//        }
+//        if duration > 0 {
+//            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
+//            UIView.animate(withDuration: duration, delay: 0, options: options, animations: animations, completion: nil)
+//        } else {
+//            animations()
+//        }
+//    }
+//    
+//    func keyboardWillHide(notification: NSNotification) {
+//        
+//        let userInfo  = notification.userInfo! as Dictionary
+//        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+//        
+//        let animations:(() -> Void) = {
+//            self.replyView?.transform = CGAffineTransform(translationX: 0, y: 0)
+//        }
+//        
+//        if duration > 0 {
+//            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
+//            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
+//        } else {
+//            animations()
+//        }
+//    }
+//    
+//}
 
 //extension ThreadDetailViewController: UITextViewDelegate {
 ////    func textViewDidChange(_ textView: UITextView) {
@@ -860,14 +894,14 @@ extension ThreadDetailViewController {
 ////    }
 //}
 // UIGestureRecognizerDelegate
-extension ThreadDetailViewController {
-    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        if touch.view?.superview is UITableViewCell {
-            return false
-        }
-        return true
-    }
-}
+//extension ThreadDetailViewController {
+//    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+//        if touch.view?.superview is UITableViewCell {
+//            return false
+//        }
+//        return true
+//    }
+//}
 
 extension ThreadDetailViewController: ReplyViewDelegate {
     func didReply() {

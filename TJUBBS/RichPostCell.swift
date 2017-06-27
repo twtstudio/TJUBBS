@@ -20,6 +20,8 @@ class RichPostCell: DTAttributedTextCell {
     
     let portraitImageView = UIImageView(image: UIImage(named: "头像2"))
     let usernameLabel = UILabel(text: "")
+    // FIXME: 太难看了
+    let nickNameLabel = UILabel(text: "", color: .gray)
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
     let favorButton = UIButton(imageName: "收藏")
     var floorLabel = UILabel(text: "", fontSize: 14)
@@ -51,6 +53,7 @@ class RichPostCell: DTAttributedTextCell {
         contentView.addSubview(timeLabel)
         contentView.addSubview(favorButton)
         contentView.addSubview(floorLabel)
+        contentView.addSubview(nickNameLabel)
         favorButton.isHidden = true
         favorButton.isUserInteractionEnabled = false
         floorLabel.isHidden = true
@@ -72,6 +75,12 @@ class RichPostCell: DTAttributedTextCell {
             make in
             make.top.equalTo(portraitImageView)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
+        }
+        
+        nickNameLabel.snp.makeConstraints {
+            make in
+            make.centerY.equalTo(usernameLabel)
+            make.left.equalTo(usernameLabel.snp.right).offset(3)
         }
         
         //        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
@@ -123,6 +132,7 @@ class RichPostCell: DTAttributedTextCell {
 
         
         usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
+        nickNameLabel.text = thread.authorID != 0 ? "@"+thread.authorNickname : ""
         attributedTextContextView.shouldDrawImages = true
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
@@ -160,9 +170,10 @@ class RichPostCell: DTAttributedTextCell {
 
         
         attributedTextContextView.shouldDrawImages = true
-        usernameLabel.text = post.authorName
+        usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
         let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
+        nickNameLabel.text = post.authorID != 0 ? "@"+post.authorNickname : ""
         floorLabel.text = "\(post.floor) 楼"
         floorLabel.isHidden = false
         favorButton.isHidden = true

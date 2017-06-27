@@ -31,6 +31,7 @@ class UserInfoViewController: UIViewController {
     var pointLabel: UILabel?
     var postNumberLabel: UILabel?
     var ageLabel: UILabel?
+    let frostView = UIVisualEffectView()
     var tableView: UITableView?
     let contentArray = [["我的消息", "我的好友", "我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
     var messagePage: Int = 0
@@ -181,10 +182,29 @@ extension UserInfoViewController: UITableViewDataSource {
         
         headerView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height*(magicNumber/1920)))
         
-        headerViewBackground = UIImageView(image: UIImage(named: "封面"))
+//        headerViewBackground = UIImageView(image: UIImage(named: "封面"))
+        headerViewBackground = UIImageView()
+        let url = URL(string: BBSAPI.avatar)
+        let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today
+        if let url = url {
+            headerViewBackground!.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey)) { image, error, cacheType, imageURL in
+                BBSUser.shared.avatar = image
+            }
+        }
+//        if #available(iOS 10.0, *) {
+//            let blurEffect = UIBlurEffect(style: .regular)
+//            frostView.effect = blurEffect
+//        } else {
+            let blurEffect = UIBlurEffect(style: .dark)
+            frostView.effect = blurEffect
+//        }
+//        frostView.effect = blurEffect
+        frostView.frame = headerView!.bounds
+        frostView.height += 1
+       
         headerViewBackground?.frame = headerView!.bounds
         headerView?.addSubview(headerViewBackground!)
-        
+        headerView?.addSubview(frostView)
         let avatarBackground = UIView()
         headerView?.addSubview(avatarBackground)
         avatarBackground.backgroundColor = .white
@@ -192,8 +212,8 @@ extension UserInfoViewController: UITableViewDataSource {
         
         // TODO: 默认头像
         portraitImageView = UIImageView()
-        let url = URL(string: BBSAPI.avatar)
-        let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today
+//        let url = URL(string: BBSAPI.avatar)
+//        let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today
         if let url = url {
             portraitImageView!.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey)) { image, error, cacheType, imageURL in
                 BBSUser.shared.avatar = image
@@ -427,5 +447,6 @@ extension UserInfoViewController: UITableViewDelegate {
         let x = -(width-screenSize.width)/2.0
         
         headerViewBackground?.frame = CGRect(x: x, y: -y, width: width, height: height)
+        frostView.frame = CGRect(x: x, y: -y, width: width, height: (height+1))
     }
 }
