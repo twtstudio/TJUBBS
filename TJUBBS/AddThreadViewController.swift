@@ -13,7 +13,7 @@ import PKHUD
 class AddThreadViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
-    var tableView = UITableView(frame: .zero, style: .grouped)
+    var tableView = UITableView(frame: .zero, style: .plain)
     var anonymousSwitch = UISwitch()
     var anonymouslabel = UILabel()
     var forumList: [ForumModel] = []
@@ -94,7 +94,7 @@ class AddThreadViewController: UIViewController {
     func doneButtonTapped() {
         
         guard selectedBoard != nil else {
-            HUD.flash(.label("请先选择板块"))
+            HUD.flash(.label("请选择板块"))
             return
         }
         
@@ -147,7 +147,7 @@ extension AddThreadViewController: UITableViewDataSource {
                     make in
                     make.centerY.equalToSuperview()
                     make.right.equalToSuperview().offset(-16)
-                    make.height.width.equalTo(screenSize.height*(88/1920))
+                    make.height.width.equalTo(15)
                 }
                 
 //                rightImageView.addTapGestureRecognizer {
@@ -172,11 +172,22 @@ extension AddThreadViewController: UITableViewDataSource {
                     }
                 }
                 cell.isHidden = !tableView.allowsSelection
+                let separator = UIView()
+                cell.contentView.addSubview(separator)
+                separator.backgroundColor = .gray
+                separator.alpha = 0.5
+                separator.snp.makeConstraints { make in
+                    make.left.equalToSuperview().offset(15)
+                    make.right.equalToSuperview()
+                    make.bottom.equalToSuperview()
+                    make.height.equalTo(0.3)
+                }
+
                 return cell
             } else {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "normalCell")
                 cell.textLabel?.text = forumList[indexPath.row-1].name
-                
+                cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
                 return cell
             }
         case 1:
@@ -190,7 +201,8 @@ extension AddThreadViewController: UITableViewDataSource {
                     make in
                     make.centerY.equalToSuperview()
                     make.right.equalToSuperview().offset(-16)
-                    make.height.width.equalTo(screenSize.height*(88/1920))
+//                    make.height.width.equalTo(screenSize.height*(88/1920))
+                    make.height.width.equalTo(15)
                 }
                 
 //                rightImageView.addTapGestureRecognizer {
@@ -218,11 +230,21 @@ extension AddThreadViewController: UITableViewDataSource {
                 }
                 rightImageView.isHidden = !tableView.allowsSelection
                 cell.isUserInteractionEnabled = tableView.allowsSelection
+                let separator = UIView()
+                cell.contentView.addSubview(separator)
+                separator.backgroundColor = .gray
+                separator.alpha = 0.5
+                separator.snp.makeConstraints { make in
+                    make.left.equalToSuperview().offset(15)
+                    make.right.equalToSuperview()
+                    make.bottom.equalToSuperview()
+                    make.height.equalTo(0.3)
+                }
                 return cell
             } else {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "normalCell")
                 cell.textLabel?.text = boardList[indexPath.row-1].name
-                
+                cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
                 return cell
             }
         case 2:
@@ -256,22 +278,18 @@ extension AddThreadViewController: UITableViewDataSource {
             } else if indexPath.row == 1 {
                 return themeCell
             } else {
+                detailCell.extendBtn?.addTarget { btn in
+                    
+                    // FIXME: 做
+                    print("present a view controller")
+                }
                 return detailCell
             }
         default:
             return UITableViewCell()
         }
     }
-    
-    //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: .zero)
     }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.1
-    }
-}
 
 extension AddThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -290,6 +308,23 @@ extension AddThreadViewController: UITableViewDelegate {
             
             tableView.cellForRow(at: indexPath)?.contentView.backgroundColor = .BBSLightBlue
         }
+    }
+    
+    //TODO: Better way to hide first headerView
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+            return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.01
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.01
     }
 }
 

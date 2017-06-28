@@ -238,14 +238,6 @@ extension ReplyViewController: UITableViewDataSource {
         return prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post!)
     }
     
-    //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: .zero)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.1
-    }
     
     //    func postViewTapped() {
     //        let detailVC = PostDetailViewController(para: 1)
@@ -259,6 +251,16 @@ extension ReplyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    //TODO: Better way to hide first headerView
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UIView(frame: .zero)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.1
+    }
+
 }
 
 extension ReplyViewController: UITextFieldDelegate {

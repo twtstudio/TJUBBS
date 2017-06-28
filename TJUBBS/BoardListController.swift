@@ -125,30 +125,6 @@ extension BoardListController: UITableViewDelegate {
         let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section][indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-}
-
-extension BoardListController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-//        print("boardListCount:\(boardList.count)")
-        return boardList.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // preview
-        if section >= threadList.count {
-            return 0
-        }
-        return threadList[section].count
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //        return ThreadCell(type: .none, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "lksjdlakjsdlkjaslkdjlaksjdlkasjdljaslaskldka;slkd;laskd;lkas;ldk;alskd;laksdhkajshdkjahkdjaslkjdlasjdklsl")
-//        let cell = ThreadCell(type: .single, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "你不是真正的快乐 你的笑只是你穿的保护色 你决定不恨了 也决定不爱了 把你的灵魂关在永远锁上的躯壳")
-        let thread = threadList[indexPath.section][indexPath.row]
-        let cell = ThreadCell(type: .none, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: String.clearBBCode(string: thread.content))
-        // TODO: 替换图片 NEXT VERSION
-        cell.imgView?.image = UIImage(named: "封面")
-        return cell
-    }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = UITableViewCell()
@@ -178,6 +154,32 @@ extension BoardListController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 36
     }
+
+}
+
+extension BoardListController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+//        print("boardListCount:\(boardList.count)")
+        return boardList.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // preview
+        if section >= threadList.count {
+            return 0
+        }
+        return threadList[section].count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //        return ThreadCell(type: .none, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "lksjdlakjsdlkjaslkdjlaksjdlkasjdljaslaskldka;slkd;laskd;lkas;ldk;alskd;laksdhkajshdkjahkdjaslkjdlasjdklsl")
+//        let cell = ThreadCell(type: .single, title: "天津大学2016年下半年领取高水平论文奖励的通知", date: "2017-05-02", author: "yqzhufeng", content: "你不是真正的快乐 你的笑只是你穿的保护色 你决定不恨了 也决定不爱了 把你的灵魂关在永远锁上的躯壳")
+        let thread = threadList[indexPath.section][indexPath.row]
+        let cell = ThreadCell(type: .none, title: thread.title, date: String(thread.createTime), author: thread.authorName, content: String.clearBBCode(string: thread.content))
+        // TODO: 替换图片 NEXT VERSION
+        cell.imgView?.image = UIImage(named: "封面")
+        return cell
+    }
+    
 }
 
 extension BoardListController: UIViewControllerPreviewingDelegate {

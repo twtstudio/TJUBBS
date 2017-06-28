@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Marklight
 
 enum TextInputCellType {
     case textField
@@ -19,6 +20,8 @@ class TextInputCell: UITableViewCell {
     var textField: UITextField?
     var textView: UITextView?
     var type: TextInputCellType = .textField
+    let textStorage = MarklightTextStorage()
+    var extendBtn: UIButton?
 
     convenience init(title: String, placeholder: String, type: TextInputCellType = .textField) {
         self.init()
@@ -34,6 +37,7 @@ class TextInputCell: UITableViewCell {
             textField?.textAlignment = .right
             
             titleLabel = UILabel(text: title)
+            titleLabel?.font = UIFont.systemFont(ofSize: 17)
             contentView.addSubview(titleLabel!)
             titleLabel?.snp.makeConstraints {
                 make in
@@ -43,6 +47,7 @@ class TextInputCell: UITableViewCell {
             }
         } else if type == .textView {
             titleLabel = UILabel(text: title)
+            titleLabel?.font = UIFont.systemFont(ofSize: 17)
             titleLabel?.sizeToFit()
             contentView.addSubview(titleLabel!)
             titleLabel?.snp.makeConstraints {
@@ -50,17 +55,31 @@ class TextInputCell: UITableViewCell {
                 make.left.equalTo(contentView).offset(16)
                 make.top.equalTo(contentView).offset(10)
             }
-
+            
             textView = UITextView()
+            textStorage.addLayoutManager((textView?.layoutManager)!)
+            textView?.font = UIFont.systemFont(ofSize: 16)
             contentView.addSubview(textView!)
             textView?.snp.makeConstraints {
                 make in
                 make.top.equalTo(titleLabel!.snp.bottom).offset(10)
-                make.height.equalTo(60)
+                make.height.equalTo(120)
                 make.right.equalTo(contentView).offset(-16)
                 make.left.equalTo(contentView).offset(16)
                 make.bottom.equalTo(contentView).offset(-20)
             }
+            extendBtn = UIButton()
+            extendBtn?.setImage(UIImage(named: "more"), for: .normal)
+//            extendBtn?.setImage(UIImage(named: "more"), for: .)
+//            extendBtn?.imageView?.image = UIImage(named: "more")
+            contentView.addSubview(extendBtn!)
+            extendBtn?.snp.makeConstraints { make in
+                make.right.equalTo(textView!.snp.right).offset(-5)
+                make.top.equalTo(textView!.snp.top).offset(-5)
+                make.height.equalTo(30)
+                make.width.equalTo(30)
+            }
+
         }
     }
 
@@ -70,6 +89,6 @@ class TextInputCell: UITableViewCell {
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+        super.setSelected(selected, animated: false)
     }
 }

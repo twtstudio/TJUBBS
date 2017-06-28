@@ -128,7 +128,7 @@ class GuideViewController: UIViewController {
                             dict in
                             if let status = dict["err"] as? Int, status == 0 {
                                 HUD.flash(.label("验证信息已经发送至后台管理员，验证结果将会在 7 个工作日内发送至您的邮箱，请注意查收~"), delay: 4.0)
-                                manualCheckVC?.navigationController?.popToRootViewController(animated: false)
+                                let _ = manualCheckVC?.navigationController?.popToRootViewController(animated: false)
                             }
                         }
                     }

@@ -139,14 +139,6 @@ extension MessageViewController: UITableViewDataSource {
         return cell
     }
     
-    //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: .zero)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.1
-    }
 }
 
 extension MessageViewController: UITableViewDelegate {
@@ -164,6 +156,16 @@ extension MessageViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }
+    
+    //TODO: Better way to hide first headerView
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UIView(frame: .zero)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.1
+    }
+
 }
 
 

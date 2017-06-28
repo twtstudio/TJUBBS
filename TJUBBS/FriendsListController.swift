@@ -87,6 +87,18 @@ extension FriendsListController: UITableViewDataSource {
         return cell
     }
     
+}
+
+extension FriendsListController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        // present friend dialog
+        let detailVC = ChatDetailViewController()
+        detailVC.pal = friendList[indexPath.row]
+        self.navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
     //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
@@ -103,17 +115,7 @@ extension FriendsListController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.1
     }
-}
 
-extension FriendsListController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        // present friend dialog
-        let detailVC = ChatDetailViewController()
-        detailVC.pal = friendList[indexPath.row]
-        self.navigationController?.pushViewController(detailVC, animated: true)
-    }
 }
 
 

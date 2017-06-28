@@ -315,7 +315,7 @@ class LoginViewController: UIViewController {
                                     if let result = result as? [String: String] {
                                         BBSJarvis.resetPassword(password: result["newpass"]!) {
                                             dict in
-                                            resetVC?.navigationController?.popToRootViewController(animated: false)
+                                            let _ = resetVC?.navigationController?.popToRootViewController(animated: false)
                                         }
                                     }
                                 }

@@ -105,14 +105,6 @@ extension LatestThreadViewController: UITableViewDataSource {
         return cell
     }
     
-    //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: .zero)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.1
-    }
 }
 
 extension LatestThreadViewController: UITableViewDelegate {
@@ -121,6 +113,15 @@ extension LatestThreadViewController: UITableViewDelegate {
         let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
+    //TODO: Better way to hide first headerView
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UIView(frame: .zero)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.1
+    }
+
 }
 
 // refresh

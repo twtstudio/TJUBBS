@@ -158,7 +158,7 @@ class ThreadDetailViewController: SLKTextViewController {
         leftButton.tintColor = .gray
         rightButton.setTitleColor(.BBSBlue, for: .normal)
         rightButton.setTitle("回复", for: .normal)
-        didPressRightButton(rightButton)
+//        didPressRightButton(rightButton)
         
         self.title = thread?.title
         view.backgroundColor = .lightGray
@@ -422,24 +422,24 @@ class ThreadDetailViewController: SLKTextViewController {
 //        tableView?.rowHeight = UITableViewAutomaticDimension
 //        tableView?.estimatedRowHeight = 340
 //        
-//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
 //        
-//        bottomButton = UIButton(imageName: "down")
-//        view.addSubview(bottomButton!)
-//        bottomButton?.snp.makeConstraints {
-//            make in
-//            make.right.equalToSuperview().offset(-16)
-//            make.bottom.equalToSuperview().offset(-88)
-//            make.height.width.equalTo(screenSize.width*(104/1080))
-//        }
-//        bottomButton?.alpha = 0
-//        bottomButton?.addTarget {
-//            _ in
-//            UIView.animate(withDuration: 0.5, animations: {
-//                self.bottomButton?.alpha = 0
-//            })
-//            self.loadToBottom()
-//        }
+        bottomButton = UIButton(imageName: "down")
+        view.addSubview(bottomButton!)
+        bottomButton?.snp.makeConstraints {
+            make in
+            make.right.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-88)
+            make.height.width.equalTo(screenSize.width*(104/1080))
+        }
+        bottomButton?.alpha = 0
+        bottomButton?.addTarget {
+            _ in
+            UIView.animate(withDuration: 0.5, animations: {
+                self.bottomButton?.alpha = 0
+            })
+            self.loadToBottom()
+        }
 //        
 //        replyView = UIView()
 //        view.addSubview(replyView!)
@@ -723,10 +723,35 @@ extension ThreadDetailViewController {
         super.didPressRightButton(sender)
         if !textStorage.string.isEmpty {
             print(textStorage.string)
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let loginController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(loginController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            
+            //            if let text = self.replyTextField?.text, text != "" {
+            let noBBtext = self.textStorage.string.replacingOccurrences(of: "[", with: "&#91;").replacingOccurrences(of: "]", with: "&#93;")
+            BBSJarvis.reply(threadID: self.thread!.id, content: noBBtext, anonymous: self.anonymousSwitch?.isOn ?? false, success: { _ in
+                HUD.flash(.success)
+                //self.replyTextField?.text = ""
+                self.textStorage.setAttributedString(NSMutableAttributedString(string: ""))
+                //                self.didReply()
+            })
+            self.dismissKeyboard()
+            
+        } else {
+            HUD.flash(.label("内容不能为空"))
         }
     }
 }
-
 // : UITableViewDelegate
 extension ThreadDetailViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

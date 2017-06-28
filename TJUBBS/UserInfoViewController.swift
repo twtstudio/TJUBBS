@@ -174,6 +174,10 @@ extension UserInfoViewController: UITableViewDataSource {
         return screenSize.height*(150/1920)
     }
     
+}
+
+extension UserInfoViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         guard section == 0 else {
@@ -182,7 +186,7 @@ extension UserInfoViewController: UITableViewDataSource {
         
         headerView = UIView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height*(magicNumber/1920)))
         
-//        headerViewBackground = UIImageView(image: UIImage(named: "封面"))
+        //        headerViewBackground = UIImageView(image: UIImage(named: "封面"))
         headerViewBackground = UIImageView()
         let url = URL(string: BBSAPI.avatar)
         let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today
@@ -191,17 +195,17 @@ extension UserInfoViewController: UITableViewDataSource {
                 BBSUser.shared.avatar = image
             }
         }
-//        if #available(iOS 10.0, *) {
-//            let blurEffect = UIBlurEffect(style: .regular)
-//            frostView.effect = blurEffect
-//        } else {
-            let blurEffect = UIBlurEffect(style: .dark)
-            frostView.effect = blurEffect
-//        }
-//        frostView.effect = blurEffect
+        //        if #available(iOS 10.0, *) {
+        //            let blurEffect = UIBlurEffect(style: .regular)
+        //            frostView.effect = blurEffect
+        //        } else {
+        let blurEffect = UIBlurEffect(style: .dark)
+        frostView.effect = blurEffect
+        //        }
+        //        frostView.effect = blurEffect
         frostView.frame = headerView!.bounds
         frostView.height += 1
-       
+        
         headerViewBackground?.frame = headerView!.bounds
         headerView?.addSubview(headerViewBackground!)
         headerView?.addSubview(frostView)
@@ -212,8 +216,8 @@ extension UserInfoViewController: UITableViewDataSource {
         
         // TODO: 默认头像
         portraitImageView = UIImageView()
-//        let url = URL(string: BBSAPI.avatar)
-//        let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today
+        //        let url = URL(string: BBSAPI.avatar)
+        //        let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today
         if let url = url {
             portraitImageView!.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey)) { image, error, cacheType, imageURL in
                 BBSUser.shared.avatar = image
@@ -384,9 +388,7 @@ extension UserInfoViewController: UITableViewDataSource {
         }
         return 0
     }
-}
 
-extension UserInfoViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

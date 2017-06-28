@@ -285,7 +285,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)
         let attachments = attributedTextContextView.layoutFrame.textAttachments(with: predicate) as? [DTImageTextAttachment] ?? []
-        var shouldUpdate = false
+//        var shouldUpdate = false
         for attachment in attachments {
             attachment.originalSize = size
             let v = attributedTextContextView!
@@ -293,7 +293,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             if size.width > maxWidth {
                 let scale = maxWidth / size.width
                 attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
-                shouldUpdate = true
+//                shouldUpdate = true
             }
         }
         //        if shouldUpdate {

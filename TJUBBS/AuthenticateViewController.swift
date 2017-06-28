@@ -94,6 +94,11 @@ extension AuthenticateViewController: UITableViewDataSource {
         return screenSize.height*(150/1920)
     }
     
+
+}
+
+extension AuthenticateViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenSize.height*(120/1920)))
         let textLabel = UILabel(text: "老用户(即已拥有BBS账号)请填写以下信息认证", fontSize: 16)
@@ -129,9 +134,7 @@ extension AuthenticateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return screenSize.height*(300/1920)
     }
-}
 
-extension AuthenticateViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
