@@ -123,29 +123,51 @@ struct BBSBeacon {
         }
     }
     
-    static func uploadImage(url: String, image: UIImage, failure: ((Error)->())? = nil, success: (()->())?) {
+    static func uploadImage(url: String, method: HTTPMethod = .put, image: UIImage, failure: ((Error)->())? = nil, success: (([String : Any])->())?) {
         let data = UIImageJPEGRepresentation(image, 1.0)
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString
         guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
-//            log.errorMessage("Token expired!")/
             return
         }
         headers["authentication"] = String(uid) + "|" + tokenStr
         
-        Alamofire.upload(multipartFormData: { formdata in
-            formdata.append(data!, withName: "1", fileName: "avatar.jpeg", mimeType: "image/jpeg")
-        }, to: url, method: .put, headers: headers, encodingCompletion: { response in
-            switch response {
-            case .success(let upload, _, _):
-                upload.responseJSON { response in
-                    success?()
+        if method == .put {
+            Alamofire.upload(multipartFormData: { formdata in
+                formdata.append(data!, withName: "1", fileName: "avatar.jpeg", mimeType: "image/jpeg")
+            }, to: url, method: .put, headers: headers, encodingCompletion: { response in
+                switch response {
+                case .success(let upload, _, _):
+                    upload.responseJSON { response in
+                        success?([:])
+                    }
+                case .failure(let error):
+                    failure?(error)
+                    print(error)
                 }
-            case .failure(let error):
-                failure?(error)
-                print(error)
-            }
-        })
+            })
+        } else if method == .post {
+            Alamofire.upload(multipartFormData: { formdata in
+                formdata.append(data!, withName: "file", fileName: "image.jpeg", mimeType: "image/jpeg")
+                formdata.append("filename".data(using: .utf8)!, withName: "name", mimeType: "text")
+            }, to: url, method: .post, headers: headers, encodingCompletion: { response in
+                switch response {
+                case .success(let upload, _, _):
+                    upload.responseJSON { response in
+                        if let dic = response.result.value as? [String : Any] {
+                            if(dic["err"] as? Int) == 0 {
+                                success?(dic)
+                            } else {
+                                HUD.flash(.label(dic["data"] as? String), delay: 1.0)
+                            }
+                        }
+                    }
+                case .failure(let error):
+                    failure?(error)
+                    print(error)
+                }
+            })
+        }
     }
 }
 

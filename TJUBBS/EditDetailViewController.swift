@@ -19,6 +19,7 @@ class EditDetailViewController: UIViewController {
     var isAnonymous = false
     var canAnonymous = false
     weak var delegate: UIViewController?
+    var imageMap: [Int : Int] = [:]
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -30,21 +31,52 @@ class EditDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         textStorage.addLayoutManager(textView.layoutManager)
-        textStorage.fontTextStyle = UIFontTextStyle.headline.rawValue
         textView.font = UIFont.systemFont(ofSize: 17)
         self.view.addSubview(textView)
         textView.frame = CGRect(x: 15, y: 10, width: self.view.width - 30, height: self.view.height-10)
-
-        let imageItem = UIBarButtonItem(image: UIImage(named: "icn_upload"), style: .plain, target: self, action: #selector(self.barButtonTapped(sender:)))
-        let boldItem = UIBarButtonItem(title: "B", style: .plain, target: self, action: #selector(self.barButtonTapped(sender:)))
-        let italicItem = UIBarButtonItem(title: "I", style: .plain, target: self, action: #selector(self.barButtonTapped(sender:)))
-        let headItem = UIBarButtonItem(title: "#", style: .plain, target: self, action: #selector(self.barButtonTapped(sender:)))
-        let quoteItem = UIBarButtonItem(title: "\"", style: .plain, target: self, action: #selector(self.barButtonTapped(sender:)))
+        
+        let doneItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(self.doneButtonTapped(sender:)))
+        self.navigationItem.rightBarButtonItem = doneItem
+        
+        let imageButton = UIButton(imageName: "icn_upload")
+        imageButton.addTarget { btn in
+            // TODO: 拍照
+            if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
+                let imagePicker = UIImagePickerController()
+                imagePicker.delegate = self
+                imagePicker.allowsEditing = true
+                imagePicker.sourceType = .savedPhotosAlbum
+                self.present(imagePicker, animated: true) {
+                    
+                }
+            } else {
+                HUD.flash(.label("相册不可用🤒请在设置中打开 BBS 的相册权限"), delay: 2.0)
+            }
+        }
+        let imageItem = UIBarButtonItem(customView: imageButton)
+        
+        let boldButton = UIButton(title: "B")
+        let boldItem = UIBarButtonItem(customView: boldButton)
+        
+        let italicButton = UIButton(title: "I")
+        let italicItem = UIBarButtonItem(customView: italicButton)
+        
+        let headButton = UIButton(title: "#")
+        let headItem = UIBarButtonItem(customView: headButton)
+        
+        let quoteButton = UIButton(title: "\"")
+        let quoteItem = UIBarButtonItem(customView: quoteButton)
+        
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
         bar.items = [imageItem, flexibleSpace, boldItem, italicItem, headItem, quoteItem]
         for item in bar.items! {
-            if item.title != nil {
+            if let button = item.customView as? UIButton {
                 item.width = 40
+                button.width = 40
+                button.height = 35
+                button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+                button.addTarget(self, action: #selector(self.barButtonTapped(sender:)), for: .touchUpInside)
             }
         }
         
@@ -66,12 +98,11 @@ class EditDetailViewController: UIViewController {
                 make.bottom.equalToSuperview()
                 make.left.equalToSuperview()
             }
+            anonymousSwitch.transform = CGAffineTransform(scaleX: 0.90, y: 0.90)
             anonymousSwitch.snp.makeConstraints { make in
                 make.left.equalTo(anonymousLabel.snp.right)
-                make.top.equalToSuperview()
                 make.bottom.equalToSuperview()
                 make.centerY.equalTo(anonymousLabel)
-                make.right.equalToSuperview()
             }
             anonymousView.height = max(anonymousLabel.height, anonymousSwitch.height)
             anonymousView.width = anonymousLabel.width + anonymousSwitch.width
@@ -80,14 +111,6 @@ class EditDetailViewController: UIViewController {
             anonymousSwitch.addTarget(self, action: #selector(self.anonymousStateOnChange(sender:)), for: .valueChanged)
             bar.items?.insert(anonymousItem, at: 1)
         }
-//        
-//        for item in bar.items! {
-//            if item.title != nil {
-//                item.width = 40
-//            }
-//        }
-//        
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
@@ -100,41 +123,55 @@ class EditDetailViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func barButtonTapped(sender: UIBarButtonItem) {
-        if let title = sender.title {
+    func doneButtonTapped(sender: UIBarButtonItem) {
+        print(self.textStorage.string)
+        let fullRange = NSMakeRange(0, textStorage.length)
+        let resultString = NSMutableAttributedString(attributedString: textStorage.attributedSubstring(from: fullRange))
+        var uploadFinished = true
+        textStorage.enumerateAttributes(in: fullRange, options: .reverse, using: { attributes, range, stop in
+            if let attribute = attributes["NSAttachment"] as? NSTextAttachment, let image = attribute.image {
+                // get the code
+                if let code = imageMap[image.hash] {
+                    let text = "![](attach: \(code))"
+                    resultString.replaceCharacters(in: range, with: text)
+                } else {
+                    // uploading
+                    HUD.flash(.label("上传中...请稍后发布😃"), delay: 1.0)
+                    uploadFinished = false
+                }
+            }
+        })
+        if uploadFinished {
+            let result = resultString.string
+            // post the string
+            print(result)
+        }
+    }
+    
+    func barButtonTapped(sender: UIButton) {
+//        if let title = (sender.customView as? UIButton)?.currentTitle {
+        if let title = sender.titleLabel?.text {
             switch title {
             case "B":
-                textStorage.appendString("****")
+//                textStorage.appendString("****")
+                textStorage.replaceCharacters(in: textView.selectedRange, with: "****")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+2, 0)
             case "I":
-                textStorage.appendString("**")
+//                textStorage.appendString("**")
+                textStorage.replaceCharacters(in: textView.selectedRange, with: "**")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
             case "#":
-//                let aString = NSAttributedString(string: "#")
-//                textStorage.insert(aString, at: textView.selectedRange.location)
-                textStorage.appendString("#")
+                textStorage.replaceCharacters(in: textView.selectedRange, with: "#")
+//                textStorage.appendString("#")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
             case "\"":
-                textStorage.appendString(">")
+                textStorage.replaceCharacters(in: textView.selectedRange, with: ">")
+//                textStorage.appendString(">")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
             default:
                 break
             }
             print(sender)
-        }
-        if sender.image != nil {
-            // TODO: 拍照
-            if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
-                let imagePicker = UIImagePickerController()
-                imagePicker.delegate = self
-                imagePicker.allowsEditing = true
-                imagePicker.sourceType = .savedPhotosAlbum
-                self.present(imagePicker, animated: true) {
-                    
-                }
-            } else {
-                HUD.flash(.label("相册不可用🤒请在设置中打开 BBS 的相册权限"), delay: 2.0)
-            }
         }
     }
     
@@ -156,18 +193,12 @@ extension EditDetailViewController {
                 self.view.addSubview(bar)
                 let barHeight: CGFloat = 40
                 let height = view.frame.size.height - endRect.size.height - barHeight
-                textView.height = height
+                textView.height = height - 10 // 10: margin
                 textView.setNeedsLayout()
                 bar.x = 0
                 bar.y = height
                 bar.width = self.view.width
                 bar.height = barHeight
-//                bar.snp.remakeConstraints { make in
-//                    make.left.equalToSuperview()
-//                    make.height.equalTo(40)
-//                    make.right.equalToSuperview()
-//                    make.top.equalTo(textView.snp.bottom)
-//                }
             }
         }
     }
@@ -176,12 +207,27 @@ extension EditDetailViewController {
 extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
-            let smallerImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: 80, height: 80))
+            let size = image.size
+            let maxWidth: CGFloat = 200
+            var ratio: CGFloat = 1.0
+            if size.width > maxWidth {
+                ratio = maxWidth/size.width
+            }
+            let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
             
             let attachment = NSTextAttachment()
-            attachment.image = smallerImage
+            attachment.image = resizedImage
+            // resizedImage.hash as index
+            // FIXME: image code
+//            imageMap[resizedImage.hash] = resizedImage.hash
+            BBSJarvis.getImageAttachmentCode(image: image, failure: { error in
+                HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
+            }, success: { attachmentCode in
+                self.imageMap[resizedImage.hash] = attachmentCode
+            })
+            
             let attributedString = NSAttributedString(attachment: attachment)
-            textStorage.append(attributedString)
+            textStorage.insert(attributedString, at: textView.selectedRange.location)
             picker.dismiss(animated: true, completion: nil)
         }
     }

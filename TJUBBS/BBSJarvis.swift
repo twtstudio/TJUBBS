@@ -81,7 +81,9 @@ struct BBSJarvis {
     }
     
     static func setAvatar(image: UIImage, success:@escaping ()->(), failure: @escaping (Error)->()) {
-        BBSBeacon.uploadImage(url: BBSAPI.setAvatar, image: image, failure: failure, success: success)
+        BBSBeacon.uploadImage(url: BBSAPI.setAvatar, image: image, failure: failure, success: { _ in
+                success()
+        })
     }
     
     static func setInfo(para: [String : String], success: @escaping ()->(), failure: @escaping (Error)->()) {
@@ -261,5 +263,13 @@ struct BBSJarvis {
                 success(messages.reversed())
             }
         }
+    }
+    
+    static func getImageAttachmentCode(image: UIImage, failure: ((Error)->())? = nil, success: @escaping (Int)->()) {
+        BBSBeacon.uploadImage(url: BBSAPI.attach, method: .post, image: image, failure: failure, success: { dic in
+            if let data = dic["data"] as? [String : String], let code = data["id"] {
+                success(Int(code)!)
+            }
+        })
     }
 }
