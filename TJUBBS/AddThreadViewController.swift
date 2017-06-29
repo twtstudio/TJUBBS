@@ -279,7 +279,8 @@ extension AddThreadViewController: UITableViewDataSource {
                 return themeCell
             } else {
                 detailCell.extendBtn?.addTarget { btn in
-                    
+                    let editVC = EditDetailViewController()
+                    self.navigationController?.pushViewController(editVC, animated: true)
                     // FIXME: 做
                     print("present a view controller")
                 }

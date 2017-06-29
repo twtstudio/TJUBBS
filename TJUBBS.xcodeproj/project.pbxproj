@@ -14,6 +14,7 @@
 		3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3699D16F1ECB34630013D2FD /* MessageModel.swift */; };
 		36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */; };
 		36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0241EC34025006D58F8 /* BBSUser.swift */; };
+		36C461A21F05379E0002C0B5 /* EditDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C461A11F05379E0002C0B5 /* EditDetailViewController.swift */; };
 		36D0BC851EFE5B4800265D8B /* FriendsListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D0BC841EFE5B4800265D8B /* FriendsListController.swift */; };
 		36D0BC871EFE6A8000265D8B /* BubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D0BC861EFE6A8000265D8B /* BubbleCell.swift */; };
 		36D0BC891EFE6AA600265D8B /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D0BC881EFE6AA600265D8B /* UserCell.swift */; };
@@ -94,6 +95,7 @@
 		3699D16F1ECB34630013D2FD /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSJarvis.swift; sourceTree = "<group>"; };
 		36B8D0241EC34025006D58F8 /* BBSUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSUser.swift; sourceTree = "<group>"; };
+		36C461A11F05379E0002C0B5 /* EditDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditDetailViewController.swift; sourceTree = "<group>"; };
 		36D0BC841EFE5B4800265D8B /* FriendsListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsListController.swift; sourceTree = "<group>"; };
 		36D0BC861EFE6A8000265D8B /* BubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleCell.swift; sourceTree = "<group>"; };
 		36D0BC881EFE6AA600265D8B /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 				36DA591D1EC1D54E00B56F07 /* BoardListController.swift */,
 				36DA59211EC1DF8800B56F07 /* ThreadListController.swift */,
 				6802E4D21EC9984B00D3EE70 /* AddThreadViewController.swift */,
+				36C461A11F05379E0002C0B5 /* EditDetailViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -706,6 +709,7 @@
 				36D0BC8B1EFE6B5D00265D8B /* Metadata.swift in Sources */,
 				6849ABBF1EC897B200042B5F /* EliteThreadViewController.swift in Sources */,
 				36D0BC8D1EFE6D1700265D8B /* ChatDetailViewController.swift in Sources */,
+				36C461A21F05379E0002C0B5 /* EditDetailViewController.swift in Sources */,
 				36D0BC891EFE6AA600265D8B /* UserCell.swift in Sources */,
 				36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */,
 				36DA59221EC1DF8800B56F07 /* ThreadListController.swift in Sources */,
