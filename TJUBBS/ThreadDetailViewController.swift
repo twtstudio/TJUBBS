@@ -111,7 +111,7 @@ class ThreadDetailViewController: UIViewController {
         if thread != nil {
             initUI()
         }
-        becomeKeyboardObserver()
+//        becomeKeyboardObserver()
         
         // 把返回换成空白
         
@@ -379,6 +379,10 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.load(post: post)
         cell?.attributedTextContextView.setNeedsLayout()
         cell?.attributedTextContextView.layoutIfNeeded()
+//        // FIXME: FUCKING tap gesture
+//        cell?.attributedTextContextView.addTapGestureRecognizer { _ in
+//            self.tableView(self.tableView, didSelectRowAt: indexPath)
+//        }
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
         let url = URL(string: BBSAPI.avatar(uid: post.authorID))
@@ -460,6 +464,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1 {
             guard BBSUser.shared.token != nil else {
@@ -670,9 +675,15 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         present(ac, animated: true, completion: nil)
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
+//        cell.attributedTextContextView.setNeedsLayout()
+//        cell.attributedTextContextView.layoutIfNeeded()
+//        cell.contentView.setNeedsLayout()
+//        cell.contentView.layoutIfNeeded()
         if let _ = tableView.indexPath(for: cell) {
             self.tableView.reloadData()
+            
         }
+        
     
         // image viewer
         cell.imageViews.last?.addTapGestureRecognizer { _ in

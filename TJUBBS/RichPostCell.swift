@@ -103,7 +103,8 @@ class RichPostCell: DTAttributedTextCell {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
-            make.right.equalToSuperview().offset(-24)
+//            make.right.equalToSuperview().offset(-24)
+            make.right.equalToSuperview().offset(-18)
             make.bottom.equalToSuperview().offset(-7)
         }
     }
@@ -111,6 +112,7 @@ class RichPostCell: DTAttributedTextCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         portraitImageView.kf.cancelDownloadTask()
+//        imageViews.removeAll()
     }
     
     func load(thread: ThreadModel) {
@@ -132,7 +134,6 @@ class RichPostCell: DTAttributedTextCell {
         
         usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
         nickNameLabel.text = thread.authorID != 0 ? "@"+thread.authorNickname : ""
-        attributedTextContextView.shouldDrawImages = true
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
         
@@ -179,19 +180,18 @@ class RichPostCell: DTAttributedTextCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.updateConstraintsIfNeeded()
         contentView.setNeedsUpdateConstraints()
+        contentView.updateConstraintsIfNeeded()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
-    }
+//    override func setSelected(_ selected: Bool, animated: Bool) {
+//        super.setSelected(selected, animated: animated)
+//        // Configure the view for the selected state
+//    }
     
     
     deinit {
@@ -204,23 +204,23 @@ class RichPostCell: DTAttributedTextCell {
     }
 }
 
-extension RichPostCell {
-    
-    func aspectFitSizeForURL() -> CGSize {
-        //        let imageSize = imageSizes[url] ?? CGSizeMake(4, 3)
-        let imageSize = CGSize(width: 4, height: 3)
-        return self.aspectFitImageSize(size: imageSize)
-    }
-    
-    func aspectFitImageSize(size : CGSize) -> CGSize {
-        if size.equalTo(.zero) {
-            return size
-        }
-        return CGSize(width: 40, height: 40)
-        //        return CGSizeMake(self.bounds.size.width, self.bounds.size.width/size.width * size.height)
-    }
-    
-}
+//extension RichPostCell {
+//    
+//    func aspectFitSizeForURL() -> CGSize {
+//        //        let imageSize = imageSizes[url] ?? CGSizeMake(4, 3)
+//        let imageSize = CGSize(width: 4, height: 3)
+//        return self.aspectFitImageSize(size: imageSize)
+//    }
+//    
+//    func aspectFitImageSize(size : CGSize) -> CGSize {
+//        if size.equalTo(.zero) {
+//            return size
+//        }
+//        return CGSize(width: 40, height: 40)
+//        //        return CGSizeMake(self.bounds.size.width, self.bounds.size.width/size.width * size.height)
+//    }
+//    
+//}
 
 extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDelegate {
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor string: NSAttributedString!, frame: CGRect) -> UIView! {
@@ -242,23 +242,19 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         return button
     }
     
-//    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewForLink url: URL!, identifier: String!, frame: CGRect) -> UIView! {
-//        print(url)
-//    }
-    
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, didDraw layoutFrame: DTCoreTextLayoutFrame!, in context: CGContext!) {
         attributedTextContextView.layouter = nil
         attributedTextContextView.relayoutText()
-//        self.
     }
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
             // FIXME: may Crash
-            let size = self.aspectFitSizeForURL()
-            let aspectFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: size.width, height: size.height)
+//            let size = self.aspectFitSizeForURL()
+//            let aspectFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: size.width, height: size.height)
             
-            let imageView = DTLazyImageView(frame: aspectFrame)
+            let imageView = DTLazyImageView(frame: frame)
+//            let imageView = DTLazyImageView(frame: aspectFrame)
             
             imageView.delegate = self
             imageView.url = attachment.contentURL
@@ -277,23 +273,52 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         }
         return nil
     }
+    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, shouldDrawBackgroundFor textBlock: DTTextBlock!, frame: CGRect, context: CGContext!, for layoutFrame: DTCoreTextLayoutFrame!) -> Bool {
+        // fun functional programming
+        // let rect = CGRect.insetBy(frame)(dx: 1, dy: 1)
+        let roundedRect = UIBezierPath(roundedRect: CGRect.insetBy(frame)(dx: 1, dy: 1), cornerRadius: 2)
+        let color = textBlock.backgroundColor.cgColor
+        context.setFillColor(color)
+        context.addPath(roundedRect.cgPath)
+        context.fillPath()
+        
+        let rectangleRect = UIBezierPath(rect: CGRect(x: frame.origin.x, y: frame.origin.y+1, width: 4, height: frame.size.height-2))
+//        let rectangleRect = UIBezierPath(roundedRect: CGRect(x: frame.origin.x, y: frame.origin.y, width: 4, height: frame.size.height), cornerRadius: 2)
+        context.addPath(rectangleRect.cgPath)
+        context.setFillColor(UIColor(hex6: 0x2565ac).cgColor)
+        context.fillPath()
+        
+        return false
+    }
     
     // MARK: DTLazyImageViewDelegate
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)
         let attachments = attributedTextContextView.layoutFrame.textAttachments(with: predicate) as? [DTImageTextAttachment] ?? []
+//        let attachments = [lazyImageView.]
+        var shouldUpdate = false
         for attachment in attachments {
-            attachment.originalSize = size
-            let v = attributedTextContextView!
-            let qouteOffset: CGFloat = 10
-            let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right - qouteOffset
-            if size.width > maxWidth {
-                let scale = maxWidth / size.width
-                attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
-            }
+//            if attachment.originalSize.equalTo(CGSize.zero) {
+                attachment.originalSize = size
+                let v = attributedTextContextView!
+                let qouteOffset: CGFloat = 10
+                let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right - qouteOffset
+//                attachment.image = lazyImageView.image
+                if size.width > maxWidth {
+                    let scale = maxWidth / size.width
+                    attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
+                }
+                shouldUpdate = true
+//            }
         }
-        attributedTextContextView.layouter = nil
-        attributedTextContextView.relayoutText()
-        self.delegate?.htmlContentCellSizeDidChange(cell: self)
+        if shouldUpdate {
+            // layout might have changed due to image sizes
+            // do it on next run loop because a layout pass might be going on
+//            DispatchQueue.main.async {
+                self.attributedTextContextView.layouter = nil
+                self.attributedTextContextView.relayoutText()
+                self.delegate?.htmlContentCellSizeDidChange(cell: self)
+//            }
+        }
     }
 }
