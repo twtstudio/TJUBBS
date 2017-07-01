@@ -40,7 +40,9 @@ class BoardListController: UIViewController {
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let boards = data["boards"] as? Array<Dictionary<String, Any>>{
                 for board in boards {
-                    let fooBoard = BoardModel(JSON: board)
+                    var boardCopy = board
+                    boardCopy["forum_name"] = self.forum?.name
+                    let fooBoard = BoardModel(JSON: boardCopy)
                     self.boardList.append(fooBoard!)
                     
                     //2 threads
@@ -114,6 +116,7 @@ class BoardListController: UIViewController {
         }
         
         let addVC = AddThreadViewController()
+        addVC.selectedForum = self.forum
         self.navigationController?.pushViewController(addVC, animated: true)
     }
     

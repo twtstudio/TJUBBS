@@ -23,7 +23,7 @@ class AddThreadViewController: UIViewController {
     var selectedForum: ForumModel? {
         didSet {
             openForumListFlag = false
-            forumString = "讨论区：\(selectedForum?.name ?? " ")"
+            forumString = "讨论区: \(selectedForum?.name ?? " ")"
             tableView.reloadSections([0], with: .automatic)
             selectedBoard = nil
         }
@@ -31,7 +31,7 @@ class AddThreadViewController: UIViewController {
     var selectedBoard: BoardModel? {
         didSet {
             openBoardListFlag = false
-            boardString = "板块：\(selectedBoard?.name ?? " ")"
+            boardString = "板块: \(selectedBoard?.name ?? " ")"
             if selectedBoard?.id == 193 { //青年湖
                 UIView.animate(withDuration: 0.5, animations: {
                     self.anonymouslabel.alpha = 1
@@ -140,6 +140,9 @@ extension AddThreadViewController: UITableViewDataSource {
             if indexPath.row == 0 {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
                 cell.textLabel?.text = forumString
+                if let board = selectedBoard {
+                    cell.textLabel?.text = "讨论区: " + board.forumName
+                }
                 
                 let rightImageView = UIImageView(image: UIImage(named: openForumListFlag ? "upArrow" : "downArrow"))
                 cell.contentView.addSubview(rightImageView)
@@ -150,28 +153,32 @@ extension AddThreadViewController: UITableViewDataSource {
                     make.height.width.equalTo(15)
                 }
                 
-//                rightImageView.addTapGestureRecognizer {
-                cell.addTapGestureRecognizer {
-                    sender in
-                    if self.openForumListFlag == false {
-                        BBSJarvis.getForumList {
-                            dict in
-                            self.openForumListFlag = true
-                            if let data = dict["data"] as? [[String: Any]] {
-                                self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) 
+                // if there's default value for the cell
+                if tableView.allowsSelection {
+                    cell.addTapGestureRecognizer {
+                        sender in
+                        if self.openForumListFlag == false {
+                            BBSJarvis.getForumList {
+                                dict in
+                                self.openForumListFlag = true
+                                if let data = dict["data"] as? [[String: Any]] {
+                                    self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data)
+                                }
+                                var indexPathArray: [IndexPath] = []
+                                for i in 1...self.forumList.count {
+                                    indexPathArray.append(IndexPath(row: i, section: 0))
+                                }
+                                tableView.reloadSections([0], with: .none)
                             }
-                            var indexPathArray: [IndexPath] = []
-                            for i in 1...self.forumList.count {
-                                indexPathArray.append(IndexPath(row: i, section: 0))
-                            }
-                            tableView.reloadSections([0], with: .none)
+                        } else {
+                            self.openForumListFlag = false
+                            tableView.reloadSections([0], with: .automatic)
                         }
-                    } else {
-                        self.openForumListFlag = false
-                        tableView.reloadSections([0], with: .automatic)
                     }
                 }
-                cell.isHidden = !tableView.allowsSelection
+                rightImageView.isHidden = !tableView.allowsSelection
+                cell.isUserInteractionEnabled = tableView.allowsSelection
+                
                 let separator = UIView()
                 cell.contentView.addSubview(separator)
                 separator.backgroundColor = .gray
@@ -205,31 +212,34 @@ extension AddThreadViewController: UITableViewDataSource {
                     make.height.width.equalTo(15)
                 }
                 
-//                rightImageView.addTapGestureRecognizer {
-                cell.addTapGestureRecognizer {
-                    sender in
-//                    print("选板块啊")
-                    if self.openBoardListFlag == false {
-                        if let forum = self.selectedForum {
-                            BBSJarvis.getBoardList(forumID: forum.id) {
-                                dict in
-                                self.openBoardListFlag = true
-                                if let data = dict["data"] as? [String: Any],
-                                    let boards = data["boards"] as? [[String: Any]] {
-                                    self.boardList = Mapper<BoardModel>().mapArray(JSONArray: boards) 
+                // if there's default value for the cell
+                if tableView.allowsSelection {
+                    cell.addTapGestureRecognizer { [weak tableView]
+                        sender in
+                        //                    print("选板块啊")
+                        if self.openBoardListFlag == false {
+                            if let forum = self.selectedForum {
+                                BBSJarvis.getBoardList(forumID: forum.id) {
+                                    dict in
+                                    self.openBoardListFlag = true
+                                    if let data = dict["data"] as? [String: Any],
+                                        let boards = data["boards"] as? [[String: Any]] {
+                                        self.boardList = Mapper<BoardModel>().mapArray(JSONArray: boards)
+                                        tableView?.reloadSections([1], with: .none)
+                                    }
                                 }
-                                tableView.reloadSections([1], with: .none)
+                            } else {
+                                HUD.flash(.label("请先选择讨论区"))
                             }
                         } else {
-                            HUD.flash(.label("请先选择讨论区"))
+                            self.openBoardListFlag = false
+                            tableView?.reloadSections([1], with: .automatic)
                         }
-                    } else {
-                        self.openBoardListFlag = false
-                        tableView.reloadSections([1], with: .automatic)
                     }
                 }
                 rightImageView.isHidden = !tableView.allowsSelection
                 cell.isUserInteractionEnabled = tableView.allowsSelection
+
                 let separator = UIView()
                 cell.contentView.addSubview(separator)
                 separator.backgroundColor = .gray

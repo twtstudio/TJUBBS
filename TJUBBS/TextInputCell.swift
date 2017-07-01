@@ -58,7 +58,7 @@ class TextInputCell: UITableViewCell {
             
             textView = UITextView()
             textStorage.addLayoutManager((textView?.layoutManager)!)
-            textView?.font = UIFont.systemFont(ofSize: 16)
+            textView?.font = UIFont.systemFont(ofSize: 17)
             contentView.addSubview(textView!)
             textView?.snp.makeConstraints {
                 make in

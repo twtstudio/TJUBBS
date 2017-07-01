@@ -13,12 +13,11 @@ import PKHUD
 
 class EditDetailViewController: UIViewController {
     let textView = UITextView()
-    var placeholder: NSAttributedString?
+    var placeholder = ""
     let textStorage = MarklightTextStorage()
     let bar = UIToolbar()
     var isAnonymous = false
     var canAnonymous = false
-    weak var delegate: UIViewController?
     var imageMap: [Int : Int] = [:]
     
     override func viewWillAppear(_ animated: Bool) {
@@ -27,18 +26,30 @@ class EditDetailViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
     }
     
+    func loadPlaceholder() {
+        self.view.backgroundColor = textView.backgroundColor
+        textView.font = UIFont.systemFont(ofSize: 17)
+        textView.frame = CGRect(x: 15, y: 10, width: self.view.width - 30, height: self.view.height-10)
+        self.view.addSubview(textView)
+        
+        // markdown parser
+        textStorage.addLayoutManager(textView.layoutManager)
+        textStorage.appendString(placeholder)
+        
+        // set the cursor
+        textView.selectedRange = NSMakeRange(placeholder.characters.count, 0)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        textStorage.addLayoutManager(textView.layoutManager)
-        textView.font = UIFont.systemFont(ofSize: 17)
-        self.view.addSubview(textView)
-        textView.frame = CGRect(x: 15, y: 10, width: self.view.width - 30, height: self.view.height-10)
+        textView.becomeFirstResponder()
+        loadPlaceholder()
         
         let doneItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(self.doneButtonTapped(sender:)))
         self.navigationItem.rightBarButtonItem = doneItem
         
         let imageButton = UIButton(imageName: "icn_upload")
+        imageButton.tintColor = .clear
         imageButton.addTarget { btn in
             // TODO: 拍照
             if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
@@ -120,6 +131,7 @@ class EditDetailViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        self.textView.resignFirstResponder()
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -189,8 +201,7 @@ extension EditDetailViewController {
     
     func keyboardWillShow(notification: NSNotification) {
         if let endRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let beginRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            if(beginRect.size.height > 0 && (beginRect.origin.y - endRect.origin.y > 0)){
-                self.view.addSubview(bar)
+            if(beginRect.size.height > 0 && (beginRect.origin.y - endRect.origin.y >= 0)){
                 let barHeight: CGFloat = 40
                 let height = view.frame.size.height - endRect.size.height - barHeight
                 textView.height = height - 10 // 10: margin
@@ -199,6 +210,7 @@ extension EditDetailViewController {
                 bar.y = height
                 bar.width = self.view.width
                 bar.height = barHeight
+                self.view.addSubview(bar)
             }
         }
     }
