@@ -20,7 +20,6 @@ class RichPostCell: DTAttributedTextCell {
     
     let portraitImageView = UIImageView(image: UIImage(named: "头像2"))
     let usernameLabel = UILabel(text: "")
-    // FIXME: 太难看了
     let nickNameLabel = UILabel(text: "", color: .gray)
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
     let favorButton = UIButton(imageName: "收藏")
@@ -168,8 +167,6 @@ class RichPostCell: DTAttributedTextCell {
 //        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
         attributedTextContextView.shouldDrawImages = true
 
-        
-        attributedTextContextView.shouldDrawImages = true
         usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
         let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
@@ -273,7 +270,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
 //            self.delegate?.htmlContentCellSizeDidChange(cell: self)
 
             return imageView
-        }else if let attachment = attachment as? DTIframeTextAttachment {
+        } else if let attachment = attachment as? DTIframeTextAttachment {
             let videoView = DTWebVideoView(frame: frame)
             videoView.attachment = attachment
             return videoView
@@ -285,34 +282,18 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)
         let attachments = attributedTextContextView.layoutFrame.textAttachments(with: predicate) as? [DTImageTextAttachment] ?? []
-//        var shouldUpdate = false
         for attachment in attachments {
             attachment.originalSize = size
             let v = attributedTextContextView!
-            let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right
+            let qouteOffset: CGFloat = 10
+            let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right - qouteOffset
             if size.width > maxWidth {
                 let scale = maxWidth / size.width
                 attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
-//                shouldUpdate = true
             }
         }
-        //        if shouldUpdate {
         attributedTextContextView.layouter = nil
         attributedTextContextView.relayoutText()
-//        if shouldUpdate {
-//            let width = attributedTextContextView.bounds.width - attributedTextContextView.edgeInsets.left - attributedTextContextView.edgeInsets.right
-//            let viewSize =
-//                attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: width)
-//            attributedTextContextView.snp.remakeConstraints {
-//                make in
-//                make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//                make.left.equalTo(portraitImageView.snp.right).offset(8)
-//                make.right.equalToSuperview().offset(-24)
-//                make.bottom.equalToSuperview().offset(-2)
-//                make.height.equalTo(viewSize.height)
-//            }
-//        }
         self.delegate?.htmlContentCellSizeDidChange(cell: self)
-        //        }
     }
 }

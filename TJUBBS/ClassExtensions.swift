@@ -259,7 +259,7 @@ extension UIFont {
             flexSize = size
         } else if width >= 414 {
             // big size
-            flexSize = size*1.2
+            flexSize = size*1.1
         }
         return UIFont.systemFont(ofSize: flexSize)
     }

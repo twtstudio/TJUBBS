@@ -27,6 +27,7 @@ struct ThreadModel: Mappable {
     var category: String = ""
     var replyNumber: Int = 0
     var inCollection: Bool = false
+    var anonymous: Int = 0
     
     init?(map: Map) {}
     
@@ -47,6 +48,7 @@ struct ThreadModel: Mappable {
         content <- map["content"]
         category <- map["category"]
         inCollection <- map["in_collection"]
+        anonymous <- map["anonymous"]
     }
     
 }

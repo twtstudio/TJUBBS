@@ -19,6 +19,14 @@ class EditDetailViewController: UIViewController {
     var isAnonymous = false
     var canAnonymous = false
     var imageMap: [Int : Int] = [:]
+    var doneBlock: ((String) -> ())?
+//    var didSucceed: Bool {
+//        didSet {
+//            if didSucceed {
+//                let _ = self.navigationController?.popViewController(animated: true)
+//            }
+//        }
+//    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -49,7 +57,7 @@ class EditDetailViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = doneItem
         
         let imageButton = UIButton(imageName: "icn_upload")
-        imageButton.tintColor = .clear
+        imageButton.tintColor = .gray
         imageButton.addTarget { btn in
             // TODO: 拍照
             if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
@@ -91,7 +99,6 @@ class EditDetailViewController: UIViewController {
             }
         }
         
-        canAnonymous = true
         if canAnonymous {
             let anonymousView = UIView()
             let anonymousLabel = UILabel()
@@ -136,10 +143,8 @@ class EditDetailViewController: UIViewController {
     }
     
     func doneButtonTapped(sender: UIBarButtonItem) {
-        print(self.textStorage.string)
         let fullRange = NSMakeRange(0, textStorage.length)
         let resultString = NSMutableAttributedString(attributedString: textStorage.attributedSubstring(from: fullRange))
-        var uploadFinished = true
         textStorage.enumerateAttributes(in: fullRange, options: .reverse, using: { attributes, range, stop in
             if let attribute = attributes["NSAttachment"] as? NSTextAttachment, let image = attribute.image {
                 // get the code
@@ -149,14 +154,15 @@ class EditDetailViewController: UIViewController {
                 } else {
                     // uploading
                     HUD.flash(.label("上传中...请稍后发布😃"), delay: 1.0)
-                    uploadFinished = false
                 }
             }
         })
-        if uploadFinished {
-            let result = resultString.string
-            // post the string
-            print(result)
+        if !resultString.string.isEmpty {
+            let string = resultString.string
+            self.doneBlock?(string)
+            // FIXME: pop the view controller
+        } else {
+            HUD.flash(.label("不可以发布空白贴哦👀"), delay: 1.0)
         }
     }
     
@@ -202,6 +208,8 @@ extension EditDetailViewController {
     func keyboardWillShow(notification: NSNotification) {
         if let endRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let beginRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             if(beginRect.size.height > 0 && (beginRect.origin.y - endRect.origin.y >= 0)){
+                self.view.addSubview(bar)
+                bar.y = 0
                 let barHeight: CGFloat = 40
                 let height = view.frame.size.height - endRect.size.height - barHeight
                 textView.height = height - 10 // 10: margin
@@ -210,7 +218,6 @@ extension EditDetailViewController {
                 bar.y = height
                 bar.width = self.view.width
                 bar.height = barHeight
-                self.view.addSubview(bar)
             }
         }
     }

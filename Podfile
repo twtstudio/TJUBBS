@@ -6,7 +6,7 @@ target 'TJUBBS' do
   pod 'SnapKit'
   pod 'PKHUD', '~> 4.0'
   pod 'MJRefresh', '~> 3.1.12'
-  pod 'WMPageController'
+  pod 'WMPageController', '2.3.0'
   pod 'ObjectMapper'
   pod 'SlackTextViewController'
   pod 'Kingfisher'
