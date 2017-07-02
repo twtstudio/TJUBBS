@@ -139,7 +139,7 @@ class EditDetailViewController: UIViewController {
         let fullRange = NSMakeRange(0, textStorage.length)
         let resultString = NSMutableAttributedString(attributedString: textStorage.attributedSubstring(from: fullRange))
         var isUploading = false
-        textStorage.enumerateAttributes(in: fullRange, options: .longestEffectiveRangeNotRequired, using: { attributes, range, stop in
+        textStorage.enumerateAttributes(in: fullRange, options: .reverse, using: { attributes, range, stop in
             if let attribute = attributes["NSAttachment"] as? NSTextAttachment, let image = attribute.image {
                 // get the code
                 if let code = imageMap[image.hash] {
@@ -186,7 +186,6 @@ class EditDetailViewController: UIViewController {
             default:
                 break
             }
-            print(sender)
         }
     }
     
@@ -236,14 +235,15 @@ extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigatio
             // resizedImage.hash as index
             // FIXME: image code
 //            imageMap[resizedImage.hash] = resizedImage.hash
+            let attributedString = NSAttributedString(attachment: attachment)
+            textStorage.insert(attributedString, at: textView.selectedRange.location)
+
             BBSJarvis.getImageAttachmentCode(image: image, failure: { error in
                 HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
             }, success: { attachmentCode in
                 self.imageMap[resizedImage.hash] = attachmentCode
             })
             
-            let attributedString = NSAttributedString(attachment: attachment)
-            textStorage.insert(attributedString, at: textView.selectedRange.location)
             picker.dismiss(animated: true, completion: nil)
         }
     }

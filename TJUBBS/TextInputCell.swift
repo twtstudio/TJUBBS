@@ -20,7 +20,7 @@ class TextInputCell: UITableViewCell {
     var textField: UITextField?
     var textView: UITextView?
     var type: TextInputCellType = .textField
-    let textStorage = MarklightTextStorage()
+//    let textStorage = MarklightTextStorage()
     var extendBtn: UIButton?
 
     convenience init(title: String, placeholder: String, type: TextInputCellType = .textField) {
@@ -57,7 +57,7 @@ class TextInputCell: UITableViewCell {
             }
             
             textView = UITextView()
-            textStorage.addLayoutManager((textView?.layoutManager)!)
+//            textStorage.addLayoutManager((textView?.layoutManager)!)
             textView?.font = UIFont.systemFont(ofSize: 17)
             contentView.addSubview(textView!)
             textView?.snp.makeConstraints {
