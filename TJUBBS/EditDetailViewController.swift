@@ -20,13 +20,6 @@ class EditDetailViewController: UIViewController {
     var canAnonymous = false
     var imageMap: [Int : Int] = [:]
     var doneBlock: ((String) -> ())?
-//    var didSucceed: Bool {
-//        didSet {
-//            if didSucceed {
-//                let _ = self.navigationController?.popViewController(animated: true)
-//            }
-//        }
-//    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -145,24 +138,28 @@ class EditDetailViewController: UIViewController {
     func doneButtonTapped(sender: UIBarButtonItem) {
         let fullRange = NSMakeRange(0, textStorage.length)
         let resultString = NSMutableAttributedString(attributedString: textStorage.attributedSubstring(from: fullRange))
-        textStorage.enumerateAttributes(in: fullRange, options: .reverse, using: { attributes, range, stop in
+        var isUploading = false
+        textStorage.enumerateAttributes(in: fullRange, options: .longestEffectiveRangeNotRequired, using: { attributes, range, stop in
             if let attribute = attributes["NSAttachment"] as? NSTextAttachment, let image = attribute.image {
                 // get the code
                 if let code = imageMap[image.hash] {
-                    let text = "![](attach: \(code))"
+                    let text = "![](attach:\(code))"
                     resultString.replaceCharacters(in: range, with: text)
                 } else {
                     // uploading
+                    isUploading = true
                     HUD.flash(.label("上传中...请稍后发布😃"), delay: 1.0)
                 }
             }
         })
-        if !resultString.string.isEmpty {
-            let string = resultString.string
-            self.doneBlock?(string)
-            // FIXME: pop the view controller
-        } else {
-            HUD.flash(.label("不可以发布空白贴哦👀"), delay: 1.0)
+        if !isUploading {
+            if !resultString.string.isEmpty {
+                let string = resultString.string
+                self.doneBlock?(string)
+                // FIXME: pop the view controller
+            } else {
+                HUD.flash(.label("不可以发布空白贴哦👀"), delay: 1.0)
+            }
         }
     }
     

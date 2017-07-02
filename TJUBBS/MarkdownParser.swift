@@ -112,11 +112,15 @@
  software, even if advised of the possibility of such damage.
  */
 
+let base = "https://bbs.twtstudio.com"
+
 
 import Foundation
 
 
 public struct MarkdownOptions {
+    
+
     /// when true, (most) bare plain URLs are auto-hyperlinked
     /// WARNING: this is a significant deviation from the markdown spec
     public var autoHyperlink: Bool = false

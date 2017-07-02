@@ -24,32 +24,10 @@ class FriendsListController: UIViewController {
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         self.title = "好友"
-        initUI()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        
-    }
-    
-    func initUI() {
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView.register(MessageCell.self, forCellReuseIdentifier: "friendCell")
@@ -60,7 +38,6 @@ class FriendsListController: UIViewController {
         
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_header.beginRefreshing()
-        
     }
 }
 
@@ -97,15 +74,6 @@ extension FriendsListController: UITableViewDelegate {
         let detailVC = ChatDetailViewController()
         detailVC.pal = friendList[indexPath.row]
         self.navigationController?.pushViewController(detailVC, animated: true)
-    }
-    
-    //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: .zero)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.1
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

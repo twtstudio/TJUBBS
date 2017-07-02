@@ -80,6 +80,7 @@ class RichPostCell: DTAttributedTextCell {
             make in
             make.centerY.equalTo(usernameLabel)
             make.left.equalTo(usernameLabel.snp.right).offset(3)
+            make.right.lessThanOrEqualTo(floorLabel.snp.left)
         }
         
         //        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
@@ -204,23 +205,6 @@ class RichPostCell: DTAttributedTextCell {
     }
 }
 
-//extension RichPostCell {
-//    
-//    func aspectFitSizeForURL() -> CGSize {
-//        //        let imageSize = imageSizes[url] ?? CGSizeMake(4, 3)
-//        let imageSize = CGSize(width: 4, height: 3)
-//        return self.aspectFitImageSize(size: imageSize)
-//    }
-//    
-//    func aspectFitImageSize(size : CGSize) -> CGSize {
-//        if size.equalTo(.zero) {
-//            return size
-//        }
-//        return CGSize(width: 40, height: 40)
-//        //        return CGSizeMake(self.bounds.size.width, self.bounds.size.width/size.width * size.height)
-//    }
-//    
-//}
 
 extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDelegate {
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor string: NSAttributedString!, frame: CGRect) -> UIView! {

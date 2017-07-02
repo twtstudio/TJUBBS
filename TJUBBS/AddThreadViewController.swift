@@ -321,22 +321,6 @@ extension AddThreadViewController: UITableViewDelegate {
         }
     }
     
-    //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-            return UIView()
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.01
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView()
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.01
-    }
 }
 
 extension AddThreadViewController: UIGestureRecognizerDelegate {

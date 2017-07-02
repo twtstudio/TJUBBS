@@ -12,47 +12,6 @@ import ObjectMapper
 class FavorateViewController: UIViewController {
     
     var tableView: UITableView?
-//    var dataList = [
-//        [
-//            "image": "portrait",
-//            "username": "wangcong",
-//            "category": "全站热点",
-//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "wangcong",
-//            "category": "全站热点",
-//            "title": "厉害了word天大！4项成果获得了2016年国家科技奖",
-//            "detail": "今天我突然想到天外天，天大bbs，上来看看，好多年没上了，竟然还能用！我 98 级的，一晃这么多年过去了，想当年，这里多热闹啊！",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "portrait",
-//            "username": "yqzhufeng",
-//            "title": "3月26日周日百人狼人单身趴",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ]
-//    ] as Array<Dictionary<String, String>>
     var threadList: [ThreadModel] = []
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -61,7 +20,6 @@ class FavorateViewController: UIViewController {
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         self.title = "我的收藏"
-        initUI()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -70,7 +28,18 @@ class FavorateViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        tableView = UITableView(frame: .zero, style: .grouped)
+        view.addSubview(tableView!)
+        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
+        tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
+        tableView?.delegate = self
+        tableView?.dataSource = self
+        tableView?.rowHeight = UITableViewAutomaticDimension
+        tableView?.estimatedRowHeight = 300
+
+        // This is the better way to hide first headerViews
+        self.tableView?.contentInset.top = -35
+        
         BBSJarvis.getCollectionList {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
@@ -84,30 +53,7 @@ class FavorateViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        
-    }
-    
-    func initUI() {
 
-        tableView = UITableView(frame: .zero, style: .grouped)
-        view.addSubview(tableView!)
-        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
-        tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
-        tableView?.delegate = self
-        tableView?.dataSource = self
-        tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 300
-    }
 }
 
 extension FavorateViewController: UITableViewDataSource {
@@ -139,14 +85,4 @@ extension FavorateViewController: UITableViewDelegate {
         detailVC.thread = threadList[indexPath.row]
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-    
-    //TODO: Better way to hide first headerView
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: .zero)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.1
-    }
-
 }

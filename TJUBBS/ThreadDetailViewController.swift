@@ -20,7 +20,6 @@ class ThreadDetailViewController: UIViewController {
     let screenSize = UIScreen.main.bounds.size
     
     var tableView = UITableView(frame: .zero, style: .grouped)
-    fileprivate var loadFlag = false
     var board: BoardModel?
     var thread: ThreadModel?
     var postList: [PostModel] = []
@@ -47,7 +46,7 @@ class ThreadDetailViewController: UIViewController {
     }
     
     convenience init(tid: Int) {
-        self.init()
+        self.init(thread: ThreadModel(JSONString: "{\"id\":\(tid)}")!)
         self.tid = tid
         self.hidesBottomBarWhenPushed = true
     }
@@ -93,7 +92,7 @@ class ThreadDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = thread?.title
+//        self.title = thread?.title
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
@@ -108,9 +107,9 @@ class ThreadDetailViewController: UIViewController {
         
         tableView.allowsSelection = true
         
-        if thread != nil {
-            initUI()
-        }
+//        if thread != nil {
+        initUI()
+//        }
 //        becomeKeyboardObserver()
         
         // 把返回换成空白
@@ -135,19 +134,18 @@ class ThreadDetailViewController: UIViewController {
                 let board = data["board"] as? [String: Any] {
                 
                 self.board = BoardModel(JSON: board)
-                let flag = self.thread == nil // thread nil flag
+                let titleIsEmpty = self.thread!.title == "" // thread nil flag
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
                 self.boardLabel.text = self.board?.name
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
-                if flag {
-                    self.initUI()
+                if titleIsEmpty {
+                    self.loadTitle()
                 }
             }
             if self.tableView.mj_header.isRefreshing() {
                 self.tableView.mj_header.endRefreshing()
             }
-            self.loadFlag = false
             self.postList = self.currentPageList + self.pastPageList
             self.tableView.reloadData()
         }
@@ -175,15 +173,12 @@ class ThreadDetailViewController: UIViewController {
             let posts = data["post"] as? [[String: Any]] {
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
                 if (self.currentPageList.count < 49)&&(self.page == 0) || (self.currentPageList.count < 50)&&(self.page != 0) {
-//                    HUD.flash(.label("滑到底部了哟🌚"), delay: 0.7)
-//                    HUD.flash(.label("滑到底部了哟🌚"), onView: self.view, delay: 0.4)
                 }
             }
             if self.tableView.mj_footer.isRefreshing() {
                 self.tableView.mj_footer.endRefreshing()
                 self.tableView.mj_footer.isAutomaticallyHidden = true
             }
-            self.loadFlag = false
             self.postList = self.pastPageList + self.currentPageList
             UIView.performWithoutAnimation {
                 self.tableView.reloadData()
@@ -208,7 +203,6 @@ class ThreadDetailViewController: UIViewController {
                 self.tableView.mj_footer.endRefreshing()
                 self.tableView.mj_footer.isAutomaticallyHidden = true
             }
-            self.loadFlag = false
             self.postList = self.pastPageList + self.currentPageList
             UIView.performWithoutAnimation {
                 self.tableView.reloadData()
@@ -225,6 +219,40 @@ class ThreadDetailViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func loadTitle() {
+        if let headerView = headerView {
+            for view in headerView.subviews {
+                if let label = view as? UILabel {
+                    label.text = self.thread!.title
+                    headerView.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+36)
+                }
+            }
+            self.tableView.reloadData()
+        }
+        for view in centerTextView.subviews {
+            if let titleLabel = view as? UILabel {
+                var x: CGFloat = 0
+                let y: CGFloat = 64
+                var width: CGFloat = 0
+                var height: CGFloat = 0
+                let title = NSString(string: self.thread!.title)
+                let titleSize = title.size(attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
+                width = min(titleSize.width, UIScreen.main.bounds.width-125)
+                height = titleSize.height
+                x = (UIScreen.main.bounds.width - width)/2
+                centerTextView.frame = CGRect(x: x, y: y, width: width, height: height)
+                titleLabel.tag = 1
+                titleLabel.textAlignment = .center
+                titleLabel.text = title as String
+                titleLabel.font = UIFont.systemFont(ofSize: 14)
+                titleLabel.textColor = .white
+                titleLabel.frame = CGRect(x: 0, y: 0, width: width, height: titleSize.height)
+                titleLabel.numberOfLines = 1
+            }
+        }
+        boardLabel.text = self.board?.name ?? "详情"
     }
     
     func initUI() {
@@ -379,10 +407,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.load(post: post)
         cell?.attributedTextContextView.setNeedsLayout()
         cell?.attributedTextContextView.layoutIfNeeded()
-//        // FIXME: FUCKING tap gesture
-//        cell?.attributedTextContextView.addTapGestureRecognizer { _ in
-//            self.tableView(self.tableView, didSelectRowAt: indexPath)
-//        }
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
         let url = URL(string: BBSAPI.avatar(uid: post.authorID))
@@ -446,7 +470,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
 }
 
 extension ThreadDetailViewController: UITableViewDelegate {
-    //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
             return headerView
@@ -481,7 +504,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
                 return
             }
             let editDetailVC = EditDetailViewController()
-            editDetailVC.title = "回复 " + (self.thread?.authorName ?? "")
+            editDetailVC.title = "回复 " + self.postList[indexPath.row].authorName
             editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 let post = self.postList[indexPath.row]
@@ -499,10 +522,6 @@ extension ThreadDetailViewController: UITableViewDelegate {
                 })
             }
             self.navigationController?.pushViewController(editDetailVC, animated: true)
-//
-//            let editVC = EditDetailViewController()
-//            editVC.title = "回复 # \(postList[indexPath.row].floor) " + postList[indexPath.row].authorName + " 的帖子"
-//            self.navigationController?.pushViewController(editVC, animated: true)
         }
     }
 }
@@ -583,75 +602,6 @@ extension ThreadDetailViewController: UIScrollViewDelegate {
     
 }
 
-//extension ThreadDetailViewController: UITextFieldDelegate {
-//    
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        if textField == replyTextField {
-//            textField.text = ""
-//            self.dismissKeyboard()
-//        }
-//        return true
-//    }
-//}
-
-////keyboard layout
-//extension ThreadDetailViewController {
-//    
-//    override func becomeKeyboardObserver() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-//        tap.delegate = self
-//        view.addGestureRecognizer(tap)
-//        //        print("用的是我，口亨～")
-//    }
-//    
-//    
-//    func keyboardWillShow(notification: NSNotification) {
-//        
-//        let userInfo  = notification.userInfo! as Dictionary
-//        let keyboardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-//        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-//        let deltaY = keyboardBounds.size.height
-//        let animations:(() -> Void) = {
-//            self.replyView?.transform = CGAffineTransform(translationX: 0, y: -deltaY)
-//        }
-//        if duration > 0 {
-//            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
-//            UIView.animate(withDuration: duration, delay: 0, options: options, animations: animations, completion: nil)
-//        } else {
-//            animations()
-//        }
-//    }
-//    
-//    func keyboardWillHide(notification: NSNotification) {
-//        
-//        let userInfo  = notification.userInfo! as Dictionary
-//        let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-//        
-//        let animations:(() -> Void) = {
-//            self.replyView?.transform = CGAffineTransform(translationX: 0, y: 0)
-//        }
-//        
-//        if duration > 0 {
-//            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
-//            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
-//        } else {
-//            animations()
-//        }
-//    }
-//}
-
-//extension ThreadDetailViewController: UIGestureRecognizerDelegate {
-//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-//        if touch.view?.superview is UITableViewCell {
-//            return false
-//
-//        }
-//        return true
-//    }
-//}
-
 extension ThreadDetailViewController: HtmlContentCellDelegate {
     func htmlContentCell(cell: RichPostCell, linkDidPress link: URL) {
 //        if let tid = Int(link.absoluteString.replacingOccurrences(of: "(.*?)bbs.tju.edu.cn/forum/thread/(.[0-9]+$)", with: "$2", options: .regularExpression, range: nil)) {
@@ -675,10 +625,6 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         present(ac, animated: true, completion: nil)
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
-//        cell.attributedTextContextView.setNeedsLayout()
-//        cell.attributedTextContextView.layoutIfNeeded()
-//        cell.contentView.setNeedsLayout()
-//        cell.contentView.layoutIfNeeded()
         if let _ = tableView.indexPath(for: cell) {
             self.tableView.reloadData()
             
@@ -686,11 +632,20 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         
     
         // image viewer
-        cell.imageViews.last?.addTapGestureRecognizer { _ in
-            let detailVC = ImageDetailViewController(image: cell.imageViews.last?.image ?? UIImage(named: "progress")!)
-            detailVC.showSaveBtn = true
-            self.modalPresentationStyle = .overFullScreen
-            self.present(detailVC, animated: true, completion: nil)
+//        cell.imageViews.last?.addTapGestureRecognizer { _ in
+//            let detailVC = ImageDetailViewController(image: cell.imageViews.last?.image ?? UIImage(named: "progress")!)
+//            detailVC.showSaveBtn = true
+//            self.modalPresentationStyle = .overFullScreen
+//            self.present(detailVC, animated: true, completion: nil)
+//        }
+        
+        for imgView in cell.imageViews {
+            imgView.addTapGestureRecognizer { _ in
+                let detailVC = ImageDetailViewController(image: imgView.image ?? UIImage(named: "progress")!)
+                detailVC.showSaveBtn = true
+                self.modalPresentationStyle = .overFullScreen
+                self.present(detailVC, animated: true, completion: nil)
+            }
         }
     }
 }

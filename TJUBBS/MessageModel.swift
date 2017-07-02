@@ -54,22 +54,28 @@ struct MessageModel: Mappable {
 struct MessageContentModel: Mappable {
     var id: Int = 0
     var thread_id: Int = 0
-    var title: String = ""
+    var thread_title: String = ""
     var floor: Int = 0
     var createTime: Int = 0
     var modifyTime: Int = 0
     var content: String = ""
-    
+    var anonymous: Int = 0
+    var reply_id: Int = 0
+    var reply_content: String = ""
+
     init?(map: Map) {}
     
     mutating func mapping(map: Map) {
         id <- map["id"]
         thread_id <- map["thread_id"]
-        title <- map["thread_title"]
+        thread_title <- map["thread_title"]
         content <- map["content"]
         floor <- map["floor"]
         createTime <- map["t_create"]
         modifyTime <- map["t_modify"]
+        anonymous <- map["anonymous"]
+        reply_id <- map["reply_id"]
+        reply_content <- map["reply_content"]
     }
 }
 

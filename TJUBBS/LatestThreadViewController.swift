@@ -24,7 +24,6 @@ class LatestThreadViewController: UIViewController {
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         
-        initUI()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -33,28 +32,9 @@ class LatestThreadViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
-    
-    func initUI() {
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
+                
         registerForPreviewing(with: self, sourceView: tableView!)
         tableView?.snp.makeConstraints {
             make in
@@ -69,21 +49,8 @@ class LatestThreadViewController: UIViewController {
         
         tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         tableView?.mj_header.beginRefreshing()
+
     }
-    
-//    func refresh() {
-//        BBSJarvis.getIndex {
-//            dict in
-//            if let data = dict["data"] as? Dictionary<String, Any>,
-//                let latest = data["latest"] as? Array<Dictionary<String, Any>> {
-//                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: latest) ?? []
-//            }
-//            if (self.tableView?.mj_header.isRefreshing())! {
-//                self.tableView?.mj_header.endRefreshing()
-//            }
-//            self.tableView?.reloadData()
-//        }
-//    }
 }
 
 extension LatestThreadViewController: UITableViewDataSource {

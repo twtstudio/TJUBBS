@@ -13,29 +13,6 @@ import MJRefresh
 class MyPostViewController: UIViewController {
     
     var tableView: UITableView?
-//    var dataList = [
-//        [
-//            "image": "头像2",
-//            "username": "苏轼",
-//            "title": "念奴娇·赤壁怀古",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "头像2",
-//            "username": "苏轼",
-//            "title": "水调歌头·明月几时有",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ],
-//        [
-//            "image": "头像2",
-//            "username": "苏轼",
-//            "title": "江城子·乙卯正月二十日夜记梦",
-//            "replyNumber": "20",
-//            "time": "1494061223"
-//        ]
-//    ] as Array<Dictionary<String, String>>
     var threadList: [ThreadModel] = []
     var page = 0
     
@@ -45,13 +22,23 @@ class MyPostViewController: UIViewController {
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         self.title = "我的发布"
-        initUI()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-
+        tableView = UITableView(frame: .zero, style: .grouped)
+        view.addSubview(tableView!)
+        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
+        tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
+        tableView?.delegate = self
+        tableView?.dataSource = self
+        tableView?.rowHeight = UITableViewAutomaticDimension
+        tableView?.estimatedRowHeight = 300
+        
+        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.tableView?.mj_footer.isAutomaticallyHidden = true
+        self.tableView?.mj_header.beginRefreshing()
     }
     
     func refresh() {
@@ -95,35 +82,6 @@ class MyPostViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        
-    }
-    
-    func initUI() {
-
-        tableView = UITableView(frame: .zero, style: .grouped)
-        view.addSubview(tableView!)
-        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
-        tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
-        tableView?.delegate = self
-        tableView?.dataSource = self
-        tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 300
-        
-        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView?.mj_footer.isAutomaticallyHidden = true
-        self.tableView?.mj_header.beginRefreshing()
     }
 }
 

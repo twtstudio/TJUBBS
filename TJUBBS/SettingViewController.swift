@@ -18,7 +18,6 @@ class SettingViewController: UIViewController {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.title = "通用设置"
         self.hidesBottomBarWhenPushed = true
-        initUI()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -27,20 +26,20 @@ class SettingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    func initUI() {
+        
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView?.delegate = self
         tableView?.dataSource = self
+
+        // This is the better way to hide first headerViews
+        self.tableView?.contentInset.top = -35
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
 }
 
