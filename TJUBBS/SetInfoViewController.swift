@@ -117,7 +117,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                         let imagePicker = UIImagePickerController()
                         imagePicker.delegate = self
                         imagePicker.allowsEditing = true
-                        imagePicker.sourceType = .savedPhotosAlbum
+                        imagePicker.sourceType = .photoLibrary
                         self.present(imagePicker, animated: true) {
                             
                         }

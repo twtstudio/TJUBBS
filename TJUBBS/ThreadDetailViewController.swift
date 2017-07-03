@@ -32,7 +32,7 @@ class ThreadDetailViewController: UIViewController {
     var centerTextView: UIView! = nil
     var headerView: UIView? = nil
     var boardLabel = UILabel()
-    var replyButton: UIButton?
+    var replyButton = FakeTextFieldView()
     
     var bottomButton = UIButton(imageName: "down")
 
@@ -308,7 +308,7 @@ class ThreadDetailViewController: UIViewController {
         tableView.keyboardDismissMode = .interactive
         tableView.snp.makeConstraints {
             make in
-            make.bottom.equalToSuperview().offset(-50)
+            make.bottom.equalToSuperview().offset(-45)
             make.top.left.right.equalToSuperview()
         }
         tableView.delegate = self
@@ -334,16 +334,23 @@ class ThreadDetailViewController: UIViewController {
             self.loadToBottom()
         }
         
-        replyButton = UIButton()
-        replyButton?.setBackgroundImage(UIImage(named: "inputBar"), for: .normal)
-//        replyButton?.frame = CGRect(x: 0, y: tableView.height, width: self.view.width, height: 50)
-        self.view.addSubview(replyButton!)
-        replyButton?.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(tableView.snp.bottom)
-        }
-        replyButton?.adjustsImageWhenHighlighted = false
-        replyButton?.addTarget { _ in
+//        replyButton = UIButton()
+//        replyButton?.setBackgroundImage(UIImage(named: "inputBar"), for: .normal)
+////        replyButton?.frame = CGRect(x: 0, y: tableView.height, width: self.view.width, height: 50)
+//        self.view.addSubview(replyButton!)
+//        replyButton?.snp.makeConstraints { make in
+//            make.left.right.bottom.equalToSuperview()
+//            make.top.equalTo(tableView.snp.bottom)
+//        }
+//        replyButton?.adjustsImageWhenHighlighted = false
+        self.view.addSubview(replyButton)
+        replyButton.frame = CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45)
+        replyButton.draw(replyButton.frame)
+//        replyButton.addTapGestureRecognizer { btn in
+//            self.replyButtonDidTap(sender: UIButton())
+//        }
+
+        replyButton.addTapGestureRecognizer { _ in
             
             guard BBSUser.shared.token != nil else {
                 let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
@@ -409,9 +416,13 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
-        let url = URL(string: BBSAPI.avatar(uid: post.authorID))
-        let cacheKey = "\(post.authorID)" + Date.today
-        cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: self.defultAvatar)
+        if post.authorID == 0 {
+            cell?.portraitImageView.image = UIImage(named: "anonymous")
+        } else {
+            let url = URL(string: BBSAPI.avatar(uid: post.authorID))
+            let cacheKey = "\(post.authorID)" + Date.today
+            cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: UIImage(named: "default"))
+        }
         return cell!
     }
     
@@ -423,25 +434,33 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.hasFixedRowHeight = false
         cell?.delegate = self
         cell?.selectionStyle = .none
-        cell?.load(thread: self.thread!)
+        
+        
+        cell?.load(thread: self.thread!, boardName: board?.name ?? "")
+//        let boardName = NSAttributedString(string: board?.name ?? "", attributes: [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
+//                                                                                   NSForegroundColorAttributeName: UIColor.BBSBlue])
+//        cell?.floorLabel.attributedText = boardName
+//        cell?.floorLabel.text = board?.name
+        
         cell?.attributedTextContextView.setNeedsLayout()
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
-        cell?.floorLabel.isHidden = false
+//        cell?.floorLabel.isHidden = false
         
         cell?.floorLabel.addTapGestureRecognizer { [weak self] _ in
             let boardVC = ThreadListController(board: self?.board)
             self?.navigationController?.pushViewController(boardVC, animated: true)
         }
         
-        let boardName = NSAttributedString(string: board?.name ?? "", attributes: [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
-            NSForegroundColorAttributeName: UIColor.BBSBlue])
-        cell?.floorLabel.attributedText = boardName
         
-        let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
-        let cacheKey = "\(thread!.authorID)" + Date.today
-        cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: self.defultAvatar)
+        if thread!.authorID == 0 {
+            cell?.portraitImageView.image = UIImage(named: "anonymous")
+        } else {
+            let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
+            let cacheKey = "\(thread!.authorID)" + Date.today
+            cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: UIImage(named: "default"))
+        }
         return cell!
     }
 

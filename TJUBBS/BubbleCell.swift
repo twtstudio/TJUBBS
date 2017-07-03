@@ -29,7 +29,7 @@ class BubbleCell: UITableViewCell {
         contentView.addSubview(bubble)
         
         selectionStyle = .none
-        
+        prepareGesture()
     }
     
     func bubbleWith(message: MessageModel) -> UIView {
@@ -100,7 +100,7 @@ class BubbleCell: UITableViewCell {
             messageTextView.backgroundColor = .clear
             messageTextView.isScrollEnabled = false
             messageTextView.isEditable = false;
-            messageTextView.dataDetectorTypes = .all;
+//            messageTextView.dataDetectorTypes = .all;
             // Eliminate all the paddings and insets
             messageTextView.textContainerInset = .zero
             messageTextView.textContainer.lineFragmentPadding = 0
@@ -147,7 +147,7 @@ class BubbleCell: UITableViewCell {
             messageTextView.backgroundColor = .clear
             messageTextView.isScrollEnabled = false
             messageTextView.isEditable = false;
-            messageTextView.dataDetectorTypes = .all;
+//            messageTextView.dataDetectorTypes = ;
             // Eliminate all the paddings and insets
             messageTextView.textContainerInset = .zero
             messageTextView.textContainer.lineFragmentPadding = 0
@@ -167,6 +167,34 @@ class BubbleCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    func prepareGesture() {
+        self.isUserInteractionEnabled = true
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(self.longPressAction(sender:)))
+        longPress.minimumPressDuration = 1
+        self.addGestureRecognizer(longPress)
+    }
+    
+    func longPressAction(sender: UILongPressGestureRecognizer) {
+        self.becomeFirstResponder()
+        let copyItem = UIMenuItem(title: "复制", action: #selector(self.customCopy(sender:)))
+        UIMenuController.shared.menuItems = [copyItem]
+        UIMenuController.shared.setTargetRect(self.frame, in: self.superview!)
+        UIMenuController.shared.setMenuVisible(true, animated: true)
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return action == #selector(self.customCopy(sender:))
+    }
+    
+    func customCopy(sender: Any?) {
+        let pasteBoard = UIPasteboard.general
+        pasteBoard.string = message.content
     }
     
 }

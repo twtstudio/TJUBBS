@@ -53,11 +53,11 @@ class EditDetailViewController: UIViewController {
         imageButton.tintColor = .gray
         imageButton.addTarget { btn in
             // TODO: 拍照
-            if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
+            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
                 let imagePicker = UIImagePickerController()
                 imagePicker.delegate = self
                 imagePicker.allowsEditing = true
-                imagePicker.sourceType = .savedPhotosAlbum
+                imagePicker.sourceType = .photoLibrary
                 self.present(imagePicker, animated: true) {
                     
                 }
@@ -156,7 +156,6 @@ class EditDetailViewController: UIViewController {
             if !resultString.string.isEmpty {
                 let string = resultString.string
                 self.doneBlock?(string)
-                // FIXME: pop the view controller
             } else {
                 HUD.flash(.label("不可以发布空白贴哦👀"), delay: 1.0)
             }
@@ -233,7 +232,6 @@ extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigatio
             let attachment = NSTextAttachment()
             attachment.image = resizedImage
             // resizedImage.hash as index
-            // FIXME: image code
 //            imageMap[resizedImage.hash] = resizedImage.hash
             let attributedString = NSAttributedString(attachment: attachment)
             textStorage.insert(attributedString, at: textView.selectedRange.location)

@@ -273,7 +273,6 @@ extension UserInfoViewController: UITableViewDelegate {
         }
         portraitBadgeLabel?.alpha = 0
         
-        // FIXME: placeholder
         usernameLabel = UILabel(text: BBSUser.shared.nickname ?? "null", color: .white, fontSize: 18)
         headerView?.addSubview(usernameLabel!)
         usernameLabel?.snp.makeConstraints {
@@ -290,7 +289,7 @@ extension UserInfoViewController: UITableViewDelegate {
             make.centerX.equalToSuperview()
         }
         
-        postNumberLabel = UILabel(text: "\(BBSUser.shared.threadCount ?? 0)", color: .white, fontSize: 20)
+        postNumberLabel = UILabel(text: "\((BBSUser.shared.threadCount ?? 0) + (BBSUser.shared.postCount ?? 0))", color: .white, fontSize: 20)
         headerView?.addSubview(postNumberLabel!)
         postNumberLabel?.snp.makeConstraints {
             make in

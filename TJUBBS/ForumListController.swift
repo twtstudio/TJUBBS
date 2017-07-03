@@ -48,7 +48,7 @@ class ForumListController: UIViewController {
         HUD.show(.rotatingImage(UIImage(named: "progress")))
         BBSJarvis.getForumList() { dict in
             if let data = dict["data"] as? Array<Dictionary<String, Any>> {
-                print(data)
+//                print(data)
                 self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data) 
             }
             DispatchQueue.main.async {

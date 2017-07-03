@@ -85,7 +85,11 @@ extension MessageViewController: UITableViewDataSource {
         if let detail = model.detailContent {
             content = detail.content
         }
-        cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: content)
+        if model.detailContent != nil {
+            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("回复了你: "+content))
+        } else {
+            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: (content))
+        }
         let portraitImage = UIImage(named: "头像2")
         let url = URL(string: BBSAPI.avatar(uid: model.authorId))
         let cacheKey = "\(model.authorId)" + Date.today
@@ -137,11 +141,11 @@ extension MessageViewController {
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
             }
-            if self.msgList.count < 49 {
-                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
-            } else {
-                self.tableView?.mj_footer.resetNoMoreData()
-            }
+//            if self.msgList.count < 49 {
+//                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+//            } else {
+//                self.tableView?.mj_footer.resetNoMoreData()
+//            }
         })
         self.tableView?.reloadData()
     }

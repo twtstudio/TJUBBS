@@ -62,7 +62,7 @@ struct MessageContentModel: Mappable {
     var anonymous: Int = 0
     var reply_id: Int = 0
     var reply_content: String = ""
-
+    var allow_anonymous: Int = 0
     init?(map: Map) {}
     
     mutating func mapping(map: Map) {
@@ -76,6 +76,7 @@ struct MessageContentModel: Mappable {
         anonymous <- map["anonymous"]
         reply_id <- map["reply_id"]
         reply_content <- map["reply_content"]
+        allow_anonymous <- map["allow_anonymous"]
     }
 }
 

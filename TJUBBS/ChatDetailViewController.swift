@@ -57,22 +57,22 @@ class ChatDetailViewController: SLKTextViewController {
         bounces = true
         isKeyboardPanningEnabled = true
         textView.layer.borderColor = UIColor(colorLiteralRed: 217.0/255.0, green: 217.0/255.0, blue: 217.0/255.0, alpha: 1.0).cgColor
-        textView.placeholder = "Message"
+//        textView.placeholder = ""
         textView.placeholderColor = .gray
         
         textView.backgroundColor = .white
         textInputbar.backgroundColor = .white
-        textInputbar.editorRightButton.tintColor = Metadata.Color.accentColor
-        textInputbar.rightButton.tintColor = Metadata.Color.accentColor
+//        textInputbar.editorRightButton.tintColor = Metadata.Color.accentColor
+//        textInputbar.rightButton.tintColor = Metadata.Color.accentColor
         textInputbar.isTranslucent = false
         textInputbar.clipsToBounds = true
         textInputbar.autoHideRightButton = true
         textInputbar.maxCharCount = 256
 //        textInputbar.leftButton.isHidden = true
         // TODO: send photo
-        leftButton.setImage(#imageLiteral(resourceName: "icn_upload"), for: .normal)
-        leftButton.tintColor = .gray
-        rightButton.setTitle("send", for: .normal)
+//        leftButton.setImage(#imageLiteral(resourceName: "icn_upload"), for: .normal)
+//        leftButton.tintColor = .gray
+        rightButton.setTitle("发送", for: .normal)
         
 //        session.messages = session.messages
 //        title = session.palName
@@ -261,51 +261,14 @@ extension ChatDetailViewController {
         for (index, cell) in (tableView?.visibleCells.enumerated())! {
             cell.alpha = CGFloat(index)*0.25/CGFloat(count)+0.75
         }
-//        if (tableView?.visibleCells.count)! > 0 {
-//            let cell = tableView!.visibleCells[0]
-//            if tableView!.isDragging { // ?
-//                
-//                if scrollOrientation == .down {
-//                    cell.contentView.layer.transform = CATransform3DMakeTranslation(0, 30, 0)
-//                } else {
-//                    cell.contentView.layer.transform = CATransform3DMakeTranslation(0, -30, 0)
-//                }
-//                UIView.animate(withDuration: 0.1, delay: 0.1, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [], animations: {
-//                    cell.contentView.layer.transform = CATransform3DIdentity
-//                }, completion: nil)
-//            }
-//        }
-
-        
-//        scrollOrientation = scrollView.contentOffset.y > tableViewLastPosition.y ? .down : .up
-//        
-//        tableViewLastPosition = scrollView.contentOffset
-        
-        //        if (tableView?.isDragging)! {
-        //
-        //            for (index, cell) in (tableView?.visibleCells)!.enumerated() {
-        //                if scrollOrientation == .down {
-        //                    cell.contentView.layer.transform = CATransform3DMakeTranslation(0, -30, 0)
-        //                } else {
-        //                    cell.contentView.layer.transform = CATransform3DMakeTranslation(0, 30, 0)
-        //                }
-        //                UIView.animate(withDuration: 0.5, delay: Double(index) * 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [], animations: {
-        //                    cell.contentView.layer.transform = CATransform3DIdentity
-        //                }, completion: nil)
-        //
-        //            }
-        //
-        //        }
-        
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        //        var cell = tableView.dequeueReusableCell(withIdentifier: "BubbleCell", for: indexPath)
         
         let cell = BubbleCell(message: messages[indexPath.row])
         
-        //        cell.transform = tableView.transform
+//        cell.contentView.isUserInteractionEnabled = false
         return cell
     }
 }
@@ -320,7 +283,6 @@ extension ChatDetailViewController {
     
     override func didPressRightButton(_ sender: Any?) {
         
-        textView.refreshFirstResponder()
         
         //        let messageToSend = PiperChatMessage(string: textView.text, timestamp: Date().ticks, type: .sent, palID: session.palID)
         let messageToSend = MessageModel(string: textView.text, timestamp: Int(Date().timeIntervalSince1970), type: .sent, palName: pal?.username ?? "", palNickName: pal?.nickname ?? "", palID: pal?.uid ?? 0, id: 0)
@@ -328,34 +290,37 @@ extension ChatDetailViewController {
 //        let messageToSend = PiperChatMessage(string: textView.text, timestamp: Date().ticks, type: .sent, palUserName: session.palUserName, palID: session.palID)
         //Send the message via socket and do networking and data storing
         
-        let indexPath = IndexPath(row: messages.count, section: 0)
-        let rowAnimation: UITableViewRowAnimation = .top
-        
-        tableView?.beginUpdates()
-        messages.append(messageToSend)
 //
 //        session.insert(message: messageToSend)
-        tableView?.insertRows(at: [indexPath], with: rowAnimation)
+//        tableView?.insertRows(at: [indexPath], with: rowAnimation)
         
         BBSJarvis.sendMessage(uid: "\(pal?.uid ?? 0)", content: textView.text, failure: { error in
             HUD.flash(.labeledError(title: "发送失败😐请稍后重试", subtitle: ""), delay: 1.0)
         }, success: { dict in
+            DispatchQueue.main.async {
+                let indexPath = IndexPath(row: self.messages.count, section: 0)
+                let rowAnimation: UITableViewRowAnimation = .top
+                
+                self.tableView?.beginUpdates()
+                self.messages.append(messageToSend)
+                //
+                //        session.insert(message: messageToSend)
+                self.tableView?.insertRows(at: [indexPath], with: rowAnimation)
+                self.tableView?.endUpdates()
+                self.tableView?.reloadRows(at: [indexPath], with: .automatic)
+                self.tableView?.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                self.textView.refreshFirstResponder()
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            }
+            
             print(dict)
         })
-//        try! RealmManager.shared.write {
-//            transaction in
-//            transaction.add(self.session, update: true)
-//        }
-        tableView?.endUpdates()
         
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.tableView?.scrollToRow(at: indexPath, at: .bottom, animated: true)
-        }
         
 //        SocketManager.shared.send(message: messageToSend.content, to: session.palUserName)
         
-        tableView?.reloadRows(at: [indexPath], with: .automatic)
         
         super.didPressRightButton(sender)
     }

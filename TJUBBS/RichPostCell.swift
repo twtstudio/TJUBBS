@@ -50,12 +50,12 @@ class RichPostCell: DTAttributedTextCell {
         contentView.addSubview(portraitImageView)
         contentView.addSubview(usernameLabel)
         contentView.addSubview(timeLabel)
-        contentView.addSubview(favorButton)
-        contentView.addSubview(floorLabel)
+//        contentView.addSubview(favorButton)
+//        contentView.addSubview(floorLabel)
         contentView.addSubview(nickNameLabel)
-        favorButton.isHidden = true
+//        favorButton.isHidden = true
         favorButton.isUserInteractionEnabled = false
-        floorLabel.isHidden = true
+        floorLabel.isHidden = false
         initLayout()
     }
     
@@ -76,12 +76,6 @@ class RichPostCell: DTAttributedTextCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        nickNameLabel.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(usernameLabel)
-            make.left.equalTo(usernameLabel.snp.right).offset(3)
-            make.right.lessThanOrEqualTo(floorLabel.snp.left)
-        }
         
         //        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
         timeLabel.sizeToFit()
@@ -91,13 +85,38 @@ class RichPostCell: DTAttributedTextCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        floorLabel.sizeToFit()
-        floorLabel.snp.makeConstraints {
+        //        nickNameLabel.sizeToFit()
+
+        
+//        floorLabel.sizeToFit()
+        let fooView = UIView()
+        self.contentView.addSubview(fooView)
+        fooView.backgroundColor = .white
+        fooView.addSubview(floorLabel)
+        floorLabel.snp.makeConstraints { make in
+            make.left.right.top.bottom.equalToSuperview()
+        }
+
+//        floorLabel.snp.makeConstraints {
+//            make in
+//            make.centerY.equalTo(usernameLabel)
+//            make.right.equalToSuperview().offset(-16)
+//        }
+        fooView.snp.makeConstraints {
             make in
             make.centerY.equalTo(usernameLabel)
             make.right.equalToSuperview().offset(-16)
         }
         
+        
+        nickNameLabel.snp.makeConstraints {
+            make in
+            make.centerY.equalTo(usernameLabel)
+            make.left.equalTo(usernameLabel.snp.right).offset(3)
+//            make.right.lessThanOrEqualTo(floorLabel.snp.left)
+            //            make.right.equalTo(floorLabel.snp.left)
+        }
+
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.sizeToFit()
         attributedTextContextView.snp.makeConstraints {
@@ -116,7 +135,7 @@ class RichPostCell: DTAttributedTextCell {
 //        imageViews.removeAll()
     }
     
-    func load(thread: ThreadModel) {
+    func load(thread: ThreadModel, boardName: String) {
 //        let html = BBCodeParser.parse(string: thread.content)
 //        let noBB = BBCodeParser.cleanBBCode(string: thread.content)
         let html = Markdown.parse(string: thread.content)
@@ -129,25 +148,48 @@ class RichPostCell: DTAttributedTextCell {
         setHTMLString(html, options: option)
 //        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
 //        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
+        
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.shouldDrawImages = true
 
-        
+        let colorName = NSAttributedString(string: boardName, attributes: [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
+                                                                                   NSForegroundColorAttributeName: UIColor.BBSBlue])
+        floorLabel.attributedText = colorName
+//        floorLabel.text = boardName
+//        floorLabel.sizeToFit()
+//        floorLabel.snp.remakeConstraints { make in
+//            make.centerY.equalTo(usernameLabel)
+//            make.right.equalToSuperview().offset(-16)
+//        }
+//        
+//        usernameLabel.snp.makeConstraints { make in
+//            make.top.equalTo(portraitImageView)
+//            make.left.equalTo(portraitImageView.snp.right).offset(8)
+//        }
+//        
+//        nickNameLabel.snp.remakeConstraints { make in
+//            make.centerY.equalTo(usernameLabel)
+//            make.left.equalTo(usernameLabel.snp.right).offset(3)
+//            //            make.right.equalTo(floorLabel.snp.left)
+//        }
+
         usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
         nickNameLabel.text = thread.authorID != 0 ? "@"+thread.authorNickname : ""
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
         
-        floorLabel.isHidden = true
-        favorButton.isHidden = false
-        favorButton.addTarget { button in
-            if let button = button as? UIButton {
-                BBSJarvis.collect(threadID: thread.id) {_ in
-                    button.setImage(UIImage(named: "已收藏"), for: .normal)
-                    button.tag = 1
-                }
-            }
-        }
+        floorLabel.isHidden = false
+        
+        // FIXME: 收藏
+//        favorButton.isHidden = false
+//        favorButton.addTarget { button in
+//            if let button = button as? UIButton {
+//                BBSJarvis.collect(threadID: thread.id) {_ in
+//                    button.setImage(UIImage(named: "已收藏"), for: .normal)
+//                    button.tag = 1
+//                }
+//            }
+//        }
         favorButton.isUserInteractionEnabled = true
         attributedTextContextView.relayoutText()
     }
@@ -172,8 +214,8 @@ class RichPostCell: DTAttributedTextCell {
         usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
         let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
-        nickNameLabel.text = post.authorID != 0 ? "@"+post.authorNickname : ""
         floorLabel.text = "\(post.floor) 楼"
+        nickNameLabel.text = post.authorID != 0 ? "@"+post.authorNickname : ""
         floorLabel.isHidden = false
         favorButton.isHidden = true
         attributedTextContextView.relayoutText()
@@ -233,7 +275,6 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
-            // FIXME: may Crash
 //            let size = self.aspectFitSizeForURL()
 //            let aspectFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: size.width, height: size.height)
             

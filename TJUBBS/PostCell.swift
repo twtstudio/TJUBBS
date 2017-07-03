@@ -15,7 +15,7 @@ class PostCell: UITableViewCell {
     let screenSize = UIScreen.main.bounds.size
     var portraitImageView = UIImageView()
     var usernameLabel = UILabel(text: "", color: .black, fontSize: 16)
-    var favorButton = UIButton(imageName: "收藏")
+//    var favorButton = UIButton(imageName: "收藏")
     var titleLabel = UILabel(text: "", color: .black, fontSize: 20)
     
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
@@ -28,33 +28,33 @@ class PostCell: UITableViewCell {
         
         contentView.addSubview(portraitImageView)
         contentView.addSubview(usernameLabel)
-        contentView.addSubview(favorButton)
+//        contentView.addSubview(favorButton)
         contentView.addSubview(titleLabel)
         contentView.addSubview(detailLabel)
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
-        favorButton.addTarget { button in
-            if let button = button as? UIButton {
-                BBSJarvis.collect(threadID: self.thread!.id) {_ in
-                    button.setImage(UIImage(named: "已收藏"), for: .normal)
-                    button.tag = 1
-                }
-            }
-            // TODO: 取消点赞
+//        favorButton.addTarget { button in
 //            if let button = button as? UIButton {
-//                if button.tag == 1 {
-//                    BBSJarvis.deleteCollect(threadID: self.threadID!) {_ in
-//                        button.setImage(UIImage(named: "收藏"), for: .normal)
-//                        button.tag = 0
-//                    }
-//                } else {
-//                    BBSJarvis.collect(threadID: self.threadID!) {_ in
-//                        button.setImage(UIImage(named: "已收藏"), for: .normal)
-//                        button.tag = 1
-//                    }
+//                BBSJarvis.collect(threadID: self.thread!.id) {_ in
+//                    button.setImage(UIImage(named: "已收藏"), for: .normal)
+//                    button.tag = 1
 //                }
 //            }
-        }
+//            // TODO: 取消点赞
+////            if let button = button as? UIButton {
+////                if button.tag == 1 {
+////                    BBSJarvis.deleteCollect(threadID: self.threadID!) {_ in
+////                        button.setImage(UIImage(named: "收藏"), for: .normal)
+////                        button.tag = 0
+////                    }
+////                } else {
+////                    BBSJarvis.collect(threadID: self.threadID!) {_ in
+////                        button.setImage(UIImage(named: "已收藏"), for: .normal)
+////                        button.tag = 1
+////                    }
+////                }
+////            }
+//        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -73,11 +73,14 @@ class PostCell: UITableViewCell {
 //    func initUI(portraitImage: UIImage?, username: String, category: String? = nil, favor: Bool = false, title: String, detail: String? = nil, replyNumber: String, time: String, threadID: Int) {
     func initUI(thread: ThreadModel) {
         self.thread = thread
-        
-        let portraitImage = UIImage(named: "头像2")
-        let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
-        let cacheKey = "\(thread.authorID)" + Date.today
-        portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+        if self.thread?.id == 0 {
+            portraitImageView.image = UIImage(named: "anonymous")
+        } else {
+            let portraitImage = UIImage(named: "default")
+            let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
+            let cacheKey = "\(thread.authorID)" + Date.today
+            portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+        }
         portraitImageView.snp.makeConstraints {
             make in
             make.top.left.equalToSuperview().offset(16)
@@ -93,13 +96,13 @@ class PostCell: UITableViewCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        favorButton.setImage(UIImage(named: thread.inCollection ? "已收藏" : "收藏"), for: .normal)
-        favorButton.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(portraitImageView)
-            make.right.equalToSuperview()
-            make.width.height.equalTo(screenSize.height*(144/1920))
-        }
+//        favorButton.setImage(UIImage(named: thread.inCollection ? "已收藏" : "收藏"), for: .normal)
+//        favorButton.snp.makeConstraints {
+//            make in
+//            make.centerY.equalTo(portraitImageView)
+//            make.right.equalToSuperview()
+//            make.width.height.equalTo(screenSize.height*(144/1920))
+//        }
         
         titleLabel.text = thread.title
         // size used to be 20

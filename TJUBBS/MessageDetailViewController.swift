@@ -15,7 +15,8 @@ class MessageDetailViewController: UIViewController {
     let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
     var model: MessageModel! = nil
-    var replyButton: UIButton?
+//    var replyButton: UIButton?
+    var replyButton = FakeTextFieldView()
     
     
     convenience init(model: MessageModel) {
@@ -45,15 +46,25 @@ class MessageDetailViewController: UIViewController {
         tableView?.estimatedRowHeight = 100
         tableView?.allowsSelection = false
         
-        replyButton = UIButton()
-        self.view.addSubview(replyButton!)
-        replyButton?.setBackgroundImage(UIImage(named: "inputBar"), for: .normal)
-        replyButton?.snp.makeConstraints { make in
-            make.top.equalTo(tableView!.snp.bottom)
-            make.left.right.bottom.equalToSuperview()
+//        replyButton = UIButton()
+//        self.view.addSubview(replyButton!)
+//        replyButton?.setBackgroundImage(UIImage(named: "inputBar"), for: .normal)
+//        replyButton?.snp.makeConstraints { make in
+//            make.top.equalTo(tableView!.snp.bottom)
+//            make.left.right.bottom.equalToSuperview()
+//        }
+//        replyButton.adjustsImageWhenHighlighted = false
+        self.view.addSubview(replyButton)
+        replyButton.frame = CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45)
+        replyButton.draw(replyButton.frame)
+//        replyButton.snp.makeConstraints { make in
+//            make.top.equalTo(tableView!.snp.bottom)
+//            make.left.right.bottom.equalToSuperview()
+//        }
+        replyButton.addTapGestureRecognizer { btn in
+            self.replyButtonDidTap(sender: UIButton())
         }
-        replyButton?.adjustsImageWhenHighlighted = false
-        replyButton?.addTarget(self, action: #selector(self.replyButtonDidTap(sender:)), for: .touchUpInside)
+//        replyButton.addTarget(self, action: #selector(self.replyButtonDidTap(sender:)), for: .touchUpInside)
     }
     
     deinit {
@@ -186,14 +197,15 @@ extension MessageDetailViewController: UITableViewDataSource {
         }
         let editDetailVC = EditDetailViewController()
         editDetailVC.title = "回复 " + model.authorName
-        editDetailVC.canAnonymous = (detailedModel.anonymous == 1)
+        // FIXME: 匿名回复
+        editDetailVC.canAnonymous = detailedModel.allow_anonymous == 1
         editDetailVC.doneBlock = { [weak editDetailVC] string in
             let origin = detailedModel.content
             // cut secondary quotation
             let cutString = origin.replacingOccurrences(of: "> >.*", with: "", options: .regularExpression, range: nil)
             let resultString = string + "\n > 回复 #\(detailedModel.floor) \(self.model.authorName): \n" + cutString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
             
-            BBSJarvis.reply(threadID: self.model.authorId, content: resultString, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
+            BBSJarvis.reply(threadID: detailedModel.thread_id, content: resultString, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                 HUD.flash(.label("出错了...请稍后重试"))
             }, success: { _ in
                 HUD.flash(.success)
