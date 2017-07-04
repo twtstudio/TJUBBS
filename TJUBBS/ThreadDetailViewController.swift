@@ -32,7 +32,7 @@ class ThreadDetailViewController: UIViewController {
     var centerTextView: UIView! = nil
     var headerView: UIView? = nil
     var boardLabel = UILabel()
-    var replyButton = FakeTextFieldView()
+    var replyButton = FakeTextFieldView(frame: CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45))
     
     var bottomButton = UIButton(imageName: "down")
 
@@ -43,6 +43,7 @@ class ThreadDetailViewController: UIViewController {
         self.thread = thread
         print(thread.id)
         self.hidesBottomBarWhenPushed = true
+//        self.automaticallyAdjustsScrollViewInsets = true
     }
     
     convenience init(tid: Int) {
@@ -88,6 +89,10 @@ class ThreadDetailViewController: UIViewController {
         boardLabel.textAlignment = .center
         self.navigationItem.titleView = boardLabel
         boardLabel.alpha = 1.0
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func viewDidLoad() {
@@ -216,11 +221,6 @@ class ThreadDetailViewController: UIViewController {
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     func loadTitle() {
         if let headerView = headerView {
             for view in headerView.subviews {
@@ -343,9 +343,17 @@ class ThreadDetailViewController: UIViewController {
 //            make.top.equalTo(tableView.snp.bottom)
 //        }
 //        replyButton?.adjustsImageWhenHighlighted = false
+//        replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: self.view.width, height: 45)
+//        replyButton.initialize(rect: CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: self.view.width, height: 45))
         self.view.addSubview(replyButton)
-        replyButton.frame = CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45)
-        replyButton.draw(replyButton.frame)
+//        replyButton.frame = CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45)
+//        replyButton.draw(replyButton.frame)
+        self.view.backgroundColor = .white
+//        replyButton.draw(CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45))
+//        replyButton.snp.makeConstraints { make in
+//            make.bottom.equalTo(tableView.snp.bottom)
+//            make.left.equalToSuperview()
+//        }
 //        replyButton.addTapGestureRecognizer { btn in
 //            self.replyButtonDidTap(sender: UIButton())
 //        }
@@ -467,21 +475,31 @@ extension ThreadDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
             let cell = prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
-            cell.portraitImageView.addTapGestureRecognizer { _ in
-                let detailVC = ImageDetailViewController(image: cell.portraitImageView.image ?? UIImage(named: "progress")!)
-                detailVC.showSaveBtn = true
-                self.modalPresentationStyle = .overFullScreen
-                self.present(detailVC, animated: true, completion: nil)
+            if self.thread?.authorID != 0 { // exclude anonymous user
+                cell.usernameLabel.addTapGestureRecognizer { _ in
+                    let userVC = UserDetailViewController(uid: self.thread!.authorID)
+                    self.navigationController?.pushViewController(userVC, animated: true)
+                }
+                cell.portraitImageView.addTapGestureRecognizer { _ in
+                    let userVC = UserDetailViewController(uid: self.thread!.authorID)
+                    self.navigationController?.pushViewController(userVC, animated: true)
+                }
             }
             return cell
         } else {
             let post = postList[indexPath.row]
             let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
-            cell.portraitImageView.addTapGestureRecognizer { _ in
-                let detailVC = ImageDetailViewController(image: cell.portraitImageView.image ?? UIImage(named: "progress")!)
-                detailVC.showSaveBtn = true
-                self.modalPresentationStyle = .overFullScreen
-                self.present(detailVC, animated: true, completion: nil)
+            if post.authorID != 0 { // exclude anonymous user
+                cell.usernameLabel.addTapGestureRecognizer { _ in
+                    let userVC = UserDetailViewController(uid: post.authorID)
+                    self.popFromUserDetail = true
+                    self.navigationController?.pushViewController(userVC, animated: true)
+                }
+                cell.portraitImageView.addTapGestureRecognizer { _ in
+                    let userVC = UserDetailViewController(uid: post.authorID)
+                    self.popFromUserDetail = true
+                    self.navigationController?.pushViewController(userVC, animated: true)
+                }
             }
             return cell
         }

@@ -84,7 +84,7 @@ extension UILabel {
         self.text = text
         self.textColor = color
         self.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
-        self.sizeToFit()
+//        self.sizeToFit()
     }
     
     static func roundLabel(text: String, textColor: UIColor = UIColor.white, backgroundColor: UIColor = UIColor.BBSBadgeRed) -> UILabel {

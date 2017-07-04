@@ -77,7 +77,7 @@ class UserInfoViewController: UIViewController {
             return
         }
         if BBSUser.shared.isVisitor == false {
-            BBSJarvis.getHome(success: {
+            BBSJarvis.getHome(success: { _ in
                 self.tableView?.reloadData()
             }, failure: { error in
                 print(error)
@@ -131,7 +131,7 @@ class UserInfoViewController: UIViewController {
         }
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
-        portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "头像2")
+        portraitImageView?.image = BBSUser.shared.avatar ?? UIImage(named: "default")
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
@@ -214,7 +214,6 @@ extension UserInfoViewController: UITableViewDelegate {
         avatarBackground.backgroundColor = .white
         avatarBackground.clipsToBounds = true
         
-        // TODO: 默认头像
         portraitImageView = UIImageView()
         //        let url = URL(string: BBSAPI.avatar)
         //        let cacheKey = "\(BBSUser.shared.uid ?? 0000)" + Date.today

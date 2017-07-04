@@ -30,50 +30,27 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.register, parameters: parameters, failure: failure, success: success)
     }
     
-    static func getHome(success: (()->())?, failure: @escaping (Error)->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil, failure: failure) { dict in
-            if let data = dict["data"] as? [String: Any], let wrapper = Mapper<UserWrapper>().map(JSON: data) {
-                BBSUser.load(wrapper: wrapper)
-                success?()
-            } else if let err = dict["err"] as? Int, err == 0 {
-                failure(BBSError.custom)
+    static func getHome(uid: Int = 0, success: ((UserWrapper)->())?, failure: @escaping (Error)->()) {
+        if uid == 0 {
+            BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil, failure: failure) { dict in
+                if let data = dict["data"] as? [String: Any], let wrapper = Mapper<UserWrapper>().map(JSON: data) {
+                    BBSUser.load(wrapper: wrapper)
+                    success?(wrapper)
+                } else if let err = dict["err"] as? Int, err == 0 {
+                    failure(BBSError.custom)
+                }
+            }
+        } else {
+            BBSBeacon.request(withType: .get, url: BBSAPI.home(uid: uid), parameters: nil, failure: failure) { dict in
+                if let data = dict["data"] as? [String : Any], let wrapper = Mapper<UserWrapper>().map(JSON: data), let recent = data["recent"] as? [[String : Any]] {
+                    wrapper.uid = uid
+                    wrapper.recentThreads = Mapper<ThreadModel>().mapArray(JSONArray: recent)
+                    success?(wrapper)
+                } else if let err = dict["err"] as? Int, err == 0 {
+                    failure(BBSError.custom)
+                }
             }
         }
-//        BBSBeacon.request(withType: .get, url: BBSAPI.home, parameters: nil, failure: failure) { dict in
-//            if let data = dict["data"] as? [String: Any],
-//                let name = data["name"],
-//                let nickname = data["nickname"],
-//                //                let real_name = data["real_name"],
-//                let signature = data["signature"],
-//                let post_count = data["c_post"],
-//                let thread_count = data["c_thread"],
-////                let unread_count = data["c_unread"],
-//                let tCreate = data["t_create"],
-//                let points = data["points"],
-//                let level = data["level"],
-//                let c_online = data["c_online"],
-//                let group = data["group"],
-//                let createTime = data["t_create"] {
-//                BBSUser.shared.username = name as? String
-//                BBSUser.shared.nickname = (nickname as? String) ?? (name as? String)
-//                //                BBSUser.shared.realName = real_name as? String
-//                BBSUser.shared.signature = signature as? String
-//                BBSUser.shared.postCount = post_count as? Int
-////                BBSUser.shared.unreadCount = unread_count as? Int
-//                BBSUser.shared.points = points as? Int
-//                BBSUser.shared.level = level as? Int
-//                BBSUser.shared.cOnline = c_online as? Int
-//                BBSUser.shared.group = group as? Int
-//                BBSUser.shared.createTime = createTime as? Int
-//                BBSUser.shared.threadCount = thread_count as? Int
-//                BBSUser.shared.tCreate = tCreate as? Int
-//
-//                BBSUser.save()
-//                success?()
-//            } else if let err = dict["err"] as? Int, err == 0 {
-//                failure(BBSError.custom)
-//            }
-//        }
     }
     
     static func getAvatar(success:@escaping (UIImage)->(), failure: @escaping (Error)->()) {
@@ -272,4 +249,5 @@ struct BBSJarvis {
             }
         })
     }
+    
 }

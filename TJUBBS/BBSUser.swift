@@ -126,6 +126,7 @@ class UserWrapper: NSObject, Mappable {
     var tCreate: Int?
     var uid: Int?
     var status: Int?
+    var recentThreads: [ThreadModel] = []
     
     required init?(map: Map) {}
     
