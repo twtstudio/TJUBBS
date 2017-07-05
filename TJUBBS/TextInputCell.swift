@@ -68,18 +68,6 @@ class TextInputCell: UITableViewCell {
                 make.left.equalTo(contentView).offset(16)
                 make.bottom.equalTo(contentView).offset(-20)
             }
-            extendBtn = UIButton()
-            extendBtn?.setImage(UIImage(named: "more"), for: .normal)
-//            extendBtn?.setImage(UIImage(named: "more"), for: .)
-//            extendBtn?.imageView?.image = UIImage(named: "more")
-            contentView.addSubview(extendBtn!)
-            extendBtn?.snp.makeConstraints { make in
-                make.right.equalTo(textView!.snp.right).offset(-5)
-                make.top.equalTo(textView!.snp.top).offset(-5)
-                make.height.equalTo(30)
-                make.width.equalTo(30)
-            }
-
         }
     }
 

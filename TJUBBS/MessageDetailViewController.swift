@@ -16,7 +16,7 @@ class MessageDetailViewController: UIViewController {
     var tableView: UITableView?
     var model: MessageModel! = nil
 //    var replyButton: UIButton?
-    var replyButton = FakeTextFieldView()
+    var replyButton = FakeTextFieldView(frame: CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45))
     
     
     convenience init(model: MessageModel) {
@@ -55,7 +55,7 @@ class MessageDetailViewController: UIViewController {
 //        }
 //        replyButton.adjustsImageWhenHighlighted = false
         self.view.addSubview(replyButton)
-        replyButton.frame = CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45)
+//        replyButton.frame = CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45)
         replyButton.draw(replyButton.frame)
 //        replyButton.snp.makeConstraints { make in
 //            make.top.equalTo(tableView!.snp.bottom)
@@ -87,7 +87,7 @@ extension MessageDetailViewController: UITableViewDataSource {
         case 0:
             let cell = MessageCell()
             cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: "")
-            let portraitImage = UIImage(named: "头像2")
+            let portraitImage = UIImage(named: "default")
             
             let url = URL(string: BBSAPI.avatar(uid: model.authorId))
             let cacheKey = "\(model?.authorId ?? 0000)" + Date.today

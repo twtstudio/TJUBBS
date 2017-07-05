@@ -34,6 +34,7 @@ class EditDetailViewController: UIViewController {
         self.view.addSubview(textView)
         
         // markdown parser
+        textView.layoutManager.delegate = self
         textStorage.addLayoutManager(textView.layoutManager)
         textStorage.appendString(placeholder)
         
@@ -229,14 +230,30 @@ extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigatio
             }
             let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
             
-            let attachment = NSTextAttachment()
+//            let attachment = NSTextAttachment()
+            let attachment = ImageTextAttachment()
+            attachment.block = { rect in
+                // change its position
+                attachment.progressView.frame = rect
+//                attachment.
+                if attachment.progressView.superview == nil {
+                    self.textView.addSubview(attachment.progressView)
+                }
+            }
             attachment.image = resizedImage
+            attachments.append(attachment)
             // resizedImage.hash as index
 //            imageMap[resizedImage.hash] = resizedImage.hash
             let attributedString = NSAttributedString(attachment: attachment)
             textStorage.insert(attributedString, at: textView.selectedRange.location)
 
-            BBSJarvis.getImageAttachmentCode(image: image, failure: { error in
+            BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
+                attachment.progressView.progress = progress.fractionCompleted
+                attachment.progressView.backgroundColor = UIColor(red: CGFloat(progress.fractionCompleted), green: CGFloat(progress.fractionCompleted), blue: CGFloat(progress.fractionCompleted), alpha: 1)
+                if progress.fractionCompleted >= 1.0 {
+                   // attachment.progressView.removeFromSuperview()
+                }
+            }, failure: { error in
                 HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
             }, success: { attachmentCode in
                 self.imageMap[resizedImage.hash] = attachmentCode
@@ -250,4 +267,13 @@ extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigatio
         picker.dismiss(animated: true, completion: nil)
     }
     
+}
+
+extension EditDetailViewController: NSLayoutManagerDelegate {
+    
+    func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
+        if layoutFinishedFlag {
+            
+        }
+    }
 }

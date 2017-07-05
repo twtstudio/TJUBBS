@@ -73,7 +73,7 @@ class PostCell: UITableViewCell {
 //    func initUI(portraitImage: UIImage?, username: String, category: String? = nil, favor: Bool = false, title: String, detail: String? = nil, replyNumber: String, time: String, threadID: Int) {
     func initUI(thread: ThreadModel) {
         self.thread = thread
-        if self.thread?.id == 0 {
+        if self.thread?.authorID == 0 {
             portraitImageView.image = UIImage(named: "anonymous")
         } else {
             let portraitImage = UIImage(named: "default")

@@ -29,6 +29,7 @@ class LoginViewController: UIViewController {
     var EULAConfirmButton: UIButton?
     var EULACancelButton: UIButton?
     var EULAShowButton: UIButton?
+    var isEULAConfirmed = false
     
     convenience init(para: Int) {
         self.init()
@@ -162,9 +163,13 @@ class LoginViewController: UIViewController {
         content += "6.4 本协议中所有标题仅作索引使用，不能作为解释协议内容的依据。"
         EULATextView?.text = content
         EULATextView?.isEditable = false
-        
+        EULATextView?.isSelectable = false
         
         EULACancelButton?.addTarget(withBlock: { _ in
+            self.loginButton?.isEnabled = false
+            self.visitorButton?.isEnabled = false
+            self.visitorButton?.isHidden = true
+            self.isEULAConfirmed = false
             UIView.animate(withDuration: 0.8, animations: {
                 self.EULABackground?.frame.origin.y = -self.screenSize.height
             }, completion: {
@@ -174,27 +179,36 @@ class LoginViewController: UIViewController {
         })
         
         EULAConfirmButton?.addTarget(withBlock: { _ in
+            self.loginButton?.isEnabled = true
+            self.visitorButton?.isEnabled = true
+            self.visitorButton?.isHidden = false
+            self.isEULAConfirmed = true
             UIView.animate(withDuration: 0.8, animations: {
                 self.EULABackground?.frame.origin.y = -self.screenSize.height
             }, completion: {
                 _ in
                 self.EULABackground?.alpha = 0
             })
-            UserDefaults.standard.set(true, forKey: EULACONFIRMKEY)
-            self.loginButton?.isEnabled = true
-            self.visitorButton?.isEnabled = true
+//            UserDefaults.standard.set(true, forKey: EULACONFIRMKEY)
+//            self.loginButton?.isEnabled = true
+//            self.visitorButton?.isEnabled = true
         })
         
 //        UserDefaults.standard.removeObject(forKey: EULACONFIRMKEY)
-        let EULAKey = UserDefaults.standard.value(forKey: EULACONFIRMKEY) as? Bool
-        if EULAKey == nil || EULAKey == false {
-            EULABackground?.alpha = 1
-        }
+//        let EULAKey = UserDefaults.standard.value(forKey: EULACONFIRMKEY) as? Bool
+//        if EULAKey == nil || EULAKey == false {
+//            EULABackground?.alpha = 1
+//        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        if isEULAConfirmed == false {
+            self.EULABackground?.alpha = 1
+            UIView.animate(withDuration: 0.8, animations: {
+                self.EULABackground?.frame.origin.y = 24
+            })
+        }
         // 用户名帮用户输好
         usernameTextField?.text = BBSUser.shared.username
         
@@ -339,11 +353,11 @@ class LoginViewController: UIViewController {
             make.width.equalTo(screenSize.width*(800/1080))
             make.height.equalTo(screenSize.height*(100/1920))
         }
-        if let EULAKey = UserDefaults.standard.value(forKey: EULACONFIRMKEY) as? Bool, EULAKey == true {
-            loginButton?.isEnabled = true
-        } else {
-            loginButton?.isEnabled = false
-        }
+//        if let EULAKey = UserDefaults.standard.value(forKey: EULACONFIRMKEY) as? Bool, EULAKey == true {
+//            loginButton?.isEnabled = true
+//        } else {
+//            loginButton?.isEnabled = false
+//        }
         // 注意这里可能会有循环引用 self->button->block->self.portraitImageView
         loginButton?.addTarget { [weak self] button in
             //            print("loginButtonTapped")
@@ -451,18 +465,18 @@ class LoginViewController: UIViewController {
             self.navigationController?.pushViewController(veteranCheckVC, animated: true)
         }
         
-        visitorButton = UIButton(title: "游客登录 >", color: UIColor.BBSBlue, fontSize: 16)
+        visitorButton = UIButton(title: "先去看看 >", color: UIColor.BBSBlue, fontSize: 16)
         view.addSubview(visitorButton!)
         visitorButton?.snp.makeConstraints {
             make in
             make.bottom.equalTo(view.snp.bottom).offset(-26)
             make.centerX.equalTo(view)
         }
-        if let EULAKey = UserDefaults.standard.value(forKey: EULACONFIRMKEY) as? Bool, EULAKey == true {
-            visitorButton?.isEnabled = true
-        } else {
-            visitorButton?.isEnabled = false
-        }
+//        if let EULAKey = UserDefaults.standard.value(forKey: EULACONFIRMKEY) as? Bool, EULAKey == true {
+//            visitorButton?.isEnabled = true
+//        } else {
+//            visitorButton?.isEnabled = false
+//        }
         visitorButton?.addTarget {
             _ in
             BBSUser.shared.isVisitor = true

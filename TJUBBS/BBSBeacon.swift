@@ -123,7 +123,7 @@ struct BBSBeacon {
         }
     }
     
-    static func uploadImage(url: String, method: HTTPMethod = .put, image: UIImage, failure: ((Error)->())? = nil, success: (([String : Any])->())?) {
+    static func uploadImage(url: String, method: HTTPMethod = .put, image: UIImage, progressBlock: ((Progress)->())? = nil, failure: ((Error)->())? = nil, success: (([String : Any])->())?) {
         let data = UIImageJPEGRepresentation(image, 1.0)
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgentString
@@ -141,11 +141,16 @@ struct BBSBeacon {
                     upload.responseJSON { response in
                         success?([:])
                     }
+                    upload.uploadProgress { progress in
+                        progressBlock?(progress)
+//                        print(progress)
+                    }
                 case .failure(let error):
                     failure?(error)
                     print(error)
                 }
             })
+            //URL(string: "1")!, to: "sdjaksdjal"
         } else if method == .post {
             Alamofire.upload(multipartFormData: { formdata in
                 formdata.append(data!, withName: "file", fileName: "image.jpeg", mimeType: "image/jpeg")
@@ -161,6 +166,9 @@ struct BBSBeacon {
                                 HUD.flash(.label(dic["data"] as? String), delay: 1.0)
                             }
                         }
+                    }
+                    upload.uploadProgress { progress in
+                        progressBlock?(progress)
                     }
                 case .failure(let error):
                     failure?(error)

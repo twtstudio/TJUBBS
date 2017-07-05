@@ -28,7 +28,7 @@ class ThreadDetailViewController: UIViewController {
     var page = 0
     var tid = 0
     var imageViews = [DTLazyImageView]()
-    let defultAvatar = UIImage(named: "头像2")
+    let defultAvatar = UIImage(named: "default")
     var centerTextView: UIView! = nil
     var headerView: UIView? = nil
     var boardLabel = UILabel()
@@ -492,12 +492,10 @@ extension ThreadDetailViewController: UITableViewDataSource {
             if post.authorID != 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
                     let userVC = UserDetailViewController(uid: post.authorID)
-                    self.popFromUserDetail = true
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
                 cell.portraitImageView.addTapGestureRecognizer { _ in
                     let userVC = UserDetailViewController(uid: post.authorID)
-                    self.popFromUserDetail = true
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
             }

@@ -80,3 +80,17 @@ struct MessageContentModel: Mappable {
     }
 }
 
+struct FriendRequestModel: Mappable {
+    var message = ""
+    var id = ""
+    var status = 0
+    var uid = 0
+    init?(map: Map) {}
+    
+    mutating func mapping(map: Map) {
+        id <- map["id"]
+        message <- map["message"]
+        status <- map["status"]
+    }
+}
+

@@ -90,7 +90,7 @@ extension MessageViewController: UITableViewDataSource {
         } else {
             cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: (content))
         }
-        let portraitImage = UIImage(named: "头像2")
+        let portraitImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: model.authorId))
         let cacheKey = "\(model.authorId)" + Date.today
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)

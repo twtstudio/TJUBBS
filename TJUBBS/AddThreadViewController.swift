@@ -530,7 +530,9 @@ extension AddThreadViewController: UIImagePickerControllerDelegate, UINavigation
             let attributedString = NSAttributedString(attachment: attachment)
             textStorage.insert(attributedString, at: textView.selectedRange.location)
             
-            BBSJarvis.getImageAttachmentCode(image: image, failure: { error in
+            BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
+                
+            }, failure: { error in
                 HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
             }, success: { attachmentCode in
                 self.imageMap[resizedImage.hash] = attachmentCode

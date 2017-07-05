@@ -18,7 +18,7 @@ protocol HtmlContentCellDelegate: class {
 
 class RichPostCell: DTAttributedTextCell {
     
-    let portraitImageView = UIImageView(image: UIImage(named: "头像2"))
+    let portraitImageView = UIImageView(image: UIImage(named: "default"))
     let usernameLabel = UILabel(text: "")
     let nickNameLabel = UILabel(text: "", color: .gray)
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)

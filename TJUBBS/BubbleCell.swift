@@ -181,11 +181,13 @@ class BubbleCell: UITableViewCell {
     }
     
     func longPressAction(sender: UILongPressGestureRecognizer) {
-        self.becomeFirstResponder()
-        let copyItem = UIMenuItem(title: "复制", action: #selector(self.customCopy(sender:)))
-        UIMenuController.shared.menuItems = [copyItem]
-        UIMenuController.shared.setTargetRect(self.frame, in: self.superview!)
-        UIMenuController.shared.setMenuVisible(true, animated: true)
+        if UIMenuController.shared.isMenuVisible == false {
+            self.becomeFirstResponder()
+            let copyItem = UIMenuItem(title: "复制", action: #selector(self.customCopy(sender:)))
+            UIMenuController.shared.menuItems = [copyItem]
+            UIMenuController.shared.setTargetRect(self.frame, in: self.superview!)
+            UIMenuController.shared.setMenuVisible(true, animated: true)
+        }
     }
     
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {

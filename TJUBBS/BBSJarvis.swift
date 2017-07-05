@@ -242,8 +242,8 @@ struct BBSJarvis {
         }
     }
     
-    static func getImageAttachmentCode(image: UIImage, failure: ((Error)->())? = nil, success: @escaping (Int)->()) {
-        BBSBeacon.uploadImage(url: BBSAPI.attach, method: .post, image: image, failure: failure, success: { dic in
+    static func getImageAttachmentCode(image: UIImage, progressBlock: ((Progress)->())? = nil, failure: ((Error)->())? = nil, success: @escaping (Int)->()) {
+        BBSBeacon.uploadImage(url: BBSAPI.attach, method: .post, image: image, progressBlock: progressBlock, failure: failure, success: { dic in
             if let data = dic["data"] as? [String : String], let code = data["id"] {
                 success(Int(code)!)
             }
