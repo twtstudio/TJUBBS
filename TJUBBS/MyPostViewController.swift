@@ -99,8 +99,10 @@ extension MyPostViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         var thread = threadList[indexPath.row]
         thread.authorID = BBSUser.shared.uid!
+        thread.replyTime = thread.createTime
         thread.authorName = BBSUser.shared.username ?? thread.authorName
         cell.initUI(thread: thread)
+        cell.timeLablel.text = "发布于 " + (cell.timeLablel.text ?? "")
         return cell
     }
     

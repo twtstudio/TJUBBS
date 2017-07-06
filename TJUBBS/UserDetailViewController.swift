@@ -65,16 +65,21 @@ class UserDetailViewController: UIViewController {
                 avatarViewBackground.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default"))
             }
             if user.recentThreads.count == 0 {
-                let label = UILabel(text: "Ta最近还没有发表过帖子", fontSize: 17)
+//                let label = UILabel(text: "Ta最近还没有发表过帖子", color: UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00), fontSize: 17)
+                let label = UILabel()
+                label.text = "Ta最近还没有发表过帖子"
+                label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
+                label.font = UIFont.boldSystemFont(ofSize: 19)
                 containerView.addSubview(label)
                 label.snp.makeConstraints { make in
                     make.centerY.equalTo(containerView)
                     make.centerX.equalTo(containerView)
                 }
-                containerView.backgroundColor = .white
+//                containerView.backgroundColor = .white
+                containerView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
                 label.sizeToFit()
                 self.view.addSubview(containerView)
-                containerView.frame = CGRect(x: 0, y: 296, width: self.view.width, height: 40)
+                containerView.frame = CGRect(x: 0, y: 306, width: self.view.width, height: 40)
                 containerView.sizeToFit()
             }
         }
@@ -83,11 +88,11 @@ class UserDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // 3D Touch
+        registerForPreviewing(with: self, sourceView: self.tableView)
+        
         // layout here
-//        self.view.addSubview(headerView)
-//        headerView.snp.makeConstraints { make in
-//            make.top.left.right.equalToSuperview()
-//        }
+        tableView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
         
         self.headerView.addSubview(avatarViewBackground)
         avatarViewBackground.snp.makeConstraints { make in
@@ -225,22 +230,9 @@ class UserDetailViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        self.automaticallyAdjustsScrollViewInsets = true
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
         self.navigationController?.navigationBar.shadowImage = UINavigationBar.appearance().shadowImage
-//        self.navigationController?.navigationBar.setBackgroundImage(fooNavigationBarImage, for: .default)
-//        self.navigationController?.navigationBar.shadowImage = fooNavigationBarShadowImage
     }
-    
-//    override func viewDidDisappear(_ animated: Bool) {
-//        super.viewDidDisappear(animated)
-//        self.automaticallyAdjustsScrollViewInsets = true
-//        self.navigationController?.navigationBar.setBackgroundImage(fooNavigationBarImage, for: .default)
-//        self.navigationController?.navigationBar.shadowImage = fooNavigationBarShadowImage
-////        self.navigationController?.navigationBar.setBackgroundImage(UINavigationBar.appearance().backgroundImage(for: UIBarMetrics.default), for:.default)
-////        self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
-////        self.navigationController?.navigationBar.shadowImage = UINavigationBar.appearance().shadowImage
-//    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -301,7 +293,7 @@ extension UserDetailViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let y = -scrollView.contentOffset.y
         guard y > 0 else {
-            containerView.y = 276 + y + 20
+            containerView.y = 306 + y
             return
         }
         let ratio = self.view.width/276
@@ -320,6 +312,22 @@ extension UserDetailViewController: UIScrollViewDelegate {
             make.width.equalTo(width)
             make.height.equalTo(height+1)
         }
-        containerView.y = height + 20
+        containerView.y = height + 30
     }
 }
+
+extension UserDetailViewController: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) {
+            previewingContext.sourceRect = cell.frame
+            let detailVC = ThreadDetailViewController(thread: user!.recentThreads[indexPath.row])
+            return detailVC
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
+    }
+}
+

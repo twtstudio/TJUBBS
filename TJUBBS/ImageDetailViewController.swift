@@ -47,7 +47,7 @@ class ImageDetailViewController: UIViewController {
         self.init()
         self.image = image
     }
-    
+        
     func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafeRawPointer) {
         guard error == nil else {
             HUD.flash(.labeledError(title: "保存失败", subtitle: "是不是没有在设置中开启相册访问权限😐"), delay: 1.2)

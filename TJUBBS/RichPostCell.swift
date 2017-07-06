@@ -132,6 +132,10 @@ class RichPostCell: DTAttributedTextCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         portraitImageView.kf.cancelDownloadTask()
+        portraitImageView.addTapGestureRecognizer { _ in
+        }
+        usernameLabel.addTapGestureRecognizer { _ in
+        }
 //        imageViews.removeAll()
     }
     
