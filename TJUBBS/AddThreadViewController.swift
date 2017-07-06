@@ -28,7 +28,9 @@ class AddThreadViewController: UIViewController {
     var imageMap: [Int : Int] = [:]
     var isAnonymous = false
     var canAnonymous = false
+    var attachments: [ImageTextAttachment] = []
 
+    
     var selectedForum: ForumModel? {
         didSet {
             openForumListFlag = false
@@ -91,6 +93,7 @@ class AddThreadViewController: UIViewController {
         
         // markdown parser
         textStorage.addLayoutManager(textView.layoutManager)
+        textView.layoutManager.delegate = self
         initBar()
     }
     
@@ -523,15 +526,21 @@ extension AddThreadViewController: UIImagePickerControllerDelegate, UINavigation
             }
             let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
             
-            let attachment = NSTextAttachment()
+            let attachment = ImageTextAttachment()
             attachment.image = resizedImage
             // resizedImage.hash as index
-            //            imageMap[resizedImage.hash] = resizedImage.hash
             let attributedString = NSAttributedString(attachment: attachment)
             textStorage.insert(attributedString, at: textView.selectedRange.location)
+            textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+            attachments.append(attachment)
             
             BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
-                
+                attachment.progressView.progress = progress.fractionCompleted
+                if progress.fractionCompleted >= 1.0 {
+                    if attachment.progressView.superview != nil {
+                        attachment.progressView.removeFromSuperview()
+                    }
+                }
             }, failure: { error in
                 HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
             }, success: { attachmentCode in
@@ -546,3 +555,59 @@ extension AddThreadViewController: UIImagePickerControllerDelegate, UINavigation
     }
     
 }
+
+extension AddThreadViewController: NSLayoutManagerDelegate {
+    
+    func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
+        if layoutFinishedFlag {
+            let imgAttachments = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges.map { $0.attachment }
+            let diff = attachments.filter { !imgAttachments.contains($0) }
+            for attachment in diff {
+                if attachment.progressView.superview != nil {
+                    attachment.progressView.removeFromSuperview()
+                }
+            }
+            layoutSubviews()
+            if diff.count > 0 { // if some attachments are deleteds
+                attachments = imgAttachments
+            }
+        }
+    }
+    
+    func layoutSubviews() {
+        let layoutManager = textView.layoutManager
+        
+        let attachs = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges
+        for  (attachment, range) in attachs {
+            let glyphRange = layoutManager.glyphRange(forCharacterRange: NSMakeRange(range.location, 1), actualCharacterRange: nil)
+            let glyphIndex = glyphRange.location
+            guard glyphIndex != NSNotFound && glyphRange.length == 1 else {
+                return
+            }
+            
+            let attachmentSize = layoutManager.attachmentSize(forGlyphAt: glyphIndex)
+            guard attachmentSize.width > 0.0 && attachmentSize.height > 0.0 else {
+                return
+            }
+            
+            let lineFragmentRect = layoutManager.lineFragmentRect(forGlyphAt: glyphIndex, effectiveRange: nil)
+            let glyphLocation = layoutManager.location(forGlyphAt: glyphIndex)
+            guard lineFragmentRect.width > 0.0 && lineFragmentRect.height > 0.0 else {
+                return
+            }
+            let attachmentRect = CGRect(origin: CGPoint(x: lineFragmentRect.minX + glyphLocation.x,y: lineFragmentRect.minY + glyphLocation.y - attachmentSize.height), size: attachmentSize)
+            let insets = self.textView.textContainerInset
+            let convertedRect = attachmentRect.offsetBy(dx: insets.left, dy: insets.top)
+            UIView.performWithoutAnimation {
+                guard attachment.progressView.progress < 1.0 else {
+                    return
+                }
+                attachment.progressView.frame = convertedRect
+                if attachment.progressView.superview == nil {
+                    self.textView.addSubview(attachment.progressView)
+                }
+            }
+        }
+    }
+}
+

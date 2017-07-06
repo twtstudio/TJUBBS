@@ -13,18 +13,19 @@
 import UIKit
 
 class ProgressView: UIView {
-    let progressLabel = UILabel(text: "0.0%", color: .white, fontSize: 15)
+    let progressLabel = UILabel(text: "0%", color: .white, fontSize: 13)
     var progress: Double = 0 {
         didSet {
-            self.progressLabel.text = String(format: "%.2f", progress*100) + "%"
+            self.progressLabel.text = "\(Int(progress*100))%"
             self.setNeedsDisplay()
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .clear
-        self.addShadow(with: .black, alpha: 0.5, radius: 100, offset: CGSize.zero)
+//        self.backgroundColor = .clear
+        self.backgroundColor = .black
+        self.alpha = 0.7
         self.addSubview(progressLabel)
         progressLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
@@ -41,14 +42,14 @@ class ProgressView: UIView {
     */
     override func draw(_ rect: CGRect) {
         let ctx = UIGraphicsGetCurrentContext()
-        let center = CGPoint(x: 100, y: 100)
-        let radius: CGFloat = 60
+        let center = CGPoint(x: rect.size.width/2, y: rect.size.height/2)
+        let radius: CGFloat = 18
         let start: CGFloat = -CGFloat(M_PI_2)
         let end: CGFloat = -CGFloat(M_PI_2) + CGFloat(M_PI)*2*CGFloat(progress)
         
         let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: start, endAngle: end, clockwise: true)
-        ctx?.setLineWidth(10)
-        ctx?.setStrokeColor(UIColor.blue.cgColor)
+        ctx?.setLineWidth(5)
+        ctx?.setStrokeColor(UIColor.white.cgColor)
         ctx?.addPath(path.cgPath)
         ctx?.strokePath()
     }

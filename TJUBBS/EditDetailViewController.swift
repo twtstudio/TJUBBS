@@ -20,6 +20,7 @@ class EditDetailViewController: UIViewController {
     var canAnonymous = false
     var imageMap: [Int : Int] = [:]
     var doneBlock: ((String) -> ())?
+    var attachments: [ImageTextAttachment] = []
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -132,7 +133,7 @@ class EditDetailViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.textView.resignFirstResponder()
+//        self.textView.resignFirstResponder()
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -198,7 +199,7 @@ extension EditDetailViewController {
     func keyboardWillHide(notification: NSNotification) {
         textView.height = self.view.height
         bar.removeFromSuperview()
-        textView.setNeedsLayout()
+//        textView.setNeedsLayout()
     }
     
     func keyboardWillShow(notification: NSNotification) {
@@ -209,7 +210,7 @@ extension EditDetailViewController {
                 let barHeight: CGFloat = 40
                 let height = view.frame.size.height - endRect.size.height - barHeight
                 textView.height = height - 10 // 10: margin
-                textView.setNeedsLayout()
+//                textView.setNeedsLayout()
                 bar.x = 0
                 bar.y = height
                 bar.width = self.view.width
@@ -230,28 +231,19 @@ extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigatio
             }
             let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
             
-//            let attachment = NSTextAttachment()
             let attachment = ImageTextAttachment()
-            attachment.block = { rect in
-                // change its position
-                attachment.progressView.frame = rect
-//                attachment.
-                if attachment.progressView.superview == nil {
-                    self.textView.addSubview(attachment.progressView)
-                }
-            }
             attachment.image = resizedImage
-            attachments.append(attachment)
             // resizedImage.hash as index
-//            imageMap[resizedImage.hash] = resizedImage.hash
             let attributedString = NSAttributedString(attachment: attachment)
             textStorage.insert(attributedString, at: textView.selectedRange.location)
-
+            textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+            attachments.append(attachment)
             BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
                 attachment.progressView.progress = progress.fractionCompleted
-                attachment.progressView.backgroundColor = UIColor(red: CGFloat(progress.fractionCompleted), green: CGFloat(progress.fractionCompleted), blue: CGFloat(progress.fractionCompleted), alpha: 1)
                 if progress.fractionCompleted >= 1.0 {
-                   // attachment.progressView.removeFromSuperview()
+                    if attachment.progressView.superview != nil {
+                        attachment.progressView.removeFromSuperview()
+                    }
                 }
             }, failure: { error in
                 HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
@@ -273,7 +265,53 @@ extension EditDetailViewController: NSLayoutManagerDelegate {
     
     func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
         if layoutFinishedFlag {
+            let imgAttachments = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges.map { $0.attachment }
+            let diff = attachments.filter { !imgAttachments.contains($0) }
+            for attachment in diff {
+                if attachment.progressView.superview != nil {
+                    attachment.progressView.removeFromSuperview()
+                }
+            }
+            layoutSubviews()
+            if diff.count > 0 { // if some attachments are deleteds
+                attachments = imgAttachments
+            }
+        }
+    }
+    
+    func layoutSubviews() {
+        let layoutManager = textView.layoutManager
+
+        let attachs = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges
+        for  (attachment, range) in attachs {
+            let glyphRange = layoutManager.glyphRange(forCharacterRange: NSMakeRange(range.location, 1), actualCharacterRange: nil)
+            let glyphIndex = glyphRange.location
+            guard glyphIndex != NSNotFound && glyphRange.length == 1 else {
+                return
+            }
             
+            let attachmentSize = layoutManager.attachmentSize(forGlyphAt: glyphIndex)
+            guard attachmentSize.width > 0.0 && attachmentSize.height > 0.0 else {
+                return
+            }
+            
+            let lineFragmentRect = layoutManager.lineFragmentRect(forGlyphAt: glyphIndex, effectiveRange: nil)
+            let glyphLocation = layoutManager.location(forGlyphAt: glyphIndex)
+            guard lineFragmentRect.width > 0.0 && lineFragmentRect.height > 0.0 else {
+                return
+            }
+            let attachmentRect = CGRect(origin: CGPoint(x: lineFragmentRect.minX + glyphLocation.x,y: lineFragmentRect.minY + glyphLocation.y - attachmentSize.height), size: attachmentSize)
+            let insets = self.textView.textContainerInset
+            let convertedRect = attachmentRect.offsetBy(dx: insets.left, dy: insets.top)
+            UIView.performWithoutAnimation {
+                guard attachment.progressView.progress < 1.0 else {
+                    return
+                }
+                attachment.progressView.frame = convertedRect
+                if attachment.progressView.superview == nil {
+                    self.textView.addSubview(attachment.progressView)
+                }
+            }
         }
     }
 }

@@ -468,4 +468,15 @@ extension UIImageView {
     }
 }
 
-
+extension NSAttributedString {
+    var attachmentRanges: [(attachment: ImageTextAttachment, range: NSRange)] {
+        var ranges = [(ImageTextAttachment, NSRange)]()
+        let fullRange = NSRange(location: 0, length: self.length)
+        self.enumerateAttribute(NSAttachmentAttributeName, in: fullRange) { value, range, _ in
+            if let attachment = value as? ImageTextAttachment {
+                ranges.append((attachment, range))
+            }
+        }
+        return ranges
+    }
+}
