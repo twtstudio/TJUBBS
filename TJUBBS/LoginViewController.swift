@@ -231,7 +231,7 @@ class LoginViewController: UIViewController {
         view.addSubview(portraitImageView!)
         portraitImageView?.snp.makeConstraints {
             make in
-            make.top.equalToSuperview().offset(screenSize.height*(650/1920)-667)
+            make.top.equalToSuperview().offset(screenSize.height*(650/1920)-screenSize.height)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.height.equalTo(screenSize.height)
@@ -499,7 +499,9 @@ extension LoginViewController: UITextFieldDelegate {
             passwordTextField?.becomeFirstResponder()
         } else if textField == passwordTextField {
             view.endEditing(true)
-            loginButton?.callback(sender: loginButton!)
+            if isEULAConfirmed {
+                loginButton?.callback(sender: loginButton!)
+            }
         }
         return true
     }

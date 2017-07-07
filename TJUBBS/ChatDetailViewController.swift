@@ -60,8 +60,10 @@ class ChatDetailViewController: SLKTextViewController {
 //        textView.placeholder = ""
         textView.placeholderColor = .gray
         
-        textView.backgroundColor = .white
-        textInputbar.backgroundColor = .white
+//        textView.backgroundColor = .white
+        textView.backgroundColor = UIColor(red:0.98, green:0.98, blue:0.98, alpha:1.00)
+        textView.layer.borderColor = UIColor(red:0.89, green:0.89, blue:0.89, alpha:1.00).cgColor
+        textView.layer.borderWidth = 1
 //        textInputbar.editorRightButton.tintColor = Metadata.Color.accentColor
 //        textInputbar.rightButton.tintColor = Metadata.Color.accentColor
         textInputbar.isTranslucent = false

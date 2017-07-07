@@ -100,17 +100,20 @@ class BBSUser {
     static func delete() {
         //TODO: ??????  delete "BBSUser.shared."
         BBSUser.shared.username = nil
+        BBSUser.shared.nickname = nil
         BBSUser.shared.token = nil
         BBSUser.shared.uid = nil
         BBSUser.shared.group = nil
         BBSUser.shared.avatar = nil
+        BBSUser.shared.postCount = nil
+        BBSUser.shared.threadCount = nil
+        BBSUser.shared.points = nil
+        BBSUser.shared.tCreate = nil
+        BBSUser.shared.signature = nil
+        
         UserDefaults.standard.removeObject(forKey: BBSUSERSHAREDKEY)
     }
     
-//    func getUserInfo()  {
-//        BBSBeacon.request(withType: .get, url: BBSAPI.userInfo, token: token, parameters: nil, success: { dict in
-//        }, failure: nil)
-//    }
 }
 
 class UserWrapper: NSObject, Mappable {

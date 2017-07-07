@@ -31,7 +31,8 @@ class MainTabBarController: UITabBarController {
         BBSVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         
-        infoVC = UserInfoViewController(user: 1 as AnyObject, type: .myself)
+        infoVC = UserInfoViewController()
+//        infoVC?.title = "个人中心"
         let infoNC = UINavigationController(rootViewController: infoVC!)
         infoNC.tabBarItem = createBarItem(imageName: "个人中心")
         infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)

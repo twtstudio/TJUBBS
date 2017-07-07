@@ -334,29 +334,8 @@ class ThreadDetailViewController: UIViewController {
             self.loadToBottom()
         }
         
-//        replyButton = UIButton()
-//        replyButton?.setBackgroundImage(UIImage(named: "inputBar"), for: .normal)
-////        replyButton?.frame = CGRect(x: 0, y: tableView.height, width: self.view.width, height: 50)
-//        self.view.addSubview(replyButton!)
-//        replyButton?.snp.makeConstraints { make in
-//            make.left.right.bottom.equalToSuperview()
-//            make.top.equalTo(tableView.snp.bottom)
-//        }
-//        replyButton?.adjustsImageWhenHighlighted = false
-//        replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: self.view.width, height: 45)
-//        replyButton.initialize(rect: CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: self.view.width, height: 45))
         self.view.addSubview(replyButton)
-//        replyButton.frame = CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45)
-//        replyButton.draw(replyButton.frame)
         self.view.backgroundColor = .white
-//        replyButton.draw(CGRect(x: 0, y: self.view.height-64-45, width: self.view.width, height: 45))
-//        replyButton.snp.makeConstraints { make in
-//            make.bottom.equalTo(tableView.snp.bottom)
-//            make.left.equalToSuperview()
-//        }
-//        replyButton.addTapGestureRecognizer { btn in
-//            self.replyButtonDidTap(sender: UIButton())
-//        }
 
         replyButton.addTapGestureRecognizer { _ in
             
@@ -420,6 +399,20 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.hasFixedRowHeight = false
         cell?.delegate = self
         cell?.load(post: post)
+        cell?.moreButton.addTarget { _ in
+            let alertVC = UIAlertController()
+            let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
+                HUD.flash(.label("举报成功"))
+            })
+            let blockAction = UIAlertAction(title: "加入黑名单", style: .destructive, handler: { action in
+                HUD.flash(.label("已加入黑名单"))
+            })
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alertVC.addAction(reportAction)
+            alertVC.addAction(blockAction)
+            alertVC.addAction(cancelAction)
+            self.present(alertVC, animated: true, completion: nil)
+        }
         cell?.attributedTextContextView.setNeedsLayout()
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
@@ -461,7 +454,29 @@ extension ThreadDetailViewController: UITableViewDataSource {
             self?.navigationController?.pushViewController(boardVC, animated: true)
         }
         
-        
+        cell?.moreButton.addTarget { _ in
+            let alertVC = UIAlertController()
+            let likeAction = UIAlertAction(title: "收藏", style: .default, handler: { action in
+                BBSJarvis.collect(threadID: self.thread!.id) { _ in
+                    HUD.flash(.label("收藏成功"), onView: self.view, delay: 1.2)
+//                    button.setImage(UIImage(named: "已收藏"), for: .normal)
+//                    button.tag = 1
+                }
+            })
+            let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
+                HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
+            })
+            let blockAction = UIAlertAction(title: "加入黑名单", style: .destructive, handler: { action in
+                HUD.flash(.label("已加入黑名单"), onView: self.view, delay: 1.2)
+            })
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alertVC.addAction(likeAction)
+            alertVC.addAction(reportAction)
+            alertVC.addAction(blockAction)
+            alertVC.addAction(cancelAction)
+            self.present(alertVC, animated: true, completion: nil)
+        }
+
         if thread!.authorID == 0 {
             cell?.portraitImageView.image = UIImage(named: "anonymous")
         } else {

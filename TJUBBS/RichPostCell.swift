@@ -24,7 +24,8 @@ class RichPostCell: DTAttributedTextCell {
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
     let favorButton = UIButton(imageName: "收藏")
     var floorLabel = UILabel(text: "", fontSize: 14)
-
+    var moreButton = UIButton()
+    
     let screenSize = UIScreen.main.bounds
     /*
      // Only override draw() if you perform custom drawing.
@@ -53,6 +54,7 @@ class RichPostCell: DTAttributedTextCell {
 //        contentView.addSubview(favorButton)
 //        contentView.addSubview(floorLabel)
         contentView.addSubview(nickNameLabel)
+        contentView.addSubview(moreButton)
 //        favorButton.isHidden = true
         favorButton.isUserInteractionEnabled = false
         floorLabel.isHidden = false
@@ -60,73 +62,63 @@ class RichPostCell: DTAttributedTextCell {
     }
     
     func initLayout() {
-        portraitImageView.snp.makeConstraints {
-            make in
+        portraitImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(screenSize.height*(120/1920))
+            make.width.height.equalTo(44)
         }
-        portraitImageView.layer.cornerRadius = screenSize.height*(120/1920)/2
+        portraitImageView.layer.cornerRadius = 44/2
         portraitImageView.clipsToBounds = true
         
-        usernameLabel.sizeToFit()
-        usernameLabel.snp.makeConstraints {
-            make in
-            make.top.equalTo(portraitImageView)
+        usernameLabel.snp.makeConstraints { make in
+            make.top.equalTo(portraitImageView.snp.top)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
+        nickNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(portraitImageView.snp.top)
+            make.left.equalTo(usernameLabel.snp.right).offset(8)
+        }
         
-        //        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "HH:mm yyyy-MM-dd")
-        timeLabel.sizeToFit()
-        timeLabel.snp.makeConstraints {
-            make in
+        timeLabel.snp.makeConstraints { make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(4)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-        //        nickNameLabel.sizeToFit()
-
-        
-//        floorLabel.sizeToFit()
-        let fooView = UIView()
-        self.contentView.addSubview(fooView)
-        fooView.backgroundColor = .white
-        fooView.addSubview(floorLabel)
-        floorLabel.snp.makeConstraints { make in
-            make.left.right.top.bottom.equalToSuperview()
+        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        attributedTextContextView.snp.makeConstraints { make in
+            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+            make.left.equalTo(portraitImageView.snp.right).offset(8)
+            make.right.equalToSuperview().offset(-18)
+            make.bottom.equalToSuperview().offset(-8)
         }
-
-//        floorLabel.snp.makeConstraints {
+        
+        moreButton.setBackgroundImage(UIImage(named: "更多操作"), for: .normal)
+        moreButton.snp.makeConstraints { make in
+            make.width.equalTo(20)
+            make.height.equalTo(20)
+            make.right.equalToSuperview().offset(-18)
+            make.top.equalTo(portraitImageView.snp.top)
+        }
+////        floorLabel.sizeToFit()
+//        let fooView = UIView()
+//        self.contentView.addSubview(fooView)
+//        fooView.backgroundColor = .white
+//        fooView.addSubview(floorLabel)
+//        floorLabel.snp.makeConstraints { make in
+//            make.left.right.top.bottom.equalToSuperview()
+//        }
+//
+////        floorLabel.snp.makeConstraints {
+////            make in
+////            make.centerY.equalTo(usernameLabel)
+////            make.right.equalToSuperview().offset(-16)
+////        }
+//        fooView.snp.makeConstraints {
 //            make in
 //            make.centerY.equalTo(usernameLabel)
 //            make.right.equalToSuperview().offset(-16)
 //        }
-        fooView.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(usernameLabel)
-            make.right.equalToSuperview().offset(-16)
-        }
-        
-        
-        nickNameLabel.snp.makeConstraints {
-            make in
-            make.centerY.equalTo(usernameLabel)
-            make.left.equalTo(usernameLabel.snp.right).offset(3)
-//            make.right.lessThanOrEqualTo(floorLabel.snp.left)
-            //            make.right.equalTo(floorLabel.snp.left)
-        }
-
-        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        attributedTextContextView.sizeToFit()
-        attributedTextContextView.snp.makeConstraints {
-            make in
-            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-            make.left.equalTo(portraitImageView.snp.right).offset(8)
-//            make.right.equalToSuperview().offset(-24)
-            make.right.equalToSuperview().offset(-18)
-            make.bottom.equalToSuperview().offset(-7)
-        }
     }
     
     override func prepareForReuse() {
@@ -194,6 +186,8 @@ class RichPostCell: DTAttributedTextCell {
 //                }
 //            }
 //        }
+        self.contentView.setNeedsLayout()
+        self.contentView.layoutIfNeeded()
         favorButton.isUserInteractionEnabled = true
         attributedTextContextView.relayoutText()
     }
@@ -216,7 +210,7 @@ class RichPostCell: DTAttributedTextCell {
         attributedTextContextView.shouldDrawImages = true
 
         usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
-        let timeString = TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
+        let timeString = "\(post.floor) 楼 " + TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
         floorLabel.text = "\(post.floor) 楼"
         nickNameLabel.text = post.authorID != 0 ? "@"+post.authorNickname : ""
@@ -227,8 +221,8 @@ class RichPostCell: DTAttributedTextCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.setNeedsUpdateConstraints()
-        contentView.updateConstraintsIfNeeded()
+//        contentView.setNeedsUpdateConstraints()
+//        contentView.updateConstraintsIfNeeded()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -293,12 +287,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             imageView.shouldShowProgressiveDownload = true
             imageViews.append(imageView)
 //            self.delegate?.htmlContentCellSizeDidChange(cell: self)
-
             return imageView
-        } else if let attachment = attachment as? DTIframeTextAttachment {
-            let videoView = DTWebVideoView(frame: frame)
-            videoView.attachment = attachment
-            return videoView
         }
         return nil
     }
@@ -344,6 +333,8 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             // layout might have changed due to image sizes
             // do it on next run loop because a layout pass might be going on
 //            DispatchQueue.main.async {
+                self.contentView.setNeedsLayout()
+                self.contentView.layoutIfNeeded()
                 self.attributedTextContextView.layouter = nil
                 self.attributedTextContextView.relayoutText()
                 self.delegate?.htmlContentCellSizeDidChange(cell: self)

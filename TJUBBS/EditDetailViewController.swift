@@ -206,15 +206,19 @@ extension EditDetailViewController {
         if let endRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let beginRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             if(beginRect.size.height > 0 && (beginRect.origin.y - endRect.origin.y >= 0)){
                 self.view.addSubview(bar)
-                bar.y = 0
                 let barHeight: CGFloat = 40
                 let height = view.frame.size.height - endRect.size.height - barHeight
                 textView.height = height - 10 // 10: margin
 //                textView.setNeedsLayout()
-                bar.x = 0
-                bar.y = height
-                bar.width = self.view.width
-                bar.height = barHeight
+                bar.y = 600
+                UIView.performWithoutAnimation {
+                    self.bar.x = 0
+                    self.bar.y = height
+                    self.bar.width = self.view.width
+                    self.bar.height = barHeight
+                }
+//                UIView.animate(withDuration: 0.1, animations: {
+//                })
             }
         }
     }
@@ -268,6 +272,7 @@ extension EditDetailViewController: NSLayoutManagerDelegate {
             let imgAttachments = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges.map { $0.attachment }
             let diff = attachments.filter { !imgAttachments.contains($0) }
             for attachment in diff {
+                // if some attachments are deleted, remove them
                 if attachment.progressView.superview != nil {
                     attachment.progressView.removeFromSuperview()
                 }
@@ -284,17 +289,23 @@ extension EditDetailViewController: NSLayoutManagerDelegate {
 
         let attachs = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges
         for  (attachment, range) in attachs {
+            guard attachment.progressView.progress < 1.0 else {
+                // if on the screen, remove it
+                if attachment.progressView.superview != nil {
+                    attachment.progressView.removeFromSuperview()
+                }
+                return
+            }
+            // calculate the frame
             let glyphRange = layoutManager.glyphRange(forCharacterRange: NSMakeRange(range.location, 1), actualCharacterRange: nil)
             let glyphIndex = glyphRange.location
             guard glyphIndex != NSNotFound && glyphRange.length == 1 else {
                 return
             }
-            
             let attachmentSize = layoutManager.attachmentSize(forGlyphAt: glyphIndex)
             guard attachmentSize.width > 0.0 && attachmentSize.height > 0.0 else {
                 return
             }
-            
             let lineFragmentRect = layoutManager.lineFragmentRect(forGlyphAt: glyphIndex, effectiveRange: nil)
             let glyphLocation = layoutManager.location(forGlyphAt: glyphIndex)
             guard lineFragmentRect.width > 0.0 && lineFragmentRect.height > 0.0 else {
@@ -303,15 +314,15 @@ extension EditDetailViewController: NSLayoutManagerDelegate {
             let attachmentRect = CGRect(origin: CGPoint(x: lineFragmentRect.minX + glyphLocation.x,y: lineFragmentRect.minY + glyphLocation.y - attachmentSize.height), size: attachmentSize)
             let insets = self.textView.textContainerInset
             let convertedRect = attachmentRect.offsetBy(dx: insets.left, dy: insets.top)
+            
+            // change view's postion by using the frame calculated above
             UIView.performWithoutAnimation {
-                guard attachment.progressView.progress < 1.0 else {
-                    return
-                }
                 attachment.progressView.frame = convertedRect
                 if attachment.progressView.superview == nil {
                     self.textView.addSubview(attachment.progressView)
                 }
             }
+            
         }
     }
 }

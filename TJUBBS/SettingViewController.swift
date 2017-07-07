@@ -88,9 +88,9 @@ extension SettingViewController: UITableViewDataSource {
         return UITableViewCell()
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return screenFrame.height*(150/1920)
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return screenFrame.height*(150/1920)
+//    }
 }
 
 extension SettingViewController: UITableViewDelegate {
