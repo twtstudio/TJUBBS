@@ -22,7 +22,18 @@ class ThreadDetailViewController: UIViewController {
     var tableView = UITableView(frame: .zero, style: .grouped)
     var board: BoardModel?
     var thread: ThreadModel?
-    var postList: [PostModel] = []
+    var postList: [PostModel] = [] {
+        didSet {
+            postList = postList.filter { element in
+                for username in BBSUser.shared.blackList.keys {
+                    if username == element.authorName {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+    }
     var pastPageList: [PostModel] = []
     var currentPageList: [PostModel] = []
     var page = 0
@@ -81,7 +92,13 @@ class ThreadDetailViewController: UIViewController {
         titleLabel.numberOfLines = 1
         centerTextView.addSubview(titleLabel)
 
-        boardLabel.text = self.board?.name ?? "详情"
+        boardLabel.text = (self.board?.name ?? "详情" ) + " >"
+        boardLabel.addTapGestureRecognizer { _ in
+            if let board = self.board {
+                let boardVC = ThreadListController(board: board)
+                self.navigationController?.pushViewController(boardVC, animated: true)
+            }
+        }
         boardLabel.font = UIFont.boldSystemFont(ofSize: 16)
         boardLabel.textColor = .white
         boardLabel.sizeToFit()
@@ -142,7 +159,13 @@ class ThreadDetailViewController: UIViewController {
                 let titleIsEmpty = self.thread!.title == "" // thread nil flag
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
-                self.boardLabel.text = self.board?.name
+                self.boardLabel.text = (self.board?.name ?? "详情") + " >"
+                self.boardLabel.addTapGestureRecognizer { _ in
+                    if let board = self.board {
+                        let boardVC = ThreadListController(board: board)
+                        self.navigationController?.pushViewController(boardVC, animated: true)
+                    }
+                }
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
                 if titleIsEmpty {
                     self.loadTitle()
@@ -212,7 +235,7 @@ class ThreadDetailViewController: UIViewController {
             UIView.performWithoutAnimation {
                 self.tableView.reloadData()
             }
-            if self.tableView.numberOfRows(inSection: 1) != 0 {
+            if self.tableView.numberOfRows(inSection: 1) > 3 {
                 let indexPath = IndexPath(row: (self.tableView.numberOfRows(inSection: 1))-1, section: 1)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
@@ -316,14 +339,16 @@ class ThreadDetailViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 340
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+        if DeviceStatus.deviceModel == "iPhone" {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
+        }
         
         view.addSubview(bottomButton)
         bottomButton.snp.makeConstraints {
             make in
             make.right.equalToSuperview().offset(-16)
             make.bottom.equalToSuperview().offset(-88)
-            make.height.width.equalTo(screenSize.width*(104/1080))
+            make.height.width.equalTo(30)
         }
         bottomButton.alpha = 0
         bottomButton.addTarget {
@@ -399,17 +424,72 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.hasFixedRowHeight = false
         cell?.delegate = self
         cell?.load(post: post)
+        
         cell?.moreButton.addTarget { _ in
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+
             let alertVC = UIAlertController()
+            if post.authorID == BBSUser.shared.uid {
+                let editAction = UIAlertAction(title: "编辑", style: .default, handler: { action in
+                    let editController = EditDetailViewController()
+                    editController.title = "修改帖子"
+                    editController.placeholder = post.content
+                    editController.doneBlock = { string in
+                        BBSJarvis.modifyPost(pid: post.id, content: string, type: "put", failure: { _ in
+                            HUD.flash(.label("修改失败，请稍后重试"), onView: self.view, delay: 1.2)
+                        }, success: {
+                            HUD.flash(.label("修改成功"), onView: self.view, delay: 1.2)
+                            let _ = self.navigationController?.popViewController(animated: true)
+                        })
+                    }
+                    self.navigationController?.pushViewController(editController, animated: true)
+                })
+                
+                let deleteAction = UIAlertAction(title: "删除", style: .destructive, handler: { action in
+                    let deleteAlertVC = UIAlertController(title: "确认删除", message: "真的要删除吗？", preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                    deleteAlertVC.addAction(cancelAction)
+                    let confirmAction = UIAlertAction(title: "删除", style: .destructive) { _ in
+                        BBSJarvis.modifyPost(pid: post.id, type: "delete", failure: { _ in
+                            HUD.flash(.label("删除失败，请稍后重试"), onView: self.view, delay: 1.2)
+                        }, success: {
+                            self.postList.remove(at: indexPath.row)
+                            self.tableView.deleteRows(at: [indexPath], with: .left)
+                            HUD.flash(.label("删除成功"), onView: self.view, delay: 1.2)
+                        })
+                    }
+                    deleteAlertVC.addAction(confirmAction)
+                    self.present(deleteAlertVC, animated: true, completion: nil)
+                })
+                    alertVC.addAction(editAction)
+                    alertVC.addAction(deleteAction)
+            }
+            
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
-                HUD.flash(.label("举报成功"))
+                HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
             let blockAction = UIAlertAction(title: "加入黑名单", style: .destructive, handler: { action in
-                HUD.flash(.label("已加入黑名单"))
+                BBSUser.shared.blackList[post.authorName] = post.authorID
+                BBSUser.save()
+                HUD.flash(.label("已加入黑名单(可在通用设置中取消)"), onView: self.view, delay: 1.5)
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(reportAction)
-            alertVC.addAction(blockAction)
+            if post.authorID != 0 {
+                alertVC.addAction(blockAction)
+            }
             alertVC.addAction(cancelAction)
             self.present(alertVC, animated: true, completion: nil)
         }
@@ -438,23 +518,27 @@ extension ThreadDetailViewController: UITableViewDataSource {
         
         
         cell?.load(thread: self.thread!, boardName: board?.name ?? "")
-//        let boardName = NSAttributedString(string: board?.name ?? "", attributes: [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
-//                                                                                   NSForegroundColorAttributeName: UIColor.BBSBlue])
-//        cell?.floorLabel.attributedText = boardName
-//        cell?.floorLabel.text = board?.name
         
         cell?.attributedTextContextView.setNeedsLayout()
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
-//        cell?.floorLabel.isHidden = false
-        
-        cell?.floorLabel.addTapGestureRecognizer { [weak self] _ in
-            let boardVC = ThreadListController(board: self?.board)
-            self?.navigationController?.pushViewController(boardVC, animated: true)
-        }
         
         cell?.moreButton.addTarget { _ in
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+
             let alertVC = UIAlertController()
             let likeAction = UIAlertAction(title: "收藏", style: .default, handler: { action in
                 BBSJarvis.collect(threadID: self.thread!.id) { _ in
@@ -463,16 +547,58 @@ extension ThreadDetailViewController: UITableViewDataSource {
 //                    button.tag = 1
                 }
             })
+            alertVC.addAction(likeAction)
+            if self.thread!.authorID == BBSUser.shared.uid {
+                let editAction = UIAlertAction(title: "编辑", style: .default, handler: { action in
+                    let editController = AddThreadViewController()
+                    editController.selectedBoard = self.board!
+                    editController.title = "修改帖子"
+                    editController.placeholder = self.thread!.content
+                    editController.doneBlock = { title, content in
+                        BBSJarvis.modifyThread(tid: self.thread!.id, content: content, title: title, type: "put", failure: { _ in
+                            HUD.flash(.label("修改失败，请稍后重试"), onView: self.view, delay: 1.2)
+                        }, success: {
+                            HUD.flash(.label("修改成功"), onView: self.view, delay: 1.2)
+                            let _ = self.navigationController?.popViewController(animated: true)
+                        })
+                    }
+                    self.navigationController?.pushViewController(editController, animated: true)
+                })
+                
+                let deleteAction = UIAlertAction(title: "删除", style: .destructive, handler: { action in
+                    let deleteAlertVC = UIAlertController(title: "确认删除", message: "真的要删除吗？", preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                    deleteAlertVC.addAction(cancelAction)
+                    let confirmAction = UIAlertAction(title: "删除", style: .destructive) { _ in
+                        BBSJarvis.modifyThread(tid: self.thread!.id, type: "delete", failure: { _ in
+                            HUD.flash(.label("删除失败，请稍后重试"), onView: self.view, delay: 1.2)
+                        }, success: {
+                            let _ = self.navigationController?.popViewController(animated: true)
+                            HUD.flash(.label("删除成功"), delay: 1.2)
+                        })
+                    }
+                    deleteAlertVC.addAction(confirmAction)
+                    self.present(deleteAlertVC, animated: true, completion: nil)
+                })
+                alertVC.addAction(editAction)
+                alertVC.addAction(deleteAction)
+            }
+
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
                 HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
             let blockAction = UIAlertAction(title: "加入黑名单", style: .destructive, handler: { action in
-                HUD.flash(.label("已加入黑名单"), onView: self.view, delay: 1.2)
+                if let name = self.thread?.authorName {
+                    BBSUser.shared.blackList[name] = self.thread!.authorID
+                    BBSUser.save()
+                }
+                HUD.flash(.label("已加入黑名单(可在通用设置中取消)"), onView: self.view, delay: 1.5)
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-            alertVC.addAction(likeAction)
             alertVC.addAction(reportAction)
-            alertVC.addAction(blockAction)
+            if self.thread!.authorID != 0 {
+                alertVC.addAction(blockAction)
+            }
             alertVC.addAction(cancelAction)
             self.present(alertVC, animated: true, completion: nil)
         }
@@ -655,8 +781,14 @@ extension ThreadDetailViewController: UIScrollViewDelegate {
 extension ThreadDetailViewController: HtmlContentCellDelegate {
     func htmlContentCell(cell: RichPostCell, linkDidPress link: URL) {
 //        if let tid = Int(link.absoluteString.replacingOccurrences(of: "(.*?)bbs.tju.edu.cn/forum/thread/(.[0-9]+$)", with: "$2", options: .regularExpression, range: nil)) {
-        if let tid = Int(link.absoluteString.replacingOccurrences(of: "(.*?)bbs.tju.edu.cn/forum/thread/(.[0-9]*?)|/page/[0-9]*", with: "$2", options: .regularExpression, range: nil)) {
+        if let tid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.tju.edu.cn/forum/thread/([0-9]*)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
             let detailVC = ThreadDetailViewController(tid: tid)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+            return
+        }
+        
+        if let bid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.tju.edu.cn/forum/([0-9]*)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+            let detailVC = ThreadListController(bid: bid)
             self.navigationController?.pushViewController(detailVC, animated: true)
             return
         }
@@ -676,19 +808,10 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
         if let _ = tableView.indexPath(for: cell) {
-            self.tableView.reloadData()
-            
+//            self.tableView.reloadData()
         }
         
-    
-        // image viewer
-//        cell.imageViews.last?.addTapGestureRecognizer { _ in
-//            let detailVC = ImageDetailViewController(image: cell.imageViews.last?.image ?? UIImage(named: "progress")!)
-//            detailVC.showSaveBtn = true
-//            self.modalPresentationStyle = .overFullScreen
-//            self.present(detailVC, animated: true, completion: nil)
-//        }
-        
+        // imageViewer
         for imgView in cell.imageViews {
             imgView.addTapGestureRecognizer { _ in
                 let detailVC = ImageDetailViewController(image: imgView.image ?? UIImage(named: "progress")!)

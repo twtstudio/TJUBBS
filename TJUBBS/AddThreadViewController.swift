@@ -29,7 +29,9 @@ class AddThreadViewController: UIViewController {
     var isAnonymous = false
     var canAnonymous = false
     var attachments: [ImageTextAttachment] = []
-
+    var doneBlock: ((String, String)->())?
+    var placeholder: String = ""
+    var placeholderTitle = ""
     
     var selectedForum: ForumModel? {
         didSet {
@@ -78,7 +80,7 @@ class AddThreadViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(doneButtonTapped))
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        self.title = "发帖"
+        self.title = placeholder == "" ? "发帖" : "修改"
         
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
@@ -94,6 +96,10 @@ class AddThreadViewController: UIViewController {
         // markdown parser
         textStorage.addLayoutManager(textView.layoutManager)
         textView.layoutManager.delegate = self
+        textStorage.appendString(placeholder)
+        themeCell.textField?.text = placeholderTitle
+        // set the cursor
+        textView.selectedRange = NSMakeRange(placeholder.characters.count, 0)
         initBar()
     }
     
@@ -241,24 +247,22 @@ class AddThreadViewController: UIViewController {
         if !isUploading {
             if !resultString.string.isEmpty {
                 let content = resultString.string
-                BBSJarvis.postThread(boardID: board.id, title: title, anonymous: isAnonymous, content: content) { dic in
-                    HUD.flash(.success)
-                    let _ = self.navigationController?.popViewController(animated: true)
-                    if let data = dic["data"] as? [String : Any], let tidStr = data["id"] as? String, let tid = Int(tidStr) {
-                        let threadVC = ThreadDetailViewController(tid: tid)
-                        self.navigationController?.pushViewController(threadVC, animated: true)
+                if let done = doneBlock{
+                    done(title, content)
+                } else {
+                    BBSJarvis.postThread(boardID: board.id, title: title, anonymous: isAnonymous, content: content) { dic in
+                        HUD.flash(.success)
+                        let _ = self.navigationController?.popViewController(animated: true)
+                        if let data = dic["data"] as? [String : Any], let tidStr = data["id"] as? String, let tid = Int(tidStr) {
+                            let threadVC = ThreadDetailViewController(tid: tid)
+                            self.navigationController?.pushViewController(threadVC, animated: true)
+                        }
                     }
                 }
             } else {
                 HUD.flash(.label("不可以发布空白贴哦👀"), delay: 1.0)
             }
         }
-        
-//        BBSJarvis.postThread(boardID: selectedBoard!.id, title: themeCell.textField?.text ?? "", anonymous: anonymousSwitch.isOn, content: detailCell.textView?.text ?? "") { _ in
-//            HUD.flash(.success)
-//            let _ = self.navigationController?.popViewController(animated: true)
-//        }
-
     }
 }
 

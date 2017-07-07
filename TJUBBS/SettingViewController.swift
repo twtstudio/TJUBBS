@@ -12,7 +12,7 @@ class SettingViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
-    var contentArray = ["接受陌生人私信", "公开个人资料"]
+    var contentArray = ["黑名单", "公开个人资料"]
     //FIX ME: should initUI in init or viewDidLoad
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -32,7 +32,7 @@ class SettingViewController: UIViewController {
         tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView?.delegate = self
         tableView?.dataSource = self
-
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         // This is the better way to hide first headerViews
         self.tableView?.contentInset.top = -35
     }
@@ -62,17 +62,23 @@ extension SettingViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
-            cell.textLabel?.text = contentArray[indexPath.row]
-            let switchButton = UISwitch()
-            cell.contentView.addSubview(switchButton)
-            switchButton.onTintColor = UIColor.BBSBlue
-            switchButton.snp.makeConstraints {
-                make in
-                make.right.equalToSuperview().offset(-16)
-                make.centerY.equalToSuperview()
+            if indexPath.row == 0 {
+                let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
+                cell.textLabel?.text = contentArray[indexPath.row]
+                return cell
+            } else {
+                let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
+                cell.textLabel?.text = contentArray[indexPath.row]
+                let switchButton = UISwitch()
+                cell.contentView.addSubview(switchButton)
+                switchButton.onTintColor = UIColor.BBSBlue
+                switchButton.snp.makeConstraints {
+                    make in
+                    make.right.equalToSuperview().offset(-16)
+                    make.centerY.equalToSuperview()
+                }
+                return cell
             }
-            return cell
         } else if indexPath.section == 1 {
             let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
             if let token = BBSUser.shared.token, token != "" {
@@ -97,6 +103,9 @@ extension SettingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
+        case IndexPath(row: 0, section: 0):
+            let blackListVC = BlackListViewController()
+            self.navigationController?.pushViewController(blackListVC, animated: true)
         case IndexPath(row: 0, section: 1):
             BBSUser.delete()
 //            let _ = self.navigationController?.popToRootViewController(animated: false)

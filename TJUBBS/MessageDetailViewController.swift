@@ -12,7 +12,6 @@ import Kingfisher
 
 class MessageDetailViewController: UIViewController {
     
-    let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
     var model: MessageModel! = nil
 //    var replyButton: UIButton?

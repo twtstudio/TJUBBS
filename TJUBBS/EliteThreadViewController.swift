@@ -14,7 +14,18 @@ import MJRefresh
 class EliteThreadViewController: UIViewController {
     
     var tableView: UITableView?
-    var threadList: [ThreadModel] = []
+    var threadList: [ThreadModel] = [] {
+        didSet {
+            threadList = threadList.filter { element in
+                for username in BBSUser.shared.blackList.keys {
+                    if username == element.authorName {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+    }
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
@@ -88,8 +99,8 @@ extension EliteThreadViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = threadList[indexPath.row]
         //        print(data["username"]!)
-
         cell.initUI(thread: data)
+        cell.boardLabel.isHidden = false
         return cell
     }
     

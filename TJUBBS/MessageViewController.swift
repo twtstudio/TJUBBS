@@ -14,12 +14,16 @@ import PKHUD
 
 class MessageViewController: UIViewController {
     
-    let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
     var msgList: [MessageModel] = [] {
         didSet {
             var authorIDs: [Int] = [] // exclude the same authorID
             msgList = msgList.filter { msg in
+                for username in BBSUser.shared.blackList.keys {
+                    if username == msg.authorName {
+                        return false
+                    }
+                }
                 if msg.detailContent == nil { // simple Post Message(PM): so-called "站内信"
                     if authorIDs.contains(msg.authorId) {
                         return false

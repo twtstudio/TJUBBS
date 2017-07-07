@@ -19,6 +19,7 @@ class PostCell: UITableViewCell {
     var titleLabel = UILabel(text: "", color: .black, fontSize: 20)
     
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
+    var boardLabel = UILabel(text: "", color: UIColor(hex6: 0x1e88e5), fontSize: 20)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
     var timeLablel = UILabel(text: "", color: .lightGray, fontSize: 16)
     var thread: ThreadModel?
@@ -33,6 +34,7 @@ class PostCell: UITableViewCell {
         contentView.addSubview(detailLabel)
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
+        contentView.addSubview(boardLabel)
 //        favorButton.addTarget { button in
 //            if let button = button as? UIButton {
 //                BBSJarvis.collect(threadID: self.thread!.id) {_ in
@@ -90,6 +92,7 @@ class PostCell: UITableViewCell {
         portraitImageView.clipsToBounds = true
         
         usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
+        usernameLabel.sizeToFit()
         usernameLabel.snp.makeConstraints {
             make in
             make.centerY.equalTo(portraitImageView).offset(2)
@@ -111,13 +114,24 @@ class PostCell: UITableViewCell {
             let fooTitle = labeledTitle(label: thread.category, content: thread.title)
             titleLabel.attributedText = fooTitle
         }
+        
+        boardLabel.font = UIFont.flexibleFont(ofBaseSize: 16.6)
+        boardLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(usernameLabel.snp.centerY)
+            make.right.equalToSuperview().offset(-16)
+        }
+        boardLabel.isHidden = true
+        
+        boardLabel.text = "[\(thread.boardName)]"
+        
         titleLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(16)
-            make.right.equalToSuperview().offset(-16)
+            make.right.lessThanOrEqualTo(boardLabel.snp.left).offset(-3)
         }
         titleLabel.numberOfLines = 0
+        
         
         if thread.content != "" {
             if detailLabel.superview == nil {

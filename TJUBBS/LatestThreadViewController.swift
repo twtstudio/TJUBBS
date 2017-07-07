@@ -14,7 +14,18 @@ import MJRefresh
 class LatestThreadViewController: UIViewController {
     
     var tableView: UITableView?
-    var threadList: [ThreadModel] = []
+    var threadList: [ThreadModel] = [] {
+        didSet {
+            threadList = threadList.filter { element in
+                for username in BBSUser.shared.blackList.keys {
+                    if username == element.authorName {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+    }
     var curPage: Int = 0
 
     
@@ -66,9 +77,12 @@ extension LatestThreadViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = threadList[indexPath.row]
-
-
         cell.initUI(thread: data)
+        cell.boardLabel.isHidden = false
+        cell.boardLabel.addTapGestureRecognizer { _ in
+            let boardVC = ThreadListController(bid: data.boardID)
+            self.navigationController?.pushViewController(boardVC, animated: true)
+        }
         return cell
     }
     

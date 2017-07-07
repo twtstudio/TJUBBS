@@ -48,6 +48,7 @@ class BBSUser {
     var oldToken: String?
     var resetPasswordToken: String?
     var isVisitor: Bool = false
+    var blackList: [String : Int] = [:]
     
 //    required init?(map: Map) {}
 //    
@@ -77,10 +78,18 @@ class BBSUser {
         BBSUser.shared.cOnline = wrapper.cOnline
         BBSUser.shared.group = wrapper.group
         BBSUser.shared.tCreate = wrapper.tCreate
+        BBSUser.save()
     }
     
     static func save() {
-        let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1]
+//        let list = NSDictionary(dictionary: BBSUser.shared.blackList)
+        let list = NSMutableDictionary()
+        for key in Array<String>(BBSUser.shared.blackList.keys) {
+            if let uid = BBSUser.shared.blackList[key] {
+                list.setValue(uid, forKey: key)
+            }
+        }
+        let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1, "blackList": list]
         UserDefaults.standard.set(NSDictionary(dictionary: dic), forKey: BBSUSERSHAREDKEY)
     }
     
@@ -89,11 +98,21 @@ class BBSUser {
             let username = dic["username"] as? String,
             let token = dic["token"] as? String,
             let uid = dic["uid"] as? Int,
-            let group = dic["group"] as? Int {
+            let group = dic["group"] as? Int,
+            let list = dic["blackList"] as? NSDictionary {
             BBSUser.shared.username = username
             BBSUser.shared.uid = (uid == -1) ? nil : uid
             BBSUser.shared.token = (token == "") ? nil : token
             BBSUser.shared.group = (group == -1) ? nil : group
+            var dict = Dictionary<String, Int>()
+            if let keys = list.allKeys as? [String] {
+                for key in keys {
+                    if let uid = list[key] as? Int {
+                        dict[key] = uid
+                    }
+                }
+            }
+            BBSUser.shared.blackList = dict
         }
     }
     
@@ -110,7 +129,7 @@ class BBSUser {
         BBSUser.shared.points = nil
         BBSUser.shared.tCreate = nil
         BBSUser.shared.signature = nil
-        
+        BBSUser.shared.blackList.removeAll()
         UserDefaults.standard.removeObject(forKey: BBSUSERSHAREDKEY)
     }
     

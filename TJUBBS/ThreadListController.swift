@@ -16,8 +16,20 @@ class ThreadListController: UIViewController {
     
     var tableView: UITableView?
     var board: BoardModel?
-    var threadList: [ThreadModel] = []
+    var threadList: [ThreadModel] = [] {
+        didSet {
+            threadList = threadList.filter { element in
+                for username in BBSUser.shared.blackList.keys {
+                    if username == element.authorName {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+    }
     var curPage: Int = 0
+    var bid: Int = 0
     
     convenience init(board: BoardModel?) {
         self.init()
@@ -25,6 +37,15 @@ class ThreadListController: UIViewController {
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
+    }
+    
+    convenience init(bid: Int) {
+        self.init()
+        view.backgroundColor = .lightGray
+        UIApplication.shared.statusBarStyle = .lightContent
+        self.hidesBottomBarWhenPushed = true
+        self.bid = bid
+//        refresh()
     }
     
     override func viewDidLoad() {
@@ -59,7 +80,7 @@ class ThreadListController: UIViewController {
         
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        self.title = board?.name
+        self.title = board?.name ?? "帖子"
     }
     
     override func didReceiveMemoryWarning() {
@@ -115,7 +136,6 @@ extension ThreadListController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let thread = threadList[indexPath.row]
         cell.initUI(thread: thread)
-
         return cell
     }
     
@@ -142,19 +162,23 @@ extension ThreadListController: UITableViewDelegate {
 extension ThreadListController {
     func refresh() {
         self.curPage = 0
-        BBSJarvis.getThreadList(boardID: board!.id, page: 0, failure: { _ in
+        BBSJarvis.getThreadList(boardID: board?.id ?? bid, page: 0, failure: { _ in
                 if (self.tableView?.mj_header.isRefreshing())! {
                     self.tableView?.mj_header.endRefreshing()
                 }
         }) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
+                let board = data["board"] as? Dictionary<String, Any>,
                 let threads = data["thread"] as? Array<Dictionary<String, Any>> {
                 if (self.tableView?.mj_header.isRefreshing())! {
                     self.tableView?.mj_header.endRefreshing()
                 }
                 self.curPage = 0
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) 
+                let boardModel = Mapper<BoardModel>().map(JSON: board)
+                self.board = boardModel
+                self.title = boardModel?.name
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads)
             }
             DispatchQueue.main.async {
                 self.tableView?.reloadData()

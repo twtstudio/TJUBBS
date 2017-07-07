@@ -45,11 +45,13 @@ class MessageCell: UITableViewCell {
             make in
             make.top.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().offset(-16)
-            make.width.height.equalTo(screenSize.width*(160/1080))
+            make.width.height.equalTo(44)
+//            make.width.height.equalTo(screenSize.width*(160/1080))
             make.left.equalToSuperview().offset(16)
         }
         
-        portraitImageView.layer.cornerRadius = screenSize.width*(160/1080)/2
+//        portraitImageView.layer.cornerRadius = screenSize.width*(160/1080)/2
+        portraitImageView.layer.cornerRadius = 44/2
         portraitImageView.clipsToBounds = true
         
         usernameLabel.text = username

@@ -11,7 +11,7 @@ import Kingfisher
 import ObjectMapper
 class FavorateViewController: UIViewController {
     
-    var tableView: UITableView?
+    var tableView: UITableView? = UITableView(frame: .zero, style: .grouped)
     var threadList: [ThreadModel] = []
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -28,7 +28,6 @@ class FavorateViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
@@ -36,7 +35,9 @@ class FavorateViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
-
+        
+        let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
+        self.navigationItem.rightBarButtonItem = rightItem
         // This is the better way to hide first headerViews
         self.tableView?.contentInset.top = -35
         
@@ -52,6 +53,30 @@ class FavorateViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+
+}
+
+extension FavorateViewController {
+    func editingStateOnChange(sender: UIBarButtonItem) {
+        tableView?.setEditing(!(tableView?.isEditing)!, animated: true)
+        if (tableView?.isEditing)! {
+            self.navigationItem.rightBarButtonItem?.title = "完成"
+        } else {
+            self.navigationItem.rightBarButtonItem?.title = "编辑"
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        let thread = threadList[indexPath.row]
+        BBSJarvis.deleteCollect(threadID: thread.id, success: { _ in
+        })
+        threadList.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
     }
 
 }

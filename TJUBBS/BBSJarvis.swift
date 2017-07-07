@@ -146,8 +146,6 @@ struct BBSJarvis {
         }
     }
 
-    
-    
     static func collect(threadID: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         let parameters = ["tid": "\(threadID)"]
         BBSBeacon.request(withType: .post, url: BBSAPI.collect, parameters: parameters, success: success)
@@ -250,4 +248,29 @@ struct BBSJarvis {
         })
     }
     
+    static func modifyPost(pid: Int, content: String = "", type: String, failure: ((Error)->())? = nil, success: @escaping ()->()) {
+        if type == "put" {
+            let para = ["content": content]
+            BBSBeacon.request(withType: .put, url: BBSAPI.post(pid: pid), parameters: para, success: { _ in
+                success()
+            })
+        } else if type == "delete" {
+            BBSBeacon.request(withType: .delete, url: BBSAPI.post(pid: pid), parameters: nil, success: { _ in
+                success()
+            })
+        }
+    }
+    
+    static func modifyThread(tid: Int, content: String = "", title: String = "", type: String, failure: ((Error)->())? = nil, success: @escaping ()->()) {
+        if type == "put" {
+            let para = ["content": content, "title": title]
+            BBSBeacon.request(withType: .put, url: BBSAPI.thread(tid: tid), parameters: para, success: { _ in
+                success()
+            })
+        } else if type == "delete" {
+            BBSBeacon.request(withType: .delete, url: BBSAPI.thread(tid: tid), parameters: nil, success: { _ in
+                success()
+            })
+        }
+    }
 }

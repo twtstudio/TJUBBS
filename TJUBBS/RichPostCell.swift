@@ -11,6 +11,7 @@ import DTCoreText
 import Kingfisher
 
 protocol HtmlContentCellDelegate: class {
+    var tableView: UITableView { get }
     func htmlContentCell(cell: RichPostCell, linkDidPress link: URL)
     func htmlContentCellSizeDidChange(cell: RichPostCell)
 }
@@ -22,9 +23,7 @@ class RichPostCell: DTAttributedTextCell {
     let usernameLabel = UILabel(text: "")
     let nickNameLabel = UILabel(text: "", color: .gray)
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
-    let favorButton = UIButton(imageName: "收藏")
-    var floorLabel = UILabel(text: "", fontSize: 14)
-    var moreButton = UIButton()
+    var moreButton = ExtendedButton()
     
     let screenSize = UIScreen.main.bounds
     /*
@@ -51,13 +50,8 @@ class RichPostCell: DTAttributedTextCell {
         contentView.addSubview(portraitImageView)
         contentView.addSubview(usernameLabel)
         contentView.addSubview(timeLabel)
-//        contentView.addSubview(favorButton)
-//        contentView.addSubview(floorLabel)
         contentView.addSubview(nickNameLabel)
         contentView.addSubview(moreButton)
-//        favorButton.isHidden = true
-        favorButton.isUserInteractionEnabled = false
-        floorLabel.isHidden = false
         initLayout()
     }
     
@@ -65,7 +59,7 @@ class RichPostCell: DTAttributedTextCell {
         portraitImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.left.equalToSuperview().offset(16)
-            make.width.height.equalTo(44)
+            make.width.height.equalTo(44).priority(999)
         }
         portraitImageView.layer.cornerRadius = 44/2
         portraitImageView.clipsToBounds = true
@@ -100,25 +94,6 @@ class RichPostCell: DTAttributedTextCell {
             make.right.equalToSuperview().offset(-18)
             make.top.equalTo(portraitImageView.snp.top)
         }
-////        floorLabel.sizeToFit()
-//        let fooView = UIView()
-//        self.contentView.addSubview(fooView)
-//        fooView.backgroundColor = .white
-//        fooView.addSubview(floorLabel)
-//        floorLabel.snp.makeConstraints { make in
-//            make.left.right.top.bottom.equalToSuperview()
-//        }
-//
-////        floorLabel.snp.makeConstraints {
-////            make in
-////            make.centerY.equalTo(usernameLabel)
-////            make.right.equalToSuperview().offset(-16)
-////        }
-//        fooView.snp.makeConstraints {
-//            make in
-//            make.centerY.equalTo(usernameLabel)
-//            make.right.equalToSuperview().offset(-16)
-//        }
     }
     
     override func prepareForReuse() {
@@ -129,6 +104,9 @@ class RichPostCell: DTAttributedTextCell {
         usernameLabel.addTapGestureRecognizer { _ in
         }
 //        imageViews.removeAll()
+        for imageView in imageViews {
+            imageView.cancelLoading()
+        }
     }
     
     func load(thread: ThreadModel, boardName: String) {
@@ -142,53 +120,50 @@ class RichPostCell: DTAttributedTextCell {
                       DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
         setHTMLString(html, options: option)
-//        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
-//        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
-        
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.shouldDrawImages = true
-
-        let colorName = NSAttributedString(string: boardName, attributes: [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue,
-                                                                                   NSForegroundColorAttributeName: UIColor.BBSBlue])
-        floorLabel.attributedText = colorName
-//        floorLabel.text = boardName
-//        floorLabel.sizeToFit()
-//        floorLabel.snp.remakeConstraints { make in
-//            make.centerY.equalTo(usernameLabel)
-//            make.right.equalToSuperview().offset(-16)
-//        }
-//        
-//        usernameLabel.snp.makeConstraints { make in
-//            make.top.equalTo(portraitImageView)
-//            make.left.equalTo(portraitImageView.snp.right).offset(8)
-//        }
-//        
-//        nickNameLabel.snp.remakeConstraints { make in
-//            make.centerY.equalTo(usernameLabel)
-//            make.left.equalTo(usernameLabel.snp.right).offset(3)
-//            //            make.right.equalTo(floorLabel.snp.left)
-//        }
 
         usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
         nickNameLabel.text = thread.authorID != 0 ? "@"+thread.authorNickname : ""
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
         
-        floorLabel.isHidden = false
-        
-        // FIXME: 收藏
-//        favorButton.isHidden = false
-//        favorButton.addTarget { button in
-//            if let button = button as? UIButton {
-//                BBSJarvis.collect(threadID: thread.id) {_ in
-//                    button.setImage(UIImage(named: "已收藏"), for: .normal)
-//                    button.tag = 1
-//                }
-//            }
-//        }
         self.contentView.setNeedsLayout()
         self.contentView.layoutIfNeeded()
-        favorButton.isUserInteractionEnabled = true
+        nickNameLabel.sizeToFit()
+        usernameLabel.sizeToFit()
+        // 68: avatar and margin // 38: moreButton // 4: padding
+        let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
+        if nickNameLabel.width + 8 + usernameLabel.width > maxWidth {
+            if usernameLabel.width >= maxWidth {
+                usernameLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(portraitImageView.snp.top)
+                    make.width.equalTo(maxWidth)
+                    make.left.equalTo(portraitImageView.snp.right).offset(8)
+                }
+                nickNameLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(portraitImageView.snp.top)
+                    make.left.equalTo(usernameLabel.snp.right).offset(8)
+                    make.width.equalTo(0)
+                }
+            } else {
+                nickNameLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(portraitImageView.snp.top)
+                    make.left.equalTo(usernameLabel.snp.right).offset(8)
+                    make.width.equalTo(maxWidth - usernameLabel.width - 8)
+                }
+            }
+        } else {
+            usernameLabel.snp.makeConstraints { make in
+                make.top.equalTo(portraitImageView.snp.top)
+                make.left.equalTo(portraitImageView.snp.right).offset(8)
+            }
+            nickNameLabel.snp.makeConstraints { make in
+                make.top.equalTo(portraitImageView.snp.top)
+                make.left.equalTo(usernameLabel.snp.right).offset(8)
+            }
+        }
+        attributedTextContextView.sizeToFit()
         attributedTextContextView.relayoutText()
     }
     
@@ -212,11 +187,51 @@ class RichPostCell: DTAttributedTextCell {
         usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
         let timeString = "\(post.floor) 楼 " + TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
-        floorLabel.text = "\(post.floor) 楼"
         nickNameLabel.text = post.authorID != 0 ? "@"+post.authorNickname : ""
-        floorLabel.isHidden = false
-        favorButton.isHidden = true
+        nickNameLabel.sizeToFit()
+        usernameLabel.sizeToFit()
+        // 68: avatar and margin // 38: moreButton // 4: padding
+        let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
+        if nickNameLabel.width + 8 + usernameLabel.width > maxWidth {
+            if usernameLabel.width >= maxWidth {
+                usernameLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(portraitImageView.snp.top)
+                    make.width.equalTo(maxWidth)
+                    make.left.equalTo(portraitImageView.snp.right).offset(8)
+                }
+                nickNameLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(portraitImageView.snp.top)
+                    make.left.equalTo(usernameLabel.snp.right).offset(8)
+                    make.width.equalTo(0)
+                }
+            } else {
+                nickNameLabel.snp.remakeConstraints { make in
+                    make.top.equalTo(portraitImageView.snp.top)
+                    make.left.equalTo(usernameLabel.snp.right).offset(8)
+                    make.width.equalTo(maxWidth - usernameLabel.width - 8)
+                }
+            }
+        } else {
+            usernameLabel.snp.makeConstraints { make in
+                make.top.equalTo(portraitImageView.snp.top)
+                make.left.equalTo(portraitImageView.snp.right).offset(8)
+            }
+            nickNameLabel.snp.makeConstraints { make in
+                make.top.equalTo(portraitImageView.snp.top)
+                make.left.equalTo(usernameLabel.snp.right).offset(8)
+            }
+        }
         attributedTextContextView.relayoutText()
+//        // 86: margin
+//        let aWidth = UIScreen.main.bounds.width - 86
+//        let height = attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: aWidth)
+//        attributedTextContextView.snp.remakeConstraints { make in
+//            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//            make.left.equalTo(portraitImageView.snp.right).offset(8)
+//            make.height.equalTo(height).priority(999)
+//            make.width.equalTo(aWidth)
+//            make.bottom.equalToSuperview().offset(-8)
+//        }
     }
     
     override func layoutSubviews() {
@@ -278,7 +293,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             
             let imageView = DTLazyImageView(frame: frame)
 //            let imageView = DTLazyImageView(frame: aspectFrame)
-            
+            imageView.shouldShowProgressiveDownload = true
             imageView.delegate = self
             imageView.url = attachment.contentURL
             imageView.contentMode = UIViewContentMode.scaleAspectFill
@@ -319,8 +334,10 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
 //            if attachment.originalSize.equalTo(CGSize.zero) {
                 attachment.originalSize = size
                 let v = attributedTextContextView!
-                let qouteOffset: CGFloat = 10
-                let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right - qouteOffset
+//                let qouteOffset: CGFloat = 10
+//            let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right - qouteOffset
+            // 5: offset 86: margin
+                let maxWidth = UIScreen.main.bounds.width - 86 - v.frame.origin.x - 5
 //                attachment.image = lazyImageView.image
                 if size.width > maxWidth {
                     let scale = maxWidth / size.width
@@ -333,10 +350,22 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             // layout might have changed due to image sizes
             // do it on next run loop because a layout pass might be going on
 //            DispatchQueue.main.async {
-                self.contentView.setNeedsLayout()
-                self.contentView.layoutIfNeeded()
+            self.contentView.setNeedsLayout()
+            self.contentView.layoutIfNeeded()
                 self.attributedTextContextView.layouter = nil
                 self.attributedTextContextView.relayoutText()
+//            // 86: margin
+//            let aWidth = UIScreen.main.bounds.width - 86
+//            let height = attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: aWidth)
+//            
+//            attributedTextContextView.snp.remakeConstraints { make in
+//                make.height.equalTo(height).priority(999)
+//                make.width.equalTo(aWidth)
+//                make.top.equalTo(portraitImageView.snp.bottom).offset(8)
+//                make.left.equalTo(portraitImageView.snp.right).offset(8)
+//                make.right.equalToSuperview().offset(-18)
+//                make.bottom.equalToSuperview().offset(-8)
+//            }
                 self.delegate?.htmlContentCellSizeDidChange(cell: self)
 //            }
         }
