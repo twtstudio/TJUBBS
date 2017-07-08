@@ -59,8 +59,6 @@ class AddThreadViewController: UIViewController {
     }
     var forumString = "讨论区"
     var boardString = "板块"
-    let themeCell = TextInputCell(title: "主题", placeholder: "帖子的主题")
-//    let detailCell = TextInputCell(title: "帖子正文", placeholder: "有什么想说的呢", type: .textView)
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -97,7 +95,6 @@ class AddThreadViewController: UIViewController {
         textStorage.addLayoutManager(textView.layoutManager)
         textView.layoutManager.delegate = self
         textStorage.appendString(placeholder)
-        themeCell.textField?.text = placeholderTitle
         // set the cursor
         textView.selectedRange = NSMakeRange(placeholder.characters.count, 0)
         initBar()
@@ -421,9 +418,13 @@ extension AddThreadViewController: UITableViewDataSource {
                     make.centerY.equalTo(cell.contentView)
                     make.right.equalTo(cell.contentView).offset(-16)
                 }
-                textField.placeholder = "帖子的标题"
+                if placeholderTitle != "" {
+                    textField.text = placeholderTitle
+                } else {
+                    textField.placeholder = "帖子的标题"
+                }
                 textField.textAlignment = .right
-                
+
                 let titleLabel = UILabel(text: "标题")
                 titleLabel.font = UIFont.systemFont(ofSize: 17)
                 cell.contentView.addSubview(titleLabel)

@@ -154,7 +154,11 @@ class ThreadDetailViewController: UIViewController {
                 let titleIsEmpty = self.thread!.title == "" // thread nil flag
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
-                self.boardLabel.text = (self.board?.name ?? "详情") + " >"
+                if let name = self.board?.name {
+                    self.boardLabel.text = name + " >"
+                } else {
+                    self.boardLabel.text = "详情"
+                }
                 self.boardLabel.addTapGestureRecognizer { _ in
                     if let board = self.board {
                         let boardVC = ThreadListController(board: board)
