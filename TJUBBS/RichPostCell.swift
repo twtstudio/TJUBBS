@@ -177,7 +177,7 @@ class RichPostCell: DTAttributedTextCell {
                 make.left.equalTo(usernameLabel.snp.right).offset(8)
             }
         }
-        attributedTextContextView.sizeToFit()
+//        attributedTextContextView.sizeToFit()
         attributedTextContextView.relayoutText()
     }
     
@@ -252,8 +252,8 @@ class RichPostCell: DTAttributedTextCell {
         super.layoutSubviews()
         // Fix warning when layer is to high
         DTAttributedTextContentView.setLayerClass(NSClassFromString("DTTiledLayerWithoutFade"))
-//        contentView.setNeedsUpdateConstraints()
-//        contentView.updateConstraintsIfNeeded()
+        contentView.setNeedsUpdateConstraints()
+        contentView.updateConstraintsIfNeeded()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -346,6 +346,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
                 let v = attributedTextContextView!
 //                let qouteOffset: CGFloat = 10
 //            let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right - qouteOffset
+            attachment.displaySize = CGSize(width: size.width, height: size.height)
             // 5: offset 86: margin
                 let maxWidth = UIScreen.main.bounds.width - 86 - v.frame.origin.x - 5
 //                attachment.image = lazyImageView.image

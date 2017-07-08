@@ -20,7 +20,7 @@ class MyPostViewController: UIViewController {
             } else if threadList.count == 0 && containerView.superview == nil {
                 if containerView.subviews.count == 0 {
                     let label = UILabel()
-                    label.text = "还没有好友 快去找小伙伴聊天吧!"
+                    label.text = "你还没有发过主题帖呢"
                     label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
                     label.font = UIFont.boldSystemFont(ofSize: 19)
                     containerView.addSubview(label)
@@ -61,8 +61,8 @@ class MyPostViewController: UIViewController {
         
         let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
         self.navigationItem.rightBarButtonItem = rightItem
-
-        
+        let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backItem
         self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         self.tableView?.mj_footer.isAutomaticallyHidden = true

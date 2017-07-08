@@ -441,7 +441,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             if post.authorID == BBSUser.shared.uid {
                 let editAction = UIAlertAction(title: "编辑", style: .default, handler: { action in
                     let editController = EditDetailViewController()
-                    editController.title = "修改帖子"
+                    editController.title = "修改回复"
                     editController.placeholder = post.content
                     editController.doneBlock = { string in
                         BBSJarvis.modifyPost(pid: post.id, content: string, type: "put", failure: { _ in
@@ -484,7 +484,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(reportAction)
-            if post.authorID != 0 {
+            if post.authorID != 0 && post.authorID != BBSUser.shared.uid {
                 alertVC.addAction(blockAction)
             }
             alertVC.addAction(cancelAction)
@@ -541,19 +541,30 @@ extension ThreadDetailViewController: UITableViewDataSource {
             }
 
             let alertVC = UIAlertController()
-            let likeAction = UIAlertAction(title: "收藏", style: .default, handler: { action in
-                BBSJarvis.collect(threadID: self.thread!.id) { _ in
-                    HUD.flash(.label("收藏成功"), onView: self.view, delay: 1.2)
-//                    button.setImage(UIImage(named: "已收藏"), for: .normal)
-//                    button.tag = 1
-                }
-            })
-            alertVC.addAction(likeAction)
+            if self.thread!.inCollection {
+                let disLikeAction = UIAlertAction(title: "取消收藏", style: .default, handler: { action in
+                    BBSJarvis.deleteCollect(threadID: self.thread!.id, success: { _ in
+                        HUD.flash(.label("已取消收藏"), onView: self.view, delay: 1.2)
+                        self.thread!.inCollection = false
+                    })
+                })
+                alertVC.addAction(disLikeAction)
+            } else {
+                let likeAction = UIAlertAction(title: "收藏", style: .default, handler: { action in
+                    BBSJarvis.collect(threadID: self.thread!.id) { _ in
+                        HUD.flash(.label("收藏成功"), onView: self.view, delay: 1.2)
+                        self.thread!.inCollection = true
+                    }
+                })
+                alertVC.addAction(likeAction)
+            }
             if self.thread!.authorID == BBSUser.shared.uid {
                 let editAction = UIAlertAction(title: "编辑", style: .default, handler: { action in
                     let editController = AddThreadViewController()
                     editController.selectedBoard = self.board!
+                    editController.tableView.allowsSelection = false
                     editController.title = "修改帖子"
+                    editController.placeholderTitle = self.thread!.title
                     editController.placeholder = self.thread!.content
                     editController.doneBlock = { title, content in
                         BBSJarvis.modifyThread(tid: self.thread!.id, content: content, title: title, type: "put", failure: { _ in
@@ -597,7 +608,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(reportAction)
-            if self.thread!.authorID != 0 {
+            if self.thread!.authorID != 0 && self.thread!.authorID != BBSUser.shared.uid {
                 alertVC.addAction(blockAction)
             }
             alertVC.addAction(cancelAction)

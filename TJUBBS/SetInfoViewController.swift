@@ -109,7 +109,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 self.modalPresentationStyle = .overCurrentContext
-                let alertVC = UIAlertController()
+                let alertVC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
                 alertVC.view.tintColor = UIColor.black
                 if let popoverPresentationController = alertVC.popoverPresentationController,
                     let cell = tableView.cellForRow(at: indexPath) {

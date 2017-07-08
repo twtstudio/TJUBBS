@@ -9,6 +9,7 @@
 import UIKit
 import ObjectMapper
 import Kingfisher
+import PKHUD
 
 class UserDetailViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .grouped)
@@ -126,10 +127,13 @@ class UserDetailViewController: UIViewController {
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(cancelAction)
-            let confirmAction = UIAlertAction(title: "好的", style: .default) {
-                _ in
-                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                self.present(navigationController, animated: true, completion: nil)
+            let confirmAction = UIAlertAction(title: "发送", style: .default) { action in
+                if let textField = alertVC.textFields?[0], let text = textField.text {
+                    BBSJarvis.friendRequest(uid: self.user?.uid ?? 0, message: text, type: "post", success: { dic in
+                        print(dic)
+                        HUD.flash(.label("发送成功~"), onView: self.view, delay: 1.0)
+                    })
+                }
             }
             alertVC.addAction(confirmAction)
             self.present(alertVC, animated: true, completion: nil)

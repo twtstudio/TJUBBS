@@ -274,15 +274,15 @@ struct BBSJarvis {
         }
     }
     
-    static func friendRequest(uid: Int, message: String = "", type: String, failure: ((Error)->())? = nil, success: @escaping ()->()) {
+    static func friendRequest(uid: Int, message: String = "", type: String, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
         if type == "post" {
             let para = ["friend_id": "\(uid)", "message": message]
-            BBSBeacon.request(withType: .post, url: BBSAPI.friend(uid: uid), parameters: para, success: { _ in
-                success()
+            BBSBeacon.request(withType: .post, url: BBSAPI.friendList, parameters: para, failure: failure,success: { dic in
+                success(dic)
             })
         } else if type == "delete" {
-            BBSBeacon.request(withType: .delete, url: BBSAPI.friend(uid: uid), parameters: nil, success: { _ in
-                success()
+            BBSBeacon.request(withType: .delete, url: BBSAPI.friend(uid: uid), parameters: nil, failure: failure, success: { dic in
+                success(dic)
             })
         }
     }

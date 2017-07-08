@@ -68,11 +68,10 @@ class ChatDetailViewController: SLKTextViewController {
 //        textInputbar.rightButton.tintColor = Metadata.Color.accentColor
         textInputbar.isTranslucent = false
         textInputbar.clipsToBounds = true
-//        textInputbar.autoHideRightButton = true
+        textInputbar.autoHideRightButton = false
         textInputbar.maxCharCount = 256
 //        textInputbar.leftButton.isHidden = true
         // TODO: send photo
-//        leftButton.setImage(#imageLiteral(resourceName: "icn_upload"), for: .normal)
 //        leftButton.tintColor = .gray
         rightButton.setTitle("发送", for: .normal)
         
