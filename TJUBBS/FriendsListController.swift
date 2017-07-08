@@ -16,8 +16,32 @@ class FriendsListController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
     var tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
-    var friendList: [UserWrapper] = []
-
+    var containerView = UIView()
+    var friendList: [UserWrapper] = [] {
+        didSet {
+            if friendList.count > 0 && containerView.superview != nil {
+                containerView.removeFromSuperview()
+            } else if friendList.count == 0 && containerView.superview == nil {
+                if containerView.subviews.count == 0 {
+                    let label = UILabel()
+                    label.text = "还没有好友 快去找小伙伴聊天吧!"
+                    label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
+                    label.font = UIFont.boldSystemFont(ofSize: 19)
+                    containerView.addSubview(label)
+                    label.snp.makeConstraints { make in
+                        make.centerY.equalTo(containerView)
+                        make.centerX.equalTo(containerView)
+                    }
+                    label.sizeToFit()
+                }
+                containerView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+                self.view.addSubview(containerView)
+                containerView.frame = CGRect(x: 0, y: 60, width: self.view.width, height: 40)
+                containerView.sizeToFit()
+            }
+        }
+    }
+    
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = .lightGray
@@ -35,7 +59,7 @@ class FriendsListController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 200
-        
+        tableView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_header.beginRefreshing()
     }
@@ -61,6 +85,12 @@ extension FriendsListController: UITableViewDataSource {
         let cacheKey = "\(model.uid ?? 0)" + Date.today
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         cell.timeLabel.isHidden = true
+        if model.uid != 0 { // exclude anonymous user
+            cell.portraitImageView.addTapGestureRecognizer { _ in
+                let userVC = UserDetailViewController(uid: model.uid ?? 0)
+                self.navigationController?.pushViewController(userVC, animated: true)
+            }
+        }
         return cell
     }
     

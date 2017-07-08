@@ -111,6 +111,10 @@ extension SettingViewController: UITableViewDelegate {
 //            let _ = self.navigationController?.popToRootViewController(animated: false)
             let loginVC = LoginViewController(para: 1)
             let loginNC = UINavigationController(rootViewController: loginVC)
+//            if let popoverPresentationController = alertVC.popoverPresentationController {
+//                popoverPresentationController.sourceView = cell?.moreButton
+//                popoverPresentationController.sourceRect = cell!.moreButton.bounds
+//            }
             self.present(loginNC, animated: true, completion: nil)
         default: break
         }

@@ -19,7 +19,8 @@ class PostCell: UITableViewCell {
     var titleLabel = UILabel(text: "", color: .black, fontSize: 20)
     
     var detailLabel = UILabel(text: "", color: .lightGray, fontSize: 14)
-    var boardLabel = UILabel(text: "", color: UIColor(hex6: 0x1e88e5), fontSize: 20)
+    var boardButton = ExtendedButton(title: "", color: UIColor(hex6: 0x1e88e5), fontSize: 16, isConfirmButton: false)
+//    var boardLabel = UILabel(text: "", color: UIColor(hex6: 0x1e88e5), fontSize: 16)
     var replyNumberLabel = UILabel(text: "", fontSize: 14)
     var timeLablel = UILabel(text: "", color: .lightGray, fontSize: 16)
     var thread: ThreadModel?
@@ -34,29 +35,8 @@ class PostCell: UITableViewCell {
         contentView.addSubview(detailLabel)
         contentView.addSubview(replyNumberLabel)
         contentView.addSubview(timeLablel)
-        contentView.addSubview(boardLabel)
-//        favorButton.addTarget { button in
-//            if let button = button as? UIButton {
-//                BBSJarvis.collect(threadID: self.thread!.id) {_ in
-//                    button.setImage(UIImage(named: "已收藏"), for: .normal)
-//                    button.tag = 1
-//                }
-//            }
-//            // TODO: 取消点赞
-////            if let button = button as? UIButton {
-////                if button.tag == 1 {
-////                    BBSJarvis.deleteCollect(threadID: self.threadID!) {_ in
-////                        button.setImage(UIImage(named: "收藏"), for: .normal)
-////                        button.tag = 0
-////                    }
-////                } else {
-////                    BBSJarvis.collect(threadID: self.threadID!) {_ in
-////                        button.setImage(UIImage(named: "已收藏"), for: .normal)
-////                        button.tag = 1
-////                    }
-////                }
-////            }
-//        }
+//        contentView.addSubview(boardLabel)
+        contentView.addSubview(boardButton)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -99,14 +79,6 @@ class PostCell: UITableViewCell {
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
         
-//        favorButton.setImage(UIImage(named: thread.inCollection ? "已收藏" : "收藏"), for: .normal)
-//        favorButton.snp.makeConstraints {
-//            make in
-//            make.centerY.equalTo(portraitImageView)
-//            make.right.equalToSuperview()
-//            make.width.height.equalTo(screenSize.height*(144/1920))
-//        }
-        
         titleLabel.text = thread.title
         // size used to be 20
         titleLabel.font = UIFont.flexibleFont(ofBaseSize: 16.6)
@@ -115,20 +87,21 @@ class PostCell: UITableViewCell {
             titleLabel.attributedText = fooTitle
         }
         
-        boardLabel.font = UIFont.flexibleFont(ofBaseSize: 16.6)
-        boardLabel.snp.makeConstraints { make in
+//        boardLabel.font = UIFont.flexibleFont(ofBaseSize: 16.6)
+        boardButton.snp.makeConstraints { make in
             make.centerY.equalTo(usernameLabel.snp.centerY)
             make.right.equalToSuperview().offset(-16)
         }
-        boardLabel.isHidden = true
+        boardButton.isHidden = true
         
-        boardLabel.text = "[\(thread.boardName)]"
+        boardButton.setTitle("[\(thread.boardName)]", for: .normal)
         
         titleLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(16)
-            make.right.lessThanOrEqualTo(boardLabel.snp.left).offset(-3)
+            make.right.equalToSuperview().offset(-16)
+//            make.right.lessThanOrEqualTo(boardLabel.snp.left).offset(-3)
         }
         titleLabel.numberOfLines = 0
         

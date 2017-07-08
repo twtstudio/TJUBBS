@@ -78,10 +78,20 @@ extension LatestThreadViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = threadList[indexPath.row]
         cell.initUI(thread: data)
-        cell.boardLabel.isHidden = false
-        cell.boardLabel.addTapGestureRecognizer { _ in
+        cell.boardButton.isHidden = false
+        cell.boardButton.addTarget { _ in
             let boardVC = ThreadListController(bid: data.boardID)
             self.navigationController?.pushViewController(boardVC, animated: true)
+        }
+        if data.authorID != 0 { // exclude anonymous user
+            cell.usernameLabel.addTapGestureRecognizer { _ in
+                let userVC = UserDetailViewController(uid: data.authorID)
+                self.navigationController?.pushViewController(userVC, animated: true)
+            }
+            cell.portraitImageView.addTapGestureRecognizer { _ in
+                let userVC = UserDetailViewController(uid: data.authorID)
+                self.navigationController?.pushViewController(userVC, animated: true)
+            }
         }
         return cell
     }

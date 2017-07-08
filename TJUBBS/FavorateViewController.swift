@@ -12,7 +12,31 @@ import ObjectMapper
 class FavorateViewController: UIViewController {
     
     var tableView: UITableView? = UITableView(frame: .zero, style: .grouped)
-    var threadList: [ThreadModel] = []
+    var threadList: [ThreadModel] = [] {
+        didSet {
+            if threadList.count > 0 && containerView.superview != nil {
+                containerView.removeFromSuperview()
+            } else if threadList.count == 0 && containerView.superview == nil {
+                if containerView.subviews.count == 0 {
+                    let label = UILabel()
+                    label.text = "还没有收藏"
+                    label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
+                    label.font = UIFont.boldSystemFont(ofSize: 19)
+                    containerView.addSubview(label)
+                    label.snp.makeConstraints { make in
+                        make.centerY.equalTo(containerView)
+                        make.centerX.equalTo(containerView)
+                    }
+                    label.sizeToFit()
+                }
+                containerView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+                self.view.addSubview(containerView)
+                containerView.frame = CGRect(x: 0, y: 60, width: self.view.width, height: 40)
+                containerView.sizeToFit()
+            }
+        }
+    }
+    let containerView = UIView()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -35,6 +59,7 @@ class FavorateViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
+        tableView?.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
         
         let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
         self.navigationItem.rightBarButtonItem = rightItem
@@ -44,7 +69,7 @@ class FavorateViewController: UIViewController {
         BBSJarvis.getCollectionList {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data) 
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
             self.tableView?.reloadData()
         }

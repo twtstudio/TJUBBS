@@ -129,13 +129,8 @@ class ThreadDetailViewController: UIViewController {
         
         tableView.allowsSelection = true
         
-//        if thread != nil {
         initUI()
-//        }
-//        becomeKeyboardObserver()
-        
         // 把返回换成空白
-        
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         refresh()
@@ -339,9 +334,7 @@ class ThreadDetailViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 340
         
-        if DeviceStatus.deviceModel == "iPhone" {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
-        }
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.share(sender:)))
         
         view.addSubview(bottomButton)
         bottomButton.snp.makeConstraints {
@@ -393,9 +386,13 @@ class ThreadDetailViewController: UIViewController {
         }
     }
     
-    func share() {
-        let vc = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "[求实BBS] \(thread!.title)", URL(string: "https://bbs.tju.edu.cn/forum/thread/\(thread!.id)")!], applicationActivities: [])
-        present(vc, animated: true, completion: nil)
+    func share(sender: UIBarButtonItem) {
+        let shareVC = UIActivityViewController(activityItems: [UIImage(named: "头像2")!, "[求实BBS] \(thread!.title)", URL(string: "https://bbs.tju.edu.cn/forum/thread/\(thread!.id)")!], applicationActivities: [])
+        if let popoverPresentationController = shareVC.popoverPresentationController {
+            popoverPresentationController.barButtonItem = sender
+            popoverPresentationController.permittedArrowDirections = .up
+        }
+        self.present(shareVC, animated: true, completion: nil)
     }
 }
 
@@ -480,7 +477,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
                 HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
-            let blockAction = UIAlertAction(title: "加入黑名单", style: .destructive, handler: { action in
+            let blockAction = UIAlertAction(title: "不看ta的帖子", style: .destructive, handler: { action in
                 BBSUser.shared.blackList[post.authorName] = post.authorID
                 BBSUser.save()
                 HUD.flash(.label("已加入黑名单(可在通用设置中取消)"), onView: self.view, delay: 1.5)
@@ -491,6 +488,10 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 alertVC.addAction(blockAction)
             }
             alertVC.addAction(cancelAction)
+            if let popoverPresentationController = alertVC.popoverPresentationController {
+                popoverPresentationController.sourceView = cell?.moreButton
+                popoverPresentationController.sourceRect = cell!.moreButton.bounds
+            }
             self.present(alertVC, animated: true, completion: nil)
         }
         cell?.attributedTextContextView.setNeedsLayout()
@@ -587,7 +588,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
                 HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
-            let blockAction = UIAlertAction(title: "加入黑名单", style: .destructive, handler: { action in
+            let blockAction = UIAlertAction(title: "不看ta的帖子", style: .destructive, handler: { action in
                 if let name = self.thread?.authorName {
                     BBSUser.shared.blackList[name] = self.thread!.authorID
                     BBSUser.save()
@@ -600,6 +601,10 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 alertVC.addAction(blockAction)
             }
             alertVC.addAction(cancelAction)
+            if let popoverPresentationController = alertVC.popoverPresentationController {
+                popoverPresentationController.sourceView = cell?.moreButton
+                popoverPresentationController.sourceRect = cell!.moreButton.bounds
+            }
             self.present(alertVC, animated: true, completion: nil)
         }
 
@@ -808,13 +813,14 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
         if let _ = tableView.indexPath(for: cell) {
-//            self.tableView.reloadData()
+            self.tableView.reloadData()
         }
         
         // imageViewer
         for imgView in cell.imageViews {
             imgView.addTapGestureRecognizer { _ in
                 let detailVC = ImageDetailViewController(image: imgView.image ?? UIImage(named: "progress")!)
+                detailVC.maximumZoomScale = 2
                 detailVC.showSaveBtn = true
                 self.modalPresentationStyle = .overFullScreen
                 self.present(detailVC, animated: true, completion: nil)

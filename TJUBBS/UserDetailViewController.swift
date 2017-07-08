@@ -21,10 +21,12 @@ class UserDetailViewController: UIViewController {
         self.user = user
         headerView.loadModel(user: user)
         self.loadDetail()
+        self.hidesBottomBarWhenPushed = true
     }
 
     convenience init(uid: Int) {
         self.init()
+        self.hidesBottomBarWhenPushed = true
         BBSJarvis.getHome(uid: uid, success: { user in
             self.user = user
             self.loadDetail()
@@ -40,7 +42,6 @@ class UserDetailViewController: UIViewController {
         super.viewWillAppear(animated)
         // set navigationBar clear        
         self.automaticallyAdjustsScrollViewInsets = false
-        
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
@@ -92,9 +93,66 @@ class UserDetailViewController: UIViewController {
             self.present(detailVC, animated: true, completion: nil)
         }
         
+        let bottomView = UIView()
+        bottomView.backgroundColor = .white
+        let messageButton = UIButton(title: "发送私信", color: UIColor(red:0.00, green:0.62, blue:0.91, alpha:1.00), fontSize: 16)
+        let friendButton = UIButton(title: "加为好友", color: UIColor(red:0.00, green:0.62, blue:0.91, alpha:1.00), fontSize: 16)
+        bottomView.addSubview(messageButton)
+        bottomView.addSubview(friendButton)
+        messageButton.snp.makeConstraints { make in
+            make.centerX.equalTo(self.view.width/4)
+            make.top.equalToSuperview().offset(10)
+//            make.height.equalTo(24)
+            make.bottom.equalToSuperview().offset(-10)
+        }
+        messageButton.sizeToFit()
+        messageButton.addTarget { _ in
+            let dialogVC = ChatDetailViewController()
+            dialogVC.pal = self.user
+            self.navigationController?.pushViewController(dialogVC, animated: true)
+        }
+        
+        friendButton.snp.makeConstraints { make in
+            make.centerX.equalTo(self.view.width*3/4)
+            make.top.equalToSuperview().offset(10)
+            make.bottom.equalToSuperview().offset(-10)
+//            make.height.equalTo(24)
+        }
+        friendButton.sizeToFit()
+        friendButton.addTarget { _ in
+            let alertVC = UIAlertController(title: "发送好友申请", message: "打个招呼", preferredStyle: .alert)
+            alertVC.addTextField(configurationHandler: { textField in
+                
+            })
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alertVC.addAction(cancelAction)
+            let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                _ in
+                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                self.present(navigationController, animated: true, completion: nil)
+            }
+            alertVC.addAction(confirmAction)
+            self.present(alertVC, animated: true, completion: nil)
+        }
+        let divider = UIView()
+        divider.backgroundColor = .lightGray
+        divider.alpha = 0.5
+        bottomView.addSubview(divider)
+        divider.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().offset(10)
+            make.bottom.equalToSuperview().offset(-10)
+            make.width.equalTo(1)
+        }
+        self.view.addSubview(bottomView)
+        bottomView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+        }
+        
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.left.right.top.bottom.equalToSuperview()
+            make.left.right.top.equalToSuperview()
+            make.bottom.equalTo(bottomView.snp.top)
         }
         
         tableView.delegate = self

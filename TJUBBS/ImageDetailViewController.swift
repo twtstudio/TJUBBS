@@ -15,6 +15,8 @@ class ImageDetailViewController: UIViewController {
     var image: UIImage! = nil
     let saveBtn = UIButton(type: .roundedRect)
     var lastPos: CGPoint = CGPoint()
+    var maximumZoomScale: CGFloat = 1.5
+
     var showSaveBtn: Bool = false {
         didSet {
             if showSaveBtn {
@@ -63,7 +65,7 @@ class ImageDetailViewController: UIViewController {
 
         scrollView.isUserInteractionEnabled = true
 
-        scrollView.maximumZoomScale = 1.5
+        scrollView.maximumZoomScale = maximumZoomScale
         scrollView.delegate = self
         imgView = UIImageView()
         imgView.image = image

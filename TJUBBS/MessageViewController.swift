@@ -98,7 +98,12 @@ extension MessageViewController: UITableViewDataSource {
         let url = URL(string: BBSAPI.avatar(uid: model.authorId))
         let cacheKey = "\(model.authorId)" + Date.today
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
-
+        if model.authorId != 0 { // exclude anonymous user
+            cell.portraitImageView.addTapGestureRecognizer { _ in
+                let userVC = UserDetailViewController(uid: model.authorId)
+                self.navigationController?.pushViewController(userVC, animated: true)
+            }
+        }
         return cell
     }
     

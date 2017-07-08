@@ -70,10 +70,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window.rootViewController = tabBarVC
             
             window.makeKeyAndVisible()
+            if let query = url.query {
+                if let bid = Int(query.replacingOccurrences(of: "^bid=([0-9]*?)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+                    let detailVC = ThreadListController(bid: bid)
+                    (tabBarVC.selectedViewController as? UINavigationController)?.pushViewController(detailVC, animated: true)
+                    return true
+                } else if let tid = Int(query.replacingOccurrences(of: "^tid=([0-9]*?)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+                    let detailVC = ThreadDetailViewController(tid: tid)
+                    (tabBarVC.selectedViewController as? UINavigationController)?.pushViewController(detailVC, animated: true)
+                    return true
+                } else if let uid = Int(query.replacingOccurrences(of: "^uid=([0-9]*?)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+                    let detailVC = UserDetailViewController(uid: uid)
+                    (tabBarVC.selectedViewController as? UINavigationController)?.pushViewController(detailVC, animated: true)
+                    return true
+                }
+            }
             tabBarVC.selectedViewController?.navigationController?.pushViewController(detailVC, animated: true)
         }
         return true
     }
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

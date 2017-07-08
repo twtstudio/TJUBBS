@@ -83,10 +83,8 @@ class BoardListController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.title = forum?.name
-        
         // 把返回换成空白
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
         

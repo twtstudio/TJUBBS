@@ -33,6 +33,9 @@ class RichPostCell: DTAttributedTextCell {
      // Drawing code
      }
      */
+    override func draw(_ rect: CGRect) {
+        
+    }
     
     var imageViews = [DTLazyImageView]()
     weak var delegate: HtmlContentCellDelegate?
@@ -41,6 +44,17 @@ class RichPostCell: DTAttributedTextCell {
         super.awakeFromNib()
         // Initialization code
         textDelegate = self
+        initLayout()
+    }
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textDelegate = self
+        contentView.addSubview(portraitImageView)
+        contentView.addSubview(usernameLabel)
+        contentView.addSubview(timeLabel)
+        contentView.addSubview(nickNameLabel)
+        contentView.addSubview(moreButton)
         initLayout()
     }
     
@@ -128,8 +142,8 @@ class RichPostCell: DTAttributedTextCell {
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
         
-        self.contentView.setNeedsLayout()
-        self.contentView.layoutIfNeeded()
+//        self.contentView.setNeedsLayout()
+//        self.contentView.layoutIfNeeded()
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
         // 68: avatar and margin // 38: moreButton // 4: padding
@@ -236,6 +250,8 @@ class RichPostCell: DTAttributedTextCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        // Fix warning when layer is to high
+        DTAttributedTextContentView.setLayerClass(NSClassFromString("DTTiledLayerWithoutFade"))
 //        contentView.setNeedsUpdateConstraints()
 //        contentView.updateConstraintsIfNeeded()
     }
@@ -243,12 +259,6 @@ class RichPostCell: DTAttributedTextCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//        // Configure the view for the selected state
-//    }
-    
     
     deinit {
         for imageView in imageViews {
@@ -350,8 +360,8 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             // layout might have changed due to image sizes
             // do it on next run loop because a layout pass might be going on
 //            DispatchQueue.main.async {
-            self.contentView.setNeedsLayout()
-            self.contentView.layoutIfNeeded()
+//            self.contentView.setNeedsLayout()
+//            self.contentView.layoutIfNeeded()
                 self.attributedTextContextView.layouter = nil
                 self.attributedTextContextView.relayoutText()
 //            // 86: margin

@@ -37,7 +37,9 @@ class HomepageMainController: WMPageController {
     override func viewDidLoad() {
         menuBGColor = .BBSBlue
         progressColor = .yellow
-        
+        // 把返回换成空白
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+
         super.viewDidLoad()
         if BBSUser.shared.isVisitor == false {
             BBSJarvis.getHome(success: nil, failure: {

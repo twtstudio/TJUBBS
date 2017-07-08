@@ -111,7 +111,11 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 self.modalPresentationStyle = .overCurrentContext
                 let alertVC = UIAlertController()
                 alertVC.view.tintColor = UIColor.black
-                
+                if let popoverPresentationController = alertVC.popoverPresentationController,
+                    let cell = tableView.cellForRow(at: indexPath) {
+                    popoverPresentationController.sourceView = cell
+                    popoverPresentationController.sourceRect = cell.bounds
+                }
                 let pictureAction = UIAlertAction(title: "从相册中选择图片", style: .default) { _ in
                     if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
                         let imagePicker = UIImagePickerController()
@@ -142,6 +146,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar ?? UIImage(named: "default")!)
                         
                     self.modalPresentationStyle = .overFullScreen
+                    
                     self.present(detailVC, animated: true, completion: nil)
                 }
                 

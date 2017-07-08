@@ -273,4 +273,17 @@ struct BBSJarvis {
             })
         }
     }
+    
+    static func friendRequest(uid: Int, message: String = "", type: String, failure: ((Error)->())? = nil, success: @escaping ()->()) {
+        if type == "post" {
+            let para = ["friend_id": "\(uid)", "message": message]
+            BBSBeacon.request(withType: .post, url: BBSAPI.friend(uid: uid), parameters: para, success: { _ in
+                success()
+            })
+        } else if type == "delete" {
+            BBSBeacon.request(withType: .delete, url: BBSAPI.friend(uid: uid), parameters: nil, success: { _ in
+                success()
+            })
+        }
+    }
 }

@@ -93,6 +93,12 @@ extension MessageDetailViewController: UITableViewDataSource {
             cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
 
             cell.timeLabel.isHidden = true
+            if model.authorId != 0 { // exclude anonymous user
+                cell.portraitImageView.addTapGestureRecognizer { _ in
+                    let userVC = UserDetailViewController(uid: self.model.authorId)
+                    self.navigationController?.pushViewController(userVC, animated: true)
+                }
+            }
             return cell
         case 1:
             let cell = UITableViewCell()
@@ -182,8 +188,6 @@ extension MessageDetailViewController: UITableViewDataSource {
                 make.right.equalToSuperview().offset(-16)
                 make.bottom.equalToSuperview().offset(-8)
             }
-            
-            //TODO: Input View
             return cell
         default:
             return UITableViewCell()
@@ -196,7 +200,6 @@ extension MessageDetailViewController: UITableViewDataSource {
         }
         let editDetailVC = EditDetailViewController()
         editDetailVC.title = "回复 " + model.authorName
-        // FIXME: 匿名回复
         editDetailVC.canAnonymous = detailedModel.allow_anonymous == 1
         editDetailVC.doneBlock = { [weak editDetailVC] string in
             let origin = detailedModel.content
