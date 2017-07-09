@@ -1,5 +1,5 @@
 //
-//  MyPostViewController.swift
+//  MyThreadsViewController.swift
 //  TJUBBS
 //
 //  Created by JinHongxu on 2017/5/9.
@@ -10,7 +10,7 @@
 import UIKit
 import ObjectMapper
 import MJRefresh
-class MyPostViewController: UIViewController {
+class MyThreadsViewController: UIViewController {
     
     var tableView: UITableView?
     var threadList: [ThreadModel] = [] {
@@ -20,7 +20,7 @@ class MyPostViewController: UIViewController {
             } else if threadList.count == 0 && containerView.superview == nil {
                 if containerView.subviews.count == 0 {
                     let label = UILabel()
-                    label.text = "你还没有发过主题帖呢"
+                    label.text = "你还没有发表过主题帖呢"
                     label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
                     label.font = UIFont.boldSystemFont(ofSize: 19)
                     containerView.addSubview(label)
@@ -45,19 +45,23 @@ class MyPostViewController: UIViewController {
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
-        self.title = "我的发布"
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
-        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
-        tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
+        tableView?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(108)
+            make.left.right.bottom.equalToSuperview()
+        }
+        tableView?.register(PostCell.self, forCellReuseIdentifier: "threadCell")
         tableView?.delegate = self
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
+        tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
         
         let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
         self.navigationItem.rightBarButtonItem = rightItem
@@ -75,14 +79,14 @@ class MyPostViewController: UIViewController {
         BBSJarvis.getMyThreadList(page: page) {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data) 
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
             if self.threadList.count < 49 {
                 self.tableView?.mj_footer.endRefreshingWithNoMoreData()
             } else {
                 self.tableView?.mj_footer.resetNoMoreData()
             }
-
+            
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
             }
@@ -95,7 +99,7 @@ class MyPostViewController: UIViewController {
         BBSJarvis.getMyThreadList(page: page) {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
-                let fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: data) 
+                let fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
                 self.threadList += fooThreadList
                 if fooThreadList.count == 0 {
                     self.tableView?.mj_footer.endRefreshingWithNoMoreData()
@@ -114,7 +118,7 @@ class MyPostViewController: UIViewController {
     }
 }
 
-extension MyPostViewController {
+extension MyThreadsViewController {
     func editingStateOnChange(sender: UIBarButtonItem) {
         tableView?.setEditing(!(tableView?.isEditing)!, animated: true)
         if (tableView?.isEditing)! {
@@ -123,7 +127,7 @@ extension MyPostViewController {
             self.navigationItem.rightBarButtonItem?.title = "编辑"
         }
     }
-
+    
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
         return .delete
     }
@@ -136,10 +140,10 @@ extension MyPostViewController {
             self.tableView?.reloadData()
         })
     }
-
+    
 }
 
-extension MyPostViewController: UITableViewDataSource {
+extension MyThreadsViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -150,19 +154,22 @@ extension MyPostViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
+        var cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as? PostCell
+        if cell == nil {
+            cell = PostCell(style: .default, reuseIdentifier: "postCell")
+        }
         var thread = threadList[indexPath.row]
         thread.authorID = BBSUser.shared.uid!
         thread.replyTime = thread.createTime
         thread.authorName = BBSUser.shared.username ?? thread.authorName
-        cell.initUI(thread: thread)
-        cell.timeLablel.text = "发布于 " + (cell.timeLablel.text ?? "")
-        return cell
+        cell?.initUI(thread: thread)
+        cell?.timeLablel.text = "发布于 " + (cell?.timeLablel.text ?? "")
+        return cell!
     }
     
 }
 
-extension MyPostViewController: UITableViewDelegate {
+extension MyThreadsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
@@ -177,5 +184,4 @@ extension MyPostViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.1
     }
-
 }

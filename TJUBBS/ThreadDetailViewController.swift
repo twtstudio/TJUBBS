@@ -420,7 +420,8 @@ extension ThreadDetailViewController: UITableViewDataSource {
     func prepareReplyCellForIndexPath(tableView: UITableView, indexPath: IndexPath, post: PostModel) -> RichPostCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell") as? RichPostCell
         if cell == nil {
-            cell = RichPostCell(reuseIdentifier: "RichReplyCell")
+            cell = RichPostCell(style: .default, reuseIdentifier: "RichReplyCell")
+//            cell = RichPostCell(reuseIdentifier: "RichReplyCell")
         }
         cell?.hasFixedRowHeight = false
         cell?.delegate = self
@@ -515,7 +516,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
     func prepareCellForIndexPath(tableView: UITableView, indexPath: IndexPath) -> RichPostCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "RichPostCell") as? RichPostCell
         if cell == nil {
-            cell = RichPostCell(reuseIdentifier: "RichPostCell")
+            cell = RichPostCell(style: .default, reuseIdentifier: "RichPostCell")
         }
         cell?.hasFixedRowHeight = false
         cell?.delegate = self

@@ -12,6 +12,8 @@
 		36262A3D1F0D291600C799B7 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36262A3C1F0D291600C799B7 /* ProgressView.swift */; };
 		363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */; };
 		36636FEA1EC7723200C45CB8 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */; };
+		367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD9061F11EB00008C14C7 /* MyPostsViewController.swift */; };
+		367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */; };
 		368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D36A21EBA224C002978C6 /* SetInfoViewController.swift */; };
 		368F4A051F0F3D95003A0E05 /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368F4A041F0F3D95003A0E05 /* UserDetailView.swift */; };
 		3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3699D16F1ECB34630013D2FD /* MessageModel.swift */; };
@@ -61,7 +63,7 @@
 		68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683441EBEC17100F7A0BF /* MessageViewController.swift */; };
 		68B683471EBEC36400F7A0BF /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683461EBEC36400F7A0BF /* MessageCell.swift */; };
 		68B683491EC1F24600F7A0BF /* MessageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */; };
-		68B6834D1EC200D800F7A0BF /* MyPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */; };
+		68B6834D1EC200D800F7A0BF /* MyPostHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834C1EC200D800F7A0BF /* MyPostHomeViewController.swift */; };
 		68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */; };
 		68B683521EC20F7100F7A0BF /* ThreadDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */; };
 		68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B683571EC31BE700F7A0BF /* LatestThreadViewController.swift */; };
@@ -96,6 +98,8 @@
 		36262A3C1F0D291600C799B7 /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackListViewController.swift; sourceTree = "<group>"; };
 		36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
+		367AD9061F11EB00008C14C7 /* MyPostsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostsViewController.swift; sourceTree = "<group>"; };
+		367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyThreadsViewController.swift; sourceTree = "<group>"; };
 		368D36A21EBA224C002978C6 /* SetInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
 		368F4A041F0F3D95003A0E05 /* UserDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
 		3699D16F1ECB34630013D2FD /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -151,7 +155,7 @@
 		68B683441EBEC17100F7A0BF /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		68B683461EBEC36400F7A0BF /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageDetailViewController.swift; sourceTree = "<group>"; };
-		68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostViewController.swift; sourceTree = "<group>"; };
+		68B6834C1EC200D800F7A0BF /* MyPostHomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostHomeViewController.swift; sourceTree = "<group>"; };
 		68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomepageMainController.swift; sourceTree = "<group>"; };
 		68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadDetailViewController.swift; sourceTree = "<group>"; };
 		68B683571EC31BE700F7A0BF /* LatestThreadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestThreadViewController.swift; sourceTree = "<group>"; };
@@ -498,7 +502,9 @@
 				368D36A21EBA224C002978C6 /* SetInfoViewController.swift */,
 				68F461511EBDCCE900D784F4 /* FavorateViewController.swift */,
 				68F461551EBE264800D784F4 /* SettingViewController.swift */,
-				68B6834C1EC200D800F7A0BF /* MyPostViewController.swift */,
+				68B6834C1EC200D800F7A0BF /* MyPostHomeViewController.swift */,
+				367AD9061F11EB00008C14C7 /* MyPostsViewController.swift */,
+				367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */,
 				36C8430D1F0B6F2E009C6887 /* UserDetailViewController.swift */,
 				363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */,
 			);
@@ -720,6 +726,8 @@
 				36D0BC8D1EFE6D1700265D8B /* ChatDetailViewController.swift in Sources */,
 				36C461A21F05379E0002C0B5 /* EditDetailViewController.swift in Sources */,
 				36D0BC891EFE6AA600265D8B /* UserCell.swift in Sources */,
+				367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */,
+				367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */,
 				36262A3B1F0D1A7E00C799B7 /* ImageTextAttachment.swift in Sources */,
 				36C8430E1F0B6F2E009C6887 /* UserDetailViewController.swift in Sources */,
 				36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */,
@@ -748,7 +756,7 @@
 				68B683471EBEC36400F7A0BF /* MessageCell.swift in Sources */,
 				68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */,
 				363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */,
-				68B6834D1EC200D800F7A0BF /* MyPostViewController.swift in Sources */,
+				68B6834D1EC200D800F7A0BF /* MyPostHomeViewController.swift in Sources */,
 				68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */,
 				36FE25C61EB62A630090E805 /* log.swift in Sources */,
 				368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */,

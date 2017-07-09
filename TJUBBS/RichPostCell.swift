@@ -50,22 +50,26 @@ class RichPostCell: DTAttributedTextCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textDelegate = self
-        contentView.addSubview(portraitImageView)
-        contentView.addSubview(usernameLabel)
-        contentView.addSubview(timeLabel)
-        contentView.addSubview(nickNameLabel)
-        contentView.addSubview(moreButton)
+        if portraitImageView.superview == nil {
+            contentView.addSubview(portraitImageView)
+            contentView.addSubview(usernameLabel)
+            contentView.addSubview(timeLabel)
+            contentView.addSubview(nickNameLabel)
+            contentView.addSubview(moreButton)
+        }
         initLayout()
     }
     
     public override init!(reuseIdentifier: String!) {
         super.init(reuseIdentifier: reuseIdentifier)
         textDelegate = self
-        contentView.addSubview(portraitImageView)
-        contentView.addSubview(usernameLabel)
-        contentView.addSubview(timeLabel)
-        contentView.addSubview(nickNameLabel)
-        contentView.addSubview(moreButton)
+        if portraitImageView.superview == nil {
+            contentView.addSubview(portraitImageView)
+            contentView.addSubview(usernameLabel)
+            contentView.addSubview(timeLabel)
+            contentView.addSubview(nickNameLabel)
+            contentView.addSubview(moreButton)
+        }
         initLayout()
     }
     

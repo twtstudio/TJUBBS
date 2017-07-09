@@ -20,6 +20,8 @@ struct PostModel: Mappable{
     var createTime: Int = 0
     var modifyTime: Int = 0
     var replyNumber: Int = 0
+    var tid: Int = 0
+    var anonymous: Int = 0
     
     init?(map: Map) {}
     
@@ -33,5 +35,7 @@ struct PostModel: Mappable{
         createTime <- map["t_create"]
         modifyTime <- map["t_modify"]
         replyNumber <- map["replyNumber"]
+        tid <- map["thread_id"]
+        anonymous <- map["anonymous"]
     }
 }

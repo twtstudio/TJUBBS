@@ -174,7 +174,7 @@ extension UserInfoViewController: UITableViewDelegate {
         
         
         headerView.threadCountLabel.addTapGestureRecognizer { _ in
-            let detailVC = MyPostViewController(para: 1)
+            let detailVC = MyPostHomeViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
         
@@ -218,7 +218,7 @@ extension UserInfoViewController: UITableViewDelegate {
             let detailVC = FavorateViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 3, section: 0):
-            let detailVC = MyPostViewController(para: 1)
+            let detailVC = MyPostHomeViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 4, section: 0):
             let detailVC = SetInfoViewController()

@@ -160,9 +160,17 @@ struct BBSJarvis {
     }
     
     static func getMyThreadList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.myThreadList(page: page), parameters: nil, success: success)
+        BBSBeacon.request(withType: .get, url: BBSAPI.myThreadList(page: page), parameters: nil, failure: failure, success: success)
     }
     
+    static func getMyPostList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([PostModel])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.myPostList(page: page), parameters: nil, failure: failure, success: { dict in
+            if let posts = dict["data"] as? [Dictionary<String, Any>] {
+               let postModels = Mapper<PostModel>().mapArray(JSONArray: posts)
+                success(postModels)
+            }
+        })
+    }
     
     static func loginOld(username: String, password: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         let parameters = ["username": username, "password": password]
