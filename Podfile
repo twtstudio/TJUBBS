@@ -12,4 +12,5 @@ target 'TJUBBS' do
   pod 'Kingfisher'
   pod 'DTCoreText'
   pod 'Marklight'
+  pod 'YYText'
 end
