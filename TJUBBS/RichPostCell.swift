@@ -125,8 +125,6 @@ class RichPostCell: DTAttributedTextCell {
     }
     
     func load(thread: ThreadModel, boardName: String) {
-//        let html = BBCodeParser.parse(string: thread.content)
-//        let noBB = BBCodeParser.cleanBBCode(string: thread.content)
         let html = Markdown.parse(string: thread.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -143,11 +141,8 @@ class RichPostCell: DTAttributedTextCell {
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
         
-//        self.contentView.setNeedsLayout()
-//        self.contentView.layoutIfNeeded()
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
-        // 68: avatar and margin // 38: moreButton // 4: padding
         let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
         if nickNameLabel.width + 8 + usernameLabel.width > maxWidth {
             if usernameLabel.width >= maxWidth {
@@ -178,14 +173,10 @@ class RichPostCell: DTAttributedTextCell {
                 make.left.equalTo(usernameLabel.snp.right).offset(8)
             }
         }
-//        attributedTextContextView.sizeToFit()
-        attributedTextContextView.relayoutText()
+//        attributedTextContextView.relayoutText()
     }
     
     func load(post: PostModel) {
-//        let html = BBCodeParser.parse(string: post.content)
-//        let noBB = BBCodeParser.cleanBBCode(string: post.content)
-//        let noBB = String.clearBBCode(string: post.content)
         let html = Markdown.parse(string: post.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -194,9 +185,7 @@ class RichPostCell: DTAttributedTextCell {
                       DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
         setHTMLString(html, options: option)
-//        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//        attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 0)
         attributedTextContextView.shouldDrawImages = true
 
         usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
@@ -236,25 +225,15 @@ class RichPostCell: DTAttributedTextCell {
                 make.left.equalTo(usernameLabel.snp.right).offset(8)
             }
         }
-        attributedTextContextView.relayoutText()
-//        // 86: margin
-//        let aWidth = UIScreen.main.bounds.width - 86
-//        let height = attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: aWidth)
-//        attributedTextContextView.snp.remakeConstraints { make in
-//            make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//            make.left.equalTo(portraitImageView.snp.right).offset(8)
-//            make.height.equalTo(height).priority(999)
-//            make.width.equalTo(aWidth)
-//            make.bottom.equalToSuperview().offset(-8)
-//        }
+//        attributedTextContextView.relayoutText()
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         // Fix warning when layer is to high
         DTAttributedTextContentView.setLayerClass(NSClassFromString("DTTiledLayerWithoutFade"))
-        contentView.setNeedsUpdateConstraints()
-        contentView.updateConstraintsIfNeeded()
+//        contentView.setNeedsUpdateConstraints()
+//        contentView.updateConstraintsIfNeeded()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -293,17 +272,13 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     }
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, didDraw layoutFrame: DTCoreTextLayoutFrame!, in context: CGContext!) {
-//        attributedTextContextView.layouter = nil
-//        attributedTextContextView.relayoutText()
+        attributedTextContextView.layouter = nil
+        attributedTextContextView.relayoutText()
     }
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
-//            let size = self.aspectFitSizeForURL()
-//            let aspectFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: size.width, height: size.height)
-            
             let imageView = DTLazyImageView(frame: frame)
-//            let imageView = DTLazyImageView(frame: aspectFrame)
             imageView.shouldShowProgressiveDownload = true
             imageView.delegate = self
             imageView.url = attachment.contentURL
@@ -312,11 +287,11 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
             imageView.shouldShowProgressiveDownload = true
             imageViews.append(imageView)
-//            self.delegate?.htmlContentCellSizeDidChange(cell: self)
             return imageView
         }
         return nil
     }
+    
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, shouldDrawBackgroundFor textBlock: DTTextBlock!, frame: CGRect, context: CGContext!, for layoutFrame: DTCoreTextLayoutFrame!) -> Bool {
         // fun functional programming
         // let rect = CGRect.insetBy(frame)(dx: 1, dy: 1)
@@ -339,26 +314,21 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)
         let attachments = attributedTextContextView.layoutFrame.textAttachments(with: predicate) as? [DTImageTextAttachment] ?? []
-//        let attachments = [lazyImageView.]
         var shouldUpdate = false
         for attachment in attachments {
-//            if attachment.originalSize.equalTo(CGSize.zero) {
-                attachment.originalSize = size
-                let v = attributedTextContextView!
-//                let qouteOffset: CGFloat = 10
-//            let maxWidth = v.bounds.width - v.edgeInsets.left - v.edgeInsets.right - qouteOffset
-            attachment.displaySize = CGSize(width: size.width, height: size.height)
+            attachment.originalSize = size
+            let v = attributedTextContextView!
+            
+            var scale: CGFloat = 1.0
             // 5: offset 86: margin
-                let maxWidth = UIScreen.main.bounds.width - 86 - v.frame.origin.x - 5
-//                attachment.image = lazyImageView.image
-                if size.width > maxWidth {
-                    let scale = maxWidth / size.width
-                    attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
-                }
+            let maxWidth = UIScreen.main.bounds.width - 86 - v.frame.origin.x - 5
+            if size.width > maxWidth {
+                scale = maxWidth / size.width
                 shouldUpdate = true
-//            }
+            }
+            attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
         }
-        if shouldUpdate {
+//        if shouldUpdate {
             // layout might have changed due to image sizes
             // do it on next run loop because a layout pass might be going on
 //            DispatchQueue.main.async {
@@ -366,6 +336,6 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
                 self.attributedTextContextView.relayoutText()
                 self.delegate?.htmlContentCellSizeDidChange!(cell: self)
 //            }
-        }
+//        }
     }
 }

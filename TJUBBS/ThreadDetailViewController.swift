@@ -45,7 +45,7 @@ class ThreadDetailViewController: UIViewController {
     var boardLabel = UILabel()
     var replyButton = FakeTextFieldView(frame: CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45))
     
-    var bottomButton = UIButton(imageName: "down")
+    var bottomButton = ExtendedButton(imageName: "down")
 
     var refreshFlag = true
     
@@ -165,6 +165,7 @@ class ThreadDetailViewController: UIViewController {
                 
                 self.board = BoardModel(JSON: board)
                 let titleIsEmpty = self.thread!.title == "" // thread nil flag
+                let threadNil = self.thread == nil
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
                 if let name = self.board?.name {
@@ -182,12 +183,20 @@ class ThreadDetailViewController: UIViewController {
                 if titleIsEmpty {
                     self.loadTitle()
                 }
+                
+//                let needRefresh = (self.pastPageList.count + self.currentPageList.count > self.postList.count || self.pastPageList.count == 0) && self.currentPageList.count != 0
+//                if needRefresh {
+                    self.postList = self.currentPageList + self.pastPageList
+                    self.tableView.reloadData()
+//                }
+                
+//                if threadNil && !needRefresh {
+//                    self.tableView.reloadData()
+//                }
             }
             if self.tableView.mj_header.isRefreshing() {
                 self.tableView.mj_header.endRefreshing()
             }
-            self.postList = self.currentPageList + self.pastPageList
-            self.tableView.reloadData()
         }
     }
     
@@ -212,15 +221,14 @@ class ThreadDetailViewController: UIViewController {
             if let data = dict["data"] as? [String: Any],
             let posts = data["post"] as? [[String: Any]] {
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
-                if (self.currentPageList.count < 49)&&(self.page == 0) || (self.currentPageList.count < 50)&&(self.page != 0) {
-                }
             }
             if self.tableView.mj_footer.isRefreshing() {
                 self.tableView.mj_footer.endRefreshing()
                 self.tableView.mj_footer.isAutomaticallyHidden = true
             }
-            self.postList = self.pastPageList + self.currentPageList
-            UIView.performWithoutAnimation {
+            
+            if self.currentPageList.count > 0 {
+                self.postList = self.pastPageList + self.currentPageList
                 self.tableView.reloadData()
             }
         }
@@ -730,7 +738,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
                 let cutString = origin.replacingOccurrences(of: "> >.*", with: "", options: .regularExpression, range: nil)
                 let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + cutString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
                 
-                BBSJarvis.reply(threadID: self.thread!.id, content: resultString, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
+                BBSJarvis.reply(threadID: self.thread!.id, content: resultString, toID: post.authorID, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
                 }, success: { _ in
                     HUD.flash(.success)
@@ -850,7 +858,8 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         present(ac, animated: true, completion: nil)
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
-        if let _ = tableView.indexPath(for: cell) {
+//        if let indexPath = tableView.indexPath(for: cell) {
+        if tableView.visibleCells.contains(cell) {
             self.tableView.reloadData()
         }
         
