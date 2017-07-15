@@ -48,6 +48,9 @@ class EditDetailViewController: UIViewController {
         textView.becomeFirstResponder()
         loadPlaceholder()
         
+        
+        let cancelItem = UIBarButtonItem(title: "取消", style: .done, target: self, action: #selector(self.cancel(sender:)))
+        self.navigationItem.leftBarButtonItem = cancelItem
         let doneItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(self.doneButtonTapped(sender:)))
         self.navigationItem.rightBarButtonItem = doneItem
         
@@ -125,15 +128,19 @@ class EditDetailViewController: UIViewController {
             bar.items?.insert(anonymousItem, at: 1)
         }
     }
+    
+    func cancel(sender: UIBarButtonItem) {
+        self.textView.resignFirstResponder()
+        self.dismiss(animated: true, completion: nil)
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-//        self.textView.resignFirstResponder()
+
+    deinit {
         NotificationCenter.default.removeObserver(self)
     }
     

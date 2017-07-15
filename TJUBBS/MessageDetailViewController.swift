@@ -199,6 +199,7 @@ extension MessageDetailViewController: UITableViewDataSource {
             return
         }
         let editDetailVC = EditDetailViewController()
+        let edictNC = UINavigationController(rootViewController: editDetailVC)
         editDetailVC.title = "回复 " + model.authorName
         editDetailVC.canAnonymous = detailedModel.allow_anonymous == 1
         editDetailVC.doneBlock = { [weak editDetailVC] string in
@@ -211,10 +212,12 @@ extension MessageDetailViewController: UITableViewDataSource {
                 HUD.flash(.label("出错了...请稍后重试"))
             }, success: { _ in
                 HUD.flash(.success)
-                let _ = self.navigationController?.popViewController(animated: true)
+                editDetailVC?.cancel(sender: UIBarButtonItem())
+//                let _ = self.navigationController?.popViewController(animated: true)
             })
         }
-        self.navigationController?.pushViewController(editDetailVC, animated: true)
+        self.present(edictNC, animated: true, completion: nil)
+//        self.navigationController?.pushViewController(editDetailVC, animated: true)
     }
     
 }

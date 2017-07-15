@@ -296,8 +296,8 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     }
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, didDraw layoutFrame: DTCoreTextLayoutFrame!, in context: CGContext!) {
-        attributedTextContextView.layouter = nil
-        attributedTextContextView.relayoutText()
+//        attributedTextContextView.layouter = nil
+//        attributedTextContextView.relayoutText()
     }
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {

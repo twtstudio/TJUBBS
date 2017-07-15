@@ -48,6 +48,7 @@ class ChatDetailViewController: SLKTextViewController {
         
         // Using SlackTextViewController is funny because my tableView is all inverted by default
 //        isInverted = false
+        
         tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.loadMore))
 //        tableView?.mj_header = MJRefreshHeader(refreshingTarget: self, refreshingAction: #selector(self.loadMore))
         (tableView?.mj_header as? MJRefreshNormalHeader)?.lastUpdatedTimeLabel.isHidden = true

@@ -68,6 +68,11 @@ class AddThreadViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -99,6 +104,7 @@ class AddThreadViewController: UIViewController {
         textView.selectedRange = NSMakeRange(placeholder.characters.count, 0)
         initBar()
     }
+
     
     func initBar() {
         let imageButton = UIButton(imageName: "icn_upload")

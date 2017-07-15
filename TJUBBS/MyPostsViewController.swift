@@ -66,7 +66,19 @@ class MyPostsViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = rightItem
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
-        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+//        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        var refreshingImages = [UIImage]()
+        for i in 1...6 {
+            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
+            refreshingImages.append(image!)
+        }
+        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
+        header?.stateLabel.isHidden = true
+        header?.lastUpdatedTimeLabel.isHidden = true
+        header?.setImages(refreshingImages, for: .pulling)
+        tableView.mj_header = header
+
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         self.tableView.mj_footer.isAutomaticallyHidden = true
         self.tableView.mj_header.beginRefreshing()
@@ -174,17 +186,20 @@ extension MyPostsViewController: UITableViewDataSource {
             let alertVC = UIAlertController()
             let editAction = UIAlertAction(title: "编辑", style: .default, handler: { action in
                 let editController = EditDetailViewController()
+                let edictNC = UINavigationController(rootViewController: editController)
                 editController.title = "修改回复"
                 editController.placeholder = post.content
-                editController.doneBlock = { string in
+                editController.doneBlock = { [weak editController] string in
                     BBSJarvis.modifyPost(pid: post.id, content: string, type: "put", failure: { _ in
                         HUD.flash(.label("修改失败，请稍后重试"), onView: self.view, delay: 1.2)
                     }, success: {
                         HUD.flash(.label("修改成功"), onView: self.view, delay: 1.2)
-                        let _ = self.navigationController?.popViewController(animated: true)
+                        editController?.cancel(sender: UIBarButtonItem())
+//                        let _ = self.navigationController?.popViewController(animated: true)
                     })
                 }
-                self.navigationController?.pushViewController(editController, animated: true)
+                self.present(edictNC, animated: true, completion: nil)
+//                self.navigationController?.pushViewController(editController, animated: true)
             })
             
             let deleteAction = UIAlertAction(title: "删除", style: .destructive, handler: { action in
