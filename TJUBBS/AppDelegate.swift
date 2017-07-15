@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
 
 //            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
-            if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {
+//            if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {
                 BBSUser.load()
                 
                 // 如果token不为空
@@ -43,10 +43,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
                     window.rootViewController = navigationController
                 }
-            } else {
-                let navigationController = UINavigationController(rootViewController: GuideViewController())
-                window.rootViewController = navigationController
-            }
+//            } else {
+//                let navigationController = UINavigationController(rootViewController: GuideViewController())
+//                window.rootViewController = navigationController
+//            }
             
             window.makeKeyAndVisible()
         }
@@ -55,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         
-        let detailVC = ThreadDetailViewController()
+//        let detailVC = ThreadDetailViewController()
         let tabBarVC = MainTabBarController(para: 1)
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
@@ -85,7 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     return true
                 }
             }
-            tabBarVC.selectedViewController?.navigationController?.pushViewController(detailVC, animated: true)
+//            tabBarVC.selectedViewController?.navigationController?.pushViewController(detailVC, animated: true)
         }
         return true
     }

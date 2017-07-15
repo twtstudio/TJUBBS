@@ -12,8 +12,12 @@
 		36262A3D1F0D291600C799B7 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36262A3C1F0D291600C799B7 /* ProgressView.swift */; };
 		363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */; };
 		36636FEA1EC7723200C45CB8 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */; };
+		367AAFDA1F1377D500C18620 /* HCRichTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AAFD91F1377D500C18620 /* HCRichTextCell.swift */; };
+		367AAFDC1F137C6000C18620 /* HCRichCellLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AAFDB1F137C6000C18620 /* HCRichCellLayout.swift */; };
 		367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD9061F11EB00008C14C7 /* MyPostsViewController.swift */; };
 		367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */; };
+		367AD90B1F11FD17008C14C7 /* YYRichPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD90A1F11FD17008C14C7 /* YYRichPostCell.swift */; };
+		367AD90E1F121F3A008C14C7 /* HCMarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD90D1F121F3A008C14C7 /* HCMarkdownParser.swift */; };
 		368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D36A21EBA224C002978C6 /* SetInfoViewController.swift */; };
 		368F4A051F0F3D95003A0E05 /* UserDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368F4A041F0F3D95003A0E05 /* UserDetailView.swift */; };
 		3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3699D16F1ECB34630013D2FD /* MessageModel.swift */; };
@@ -98,8 +102,12 @@
 		36262A3C1F0D291600C799B7 /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackListViewController.swift; sourceTree = "<group>"; };
 		36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
+		367AAFD91F1377D500C18620 /* HCRichTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HCRichTextCell.swift; sourceTree = "<group>"; };
+		367AAFDB1F137C6000C18620 /* HCRichCellLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HCRichCellLayout.swift; sourceTree = "<group>"; };
 		367AD9061F11EB00008C14C7 /* MyPostsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostsViewController.swift; sourceTree = "<group>"; };
 		367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyThreadsViewController.swift; sourceTree = "<group>"; };
+		367AD90A1F11FD17008C14C7 /* YYRichPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YYRichPostCell.swift; sourceTree = "<group>"; };
+		367AD90D1F121F3A008C14C7 /* HCMarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HCMarkdownParser.swift; sourceTree = "<group>"; };
 		368D36A21EBA224C002978C6 /* SetInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetInfoViewController.swift; sourceTree = "<group>"; };
 		368F4A041F0F3D95003A0E05 /* UserDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailView.swift; sourceTree = "<group>"; };
 		3699D16F1ECB34630013D2FD /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -217,6 +225,15 @@
 			name = View;
 			sourceTree = "<group>";
 		};
+		367AD90C1F121F15008C14C7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				367AD90D1F121F3A008C14C7 /* HCMarkdownParser.swift */,
+				367AAFDB1F137C6000C18620 /* HCRichCellLayout.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
 		3699D16D1ECB344E0013D2FD /* Message */ = {
 			isa = PBXGroup;
 			children = (
@@ -299,6 +316,8 @@
 				36DA59281EC1EB8700B56F07 /* ThreadCell.swift */,
 				36E0544F1F100FCE00B913F0 /* ExtendedButton.swift */,
 				36C58A371F0A26610055F7F6 /* FakeTextFieldView.swift */,
+				367AD90A1F11FD17008C14C7 /* YYRichPostCell.swift */,
+				367AAFD91F1377D500C18620 /* HCRichTextCell.swift */,
 				36F451DF1EE11F7F009BA627 /* RichPostCell.swift */,
 				36262A3A1F0D1A7E00C799B7 /* ImageTextAttachment.swift */,
 				36262A3C1F0D291600C799B7 /* ProgressView.swift */,
@@ -408,6 +427,7 @@
 		682A84921EB5C5EB00510FA4 /* BBS */ = {
 			isa = PBXGroup;
 			children = (
+				367AD90C1F121F15008C14C7 /* Utilities */,
 				36DA59251EC1DFC300B56F07 /* View */,
 				36DA59241EC1DFBE00B56F07 /* Model */,
 				36DA59231EC1DFAB00B56F07 /* Controller */,
@@ -712,6 +732,7 @@
 				6849ABC11EC8BF8100042B5F /* PostModel.swift in Sources */,
 				36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */,
 				36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */,
+				367AAFDA1F1377D500C18620 /* HCRichTextCell.swift in Sources */,
 				68B683521EC20F7100F7A0BF /* ThreadDetailViewController.swift in Sources */,
 				68B5A52A1EBB162700968FFD /* UserInfoViewController.swift in Sources */,
 				68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */,
@@ -729,6 +750,7 @@
 				367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */,
 				367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */,
 				36262A3B1F0D1A7E00C799B7 /* ImageTextAttachment.swift in Sources */,
+				367AD90E1F121F3A008C14C7 /* HCMarkdownParser.swift in Sources */,
 				36C8430E1F0B6F2E009C6887 /* UserDetailViewController.swift in Sources */,
 				36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */,
 				36DA59221EC1DF8800B56F07 /* ThreadListController.swift in Sources */,
@@ -737,6 +759,7 @@
 				68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */,
 				6884B00F1EDAA77800FEA9BD /* GuideViewController.swift in Sources */,
 				68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */,
+				367AAFDC1F137C6000C18620 /* HCRichCellLayout.swift in Sources */,
 				6826D7451EB604F0000F520B /* AuthenticateViewController.swift in Sources */,
 				36DA59271EC1E1E700B56F07 /* ThreadModel.swift in Sources */,
 				36636FEA1EC7723200C45CB8 /* ImageDetailViewController.swift in Sources */,
@@ -753,6 +776,7 @@
 				36DA591E1EC1D54E00B56F07 /* BoardListController.swift in Sources */,
 				368F4A051F0F3D95003A0E05 /* UserDetailView.swift in Sources */,
 				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
+				367AD90B1F11FD17008C14C7 /* YYRichPostCell.swift in Sources */,
 				68B683471EBEC36400F7A0BF /* MessageCell.swift in Sources */,
 				68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */,
 				363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */,

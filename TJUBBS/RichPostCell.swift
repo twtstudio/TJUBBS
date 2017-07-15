@@ -10,10 +10,11 @@ import UIKit
 import DTCoreText
 import Kingfisher
 
-protocol HtmlContentCellDelegate: class {
+@objc protocol HtmlContentCellDelegate: class {
     var tableView: UITableView { get }
     func htmlContentCell(cell: RichPostCell, linkDidPress link: URL)
-    func htmlContentCellSizeDidChange(cell: RichPostCell)
+    @objc optional func htmlContentCellSizeDidChange(cell: RichPostCell)
+    @objc optional func imageCellSizeDidChange(cell: UITableViewCell, row: Int)
 }
 
 
@@ -24,6 +25,7 @@ class RichPostCell: DTAttributedTextCell {
     let nickNameLabel = UILabel(text: "", color: .gray)
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
     var moreButton = ExtendedButton()
+    let containerView = UIView()
     
     let screenSize = UIScreen.main.bounds
     /*
@@ -50,30 +52,22 @@ class RichPostCell: DTAttributedTextCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textDelegate = self
-        if portraitImageView.superview == nil {
-            contentView.addSubview(portraitImageView)
-            contentView.addSubview(usernameLabel)
-            contentView.addSubview(timeLabel)
-            contentView.addSubview(nickNameLabel)
-            contentView.addSubview(moreButton)
-        }
+        contentView.addSubview(containerView)
+//        if portraitImageView.superview == nil {
+        containerView.addSubview(portraitImageView)
+        containerView.addSubview(usernameLabel)
+        containerView.addSubview(timeLabel)
+        containerView.addSubview(nickNameLabel)
+        containerView.addSubview(moreButton)
+//        }
         initLayout()
     }
     
-    public override init!(reuseIdentifier: String!) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        textDelegate = self
-        if portraitImageView.superview == nil {
-            contentView.addSubview(portraitImageView)
-            contentView.addSubview(usernameLabel)
-            contentView.addSubview(timeLabel)
-            contentView.addSubview(nickNameLabel)
-            contentView.addSubview(moreButton)
-        }
-        initLayout()
-    }
     
     func initLayout() {
+        containerView.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+        }
         portraitImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.left.equalToSuperview().offset(16)
@@ -111,6 +105,9 @@ class RichPostCell: DTAttributedTextCell {
             make.height.equalTo(20)
             make.right.equalToSuperview().offset(-18)
             make.top.equalTo(portraitImageView.snp.top)
+        }
+        containerView.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -365,23 +362,9 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             // layout might have changed due to image sizes
             // do it on next run loop because a layout pass might be going on
 //            DispatchQueue.main.async {
-//            self.contentView.setNeedsLayout()
-//            self.contentView.layoutIfNeeded()
                 self.attributedTextContextView.layouter = nil
                 self.attributedTextContextView.relayoutText()
-//            // 86: margin
-//            let aWidth = UIScreen.main.bounds.width - 86
-//            let height = attributedTextContextView.suggestedFrameSizeToFitEntireStringConstrainted(toWidth: aWidth)
-//            
-//            attributedTextContextView.snp.remakeConstraints { make in
-//                make.height.equalTo(height).priority(999)
-//                make.width.equalTo(aWidth)
-//                make.top.equalTo(portraitImageView.snp.bottom).offset(8)
-//                make.left.equalTo(portraitImageView.snp.right).offset(8)
-//                make.right.equalToSuperview().offset(-18)
-//                make.bottom.equalToSuperview().offset(-8)
-//            }
-                self.delegate?.htmlContentCellSizeDidChange(cell: self)
+                self.delegate?.htmlContentCellSizeDidChange!(cell: self)
 //            }
         }
     }
