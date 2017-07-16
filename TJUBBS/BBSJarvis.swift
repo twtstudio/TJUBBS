@@ -110,7 +110,7 @@ struct BBSJarvis {
 //    }
     
 
-    static func reply(threadID: Int, content: String, toID: Int? = nil, anonymous: Bool = false, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+    static func reply(threadID: Int, content: String, toID: Int?, anonymous: Bool = false, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         var parameters = ["content": content]
         if let id = toID {
             parameters["reply"] = String(id)

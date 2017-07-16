@@ -165,7 +165,7 @@ class ThreadDetailViewController: UIViewController {
                 
                 self.board = BoardModel(JSON: board)
                 let titleIsEmpty = self.thread!.title == "" // thread nil flag
-                let threadNil = self.thread == nil
+//                let threadNil = self.thread == nil
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
                 if let name = self.board?.name {
@@ -227,7 +227,7 @@ class ThreadDetailViewController: UIViewController {
                 self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             
-            if self.currentPageList.count > 0 {
+            if self.currentPageList.count > 0 && self.postList.count != self.pastPageList.count + self.currentPageList.count {
                 self.postList = self.pastPageList + self.currentPageList
                 self.tableView.reloadData()
             }
@@ -252,9 +252,7 @@ class ThreadDetailViewController: UIViewController {
                 self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             self.postList = self.pastPageList + self.currentPageList
-            UIView.performWithoutAnimation {
-                self.tableView.reloadData()
-            }
+            self.tableView.reloadData()
             if self.tableView.numberOfRows(inSection: 1) > 3 {
                 let indexPath = IndexPath(row: (self.tableView.numberOfRows(inSection: 1))-1, section: 1)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -400,13 +398,13 @@ class ThreadDetailViewController: UIViewController {
             editDetailVC.title = "回复 " + (self.thread?.authorName ?? "")
             editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
             editDetailVC.doneBlock = { [weak editDetailVC] string in
-                BBSJarvis.reply(threadID: self.thread!.id, content: string, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
+                BBSJarvis.reply(threadID: self.thread!.id, content: string, toID: nil, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
                 }, success: { _ in
                     HUD.flash(.success)
                     editDetailVC?.cancel(sender: UIBarButtonItem())
 //                    let _ = self.navigationController?.popViewController(animated: true)
-                    self.refresh()
+                    self.loadToBottom()
                 })
             }
             self.present(edictNC, animated: true, completion: nil)
@@ -735,8 +733,12 @@ extension ThreadDetailViewController: UITableViewDelegate {
                 let post = self.postList[indexPath.row]
                 let origin = post.content
                 // cut secondary quotation
-                let cutString = origin.replacingOccurrences(of: "> >.*", with: "", options: .regularExpression, range: nil)
-                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + cutString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
+                let cutString = origin.replacingOccurrences(of: "[\\s]*>[\\s]*>(.|[\\s])*", with: "", options: .regularExpression, range: nil)
+                var shortString = cutString
+                if cutString.characters.count > 61 {
+                    shortString = (cutString as NSString).substring(with: NSMakeRange(0, 60))
+                }
+                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
                 
                 BBSJarvis.reply(threadID: self.thread!.id, content: resultString, toID: post.authorID, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
@@ -744,7 +746,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
                     HUD.flash(.success)
                     editDetailVC?.cancel(sender: UIBarButtonItem())
 //                    let _ = self.navigationController?.popViewController(animated: true)
-                    self.refresh()
+                    self.loadToBottom()
                 })
             }
             self.present(edictNC, animated: true, completion: nil)

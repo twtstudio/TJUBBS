@@ -205,10 +205,14 @@ extension MessageDetailViewController: UITableViewDataSource {
         editDetailVC.doneBlock = { [weak editDetailVC] string in
             let origin = detailedModel.content
             // cut secondary quotation
-            let cutString = origin.replacingOccurrences(of: "> >.*", with: "", options: .regularExpression, range: nil)
-            let resultString = string + "\n > 回复 #\(detailedModel.floor) \(self.model.authorName): \n" + cutString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
+            let cutString = origin.replacingOccurrences(of: "[\\s]*>[\\s]*>(.|[\\s])*", with: "", options: .regularExpression, range: nil)
+            var shortString = cutString
+            if cutString.characters.count > 61 {
+                shortString = (cutString as NSString).substring(with: NSMakeRange(0, 60))
+            }
+            let resultString = string + "\n > 回复 #\(detailedModel.floor) \(self.model.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
             
-            BBSJarvis.reply(threadID: detailedModel.thread_id, content: resultString, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
+            BBSJarvis.reply(threadID: detailedModel.thread_id, content: resultString, toID: self.model.authorId, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                 HUD.flash(.label("出错了...请稍后重试"))
             }, success: { _ in
                 HUD.flash(.success)
