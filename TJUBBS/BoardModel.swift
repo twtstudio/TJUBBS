@@ -22,6 +22,7 @@ struct BoardModel: Mappable {
     var anonymous: Bool = false
     var forumID: Int = 0
     var forumName: String = ""
+    var hidden: Int = 0
     
     init?(map: Map) {}
     

@@ -27,7 +27,7 @@ struct BBSBeacon {
     //TODO: change AnyObject to Any
     static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
-        headers["User-Agent"] = DeviceStatus.userAgentString
+        headers["User-Agent"] = DeviceStatus.userAgent
         headers["X-Requested-With"] = "Mobile"
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
@@ -105,7 +105,7 @@ struct BBSBeacon {
     static func requestImage(url: String, failure: ((Error)->())? = nil, success: ((UIImage)->())?) {
         //        Alamofire.request( , method:  , parameters:  , encoding:  , headers:  )
         var headers = HTTPHeaders()
-        headers["User-Agent"] = DeviceStatus.userAgentString
+        headers["User-Agent"] = DeviceStatus.userAgent
         guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
 //            log.errorMessage("Token expired!")/
             return
@@ -126,7 +126,7 @@ struct BBSBeacon {
     static func uploadImage(url: String, method: HTTPMethod = .put, image: UIImage, progressBlock: ((Progress)->())? = nil, failure: ((Error)->())? = nil, success: (([String : Any])->())?) {
         let data = UIImageJPEGRepresentation(image, 1.0)
         var headers = HTTPHeaders()
-        headers["User-Agent"] = DeviceStatus.userAgentString
+        headers["User-Agent"] = DeviceStatus.userAgent
         guard let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token else {
             return
         }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PiwikTracker
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -47,7 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                let navigationController = UINavigationController(rootViewController: GuideViewController())
 //                window.rootViewController = navigationController
 //            }
-            
+//            PiwikTracker.configureSharedInstance(withSiteID: "13", baseURL: URL(string: h"ttps://elf.twtstudio.com/piwik.php")!)
+            PiwikTracker.sharedInstance(withSiteID: "13", baseURL: URL(string: "https://elf.twtstudio.com/piwik.php")!)
             window.makeKeyAndVisible()
         }
         return true

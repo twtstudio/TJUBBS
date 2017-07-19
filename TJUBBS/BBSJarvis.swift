@@ -8,9 +8,9 @@
 
 import UIKit
 import ObjectMapper
+import PiwikTracker
 
 struct BBSJarvis {
-    
     static func login(username: String, password: String, failure: ((Error)->())? = nil, success:@escaping ()->()) {
         let para: [String : String] = ["username": username, "password": password]
         BBSBeacon.request(withType: .post, url: BBSAPI.login, parameters: para, failure: failure) { dict in
@@ -23,11 +23,28 @@ struct BBSJarvis {
                 BBSUser.save()
             }
             success()
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/in"
+            PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "Login", name: nil, value: nil)
         }
     }
     
+    static func logout() {
+        PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.appName = "bbs.tju.edu.cn/"
+        PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "Logout", name: nil, value: nil)
+    }
+    
     static func register(parameters: [String : String], failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .post, url: BBSAPI.register, parameters: parameters, failure: failure, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.register, parameters: parameters, failure: failure, success: { dic in
+            success(dic)
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = parameters["username"]!
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/up"
+            PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "Register", name: nil, value: nil)
+        })
     }
     
     static func getHome(uid: Int = 0, success: ((UserWrapper)->())?, failure: @escaping (Error)->()) {
@@ -66,6 +83,10 @@ struct BBSJarvis {
     static func setInfo(para: [String : String], success: @escaping ()->(), failure: @escaping (Error)->()) {
         BBSBeacon.request(withType: .put, url: BBSAPI.home, parameters: para, failure: failure) { dict in
             success()
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/user/me/edit"
+            PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "profile", name: "PUT", value: nil)
         }
     }
 
@@ -102,7 +123,13 @@ struct BBSJarvis {
         }
 //        print("API:\(BBSAPI.postThread(boardID: boardID))")
 //        print(parameters)
-        BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: { dic in
+            success(dic)
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/board/\(boardID)/all/page/1/"
+            PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "boardposting", name: "POST", value: nil)
+        })
     }
     
 //    static func getMsgList(page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
@@ -118,7 +145,13 @@ struct BBSJarvis {
         if anonymous == true {
             parameters["anonymous"] = "1"
         }
-        BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: { dic in
+            success(dic)
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/thread/\(threadID)/page/1/"
+            PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "comment", name: "POST", value: nil)
+        })
     }
     
     static func getMessageCount(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
@@ -142,6 +175,10 @@ struct BBSJarvis {
                     }
                 }
                 success(msgList)
+                PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+                PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+                PiwikTracker.shared.appName = "bbs.tju.edu.cn/user/me/messages/page/\(page)"
+                PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "readMessage", name: "GET", value: nil)
             }
         }
     }
@@ -174,7 +211,13 @@ struct BBSJarvis {
     
     static func loginOld(username: String, password: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         let parameters = ["username": username, "password": password]
-        BBSBeacon.request(withType: .post, url: BBSAPI.loginOld, parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.loginOld, parameters: parameters, success: { dic in
+            success(dic)
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = username
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/old/login"
+            PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "OldLogin", name: nil, value: nil)
+        })
     }
     
     static func registerOld(username: String, password: String, cid: String, realName: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
@@ -185,13 +228,25 @@ struct BBSJarvis {
             "real_name": realName,
             "token": BBSUser.shared.oldToken!
         ]
-        BBSBeacon.request(withType: .post, url: BBSAPI.registerOld, parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.registerOld, parameters: parameters, success: { dic in
+            success(dic)
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = username
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/old/register"
+            PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "OldRegister", name: nil, value: nil)
+        })
     }
     
 
     static func sendMessage(uid: String, content: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         let para = ["to_uid": uid, "content": content]
-        BBSBeacon.request(withType: .post, url: BBSAPI.sendMessage, parameters: para, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.sendMessage, parameters: para, success: { dic in
+            
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/user/\(uid)/"
+            PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "message", name: "POST", value: nil)
+        })
     }
     
     static func appeal(username: String, cid: String, realName: String, studentNumber: String, email: String, message: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
@@ -203,7 +258,12 @@ struct BBSJarvis {
             "email": email,
             "message": message
         ]
-        BBSBeacon.request(withType: .post, url: BBSAPI.appeal, parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.appeal, parameters: parameters, success: { dic in
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = username
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/appeal"
+            PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "appeal", name: "POST", value: nil)
+        })
 
     }
     
@@ -218,7 +278,13 @@ struct BBSJarvis {
         if username != nil {
             parameters["username"] = username!
         }
-        BBSBeacon.request(withType: .post, url: BBSAPI.retrieve, parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.retrieve, parameters: parameters, success: { dic in
+            success(dic)
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = stunum ?? username ?? ""
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/auth"
+            PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "Auth", name: nil, value: nil)
+        })
     }
     
     static func resetPassword(password: String, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
@@ -227,7 +293,13 @@ struct BBSJarvis {
             "token": BBSUser.shared.resetPasswordToken!,
             "password": password
         ]
-        BBSBeacon.request(withType: .post, url: BBSAPI.resetPassword, parameters: parameters, success: success)
+        BBSBeacon.request(withType: .post, url: BBSAPI.resetPassword, parameters: parameters, success: { dic in
+            success(dic)
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = "[\"\(parameters["uid"]!)\"]"
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/reset"
+            PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "Reset", name: nil, value: nil)
+        })
     }
     
     static func getFriendList(failure: ((Error)->())? = nil, success: @escaping ([UserWrapper])->()) {
@@ -261,10 +333,19 @@ struct BBSJarvis {
             let para = ["content": content]
             BBSBeacon.request(withType: .put, url: BBSAPI.post(pid: pid), parameters: para, success: { _ in
                 success()
+                PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+                PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+                PiwikTracker.shared.appName = "bbs.tju.edu.cn/iOS_Developer_Do_Not_Know_How_To_Get_it"
+                PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "editComment", name: "PUT", value: nil)
             })
         } else if type == "delete" {
             BBSBeacon.request(withType: .delete, url: BBSAPI.post(pid: pid), parameters: nil, success: { _ in
                 success()
+                PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+                PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+                PiwikTracker.shared.appName = "bbs.tju.edu.cn/iOS_Developer_Do_Not_Know_How_To_Get_it"
+                PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "deleteComment", name: "DELETE", value: nil)
+
             })
         }
     }
@@ -274,10 +355,18 @@ struct BBSJarvis {
             let para = ["content": content, "title": title]
             BBSBeacon.request(withType: .put, url: BBSAPI.thread(tid: tid), parameters: para, success: { _ in
                 success()
+                PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+                PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+                PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/thread/\(tid)/page/1/"
+                PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "editThread", name: "PUT", value: nil)
             })
         } else if type == "delete" {
             BBSBeacon.request(withType: .delete, url: BBSAPI.thread(tid: tid), parameters: nil, success: { _ in
                 success()
+                PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+                PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+                PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/thread/\(tid)/page/1/"
+                PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "deleteThread", name: "DELETE", value: nil)
             })
         }
     }
@@ -293,5 +382,11 @@ struct BBSJarvis {
                 success(dic)
             })
         }
+    }
+}
+
+extension PiwikTracker {
+    static var shared: PiwikTracker {
+        return PiwikTracker.sharedInstance()
     }
 }

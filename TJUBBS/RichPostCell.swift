@@ -26,6 +26,7 @@ class RichPostCell: DTAttributedTextCell {
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
     var moreButton = ExtendedButton()
     let containerView = UIView()
+    var buttons: [String : DTLinkButton] = [:]
     
     let screenSize = UIScreen.main.bounds
     /*
@@ -252,22 +253,38 @@ class RichPostCell: DTAttributedTextCell {
 
 
 extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDelegate {
-    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor string: NSAttributedString!, frame: CGRect) -> UIView! {
-        
-        let attributes = string.attributes(at: 0, effectiveRange: nil)
-        let url = attributes[DTLinkAttribute]
-        let identifier = attributes[DTGUIDAttribute] as? String
-        
+//    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor string: NSAttributedString!, frame: CGRect) -> UIView! {
+//        
+//        let attributes = string.attributes(at: 0, effectiveRange: nil)
+//        let url = attributes[DTLinkAttribute]
+//        let identifier = attributes[DTGUIDAttribute] as? String
+//        
+//        let button = DTLinkButton(frame: frame)
+//        button.url = url as! URL!
+//        button.guid = identifier
+//        button.minimumHitSize = CGSize(width: 25, height: 25)
+//        button.addTarget { sender in
+//            if let url = (sender as? DTLinkButton)?.url {
+//                self.delegate?.htmlContentCell(cell: self, linkDidPress: url)
+//            }
+//        }
+//        
+//        return button
+//    }
+    
+    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewForLink url: URL!, identifier: String!, frame: CGRect) -> UIView! {
+        if let button = buttons[identifier] {
+            return button
+        }
         let button = DTLinkButton(frame: frame)
-        button.url = url as! URL!
-        button.guid = identifier
+        button.url = url
         button.minimumHitSize = CGSize(width: 25, height: 25)
         button.addTarget { sender in
             if let url = (sender as? DTLinkButton)?.url {
                 self.delegate?.htmlContentCell(cell: self, linkDidPress: url)
             }
         }
-        
+        buttons[identifier] = button
         return button
     }
     

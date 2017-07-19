@@ -79,7 +79,7 @@ struct DeviceStatus {
         return UIDevice.current.systemVersion
     }
     
-    static var userAgentString: String {
+    static var userAgent: String {
         return "\(appName)/\(appVersion)(\(deviceModel); iOS \(deviceOSVersion))"
     }
     

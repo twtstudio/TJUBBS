@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '9.0'
   use_frameworks!
 target 'TJUBBS' do
   pod 'Alamofire'
@@ -13,4 +13,6 @@ target 'TJUBBS' do
   pod 'DTCoreText'
   pod 'Marklight'
   pod 'YYText'
+  #pod 'PiwikTracker', '~> 4.0.0-beta'
+  pod 'PiwikTracker', git: 'https://github.com/piwik/piwik-sdk-ios.git', branch: 'master'
 end

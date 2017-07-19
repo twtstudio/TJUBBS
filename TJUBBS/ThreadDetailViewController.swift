@@ -833,14 +833,13 @@ extension ThreadDetailViewController: UIScrollViewDelegate {
 
 extension ThreadDetailViewController: HtmlContentCellDelegate {
     func htmlContentCell(cell: RichPostCell, linkDidPress link: URL) {
-//        if let tid = Int(link.absoluteString.replacingOccurrences(of: "(.*?)bbs.tju.edu.cn/forum/thread/(.[0-9]+$)", with: "$2", options: .regularExpression, range: nil)) {
-        if let tid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.tju.edu.cn/forum/thread/([0-9]*)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+        if let tid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.(tju.edu.cn|twtstudio.com)/forum/thread/([0-9]*)(.*)$", with: "$3", options: .regularExpression, range: nil)) {
             let detailVC = ThreadDetailViewController(tid: tid)
             self.navigationController?.pushViewController(detailVC, animated: true)
             return
         }
         
-        if let bid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.tju.edu.cn/forum/([0-9]*)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+        if let bid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.(tju.edu.cn|twtstudio.com)/forum/([0-9]*)(.*)$", with: "$3", options: .regularExpression, range: nil)) {
             let detailVC = ThreadListController(bid: bid)
             self.navigationController?.pushViewController(detailVC, animated: true)
             return

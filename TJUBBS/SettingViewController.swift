@@ -107,6 +107,7 @@ extension SettingViewController: UITableViewDelegate {
             let blackListVC = BlackListViewController()
             self.navigationController?.pushViewController(blackListVC, animated: true)
         case IndexPath(row: 0, section: 1):
+            BBSJarvis.logout()
             BBSUser.delete()
 //            let _ = self.navigationController?.popToRootViewController(animated: false)
             let loginVC = LoginViewController(para: 1)
