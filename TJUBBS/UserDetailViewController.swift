@@ -10,6 +10,7 @@ import UIKit
 import ObjectMapper
 import Kingfisher
 import PKHUD
+import PiwikTracker
 
 class UserDetailViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .grouped)

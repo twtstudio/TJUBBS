@@ -8,6 +8,7 @@
 
 import UIKit
 import ObjectMapper
+import PiwikTracker
 
 class BoardListController: UIViewController {
     
@@ -21,6 +22,9 @@ class BoardListController: UIViewController {
         //why this line cause nil forum
         //view.backgroundColor = .white
         self.forum = forum
+        PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/forum/\(forum.id)")
         tableView = UITableView(frame: .zero, style: .grouped)
         registerForPreviewing(with: self, sourceView: tableView!)
         self.view.addSubview(tableView!)
@@ -56,25 +60,6 @@ class BoardListController: UIViewController {
             DispatchQueue.main.async {
                 self.tableView?.reloadData()
             }
-            //            for board in self.boardList {
-            //                BBSJarvis.getThreadList(boardID: board.id, page: 0, success: {
-            //                    dict in
-            //                    print("dict: \(dict)")
-            //                    var fooThreadList: [ThreadModel] = []
-            //                    if let data = dict["data"] as? Dictionary<String, Any>,
-            //                        let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-            //                        print("解析啦")
-            //                        for i in 0..<threads.count {
-            //                            let fooThread = ThreadModel(JSON: threads[i])
-            //                            fooThreadList.append(fooThread!)
-            //                        }
-            //                    }
-            //                    print("fooThreadListCount:\(fooThreadList.count)")
-            //                    self.threadList.append(fooThreadList)
-            //                    //TODO: 有毒啊，商量接口获取两个
-            //                    self.tableView?.reloadData()
-            //               })
-            //            }
         })
 
     }

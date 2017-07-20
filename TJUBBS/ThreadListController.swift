@@ -11,6 +11,7 @@ import ObjectMapper
 import MJRefresh
 import Kingfisher
 import PKHUD
+import PiwikTracker
 
 class ThreadListController: UIViewController {
     
@@ -28,7 +29,13 @@ class ThreadListController: UIViewController {
             }
         }
     }
-    var curPage: Int = 0
+    var curPage: Int = 0 {
+        didSet {
+            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/forum/board/\(board?.id ?? bid)/all/page/\(curPage)")
+        }
+    }
     var bid: Int = 0
     
     convenience init(board: BoardModel?) {

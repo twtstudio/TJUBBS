@@ -14,6 +14,7 @@ import PKHUD
 import MJRefresh
 import Alamofire
 import DTCoreText
+import PiwikTracker
 
 class ThreadDetailViewController: UIViewController {
     
@@ -54,6 +55,10 @@ class ThreadDetailViewController: UIViewController {
         self.thread = thread
         print(thread.id)
         self.hidesBottomBarWhenPushed = true
+        PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/forum/thread/\(thread.id)/page/1")
+
 //        self.automaticallyAdjustsScrollViewInsets = true
     }
     

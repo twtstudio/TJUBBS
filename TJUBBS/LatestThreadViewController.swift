@@ -10,6 +10,7 @@ import UIKit
 import ObjectMapper
 import Kingfisher
 import MJRefresh
+import PiwikTracker
 
 class LatestThreadViewController: UIViewController {
     
@@ -74,6 +75,14 @@ class LatestThreadViewController: UIViewController {
 //        tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         tableView?.mj_header.beginRefreshing()
 
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/")
     }
 }
 

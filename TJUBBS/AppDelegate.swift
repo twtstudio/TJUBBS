@@ -50,6 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            }
 //            PiwikTracker.configureSharedInstance(withSiteID: "13", baseURL: URL(string: h"ttps://elf.twtstudio.com/piwik.php")!)
             PiwikTracker.sharedInstance(withSiteID: "13", baseURL: URL(string: "https://elf.twtstudio.com/piwik.php")!)
+            PiwikTracker.shared.isPrefixingEnabled = false
             window.makeKeyAndVisible()
         }
         return true

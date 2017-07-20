@@ -12,6 +12,7 @@ import Alamofire
 import PKHUD
 import Kingfisher
 import SnapKit
+import PiwikTracker
 
 class ForumListController: UIViewController {
     var collectionView: UICollectionView?
@@ -56,6 +57,13 @@ class ForumListController: UIViewController {
             }
             HUD.hide()
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/forum")
     }
     
     override func didReceiveMemoryWarning() {
