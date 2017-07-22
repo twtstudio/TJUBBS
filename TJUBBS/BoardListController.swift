@@ -23,8 +23,10 @@ class BoardListController: UIViewController {
         //view.backgroundColor = .white
         self.forum = forum
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+//        PiwikTracker.shared.appName = "https:/"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
-        PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/forum/\(forum.id)")
+        PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/\(forum.id)"
+        PiwikTracker.shared.sendView("")
         tableView = UITableView(frame: .zero, style: .grouped)
         registerForPreviewing(with: self, sourceView: tableView!)
         self.view.addSubview(tableView!)

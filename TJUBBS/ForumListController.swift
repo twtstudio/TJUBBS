@@ -62,8 +62,9 @@ class ForumListController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+        PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
-        PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/forum")
+        PiwikTracker.shared.sendView("")
     }
     
     override func didReceiveMemoryWarning() {

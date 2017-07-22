@@ -81,8 +81,9 @@ class LatestThreadViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+        PiwikTracker.shared.appName = "bbs.tju.edu.cn"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
-        PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/")
+        PiwikTracker.shared.sendView("")
     }
 }
 

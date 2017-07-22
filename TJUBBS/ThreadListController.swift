@@ -32,8 +32,9 @@ class ThreadListController: UIViewController {
     var curPage: Int = 0 {
         didSet {
             PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+            PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/board/\(board?.id ?? bid)/all/page/\(curPage)"
             PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
-            PiwikTracker.shared.sendView("https://bbs.tju.edu.cn/forum/board/\(board?.id ?? bid)/all/page/\(curPage)")
+            PiwikTracker.shared.sendView("")
         }
     }
     var bid: Int = 0

@@ -143,7 +143,7 @@ class MyPostsViewController: UIViewController {
 
 extension MyPostsViewController {
     func editingStateOnChange(sender: UIBarButtonItem) {
-        tableView.setEditing(tableView.isEditing, animated: true)
+        tableView.setEditing(!tableView.isEditing, animated: true)
         if tableView.isEditing {
             self.navigationItem.rightBarButtonItem?.title = "完成"
         } else {
