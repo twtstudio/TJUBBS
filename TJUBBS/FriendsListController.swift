@@ -63,6 +63,22 @@ class FriendsListController: UIViewController {
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_header.beginRefreshing()
     }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        let pal = friendList[indexPath.row]
+        friendList.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        BBSJarvis.friendRemove(uid: pal.uid ?? 0, failure: { _ in
+            
+        }, success: { _ in
+        
+        })
+    }
+
 }
 
 extension FriendsListController: UITableViewDataSource {

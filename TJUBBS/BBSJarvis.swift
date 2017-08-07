@@ -169,7 +169,9 @@ struct BBSJarvis {
                             msgList.append(model)
                         } else if let content = msg["content"] as? [String : Any] {
                             let contentModel = MessageContentModel(JSON: content)
-                            model.detailContent = contentModel
+                            let friendRequest = Mapper<FriendRequestModel>().map(JSON: content)
+                            model.detailContent = contentModel!.id == 0 ? nil : contentModel
+                            model.friendRequest = friendRequest!.id == "" ? nil : friendRequest
                             msgList.append(model)
                         }
                     }
@@ -382,6 +384,22 @@ struct BBSJarvis {
                 success(dic)
             })
         }
+    }
+    
+    // message id not user id
+    static func friendConfirm(requestID: String, action: String, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
+        var isConfirm = 0
+        if action == "agree" {
+            isConfirm = 1
+        } else if action == "reject" {
+            isConfirm = 0
+        }
+        let para = ["id":requestID, "confirm":"\(isConfirm)"]
+        BBSBeacon.request(withType: .post, url: BBSAPI.friendConfirm, parameters: para, failure: failure, success: success)
+    }
+    
+    static func friendRemove(uid: Int, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
+        BBSBeacon.request(withType: .delete, url: BBSAPI.friendConfirm + "/\(uid)", parameters: nil, failure: failure, success: success)
     }
 }
 

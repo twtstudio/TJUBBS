@@ -27,6 +27,7 @@ struct MessageModel: Mappable {
     var createTime = 0
     var type: CellType = .sent
     var detailContent: MessageContentModel?
+    var friendRequest: FriendRequestModel?
     
     init?(map: Map) {}
     

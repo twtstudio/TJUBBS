@@ -24,7 +24,9 @@ class MessageViewController: UIViewController {
                         return false
                     }
                 }
-                if msg.detailContent == nil { // simple Post Message(PM): so-called "站内信"
+                if msg.friendRequest != nil {
+                    return true
+                } else if msg.detailContent == nil { // simple Post Message(PM): so-called "站内信"
                     if authorIDs.contains(msg.authorId) {
                         return false
                     } else {
@@ -104,6 +106,8 @@ extension MessageViewController: UITableViewDataSource {
         }
         if model.detailContent != nil {
             cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("回复了你: "+content))
+        } else if model.friendRequest != nil {
+            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("好友申请: " + model.friendRequest!.message))
         } else {
             cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: (content))
         }
@@ -127,7 +131,10 @@ extension MessageViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = msgList[indexPath.row]
-        if model.detailContent == nil { // simple Post Message(PM): so-called "站内信"
+        if model.friendRequest != nil {
+            let detailVC = MessageDetailViewController(model: msgList[indexPath.row])
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        } else if model.detailContent == nil { // simple Post Message(PM): so-called "站内信"
             let dialogVC = ChatDetailViewController()
             let pal = UserWrapper(JSONString: "{\"uid\": \(model.authorId) ,\"username\": \"\(model.authorName)\", \"nickname\": \"\(model.authorNickname)\"}")
             dialogVC.pal = pal
