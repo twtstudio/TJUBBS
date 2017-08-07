@@ -57,7 +57,7 @@ class ThreadDetailViewController: UIViewController {
         self.hidesBottomBarWhenPushed = true
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
         PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/thread/\(thread.id)/page/1"
-        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
         PiwikTracker.shared.sendView("")
 
 //        self.automaticallyAdjustsScrollViewInsets = true

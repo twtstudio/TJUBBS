@@ -5,20 +5,14 @@
 //  Created by Halcao on 2017/7/9.
 //  Copyright © 2017年 twtstudio. All rights reserved.
 //
-
 import UIKit
 import ObjectMapper
 import MJRefresh
 import PKHUD
-import YYText
-import DTCoreText
 
 class MyPostsViewController: UIViewController {
     
-    let label = DTAttributedTextContentView()
     var tableView = UITableView(frame: .zero, style: .grouped)
-//    let parser = YYTextSimpleMarkdownParser()
-    var layouts: [HCRichCellLayout] = []
     var postList: [PostModel] = [] {
         didSet {
             if postList.count > 0 && containerView.superview != nil {
@@ -64,29 +58,17 @@ class MyPostsViewController: UIViewController {
         tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 300
         
         let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
         self.navigationItem.rightBarButtonItem = rightItem
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
-//        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        var refreshingImages = [UIImage]()
-        for i in 1...6 {
-            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-            refreshingImages.append(image!)
-        }
-        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
-        header?.stateLabel.isHidden = true
-        header?.lastUpdatedTimeLabel.isHidden = true
-        header?.setImages(refreshingImages, for: .pulling)
-        tableView.mj_header = header
-
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         self.tableView.mj_footer.isAutomaticallyHidden = true
         self.tableView.mj_header.beginRefreshing()
-        
-        tableView.register(HCRichTextCell.self, forCellReuseIdentifier: "richReplyCell")
     }
     
     
@@ -100,13 +82,10 @@ class MyPostsViewController: UIViewController {
             if self.tableView.mj_header.isRefreshing() {
                 self.tableView.mj_header.endRefreshing()
             }
-            var layouts: [HCRichCellLayout] = []
-            for post in posts {
-                layouts.append(HCRichCellLayout(markdown: post.content, width: self.view.width - 10 - 44 - 8 - 8))
-            }
-            self.layouts = layouts
             self.postList = posts
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         })
     }
     
@@ -121,15 +100,11 @@ class MyPostsViewController: UIViewController {
             if self.tableView.mj_footer.isRefreshing() {
                 self.tableView.mj_footer.endRefreshing()
             }
-            if posts.count == 0 {
+            if self.postList.count == 0 {
                 self.tableView.mj_footer.resetNoMoreData()
-            } else {
-                var layouts: [HCRichCellLayout] = []
-                for post in posts {
-                    layouts.append(HCRichCellLayout(markdown: post.content, width: self.view.width - 10 - 44 - 8 - 8))
-                }
-                self.layouts += layouts
-                self.postList += posts
+            }
+            self.postList += posts
+            DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         })
@@ -143,7 +118,7 @@ class MyPostsViewController: UIViewController {
 
 extension MyPostsViewController {
     func editingStateOnChange(sender: UIBarButtonItem) {
-        tableView.setEditing(!tableView.isEditing, animated: true)
+        tableView.setEditing(tableView.isEditing, animated: true)
         if tableView.isEditing {
             self.navigationItem.rightBarButtonItem?.title = "完成"
         } else {
@@ -173,7 +148,7 @@ extension MyPostsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return layouts.count
+        return postList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -207,7 +182,6 @@ extension MyPostsViewController: UITableViewDataSource {
                     }, success: {
                         HUD.flash(.label("修改成功"), onView: self.view, delay: 1.2)
                         editController?.cancel(sender: UIBarButtonItem())
-//                        let _ = self.navigationController?.popViewController(animated: true)
                     })
                 }
                 self.present(edictNC, animated: true, completion: nil)
@@ -246,8 +220,7 @@ extension MyPostsViewController: UITableViewDataSource {
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
         return cell!
-}
-
+    }
     
 }
 
@@ -258,7 +231,6 @@ extension MyPostsViewController: UITableViewDelegate {
         let detailVC = ThreadDetailViewController(tid: tid)
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-    
     
     //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -272,22 +244,46 @@ extension MyPostsViewController: UITableViewDelegate {
 
 extension MyPostsViewController: HtmlContentCellDelegate {
     func htmlContentCell(cell: RichPostCell, linkDidPress link: URL) {
+        //        if let tid = Int(link.absoluteString.replacingOccurrences(of: "(.*?)bbs.tju.edu.cn/forum/thread/(.[0-9]+$)", with: "$2", options: .regularExpression, range: nil)) {
+        if let tid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.tju.edu.cn/forum/thread/([0-9]*)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+            let detailVC = ThreadDetailViewController(tid: tid)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+            return
+        }
         
+        if let bid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.tju.edu.cn/forum/([0-9]*)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
+            let detailVC = ThreadListController(bid: bid)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+            return
+        }
+        
+        let ac = UIAlertController(title: "链接", message: link.absoluteString, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title: "跳转到 Safari", style: .default) {
+            action in
+            UIApplication.shared.openURL(link)
+        })
+        ac.addAction(UIAlertAction(title: "复制到剪贴板", style: .default) {
+            action in
+            UIPasteboard.general.string = link.absoluteString
+            HUD.flash(.labeledSuccess(title: "已复制", subtitle: nil), delay: 1.0)
+        })
+        ac.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
+        present(ac, animated: true, completion: nil)
     }
-
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
         if let _ = tableView.indexPath(for: cell) {
             self.tableView.reloadData()
         }
+        
+        // imageViewer
+        for imgView in cell.imageViews {
+            imgView.addTapGestureRecognizer { _ in
+                let detailVC = ImageDetailViewController(image: imgView.image ?? UIImage(named: "progress")!)
+                detailVC.maximumZoomScale = 2
+                detailVC.showSaveBtn = true
+                self.modalPresentationStyle = .overFullScreen
+                self.present(detailVC, animated: true, completion: nil)
+            }
+        }
     }
-//    func layoutDidChange(layout: YYTextLayout, row: Int) {
-//        let old = self.layouts[row]
-//        old.textLayout = layout
-//        self.layouts[row] = old
-//        self.tableView.reloadData()
-//    }
-//    
-//    func sizeDidChange() {
-//        self.tableView.reloadData()
-//    }
 }

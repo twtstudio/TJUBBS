@@ -24,7 +24,7 @@ class BoardListController: UIViewController {
         self.forum = forum
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
 //        PiwikTracker.shared.appName = "https:/"
-        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
         PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/\(forum.id)"
         PiwikTracker.shared.sendView("")
         tableView = UITableView(frame: .zero, style: .grouped)

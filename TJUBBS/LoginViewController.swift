@@ -313,7 +313,7 @@ class LoginViewController: UIViewController {
         
         
         forgetButton?.addTarget { _ in
-            let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号-schoolid", "真实姓名-输入真实姓名-realname", "身份证号-身份证号仅用于身份验证-cid"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证", handler: nil)
+            let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号(新生请输入通知书号)-schoolid", "真实姓名-输入真实姓名-realname", "身份证号-身份证号仅用于身份验证-cid"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证", handler: nil)
             vc.handler =  { [weak vc] result in
                 if let result = result as? [String: String] {
                     print(result)

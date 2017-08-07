@@ -29,8 +29,10 @@ class MyPostHomeViewController: WMPageController {
     }
     
     override func viewDidLoad() {
+        hidesBottomBarWhenPushed = true
         menuBGColor = .BBSBlue
         progressColor = .yellow
+        self.navigationController?.navigationBar.isTranslucent = false
         // 把返回换成空白
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         

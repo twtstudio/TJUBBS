@@ -24,7 +24,7 @@ struct BBSJarvis {
             }
             success()
             PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
-            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
             PiwikTracker.shared.appName = "bbs.tju.edu.cn/sign/in"
             PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "Login", name: nil, value: nil)
         }
@@ -32,7 +32,7 @@ struct BBSJarvis {
     
     static func logout() {
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
-        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+        PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
         PiwikTracker.shared.appName = "bbs.tju.edu.cn/"
         PiwikTracker.shared.sendEvent(withCategory: "Signing", action: "Logout", name: nil, value: nil)
     }
@@ -84,7 +84,7 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .put, url: BBSAPI.home, parameters: para, failure: failure) { dict in
             success()
             PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
-            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
             PiwikTracker.shared.appName = "bbs.tju.edu.cn/user/me/edit"
             PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "profile", name: "PUT", value: nil)
         }
@@ -126,7 +126,7 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.postThread(boardID: boardID), parameters: parameters, success: { dic in
             success(dic)
             PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
-            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
             PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/board/\(boardID)/all/page/1/"
             PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "boardposting", name: "POST", value: nil)
         })
@@ -148,7 +148,7 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.reply(threadID: threadID), parameters: parameters, success: { dic in
             success(dic)
             PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
-            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
             PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/thread/\(threadID)/page/1/"
             PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "comment", name: "POST", value: nil)
         })
@@ -176,7 +176,7 @@ struct BBSJarvis {
                 }
                 success(msgList)
                 PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
-                PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+                PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
                 PiwikTracker.shared.appName = "bbs.tju.edu.cn/user/me/messages/page/\(page)"
                 PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "readMessage", name: "GET", value: nil)
             }
@@ -243,7 +243,7 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .post, url: BBSAPI.sendMessage, parameters: para, success: { dic in
             
             PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
-            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid!)] \"\(BBSUser.shared.username!)\""
+            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
             PiwikTracker.shared.appName = "bbs.tju.edu.cn/user/\(uid)/"
             PiwikTracker.shared.sendEvent(withCategory: "AjaxSender", action: "message", name: "POST", value: nil)
         })
