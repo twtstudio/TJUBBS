@@ -83,11 +83,6 @@ class ChatDetailViewController: SLKTextViewController {
         
         tableView?.separatorColor = .clear
         
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         //TODO: Fix it
         BBSJarvis.getDialog(uid: pal?.uid ?? 0, page: page, success: { messages in
             self.messages = messages
@@ -97,6 +92,12 @@ class ChatDetailViewController: SLKTextViewController {
             }
         })
         scrollToBottom(animated: false)
+
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     func loadMore() {
@@ -214,7 +215,7 @@ extension ChatDetailViewController {
         
         let currentMessage = messages[indexPath.row]
         let messageHeight = currentMessage.content.height(withConstrainedWidth: (Metadata.Size.Screen.width / 3.0) * 2 - 20, font: Metadata.Font.messageFont)
-        
+
         var bubbleHeight = messageHeight + 14
         
         if currentMessage.content.characters.count < 5 && currentMessage.content.containsOnlyEmoji {
@@ -234,7 +235,7 @@ extension ChatDetailViewController {
         }
         
         
-        return bubbleHeight
+        return bubbleHeight //+ 15
     }
     
     

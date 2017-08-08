@@ -229,18 +229,19 @@ class GroupBubbleCell: UITableViewCell {
             avatarView.layer.cornerRadius = 17
             avatarView.clipsToBounds = true
             avatarView.frame = CGRect(x: 8, y: 5, width: 34, height: 34)
-            log.word(nameLabel.text!)/
-            nameLabel.textColor = .gray
-            nameLabel.sizeToFit()
-            nameLabel.frame = CGRect(x: 18+39, y: 0, width: nameLabel.bounds.size.width, height: nameLabel.bounds.size.height)
+//            log.word(nameLabel.text!)/
+//            nameLabel.textColor = .gray
+//            nameLabel.sizeToFit()
+//            nameLabel.frame = CGRect(x: 18+39, y: 0, width: nameLabel.bounds.size.width, height: nameLabel.bounds.size.height)
             contentView.addSubview(avatarView)
-            contentView.addSubview(nameLabel)
+//            contentView.addSubview(nameLabel)
         }
         
         contentView.addSubview(bubble)
         
         selectionStyle = .none
-        
+        prepareGesture()
+
     }
     
     func bubbleWith(message: MessageModel) -> UIView {
@@ -311,7 +312,7 @@ class GroupBubbleCell: UITableViewCell {
             messageTextView.backgroundColor = .clear
             messageTextView.isScrollEnabled = false
             messageTextView.isEditable = false;
-            messageTextView.dataDetectorTypes = .all;
+//            messageTextView.dataDetectorTypes = .;
             // Eliminate all the paddings and insets
             messageTextView.textContainerInset = .zero
             messageTextView.textContainer.lineFragmentPadding = 0
@@ -334,7 +335,7 @@ class GroupBubbleCell: UITableViewCell {
             bubble?.layer.cornerRadius = cornerRadius
             bubble?.clipsToBounds = true
             
-            bubble?.frame = CGRect(x: 15+39, y: 20, width: bubbleWidth, height: bubbleHeight)
+            bubble?.frame = CGRect(x: 15+39, y: 5, width: bubbleWidth, height: bubbleHeight)
             
             //            let messageLabel = UILabel(text: message.content, fontSize: 14)
             //            messageLabel.textColor = .black
@@ -380,5 +381,31 @@ class GroupBubbleCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    func prepareGesture() {
+        self.isUserInteractionEnabled = true
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(self.longPressAction(sender:)))
+        longPress.minimumPressDuration = 1
+        self.addGestureRecognizer(longPress)
+    }
+    
+    func longPressAction(sender: UILongPressGestureRecognizer) {
+        if UIMenuController.shared.isMenuVisible == false {
+            self.becomeFirstResponder()
+            let copyItem = UIMenuItem(title: "复制", action: #selector(self.customCopy(sender:)))
+            UIMenuController.shared.menuItems = [copyItem]
+            UIMenuController.shared.setTargetRect(self.frame, in: self.superview!)
+            UIMenuController.shared.setMenuVisible(true, animated: true)
+        }
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return action == #selector(self.customCopy(sender:))
+    }
+    
+    func customCopy(sender: Any?) {
+        let pasteBoard = UIPasteboard.general
+        pasteBoard.string = message.content
+    }
+
 }
 

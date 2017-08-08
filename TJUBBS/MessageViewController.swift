@@ -111,7 +111,8 @@ extension MessageViewController: UITableViewDataSource {
         if model.detailContent != nil {
             cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("回复了你: "+content))
         } else if model.friendRequest != nil {
-            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("好友申请: " + model.friendRequest!.message))
+            let message = model.friendRequest!.message == "" ? "想加你为好友" : model.friendRequest!.message
+            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("好友申请: " + message))
         } else {
             cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: (content))
         }

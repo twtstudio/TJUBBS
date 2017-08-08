@@ -14,6 +14,7 @@ class MainTabBarController: UITabBarController {
     var BBSVC: UIViewController?
     var infoVC: UIViewController?
     var messageVC: UIViewController?
+//    var addVC: UIViewController?
     
     convenience init(para: Int) {
         self.init()
@@ -35,6 +36,11 @@ class MainTabBarController: UITabBarController {
         bbcNC.navigationBar.isTranslucent = false
         BBSVC?.tabBarItem = createBarItem(imageName: "论坛")
         BBSVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        
+//        addVC = AddThreadViewController()
+//        let addNC = UINavigationController(rootViewController: addVC!)
+//        addVC?.tabBarItem = createBarItem(imageName: "消息")
+//        addVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         messageVC = MessageHomePageViewController(para: 0)
         let messageNC = UINavigationController(rootViewController: messageVC!)

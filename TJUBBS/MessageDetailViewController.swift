@@ -202,7 +202,8 @@ extension MessageDetailViewController: UITableViewDataSource {
                     make.width.equalTo(1)
                 }
                 
-                let summary = "好友申请:\n\n" + String.clearBBCode(string: friendRequest.message)
+                let message = friendRequest.message == "" ? "想加你为好友" : friendRequest.message
+                let summary = "好友申请:\n\n" + String.clearBBCode(string: message)
                 let detailLabel = UILabel(text: summary, fontSize: 16)
                 detailLabel.numberOfLines = 0
                 cell.contentView.addSubview(detailLabel)

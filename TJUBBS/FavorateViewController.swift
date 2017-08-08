@@ -70,6 +70,8 @@ class FavorateViewController: UIViewController {
             dict in
             if let data = dict["data"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+            } else {
+                self.threadList = []
             }
             self.tableView?.reloadData()
         }
