@@ -60,7 +60,11 @@ class MessageViewController: UIViewController {
         //        }
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
-        tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }
+        tableView?.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(108)
+            make.left.right.bottom.equalToSuperview()
+        }
         tableView?.register(MessageCell.self, forCellReuseIdentifier: "messageCell")
         tableView?.delegate = self
         tableView?.dataSource = self

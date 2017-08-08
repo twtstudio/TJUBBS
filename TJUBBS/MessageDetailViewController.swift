@@ -173,7 +173,7 @@ extension MessageDetailViewController: UITableViewDataSource {
                 }
                 rejectButton.sizeToFit()
                 rejectButton.addTarget { _ in
-                    BBSJarvis.friendConfirm(requestID: friendRequest.id , action: "reject", success: { dic in
+                    BBSJarvis.friendConfirm(messageID: self.model.id, action: "reject", success: { dic in
                         HUD.flash(.label("已拒绝"), onView: self.view)
                     })
                 }
@@ -186,7 +186,7 @@ extension MessageDetailViewController: UITableViewDataSource {
                 }
                 agreeButton.sizeToFit()
                 agreeButton.addTarget { _ in
-                    BBSJarvis.friendConfirm(requestID: friendRequest.id , action: "agree", success: { dic in
+                    BBSJarvis.friendConfirm(messageID: self.model.id, action: "agree", success: { dic in
                         HUD.flash(.label("已同意"), onView: self.view)
                     })
                 }

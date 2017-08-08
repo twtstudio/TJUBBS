@@ -55,6 +55,7 @@ class MessageCell: UITableViewCell {
         portraitImageView.clipsToBounds = true
         
         usernameLabel.text = username
+        usernameLabel.sizeToFit()
         usernameLabel.snp.makeConstraints {
             make in
             make.top.equalTo(portraitImageView.snp.top)

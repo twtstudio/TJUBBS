@@ -10,6 +10,7 @@ import UIKit
 import SlackTextViewController
 import PKHUD
 import MJRefresh
+import Kingfisher
 
 enum ScrollOrientation {
     case up
@@ -268,9 +269,13 @@ extension ChatDetailViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
-        let cell = BubbleCell(message: messages[indexPath.row])
-        
-//        cell.contentView.isUserInteractionEnabled = false
+//        let cell = BubbleCell(message: messages[indexPath.row])
+        let message = messages[indexPath.row]
+        let cell = GroupBubbleCell(message: message)
+        let portraitImage = UIImage(named: "default")
+        let url = URL(string: BBSAPI.avatar(uid: message.authorId))
+        let cacheKey = "\(message.authorId)" + Date.today
+        cell.avatarView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         return cell
     }
 }

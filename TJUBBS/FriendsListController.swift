@@ -15,6 +15,7 @@ import PKHUD
 class FriendsListController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size
+
     var tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
     var containerView = UIView()
     var friendList: [UserWrapper] = [] {
@@ -53,7 +54,7 @@ class FriendsListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.addSubview(tableView)
-        tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
+//        tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView.register(MessageCell.self, forCellReuseIdentifier: "friendCell")
         tableView.delegate = self
         tableView.dataSource = self
@@ -62,6 +63,11 @@ class FriendsListController: UIViewController {
         tableView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_header.beginRefreshing()
+        tableView.snp.makeConstraints {
+            make in
+            make.top.equalToSuperview().offset(108)
+            make.left.right.bottom.equalToSuperview()
+        }
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
@@ -119,6 +125,7 @@ extension FriendsListController: UITableViewDelegate {
         // present friend dialog
         let detailVC = ChatDetailViewController()
         detailVC.pal = friendList[indexPath.row]
+        detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
     

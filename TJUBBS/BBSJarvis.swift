@@ -387,19 +387,19 @@ struct BBSJarvis {
     }
     
     // message id not user id
-    static func friendConfirm(requestID: String, action: String, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
-        var isConfirm = 0
+    static func friendConfirm(messageID: Int, action: String, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
+        var isConfirm = "false"
         if action == "agree" {
-            isConfirm = 1
+            isConfirm = "true"
         } else if action == "reject" {
-            isConfirm = 0
+            isConfirm = "false"
         }
-        let para = ["id":requestID, "confirm":"\(isConfirm)"]
+        let para = ["id":"\(messageID)", "confirm":isConfirm]
         BBSBeacon.request(withType: .post, url: BBSAPI.friendConfirm, parameters: para, failure: failure, success: success)
     }
     
     static func friendRemove(uid: Int, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
-        BBSBeacon.request(withType: .delete, url: BBSAPI.friendConfirm + "/\(uid)", parameters: nil, failure: failure, success: success)
+        BBSBeacon.request(withType: .delete, url: BBSAPI.friend(uid: uid), parameters: nil, failure: failure, success: success)
     }
 }
 

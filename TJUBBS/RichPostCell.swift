@@ -147,18 +147,18 @@ class RichPostCell: DTAttributedTextCell {
         let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
         if nickNameLabel.width + 8 + usernameLabel.width > maxWidth {
             if usernameLabel.width >= maxWidth {
-                usernameLabel.snp.remakeConstraints { make in
+                usernameLabel.snp.makeConstraints { make in
                     make.top.equalTo(portraitImageView.snp.top)
                     make.width.equalTo(maxWidth)
                     make.left.equalTo(portraitImageView.snp.right).offset(8)
                 }
-                nickNameLabel.snp.remakeConstraints { make in
+                nickNameLabel.snp.makeConstraints { make in
                     make.top.equalTo(portraitImageView.snp.top)
                     make.left.equalTo(usernameLabel.snp.right).offset(8)
                     make.width.equalTo(0)
                 }
             } else {
-                nickNameLabel.snp.remakeConstraints { make in
+                nickNameLabel.snp.makeConstraints { make in
                     make.top.equalTo(portraitImageView.snp.top)
                     make.left.equalTo(usernameLabel.snp.right).offset(8)
                     make.width.equalTo(maxWidth - usernameLabel.width - 8)
@@ -198,30 +198,35 @@ class RichPostCell: DTAttributedTextCell {
         // 68: avatar and margin // 38: moreButton // 4: padding
         let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
         if nickNameLabel.width + 8 + usernameLabel.width > maxWidth {
-            if usernameLabel.width >= maxWidth {
-                usernameLabel.snp.remakeConstraints { make in
-                    make.top.equalTo(portraitImageView.snp.top)
+            if usernameLabel.width + 8 >= maxWidth { // if username & nickname are too long
+                usernameLabel.snp.makeConstraints { make in
+//                    make.top.equalTo(portraitImageView.snp.top)
+//                    make.left.equalTo(portraitImageView.snp.right).offset(8)
                     make.width.equalTo(maxWidth)
-                    make.left.equalTo(portraitImageView.snp.right).offset(8)
                 }
-                nickNameLabel.snp.remakeConstraints { make in
-                    make.top.equalTo(portraitImageView.snp.top)
-                    make.left.equalTo(usernameLabel.snp.right).offset(8)
+                nickNameLabel.snp.makeConstraints { make in
+//                    make.top.equalTo(portraitImageView.snp.top)
+//                    make.left.equalTo(usernameLabel.snp.right).offset(8)
                     make.width.equalTo(0)
                 }
             } else {
-                nickNameLabel.snp.remakeConstraints { make in
+//                usernameLabel.snp.makeConstraints { make in
+//                    make.top.equalTo(portraitImageView.snp.top)
+//                    make.left.equalTo(portraitImageView.snp.right).offset(8)
+//                }
+                nickNameLabel.snp.removeConstraints()
+                nickNameLabel.snp.makeConstraints { make in
                     make.top.equalTo(portraitImageView.snp.top)
                     make.left.equalTo(usernameLabel.snp.right).offset(8)
                     make.width.equalTo(maxWidth - usernameLabel.width - 8)
                 }
             }
         } else {
-            usernameLabel.snp.makeConstraints { make in
+            usernameLabel.snp.remakeConstraints { make in
                 make.top.equalTo(portraitImageView.snp.top)
                 make.left.equalTo(portraitImageView.snp.right).offset(8)
             }
-            nickNameLabel.snp.makeConstraints { make in
+            nickNameLabel.snp.remakeConstraints { make in
                 make.top.equalTo(portraitImageView.snp.top)
                 make.left.equalTo(usernameLabel.snp.right).offset(8)
             }
@@ -278,6 +283,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         }
         let button = DTLinkButton(frame: frame)
         button.url = url
+        button.guid = identifier
         button.minimumHitSize = CGSize(width: 25, height: 25)
         button.addTarget { sender in
             if let url = (sender as? DTLinkButton)?.url {

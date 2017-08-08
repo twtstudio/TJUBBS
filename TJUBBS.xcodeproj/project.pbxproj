@@ -23,6 +23,7 @@
 		3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3699D16F1ECB34630013D2FD /* MessageModel.swift */; };
 		36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */; };
 		36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B8D0241EC34025006D58F8 /* BBSUser.swift */; };
+		36BD6BD31F39DBF7009D5D55 /* MessageHomePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BD6BD21F39DBF7009D5D55 /* MessageHomePageViewController.swift */; };
 		36C461A21F05379E0002C0B5 /* EditDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C461A11F05379E0002C0B5 /* EditDetailViewController.swift */; };
 		36C58A381F0A26610055F7F6 /* FakeTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C58A371F0A26610055F7F6 /* FakeTextFieldView.swift */; };
 		36C8430E1F0B6F2E009C6887 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C8430D1F0B6F2E009C6887 /* UserDetailViewController.swift */; };
@@ -113,6 +114,7 @@
 		3699D16F1ECB34630013D2FD /* MessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		36B8D0221EC33C2C006D58F8 /* BBSJarvis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSJarvis.swift; sourceTree = "<group>"; };
 		36B8D0241EC34025006D58F8 /* BBSUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSUser.swift; sourceTree = "<group>"; };
+		36BD6BD21F39DBF7009D5D55 /* MessageHomePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageHomePageViewController.swift; sourceTree = "<group>"; };
 		36C461A11F05379E0002C0B5 /* EditDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditDetailViewController.swift; sourceTree = "<group>"; };
 		36C58A371F0A26610055F7F6 /* FakeTextFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeTextFieldView.swift; sourceTree = "<group>"; };
 		36C8430D1F0B6F2E009C6887 /* UserDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 			children = (
 				68B683441EBEC17100F7A0BF /* MessageViewController.swift */,
 				68B683481EC1F24600F7A0BF /* MessageDetailViewController.swift */,
+				36BD6BD21F39DBF7009D5D55 /* MessageHomePageViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				6884B00D1EDAA75A00FEA9BD /* Guide */,
 				682A84931EB5C5F100510FA4 /* HomePage */,
 				682A84921EB5C5EB00510FA4 /* BBS */,
+				3699D16D1ECB344E0013D2FD /* Message */,
 				682A84911EB5C5E100510FA4 /* User */,
 				682A84961EB5C62A00510FA4 /* Resource */,
 			);
@@ -417,7 +421,6 @@
 			isa = PBXGroup;
 			children = (
 				36D0BC801EFE593A00265D8B /* Friends */,
-				3699D16D1ECB344E0013D2FD /* Message */,
 				682A84951EB5C60A00510FA4 /* Info */,
 				682A84941EB5C60400510FA4 /* Login */,
 			);
@@ -770,6 +773,7 @@
 				689A0D2D1EDDF97400919341 /* BBSAPI.swift in Sources */,
 				36D21F411EB7171D00677534 /* InputItem.swift in Sources */,
 				68B683491EC1F24600F7A0BF /* MessageDetailViewController.swift in Sources */,
+				36BD6BD31F39DBF7009D5D55 /* MessageHomePageViewController.swift in Sources */,
 				6802E4D31EC9984B00D3EE70 /* AddThreadViewController.swift in Sources */,
 				6823C49B1EBC077D00FBB5C7 /* PostCell.swift in Sources */,
 				36262A3D1F0D291600C799B7 /* ProgressView.swift in Sources */,
