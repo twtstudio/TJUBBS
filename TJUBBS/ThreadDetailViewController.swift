@@ -746,7 +746,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
                 }
                 let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
                 
-                BBSJarvis.reply(threadID: self.thread!.id, content: resultString, toID: post.authorID, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
+                BBSJarvis.reply(threadID: self.thread!.id, content: resultString, toID: post.id, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
                 }, success: { _ in
                     HUD.flash(.success)

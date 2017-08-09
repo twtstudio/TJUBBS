@@ -22,7 +22,7 @@ class UserInfoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if BBSUser.shared.isVisitor == false {
-            refreshMessage()
+//            refreshMessage()
         }
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
@@ -91,24 +91,24 @@ class UserInfoViewController: UIViewController {
         }
     }
     
-    func refreshMessage() {
-//        print("refreshMessgae")
-        BBSJarvis.getMessageCount(page: 0, success: {
-            dict in
-            //            print(dict)
-            let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
-            if let data = dict["data"] as? [[String: Any]],
-                data.count > 0,
-                let messageID = data[0]["id"] as? Int,
-                messageID > latestMessageID {
-                self.messageFlag = true
-                UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
-            }
-            UIView.performWithoutAnimation {
-                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
-            }
-        })
-    }
+//    func refreshMessage() {
+////        print("refreshMessgae")
+//        BBSJarvis.getMessageCount(page: 0, success: {
+//            dict in
+//            //            print(dict)
+//            let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
+//            if let data = dict["data"] as? [[String: Any]],
+//                data.count > 0,
+//                let messageID = data[0]["id"] as? Int,
+//                messageID > latestMessageID {
+//                self.messageFlag = true
+//                UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
+//            }
+//            UIView.performWithoutAnimation {
+//                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+//            }
+//        })
+//    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

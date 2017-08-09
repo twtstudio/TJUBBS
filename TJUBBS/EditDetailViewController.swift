@@ -63,6 +63,7 @@ class EditDetailViewController: UIViewController {
                 imagePicker.delegate = self
                 imagePicker.allowsEditing = true
                 imagePicker.sourceType = .photoLibrary
+//                imagePicker.cameraOverlayView?.transform = CGAffineTransform(scaleX: 1, y: self.view.height/self.view.width)
                 self.present(imagePicker, animated: true) {
                     
                 }

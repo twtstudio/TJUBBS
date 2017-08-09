@@ -49,6 +49,11 @@ class MessageViewController: UIViewController {
         self.title = "我的消息"
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refresh()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -138,14 +143,17 @@ extension MessageViewController: UITableViewDelegate {
         let model = msgList[indexPath.row]
         if model.friendRequest != nil {
             let detailVC = MessageDetailViewController(model: msgList[indexPath.row])
+            detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
         } else if model.detailContent == nil { // simple Post Message(PM): so-called "站内信"
             let dialogVC = ChatDetailViewController()
             let pal = UserWrapper(JSONString: "{\"uid\": \(model.authorId) ,\"username\": \"\(model.authorName)\", \"nickname\": \"\(model.authorNickname)\"}")
             dialogVC.pal = pal
+            dialogVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(dialogVC, animated: true)
         } else {
             let detailVC = MessageDetailViewController(model: msgList[indexPath.row])
+            detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }

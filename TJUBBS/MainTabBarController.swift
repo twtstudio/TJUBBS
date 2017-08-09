@@ -23,7 +23,7 @@ class MainTabBarController: UITabBarController {
         self.tabBar.backgroundColor = .white
         self.tabBar.isTranslucent = false
         self.tabBar.barTintColor = .white
-        self.tabBar.tintColor = .red
+//        self.tabBar.tintColor = .red
         
         homepageVC = HomepageMainController(para: 1)
         let homepageNC = UINavigationController(rootViewController: homepageVC!)
@@ -47,7 +47,8 @@ class MainTabBarController: UITabBarController {
         messageNC.navigationBar.isTranslucent = false
         messageVC?.tabBarItem = createBarItem(imageName: "消息")
         messageVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-
+        messageVC?.tabBarItem.tag = 2
+//        messageVC?.tabBarItem.badgeColor = .red
         
         infoVC = UserInfoViewController()
 //        infoVC?.title = "个人中心"
@@ -57,6 +58,36 @@ class MainTabBarController: UITabBarController {
         setViewControllers([homepageNC, bbcNC, messageNC, infoNC], animated: true)
         
         UITabBar.appearance().tintColor = .BBSBlue
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+//        BBSJarvis.getMessageCount(failure: 0, success: { dict in
+//            let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
+//            if let data = dict["data"] as? [[String: Any]],
+//                data.count > 0,
+//                let messageID = data[0]["id"] as? Int,
+//                messageID > latestMessageID {
+//                let count = data.filter { ($0["read"] as! Int) != 0 }.count
+//                self.tabBar.items![2].badgeValue = "\(count)"
+//                UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
+//            }
+//        })
+    }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+//        super.tabBar(tabBar, didSelect: item)
+        if item.tag != 2 {
+            BBSJarvis.getMessageCount(success: { dict in
+                if let count = dict["data"] as? Int, count != 0 {
+                    self.tabBar.items![2].badgeValue = "\(count)"
+                }
+            })
+        }
+        if item.tag == 2 {
+            BBSJarvis.setMessageRead(success: {_ in })
+            self.tabBar.items![2].badgeValue = nil
+        }
     }
     
     func createBarItem(imageName: String) -> UITabBarItem {

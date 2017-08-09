@@ -27,8 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
             
-//            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
-//            if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {
+            //            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
+            if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {
                 BBSUser.load()
                 
                 // 如果token不为空
@@ -43,11 +43,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
                     window.rootViewController = navigationController
                 }
-//            } else {
-//                let navigationController = UINavigationController(rootViewController: GuideViewController())
-//                window.rootViewController = navigationController
-//            }
-//            PiwikTracker.configureSharedInstance(withSiteID: "13", baseURL: URL(string: h"ttps://elf.twtstudio.com/piwik.php")!)
+            } else {
+                let navigationController = UINavigationController(rootViewController: GuideViewController())
+                window.rootViewController = navigationController
+            }
+            //            PiwikTracker.configureSharedInstance(withSiteID: "13", baseURL: URL(string: h"ttps://elf.twtstudio.com/piwik.php")!)
             PiwikTracker.sharedInstance(withSiteID: "13", baseURL: URL(string: "https://elf.twtstudio.com/piwik.php")!)
             PiwikTracker.shared.isPrefixingEnabled = false
             window.makeKeyAndVisible()

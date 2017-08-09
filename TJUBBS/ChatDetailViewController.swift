@@ -300,25 +300,40 @@ extension ChatDetailViewController {
         
 //
 //        session.insert(message: messageToSend)
-//        tableView?.insertRows(at: [indexPath], with: rowAnimation)
+//        tableView?.insertRows(at: [indexPath], with: )
         
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: self.messages.count, section: 0)
+            let rowAnimation: UITableViewRowAnimation = .top
+            
+            self.tableView?.beginUpdates()
+            self.messages.append(messageToSend)
+            //
+            //        session.insert(message: messageToSend)
+            self.tableView?.insertRows(at: [indexPath], with: rowAnimation)
+            self.tableView?.endUpdates()
+            self.tableView?.reloadRows(at: [indexPath], with: .automatic)
+            self.tableView?.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            self.textView.refreshFirstResponder()
+        }
+
         BBSJarvis.sendMessage(uid: "\(pal?.uid ?? 0)", content: textView.text, failure: { error in
             HUD.flash(.labeledError(title: "发送失败😐请稍后重试", subtitle: ""), delay: 1.0)
         }, success: { dict in
-            DispatchQueue.main.async {
-                let indexPath = IndexPath(row: self.messages.count, section: 0)
-                let rowAnimation: UITableViewRowAnimation = .top
-                
-                self.tableView?.beginUpdates()
-                self.messages.append(messageToSend)
-                //
-                //        session.insert(message: messageToSend)
-                self.tableView?.insertRows(at: [indexPath], with: rowAnimation)
-                self.tableView?.endUpdates()
-                self.tableView?.reloadRows(at: [indexPath], with: .automatic)
-                self.tableView?.scrollToRow(at: indexPath, at: .bottom, animated: true)
-                self.textView.refreshFirstResponder()
-            }
+//            DispatchQueue.main.async {
+//                let indexPath = IndexPath(row: self.messages.count, section: 0)
+//                let rowAnimation: UITableViewRowAnimation = .top
+//                
+//                self.tableView?.beginUpdates()
+//                self.messages.append(messageToSend)
+//                //
+//                //        session.insert(message: messageToSend)
+//                self.tableView?.insertRows(at: [indexPath], with: rowAnimation)
+//                self.tableView?.endUpdates()
+//                self.tableView?.reloadRows(at: [indexPath], with: .automatic)
+//                self.tableView?.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//                self.textView.refreshFirstResponder()
+//            }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             }
             

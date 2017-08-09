@@ -140,7 +140,7 @@ struct BBSJarvis {
     static func reply(threadID: Int, content: String, toID: Int?, anonymous: Bool = false, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         var parameters = ["content": content]
         if let id = toID {
-            parameters["reply"] = String(id)
+            parameters["reply"] = "\(id)"
         }
         if anonymous == true {
             parameters["anonymous"] = "1"
@@ -154,8 +154,12 @@ struct BBSJarvis {
         })
     }
     
-    static func getMessageCount(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.message(page: page), parameters: nil, success: success)
+    static func getMessageCount(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.messageCount, parameters: nil, failure: failure, success: success)
+    }
+    
+    static func setMessageRead(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .post, url: BBSAPI.messageRead, parameters: nil, failure: failure, success: success)
     }
     
     static func getMessage(page: Int, failure: ((Error)->())? = nil, success: @escaping ([MessageModel])->()) {
