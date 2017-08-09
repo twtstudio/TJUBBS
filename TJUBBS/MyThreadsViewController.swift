@@ -145,12 +145,20 @@ extension MyThreadsViewController {
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        let thread = threadList[indexPath.row]
-        threadList.remove(at: indexPath.row)
-        tableView.deleteRows(at: [indexPath], with: .automatic)
-        BBSJarvis.modifyThread(tid: thread.id, type: "delete", success: {
-            self.tableView?.reloadData()
-        })
+        
+        let deleteAlertVC = UIAlertController(title: "确认删除", message: "真的要删除吗？", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        deleteAlertVC.addAction(cancelAction)
+        let confirmAction = UIAlertAction(title: "删除", style: .destructive) { _ in
+            let thread = self.threadList[indexPath.row]
+            self.threadList.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            BBSJarvis.modifyThread(tid: thread.id, type: "delete", success: {
+                self.tableView?.reloadData()
+            })
+        }
+        deleteAlertVC.addAction(confirmAction)
+        self.present(deleteAlertVC, animated: true, completion: nil)
     }
     
 }

@@ -280,6 +280,8 @@ class GroupBubbleCell: UITableViewCell {
                 bubbleHeight = emojiBubble.bounds.size.height
                 //                log.obj(bubbleHeight as AnyObject)/
                 emojiBubble.frame = CGRect(x: (Metadata.Size.Screen.width-15-bubbleWidth), y: 0, width: bubbleWidth, height: bubbleHeight)
+                emojiBubble.tag = -1
+
                 return emojiBubble
             }
             
@@ -318,6 +320,8 @@ class GroupBubbleCell: UITableViewCell {
             messageTextView.textContainer.lineFragmentPadding = 0
             
             bubble?.addSubview(messageTextView)
+            // tag for copy item below
+            bubble?.tag = -1
             return bubble!
             
         } else {
@@ -328,6 +332,7 @@ class GroupBubbleCell: UITableViewCell {
                 bubbleWidth = emojiBubble.bounds.size.width
                 bubbleHeight = emojiBubble.bounds.size.height
                 emojiBubble.frame = CGRect(x: 15+39, y: 20, width: bubbleWidth, height: bubbleHeight)
+                emojiBubble.tag = -1
                 return emojiBubble
             }
             
@@ -359,12 +364,13 @@ class GroupBubbleCell: UITableViewCell {
             messageTextView.backgroundColor = .clear
             messageTextView.isScrollEnabled = false
             messageTextView.isEditable = false;
-            messageTextView.dataDetectorTypes = .all;
+//            messageTextView.dataDetectorTypes = .all;
             // Eliminate all the paddings and insets
             messageTextView.textContainerInset = .zero
             messageTextView.textContainer.lineFragmentPadding = 0
             
             bubble?.addSubview(messageTextView)
+            bubble?.tag = -1
             return bubble!
         }
         
@@ -381,6 +387,10 @@ class GroupBubbleCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
     func prepareGesture() {
         self.isUserInteractionEnabled = true
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(self.longPressAction(sender:)))
@@ -393,8 +403,17 @@ class GroupBubbleCell: UITableViewCell {
             self.becomeFirstResponder()
             let copyItem = UIMenuItem(title: "复制", action: #selector(self.customCopy(sender:)))
             UIMenuController.shared.menuItems = [copyItem]
-            UIMenuController.shared.setTargetRect(self.frame, in: self.superview!)
-            UIMenuController.shared.setMenuVisible(true, animated: true)
+            var targetRect: CGRect?
+            for view in self.contentView.subviews {
+                if view.tag == -1 {
+                    targetRect = view.frame
+                }
+            }
+            if let targetRect = targetRect {
+//            UIMenuController.shared.setTargetRect(targetRect!, in: self.superview!)
+                UIMenuController.shared.setTargetRect(targetRect, in: self)
+                UIMenuController.shared.setMenuVisible(true, animated: true)
+            }
         }
     }
     

@@ -509,7 +509,11 @@ extension ThreadDetailViewController: UITableViewDataSource {
                     alertVC.addAction(editAction)
                     alertVC.addAction(deleteAction)
             }
-            
+            let copyAction = UIAlertAction(title: "复制", style: .default, handler: { action in
+                UIPasteboard.general.string = post.content
+                HUD.flash(.label("已复制到剪切板"), delay: 1.2)
+            })
+
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
                 HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
@@ -519,6 +523,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 HUD.flash(.label("已加入黑名单(可在通用设置中取消)"), onView: self.view, delay: 1.5)
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alertVC.addAction(copyAction)
             alertVC.addAction(reportAction)
             if post.authorID != 0 && post.authorID != BBSUser.shared.uid {
                 alertVC.addAction(blockAction)
@@ -632,6 +637,11 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 alertVC.addAction(deleteAction)
             }
 
+            let copyAction = UIAlertAction(title: "复制", style: .default, handler: { action in
+                UIPasteboard.general.string = self.thread!.content
+                HUD.flash(.label("已复制到剪切板"), delay: 1.2)
+            })
+            
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
                 HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
@@ -643,6 +653,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 HUD.flash(.label("已加入黑名单(可在通用设置中取消)"), onView: self.view, delay: 1.5)
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            alertVC.addAction(copyAction)
             alertVC.addAction(reportAction)
             if self.thread!.authorID != 0 && self.thread!.authorID != BBSUser.shared.uid {
                 alertVC.addAction(blockAction)

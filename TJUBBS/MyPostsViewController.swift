@@ -61,8 +61,8 @@ class MyPostsViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
         
-        let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
-        self.navigationItem.rightBarButtonItem = rightItem
+//        let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
+//        self.navigationItem.rightBarButtonItem = rightItem
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
@@ -117,27 +117,27 @@ class MyPostsViewController: UIViewController {
 }
 
 extension MyPostsViewController {
-    func editingStateOnChange(sender: UIBarButtonItem) {
-        tableView.setEditing(tableView.isEditing, animated: true)
-        if tableView.isEditing {
-            self.navigationItem.rightBarButtonItem?.title = "完成"
-        } else {
-            self.navigationItem.rightBarButtonItem?.title = "编辑"
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
-        return .delete
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        let post = postList[indexPath.row]
-        postList.remove(at: indexPath.row)
-        tableView.deleteRows(at: [indexPath], with: .automatic)
-        BBSJarvis.modifyPost(pid: post.id, type: "delete", success: {
-            self.tableView.reloadData()
-        })
-    }
+//    func editingStateOnChange(sender: UIBarButtonItem) {
+//        tableView.setEditing(tableView.isEditing, animated: true)
+//        if tableView.isEditing {
+//            self.navigationItem.rightBarButtonItem?.title = "完成"
+//        } else {
+//            self.navigationItem.rightBarButtonItem?.title = "编辑"
+//        }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+//        return .delete
+//    }
+//    
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+//        let post = postList[indexPath.row]
+//        postList.remove(at: indexPath.row)
+//        tableView.deleteRows(at: [indexPath], with: .automatic)
+//        BBSJarvis.modifyPost(pid: post.id, type: "delete", success: {
+//            self.tableView.reloadData()
+//        })
+//    }
     
 }
 
