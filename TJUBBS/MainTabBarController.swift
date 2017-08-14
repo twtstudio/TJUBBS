@@ -62,17 +62,6 @@ class MainTabBarController: UITabBarController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        BBSJarvis.getMessageCount(failure: 0, success: { dict in
-//            let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
-//            if let data = dict["data"] as? [[String: Any]],
-//                data.count > 0,
-//                let messageID = data[0]["id"] as? Int,
-//                messageID > latestMessageID {
-//                let count = data.filter { ($0["read"] as! Int) != 0 }.count
-//                self.tabBar.items![2].badgeValue = "\(count)"
-//                UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
-//            }
-//        })
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

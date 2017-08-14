@@ -249,6 +249,7 @@ class AddThreadViewController: UIViewController {
         })
         if !isUploading {
             if !resultString.string.isEmpty {
+
                 let content = resultString.string
                 if let done = doneBlock{
                     done(title, content)
