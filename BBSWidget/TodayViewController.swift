@@ -34,7 +34,13 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
+        let activityView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityView.center = self.view.center
+        activityView.startAnimating()
+        self.view.addSubview(activityView)
         Alamofire.request("https://bbs.twtstudio.com/api/index", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseString { response in
+            activityView.stopAnimating()
+            activityView.removeFromSuperview()
             switch response.result {
             case .success:
                 if let data = response.data {

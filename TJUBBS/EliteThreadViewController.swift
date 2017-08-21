@@ -79,6 +79,13 @@ class EliteThreadViewController: UIViewController {
     }
     
     func refresh() {
+        // refresh message count
+        BBSJarvis.getMessageCount(success: { dict in
+            if let count = dict["data"] as? Int, count != 0 {
+                self.tabBarController?.tabBar.items![2].badgeValue = "\(count)"
+            }
+        })
+        
         BBSJarvis.getIndex(failure: { _ in
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
