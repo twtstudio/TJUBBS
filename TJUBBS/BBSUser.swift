@@ -49,6 +49,7 @@ class BBSUser {
     var resetPasswordToken: String?
     var isVisitor: Bool = false
     var blackList: [String : Int] = [:]
+    var fontSize: Int = 14
     
 //    required init?(map: Map) {}
 //    
@@ -89,7 +90,7 @@ class BBSUser {
                 list.setValue(uid, forKey: key)
             }
         }
-        let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1, "blackList": list]
+        let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1, "blackList": list, "fontSize": BBSUser.shared.fontSize]
         UserDefaults.standard.set(NSDictionary(dictionary: dic), forKey: BBSUSERSHAREDKEY)
     }
     
@@ -99,11 +100,13 @@ class BBSUser {
             let token = dic["token"] as? String,
             let uid = dic["uid"] as? Int,
             let group = dic["group"] as? Int,
+            let fontSize = dic["fontSize"] as? Int,
             let list = dic["blackList"] as? NSDictionary {
             BBSUser.shared.username = username
             BBSUser.shared.uid = (uid == -1) ? nil : uid
             BBSUser.shared.token = (token == "") ? nil : token
             BBSUser.shared.group = (group == -1) ? nil : group
+            BBSUser.shared.group = fontSize
             var dict = Dictionary<String, Int>()
             if let keys = list.allKeys as? [String] {
                 for key in keys {

@@ -12,7 +12,7 @@ class SettingViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
-    var contentArray = ["黑名单", "公开个人资料"]
+    var contentArray = ["黑名单", "公开个人资料", "字体设置"]
     //FIX ME: should initUI in init or viewDidLoad
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -62,7 +62,7 @@ extension SettingViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            if indexPath.row == 0 {
+            if indexPath.row != 1 {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
                 cell.textLabel?.text = contentArray[indexPath.row]
                 return cell
@@ -106,6 +106,9 @@ extension SettingViewController: UITableViewDelegate {
         case IndexPath(row: 0, section: 0):
             let blackListVC = BlackListViewController()
             self.navigationController?.pushViewController(blackListVC, animated: true)
+        case IndexPath(row: 2, section: 0):
+            let setSizeVC = SetFontSizeViewController()
+            self.navigationController?.pushViewController(setSizeVC, animated: true)
         case IndexPath(row: 0, section: 1):
             BBSJarvis.logout()
             BBSUser.delete()

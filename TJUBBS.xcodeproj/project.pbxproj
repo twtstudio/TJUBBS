@@ -11,6 +11,7 @@
 		36262A3B1F0D1A7E00C799B7 /* ImageTextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36262A3A1F0D1A7E00C799B7 /* ImageTextAttachment.swift */; };
 		36262A3D1F0D291600C799B7 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36262A3C1F0D291600C799B7 /* ProgressView.swift */; };
 		363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */; };
+		3659B5841F4ED91200B65D13 /* SetFontSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659B5831F4ED91200B65D13 /* SetFontSizeViewController.swift */; };
 		36636FEA1EC7723200C45CB8 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */; };
 		367AAFDA1F1377D500C18620 /* HCRichTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AAFD91F1377D500C18620 /* HCRichTextCell.swift */; };
 		367AAFDC1F137C6000C18620 /* HCRichCellLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AAFDB1F137C6000C18620 /* HCRichCellLayout.swift */; };
@@ -133,6 +134,7 @@
 		36262A3A1F0D1A7E00C799B7 /* ImageTextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTextAttachment.swift; sourceTree = "<group>"; };
 		36262A3C1F0D291600C799B7 /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackListViewController.swift; sourceTree = "<group>"; };
+		3659B5831F4ED91200B65D13 /* SetFontSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetFontSizeViewController.swift; sourceTree = "<group>"; };
 		36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
 		367AAFD91F1377D500C18620 /* HCRichTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HCRichTextCell.swift; sourceTree = "<group>"; };
 		367AAFDB1F137C6000C18620 /* HCRichCellLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HCRichCellLayout.swift; sourceTree = "<group>"; };
@@ -584,6 +586,7 @@
 				68B5A5291EBB162700968FFD /* UserInfoViewController.swift */,
 				36D21F3E1EB6F67E00677534 /* InfoModifyController.swift */,
 				368D36A21EBA224C002978C6 /* SetInfoViewController.swift */,
+				3659B5831F4ED91200B65D13 /* SetFontSizeViewController.swift */,
 				68F461511EBDCCE900D784F4 /* FavorateViewController.swift */,
 				68F461551EBE264800D784F4 /* SettingViewController.swift */,
 				68B6834C1EC200D800F7A0BF /* MyPostHomeViewController.swift */,
@@ -923,6 +926,7 @@
 				68B683471EBEC36400F7A0BF /* MessageCell.swift in Sources */,
 				68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */,
 				363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */,
+				3659B5841F4ED91200B65D13 /* SetFontSizeViewController.swift in Sources */,
 				36DCA44D1F47404F007643A3 /* TodayViewController.swift in Sources */,
 				68B6834D1EC200D800F7A0BF /* MyPostHomeViewController.swift in Sources */,
 				68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */,
