@@ -131,7 +131,7 @@ class RichPostCell: DTAttributedTextCell {
         let html = Markdown.parse(string: thread.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                      DTDefaultFontSize: 14.0,
+                      DTDefaultFontSize: BBSUser.shared.fontSize,
                       DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
                       DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
                       DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
@@ -139,8 +139,8 @@ class RichPostCell: DTAttributedTextCell {
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.shouldDrawImages = true
 
-        usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
-        nickNameLabel.text = thread.authorID != 0 ? "@"+thread.authorNickname : ""
+        usernameLabel.text = thread.anonymous == 0 ? thread.authorName : "匿名用户"
+        nickNameLabel.text = thread.anonymous == 0 ? "@"+thread.authorNickname : ""
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
         
@@ -184,18 +184,18 @@ class RichPostCell: DTAttributedTextCell {
         let html = Markdown.parse(string: post.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                      DTDefaultFontSize: 14.0,
-                      DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
+                      DTDefaultFontSize: BBSUser.shared.fontSize,
+                      DTDefaultFontFamily: UIFont.systemFont(ofSize: CGFloat(BBSUser.shared.fontSize)).familyName,
                       DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
-                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+                      DTDefaultFontName: UIFont.systemFont(ofSize: CGFloat(BBSUser.shared.fontSize)).fontName] as [String : Any]
         setHTMLString(html, options: option)
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.shouldDrawImages = true
 
-        usernameLabel.text = post.authorID != 0 ? post.authorName : "匿名用户"
+        usernameLabel.text = post.anonymous == 0 ? post.authorName : "匿名用户"
         let timeString = "\(post.floor) 楼 " + TimeStampTransfer.string(from: String(post.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
-        nickNameLabel.text = post.authorID != 0 ? "@"+post.authorNickname : ""
+        nickNameLabel.text = post.anonymous == 0 ? "@"+post.authorNickname : ""
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
         // 68: avatar and margin // 38: moreButton // 4: padding

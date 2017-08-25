@@ -55,7 +55,7 @@ class PostCell: UITableViewCell {
 //    func initUI(portraitImage: UIImage?, username: String, category: String? = nil, favor: Bool = false, title: String, detail: String? = nil, replyNumber: String, time: String, threadID: Int) {
     func initUI(thread: ThreadModel) {
         self.thread = thread
-        if self.thread?.authorID == 0 {
+        if self.thread?.anonymous == 1 {
             portraitImageView.image = UIImage(named: "anonymous")
         } else {
             let portraitImage = UIImage(named: "default")
@@ -71,7 +71,7 @@ class PostCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = screenSize.height*(80/1920)/2
         portraitImageView.clipsToBounds = true
         
-        usernameLabel.text = thread.authorID != 0 ? thread.authorName : "匿名用户"
+        usernameLabel.text = thread.anonymous == 0 ? thread.authorName : "匿名用户"
         usernameLabel.sizeToFit()
         usernameLabel.snp.makeConstraints {
             make in

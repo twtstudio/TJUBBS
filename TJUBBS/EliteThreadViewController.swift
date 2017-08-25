@@ -124,7 +124,7 @@ extension EliteThreadViewController: UITableViewDataSource {
             let boardVC = ThreadListController(bid: data.boardID)
             self.navigationController?.pushViewController(boardVC, animated: true)
         }
-        if data.authorID != 0 { // exclude anonymous user
+        if data.anonymous == 0 { // exclude anonymous user
             cell.usernameLabel.addTapGestureRecognizer { _ in
                 let userVC = UserDetailViewController(uid: data.authorID)
                 self.navigationController?.pushViewController(userVC, animated: true)

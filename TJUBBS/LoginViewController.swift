@@ -409,7 +409,7 @@ class LoginViewController: UIViewController {
         registerButton?.alpha = 0
         
         registerButton?.addTarget { _ in
-            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-2~12个字母-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
+            let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-2~12个字母或数字(不能为纯数字)-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
                 if let result = result as? [String : String] {
                     if check(result) == true {
                         var para = result

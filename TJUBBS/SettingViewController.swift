@@ -14,19 +14,21 @@ class SettingViewController: UIViewController {
     var tableView: UITableView?
     var contentArray = ["黑名单", "公开个人资料", "字体设置"]
     //FIX ME: should initUI in init or viewDidLoad
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.title = "通用设置"
-        self.hidesBottomBarWhenPushed = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//        self.title = "通用设置"
+//        self.hidesBottomBarWhenPushed = true
+//    }
+//    
+//    required init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.title = "通用设置"
+        self.hidesBottomBarWhenPushed = true
+
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
         tableView?.snp.makeConstraints { $0.edges.equalToSuperview() }

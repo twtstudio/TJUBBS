@@ -106,7 +106,7 @@ class BBSUser {
             BBSUser.shared.uid = (uid == -1) ? nil : uid
             BBSUser.shared.token = (token == "") ? nil : token
             BBSUser.shared.group = (group == -1) ? nil : group
-            BBSUser.shared.group = fontSize
+            BBSUser.shared.fontSize = fontSize
             var dict = Dictionary<String, Int>()
             if let keys = list.allKeys as? [String] {
                 for key in keys {

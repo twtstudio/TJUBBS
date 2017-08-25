@@ -526,7 +526,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(reportAction)
-            if post.authorID != 0 && post.authorID != BBSUser.shared.uid {
+            if post.anonymous == 0 && post.authorID != BBSUser.shared.uid {
                 alertVC.addAction(blockAction)
             }
             alertVC.addAction(cancelAction)
@@ -540,7 +540,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
-        if post.authorID == 0 {
+        if post.anonymous == 1 {
             cell?.portraitImageView.image = UIImage(named: "anonymous")
         } else {
             let url = URL(string: BBSAPI.avatar(uid: post.authorID))
@@ -656,7 +656,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(reportAction)
-            if self.thread!.authorID != 0 && self.thread!.authorID != BBSUser.shared.uid {
+            if self.thread!.anonymous == 0 && self.thread!.authorID != BBSUser.shared.uid {
                 alertVC.addAction(blockAction)
             }
             alertVC.addAction(cancelAction)
@@ -667,7 +667,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             self.present(alertVC, animated: true, completion: nil)
         }
 
-        if thread!.authorID == 0 {
+        if thread!.anonymous == 1 {
             cell?.portraitImageView.image = UIImage(named: "anonymous")
         } else {
             let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
@@ -680,7 +680,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
             let cell = prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
-            if self.thread?.authorID != 0 { // exclude anonymous user
+            if self.thread?.anonymous == 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
                     let userVC = UserDetailViewController(uid: self.thread!.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
@@ -694,7 +694,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
         } else {
             let post = postList[indexPath.row]
             let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
-            if post.authorID != 0 { // exclude anonymous user
+            if post.anonymous == 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
                     let userVC = UserDetailViewController(uid: post.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
