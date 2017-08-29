@@ -9,7 +9,7 @@
 import UIKit
 import Marklight
 import PKHUD
-
+import TOCropViewController
 
 class EditDetailViewController: UIViewController {
     let textView = UITextView()
@@ -21,6 +21,7 @@ class EditDetailViewController: UIViewController {
     var imageMap: [Int : Int] = [:]
     var doneBlock: ((String) -> ())?
     var attachments: [ImageTextAttachment] = []
+    var imagePicker: UIImagePickerController!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -59,12 +60,12 @@ class EditDetailViewController: UIViewController {
         imageButton.addTarget { btn in
             // TODO: 拍照
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                let imagePicker = UIImagePickerController()
-                imagePicker.delegate = self
-                imagePicker.allowsEditing = true
-                imagePicker.sourceType = .photoLibrary
+                self.imagePicker = UIImagePickerController()
+                self.imagePicker.delegate = self
+                self.imagePicker.allowsEditing = false
+                self.imagePicker.sourceType = .photoLibrary
 //                imagePicker.cameraOverlayView?.transform = CGAffineTransform(scaleX: 1, y: self.view.height/self.view.width)
-                self.present(imagePicker, animated: true) {
+                self.present(self.imagePicker, animated: true) {
                     
                 }
             } else {
@@ -227,8 +228,6 @@ extension EditDetailViewController {
                     self.bar.width = self.view.width
                     self.bar.height = barHeight
                 }
-//                UIView.animate(withDuration: 0.1, animations: {
-//                })
             }
         }
     }
@@ -236,36 +235,10 @@ extension EditDetailViewController {
 
 extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
-            let size = image.size
-            let maxWidth: CGFloat = 200
-            var ratio: CGFloat = 1.0
-            if size.width > maxWidth {
-                ratio = maxWidth/size.width
-            }
-            let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
-            
-            let attachment = ImageTextAttachment()
-            attachment.image = resizedImage
-            // resizedImage.hash as index
-            let attributedString = NSAttributedString(attachment: attachment)
-            textStorage.insert(attributedString, at: textView.selectedRange.location)
-            textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
-            attachments.append(attachment)
-            BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
-                attachment.progressView.progress = progress.fractionCompleted
-                if progress.fractionCompleted >= 1.0 {
-                    if attachment.progressView.superview != nil {
-                        attachment.progressView.removeFromSuperview()
-                    }
-                }
-            }, failure: { error in
-                HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
-            }, success: { attachmentCode in
-                self.imageMap[resizedImage.hash] = attachmentCode
-            })
-            
-            picker.dismiss(animated: true, completion: nil)
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            let cropVC = TOCropViewController(image: image)
+            cropVC.delegate = self
+            picker.present(cropVC, animated: true, completion: nil)
         }
     }
     
@@ -275,6 +248,8 @@ extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigatio
     
 }
 
+
+// overlay on images which are uploading
 extension EditDetailViewController: NSLayoutManagerDelegate {
     
     func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
@@ -335,4 +310,39 @@ extension EditDetailViewController: NSLayoutManagerDelegate {
             
         }
     }
+}
+
+extension EditDetailViewController: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropToImage image: UIImage, rect cropRect: CGRect, angle: Int) {
+        let size = cropRect
+        let maxWidth: CGFloat = 200
+        var ratio: CGFloat = 1.0
+        if size.width > maxWidth {
+            ratio = maxWidth/size.width
+        }
+        cropViewController.dismiss(animated: true, completion: { self.imagePicker.dismiss(animated: false, completion: nil) })
+        let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
+        
+        let attachment = ImageTextAttachment()
+        attachment.image = resizedImage
+        // resizedImage.hash as index
+        let attributedString = NSAttributedString(attachment: attachment)
+        textStorage.insert(attributedString, at: textView.selectedRange.location)
+        textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+        attachments.append(attachment)
+        BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
+            attachment.progressView.progress = progress.fractionCompleted
+            if progress.fractionCompleted >= 1.0 {
+                if attachment.progressView.superview != nil {
+                    attachment.progressView.removeFromSuperview()
+                }
+            }
+        }, failure: { error in
+            HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
+        }, success: { attachmentCode in
+            self.imageMap[resizedImage.hash] = attachmentCode
+        })
+        
+    }
+
 }
