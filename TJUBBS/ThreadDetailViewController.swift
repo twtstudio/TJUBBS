@@ -402,7 +402,7 @@ class ThreadDetailViewController: UIViewController {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + (self.thread?.authorName ?? "")
-            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
+            editDetailVC.canAnonymous = self.board?.anonymous == 1 ? true : false
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 BBSJarvis.reply(threadID: self.thread!.id, content: string, toID: nil, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
@@ -746,7 +746,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + self.postList[indexPath.row].authorName
-            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
+            editDetailVC.canAnonymous = self.board?.anonymous == 1 ? true : false
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 let post = self.postList[indexPath.row]
                 let origin = post.content

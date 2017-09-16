@@ -10,6 +10,7 @@ import UIKit
 import ObjectMapper
 import PKHUD
 import Marklight
+import TOCropViewController
 
 class AddThreadViewController: UIViewController {
     
@@ -32,6 +33,7 @@ class AddThreadViewController: UIViewController {
     var doneBlock: ((String, String)->())?
     var placeholder: String = ""
     var placeholderTitle = ""
+    var imagePicker: UIImagePickerController!
     
     var selectedForum: ForumModel? {
         didSet {
@@ -112,11 +114,11 @@ class AddThreadViewController: UIViewController {
         imageButton.addTarget { btn in
             // TODO: 拍照
             if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
-                let imagePicker = UIImagePickerController()
-                imagePicker.delegate = self
-                imagePicker.allowsEditing = true
-                imagePicker.sourceType = .photoLibrary
-                self.present(imagePicker, animated: true) {
+                self.imagePicker = UIImagePickerController()
+                self.imagePicker.delegate = self
+                self.imagePicker.allowsEditing = true
+                self.imagePicker.sourceType = .photoLibrary
+                self.present(self.imagePicker, animated: true) {
                     
                 }
             } else {
@@ -529,36 +531,10 @@ extension AddThreadViewController {
 
 extension AddThreadViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
-            let size = image.size
-            let maxWidth: CGFloat = 200
-            var ratio: CGFloat = 1.0
-            if size.width > maxWidth {
-                ratio = maxWidth/size.width
-            }
-            let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
-            
-            let attachment = ImageTextAttachment()
-            attachment.image = resizedImage
-            // resizedImage.hash as index
-            let attributedString = NSAttributedString(attachment: attachment)
-            textStorage.insert(attributedString, at: textView.selectedRange.location)
-            textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
-            attachments.append(attachment)
-            
-            BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
-                attachment.progressView.progress = progress.fractionCompleted
-                if progress.fractionCompleted >= 1.0 {
-                    if attachment.progressView.superview != nil {
-                        attachment.progressView.removeFromSuperview()
-                    }
-                }
-            }, failure: { error in
-                HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
-            }, success: { attachmentCode in
-                self.imageMap[resizedImage.hash] = attachmentCode
-            })
-            picker.dismiss(animated: true, completion: nil)
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            let cropVC = TOCropViewController(image: image)
+            cropVC.delegate = self
+            picker.present(cropVC, animated: true, completion: nil)
         }
     }
     
@@ -622,4 +598,40 @@ extension AddThreadViewController: NSLayoutManagerDelegate {
         }
     }
 }
+
+extension AddThreadViewController: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropToImage image: UIImage, rect cropRect: CGRect, angle: Int) {
+        let size = cropRect
+        let maxWidth: CGFloat = 200
+        var ratio: CGFloat = 1.0
+        if size.width > maxWidth {
+            ratio = maxWidth/size.width
+        }
+        cropViewController.dismiss(animated: true, completion: { self.imagePicker.dismiss(animated: false, completion: nil) })
+        let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
+        
+        let attachment = ImageTextAttachment()
+        attachment.image = resizedImage
+        // resizedImage.hash as index
+        let attributedString = NSAttributedString(attachment: attachment)
+        textStorage.insert(attributedString, at: textView.selectedRange.location)
+        textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+        attachments.append(attachment)
+        BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
+            attachment.progressView.progress = progress.fractionCompleted
+            if progress.fractionCompleted >= 1.0 {
+                if attachment.progressView.superview != nil {
+                    attachment.progressView.removeFromSuperview()
+                }
+            }
+        }, failure: { error in
+            HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
+        }, success: { attachmentCode in
+            self.imageMap[resizedImage.hash] = attachmentCode
+        })
+        
+    }
+    
+}
+
 

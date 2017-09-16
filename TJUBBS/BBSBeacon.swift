@@ -187,7 +187,9 @@ class FuckingWrapper: NSObject {
     override init() {}
     func startLoading() {
         if startTimer != nil {
-            HUD.show(.rotatingImage(UIImage(named: "progress")))
+            let view = UIViewController.current?.view
+            HUD.show(.rotatingImage(UIImage(named: "progress")), onView: view)
+//            HUD.show(.rotatingImage(UIImage(named: "progress")))
         }
     }
     func stopLoading() {

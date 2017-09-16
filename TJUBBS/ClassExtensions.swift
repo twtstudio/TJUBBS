@@ -500,3 +500,36 @@ extension NSAttributedString {
         return ranges
     }
 }
+
+extension UIViewController {
+    static var current: UIViewController? {
+        var window = UIApplication.shared.keyWindow
+        if window?.windowLevel != UIWindowLevelNormal {
+            for win in UIApplication.shared.windows {
+                if win.windowLevel == UIWindowLevelNormal {
+                    window = win
+                    break
+                }
+            }
+        }
+        var nextResponder: Any?
+        let appRootVC = window?.rootViewController
+        if appRootVC?.presentedViewController != nil {
+            nextResponder = appRootVC?.presentedViewController!
+        } else {
+            let frontView = window?.subviews.first
+            nextResponder = frontView?.next
+        }
+        
+        if let nextResponder = nextResponder as? UITabBarController {
+            let navVC = nextResponder.selectedViewController
+            return navVC?.childViewControllers.last
+        } else if let nextResponder = nextResponder as? UINavigationController {
+            return nextResponder.childViewControllers.last
+        } else if let vc = nextResponder as? UIViewController {
+            return vc
+        } else {
+            return nil
+        }
+    }
+}
