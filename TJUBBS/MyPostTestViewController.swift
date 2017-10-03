@@ -10,9 +10,10 @@ import UIKit
 import MJRefresh
 import YYText
 import Kingfisher
+import AsyncDisplayKit
 
 class MyPostTestViewController: UIViewController {
-    var tableView: UITableView!
+    var tableView: ASTableNode!
     var commonLabel = YYLabel()
     var posts: [PostModel] = []
     var attributedPosts: [NSAttributedString] = []
@@ -20,33 +21,35 @@ class MyPostTestViewController: UIViewController {
     var page = 0
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: self.view.bounds, style: .plain)
-        self.view.addSubview(tableView)
+        tableView = ASTableNode()
+        tableView.frame = self.view.bounds
+//            ASTableNode(frame: self.view.bounds, style: .plain)
+        self.view.addSubview(tableView.view)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 340
+//        tableView.rowHeight = UITableViewAutomaticDimension
+//        tableView.estimatedRowHeight = 340
         
         commonLabel.numberOfLines = 0
         parser.setColorWithBrightTheme()
         commonLabel.textParser = parser
-
-        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView.mj_footer.isAutomaticallyHidden = true
-        self.tableView.mj_header.beginRefreshing()
+        refresh()
+//        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+//        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+//        self.tableView.mj_footer.isAutomaticallyHidden = true
+//        self.tableView.mj_header.beginRefreshing()
     }
     
     func refresh() {
         page = 0
         BBSJarvis.getMyPostList(page: page, failure: { err in
-            if self.tableView.mj_header.isRefreshing() {
-                self.tableView.mj_header.endRefreshing()
-            }
+//            if self.tableView.mj_header.isRefreshing() {
+//                self.tableView.mj_header.endRefreshing()
+//            }
         }, success: { posts in
-            if self.tableView.mj_header.isRefreshing() {
-                self.tableView.mj_header.endRefreshing()
-            }
+//            if self.tableView.mj_header.isRefreshing() {
+//                self.tableView.mj_header.endRefreshing()
+//            }
             self.posts = posts
             for post in posts {
                 self.commonLabel.text = post.content
@@ -60,27 +63,27 @@ class MyPostTestViewController: UIViewController {
             }
         })
     }
-    
-    func load() {
-        page += 1
-        BBSJarvis.getMyPostList(page: page, failure: { err in
-            if self.tableView.mj_footer.isRefreshing() {
-                self.tableView.mj_footer.endRefreshing()
-            }
-            self.page -= 1
-        }, success: { posts in
-            if self.tableView.mj_footer.isRefreshing() {
-                self.tableView.mj_footer.endRefreshing()
-            }
-            if self.posts.count == 0 {
-                self.tableView.mj_footer.resetNoMoreData()
-            }
-            self.posts += posts
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        })
-    }
+//
+//    func load() {
+//        page += 1
+//        BBSJarvis.getMyPostList(page: page, failure: { err in
+//            if self.tableView.mj_footer.isRefreshing() {
+//                self.tableView.mj_footer.endRefreshing()
+//            }
+//            self.page -= 1
+//        }, success: { posts in
+//            if self.tableView.mj_footer.isRefreshing() {
+//                self.tableView.mj_footer.endRefreshing()
+//            }
+//            if self.posts.count == 0 {
+//                self.tableView.mj_footer.resetNoMoreData()
+//            }
+//            self.posts += posts
+//            DispatchQueue.main.async {
+//                self.tableView.reloadData()
+//            }
+//        })
+//    }
 
 }
 
@@ -140,4 +143,66 @@ extension MyPostTestViewController: UITableViewDelegate, UITableViewDataSource {
         }
         return cell
     }
+}
+
+extension MyPostTestViewController: ASTableDelegate {
+    
+}
+
+extension MyPostTestViewController: ASTableDataSource {
+    func numberOfSections(in tableNode: ASTableNode) -> Int {
+        return 1
+    }
+    
+    func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
+        return posts.count
+    }
+    
+    func tableNode(_ tableNode: ASTableNode, nodeForRowAt indexPath: IndexPath) -> ASCellNode {
+        let cell = ASCellNode()
+        let label = YYLabel()
+        label.numberOfLines = 0
+        
+        if attributedPosts.count <= indexPath.row {
+            let post = posts[indexPath.row].content
+            
+            let mu = NSMutableAttributedString(string: post)
+            let regex = try? NSRegularExpression(pattern: "!\\[\\](\\(attach:(\\d+)\\))", options: .init(rawValue: 0))
+            regex?.enumerateMatches(in: post, options: .init(rawValue: 0), range: NSMakeRange(0, post.characters.count), using: { result, flag, stop in
+                if let result = result {
+                    let r = result.range
+                    let attachString = (post as NSString).substring(with: r)
+                    let number = attachString.replacingOccurrences(of: "!\\[\\]\\(attach:(\\d+)\\)", with: "$1", options: .regularExpression, range: nil)
+                    let imgView = UIImageView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+                    imgView.kf.setImage(with: ImageResource(downloadURL: URL(string: "https://bbs.tju.edu.cn/api/img/"+number)!), placeholder: UIImage.init(color: .red)!, options: nil, progressBlock: { (received, expected) in
+                        print("\(received)/\(expected)")
+                    }, completionHandler: { (image, error, type, url) in
+                        if let image = image {
+                            //                        imgView.image = image
+                            let width = image.size.width
+                            if width > 250 {
+                                let ratio = width/250
+                                imgView.frame.size = CGSize(width: 250, height: image.size.height/ratio)
+                            } else {
+                                imgView.frame.size = image.size
+                                self.tableView.reloadData()
+                            }
+                        }
+                    })
+                    let aString = NSAttributedString.yy_attachmentString(withContent: imgView, contentMode: .center, attachmentSize: imgView.frame.size, alignTo: label.font, alignment: .center)
+                    mu.replaceCharacters(in: r, with: aString)
+                }
+            })
+            label.attributedText = mu
+            self.attributedPosts.append(mu)
+        }
+        label.attributedText = attributedPosts[indexPath.row]
+//        cell.view.addSubview(label)
+//        label.snp.makeConstraints { make in
+//            make.top.left.equalToSuperview().offset(10)
+//            make.right.bottom.equalToSuperview().offset(-10)
+//        }
+        return cell
+    }
+    
 }

@@ -58,15 +58,21 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                                 self.titleLabel.tag = thread.id
                                 completionHandler(NCUpdateResult.newData)
                             } else {
+                                self.titleLabel.text = "网络错误 请稍后重试..."
+                                self.replyLabel.text = ""
                                 completionHandler(NCUpdateResult.failed)
                             }
                         }
                     } catch _ {
+                        self.titleLabel.text = "网络错误 请稍后重试..."
+                        self.replyLabel.text = ""
                         completionHandler(NCUpdateResult.failed)
                         // log.error(error)/
                     }
                 }
             case .failure( _):
+                self.titleLabel.text = "网络错误 请稍后重试..."
+                self.replyLabel.text = ""
                 completionHandler(NCUpdateResult.failed)
                 // log.error(error)/
             }
