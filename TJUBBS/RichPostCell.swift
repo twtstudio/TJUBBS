@@ -304,11 +304,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
-            var newFrame = frame
-            newFrame.size = CGSize(width: 100, height: 100)
-            let imageView = DTLazyImageView(frame: newFrame)
-            let progressView = ProgressView(frame: newFrame)
-            imageView.addSubview(progressView)
+            let imageView = DTLazyImageView(frame: frame)
             imageView.shouldShowProgressiveDownload = true
             imageView.delegate = self
             imageView.url = attachment.contentURL
@@ -318,6 +314,21 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             imageView.shouldShowProgressiveDownload = true
             imageViews.append(imageView)
             return imageView
+
+//            var newFrame = frame
+//            newFrame.size = CGSize(width: 100, height: 100)
+//            let imageView = DTLazyImageView(frame: newFrame)
+//            let progressView = ProgressView(frame: newFrame)
+//            imageView.addSubview(progressView)
+//            imageView.shouldShowProgressiveDownload = true
+//            imageView.delegate = self
+//            imageView.url = attachment.contentURL
+//            imageView.contentMode = UIViewContentMode.scaleAspectFill
+//            imageView.clipsToBounds = true
+//            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
+//            imageView.shouldShowProgressiveDownload = true
+//            imageViews.append(imageView)
+//            return imageView
 //            let imgView = UIImageView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
 //            let progressView = ProgressView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
 //            progressView.tag = -1
@@ -353,10 +364,12 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         // fun functional programming
         // let rect = CGRect.insetBy(frame)(dx: 1, dy: 1)
         let roundedRect = UIBezierPath(roundedRect: CGRect.insetBy(frame)(dx: 1, dy: 1), cornerRadius: 2)
-        let color = textBlock.backgroundColor.cgColor
-        context.setFillColor(color)
-        context.addPath(roundedRect.cgPath)
-        context.fillPath()
+        if textBlock != nil && textBlock.backgroundColor != nil {
+            let color = textBlock.backgroundColor.cgColor
+            context.setFillColor(color)
+            context.addPath(roundedRect.cgPath)
+            context.fillPath()
+        }
         
         let rectangleRect = UIBezierPath(rect: CGRect(x: frame.origin.x, y: frame.origin.y+1, width: 4, height: frame.size.height-2))
 //        let rectangleRect = UIBezierPath(roundedRect: CGRect(x: frame.origin.x, y: frame.origin.y, width: 4, height: frame.size.height), cornerRadius: 2)

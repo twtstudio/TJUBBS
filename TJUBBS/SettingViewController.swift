@@ -12,8 +12,8 @@ class SettingViewController: UIViewController {
     
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
-    var contentArray = ["黑名单", "公开个人资料", "字体设置", "My Posts"]
-//    var contentArray = ["黑名单", "公开个人资料", "字体设置"]
+//    var contentArray = ["黑名单", "公开个人资料", "字体设置", "My Posts"]
+    var contentArray = ["黑名单", "公开个人资料", "字体设置"]
     //FIX ME: should initUI in init or viewDidLoad
 //    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 //        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -112,9 +112,9 @@ extension SettingViewController: UITableViewDelegate {
         case IndexPath(row: 2, section: 0):
             let setSizeVC = SetFontSizeViewController()
             self.navigationController?.pushViewController(setSizeVC, animated: true)
-        case IndexPath(row: 3, section: 0):
-            let setSizeVC = MyPostTestViewController()
-            self.navigationController?.pushViewController(setSizeVC, animated: true)
+//        case IndexPath(row: 3, section: 0):
+//            let setSizeVC = MyPostTestViewController()
+//            self.navigationController?.pushViewController(setSizeVC, animated: true)
         case IndexPath(row: 0, section: 1):
             BBSJarvis.logout()
             BBSUser.delete()

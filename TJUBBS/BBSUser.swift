@@ -151,6 +151,7 @@ class UserWrapper: NSObject, Mappable {
     var tCreate: Int?
     var uid: Int?
     var status: Int?
+    var id: Int?
     var recentThreads: [ThreadModel] = []
     
     required init?(map: Map) {}
@@ -167,6 +168,8 @@ class UserWrapper: NSObject, Mappable {
         tCreate <- map["t_create"]
         uid <- map["uid"]
         status <- map["status"]
+        // 搜索 API 用，辣鸡后台
+        id <- map["id"]
     }
 }
 

@@ -405,6 +405,24 @@ struct BBSJarvis {
     static func friendRemove(uid: Int, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
         BBSBeacon.request(withType: .delete, url: BBSAPI.friend(uid: uid), parameters: nil, failure: failure, success: success)
     }
+    
+    static func getUser(by keyword: String, failure: ((Error)->())? = nil, success: @escaping ([UserWrapper])->()) {
+        BBSBeacon.request(url: BBSAPI.searchUser(keyword: keyword), parameters: nil, failure: failure, success: { dict in
+            if let data = dict["data"] as? [[String : Any]] {
+                let users = Mapper<UserWrapper>().mapArray(JSONArray: data)
+                success(users)
+            }
+        })
+    }
+    
+    static func getThread(by keyword: String, page: Int, failure: ((Error)->())? = nil, success: @escaping ([ThreadModel])->()) {
+        BBSBeacon.request(url: BBSAPI.searchThread(keyword: keyword, page: page), parameters: nil, failure: failure, success: { dict in
+            if let data = dict["data"] as? [[String : Any]] {
+                let threads = Mapper<ThreadModel>().mapArray(JSONArray: data)
+                success(threads)
+            }
+        })
+    }
 }
 
 extension PiwikTracker {

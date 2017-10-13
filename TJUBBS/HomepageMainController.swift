@@ -37,6 +37,9 @@ class HomepageMainController: WMPageController {
     override func viewDidLoad() {
         menuBGColor = .BBSBlue
         progressColor = .yellow
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
+
         // 把返回换成空白
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
 
@@ -47,6 +50,12 @@ class HomepageMainController: WMPageController {
             })
         }
         
+    }
+    
+    func searchToggled(sender: UIBarButtonItem) {
+        let searchVC = SearchViewController()
+        searchVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(searchVC, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
