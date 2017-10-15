@@ -9,6 +9,7 @@
 import UIKit
 import Kingfisher
 import PKHUD
+import MJRefresh
 
 fileprivate typealias User = UserWrapper
 
@@ -21,6 +22,7 @@ class SearchViewController: UIViewController {
     var searchBar: UISearchBar!
     var tableView: UITableView!
     var threadList: [ThreadModel] = []
+    var curPage = 0
     fileprivate var searchType: SearchType = .thread
     fileprivate var userList: [User] = []
     
@@ -51,9 +53,67 @@ class SearchViewController: UIViewController {
         tableView.register(MessageCell.self, forCellReuseIdentifier: "friendCell")
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 200
-
+        let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(loadMore))
+        footer?.isAutomaticallyHidden = true
+        tableView.mj_footer = footer
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        searchBar.becomeFirstResponder()
+    }
+    
+    func search(with keyword: String) {
+        guard keyword.characters.count > 0 else {
+            return
+        }
+
+        switch searchType {
+        case .thread:
+            tableView.mj_footer.isHidden = false
+            // Start a new search
+            curPage = 0
+            BBSJarvis.getThread(by: keyword, page: curPage, failure: { error in
+                HUD.flash(.label("获取主题信息失败..."), delay: 1.2)
+            }, success: { threadList in
+                self.threadList = threadList
+                self.tableView.mj_footer.resetNoMoreData()
+                self.searchBar.resignFirstResponder()
+                self.tableView.reloadData()
+            })
+        case .user:
+            tableView.mj_footer.isHidden = true
+            BBSJarvis.getUser(by: keyword, failure: { error in
+                HUD.flash(.label("获取用户信息失败..."), delay: 1.2)
+            }, success: { userList in
+                self.userList = userList
+                self.searchBar.resignFirstResponder()
+                self.tableView.reloadData()
+            })
+        }
+    }
+    
+    func loadMore() {
+        guard searchType == .thread,
+            let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed), searchText.characters.count > 0 else {
+            return
+        }
+
+        curPage += 1
+        BBSJarvis.getThread(by: searchText, page: curPage, failure: { error in
+            HUD.flash(.label("获取主题信息失败..."), delay: 1.2)
+        }, success: { threadList in
+            self.searchBar.resignFirstResponder()
+            if threadList.count > 0 {
+                self.threadList += threadList
+                self.tableView.reloadData()
+            } else {
+                self.tableView.mj_footer.endRefreshingWithNoMoreData()
+            }
+        })
+
     }
 }
 
@@ -68,32 +128,21 @@ extension SearchViewController: UISearchBarDelegate {
         guard let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else {
             return
         }
-        
-        switch searchType {
-        case .thread:
-            BBSJarvis.getThread(by: searchText, page: 0, failure: { error in
-                HUD.flash(.label("获取主题信息失败..."), delay: 1.2)
-            }, success: { threadList in
-                self.threadList = threadList
-                self.tableView.reloadData()
-            })
-        case .user:
-            BBSJarvis.getUser(by: searchText, failure: { error in
-                HUD.flash(.label("获取用户信息失败..."), delay: 1.2)
-            }, success: { userList in
-                self.userList = userList
-                self.tableView.reloadData()
-            })
-        }
+        search(with: searchText)
     }
     
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         // 如果失败等于原值
 //        searchType = SearchType(rawValue: selectedScope) ?? searchType
-        if let type = SearchType(rawValue: selectedScope) {
+        if let type = SearchType(rawValue: selectedScope), let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
             searchType = type
             tableView.reloadData()
-            searchBarTextDidEndEditing(searchBar)
+            search(with: searchText)
+            if type == .thread {
+                tableView.mj_footer.isHidden = false
+            } else {
+                tableView.mj_footer.isHidden = true
+            }
         }
     }
 
@@ -119,6 +168,7 @@ extension SearchViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         switch searchType {
         case .thread:
             let thread = threadList[indexPath.row]
@@ -126,7 +176,7 @@ extension SearchViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(threadVC, animated: true)
         case .user:
             let user = userList[indexPath.row]
-            let userVC = UserDetailViewController(uid: user.uid ?? 0)
+            let userVC = UserDetailViewController(uid: user.id ?? 0)
             self.navigationController?.pushViewController(userVC, animated: true)
         }
 
@@ -170,12 +220,6 @@ extension SearchViewController: UITableViewDataSource {
             let cacheKey = "\(model.id ?? 0)" + Date.today
             cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
             cell.timeLabel.isHidden = true
-            if model.id != 0 { // exclude anonymous user
-                cell.portraitImageView.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: model.id ?? 0)
-                    self.navigationController?.pushViewController(userVC, animated: true)
-                }
-            }
             return cell
         }
     }
