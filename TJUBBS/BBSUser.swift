@@ -51,24 +51,6 @@ class BBSUser {
     var blackList: [String : Int] = [:]
     var fontSize: Int = 14
     
-//    required init?(map: Map) {}
-//    
-//    func mapping(map: Map) {
-//        username <- map["username"]
-//        nickname <- map["nickname"]
-//        realName <- map["realName"]
-//        signature <- map["signature"]
-//        postCount <- map["postCount"]
-//        unreadCount <- map["unreadCount"]
-//        points <- map["points"]
-//        level <- map["level"]
-//        token <- map["token"]
-//        cOnline <- map["cOnline"]
-//        uid <- map["uid"]
-//        group <- map["group"]
-//    }
-    
-    
     static func load(wrapper: UserWrapper) {
         BBSUser.shared.username = wrapper.username
         BBSUser.shared.nickname = wrapper.nickname

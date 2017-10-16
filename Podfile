@@ -15,11 +15,9 @@ target 'TJUBBS' do
   pod 'MJRefresh', '~> 3.1.12'
   pod 'WMPageController', '2.3.0'
   pod 'SlackTextViewController'
-  pod 'AsyncDisplayKit'
   pod 'Kingfisher'
   pod 'DTCoreText'
   pod 'Marklight'
-  pod 'YYText'
   pod 'TOCropViewController'
   #pod 'PiwikTracker', '~> 4.0.0-beta'
 end

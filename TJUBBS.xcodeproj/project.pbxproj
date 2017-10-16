@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36134C621F94CB3F00482E47 /* BBSCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36134C611F94CB3F00482E47 /* BBSCache.swift */; };
+		36134C631F94ED5E00482E47 /* BBSCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36134C611F94CB3F00482E47 /* BBSCache.swift */; };
 		361A30AD1F000DA000DDF11C /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361A30AC1F000DA000DDF11C /* MarkdownParser.swift */; };
 		36262A3B1F0D1A7E00C799B7 /* ImageTextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36262A3A1F0D1A7E00C799B7 /* ImageTextAttachment.swift */; };
 		36262A3D1F0D291600C799B7 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36262A3C1F0D291600C799B7 /* ProgressView.swift */; };
@@ -126,6 +128,7 @@
 /* Begin PBXFileReference section */
 		1977C405936927832AD1537D /* Pods-TJUBBS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.debug.xcconfig"; sourceTree = "<group>"; };
 		2BD580876991C9F536CB1A82 /* Pods_BBSWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BBSWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		36134C611F94CB3F00482E47 /* BBSCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSCache.swift; sourceTree = "<group>"; };
 		361A30AC1F000DA000DDF11C /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		36262A3A1F0D1A7E00C799B7 /* ImageTextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTextAttachment.swift; sourceTree = "<group>"; };
 		36262A3C1F0D291600C799B7 /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
@@ -555,6 +558,7 @@
 				68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */,
 				6823C49A1EBC077D00FBB5C7 /* PostCell.swift */,
 				36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */,
+				36134C611F94CB3F00482E47 /* BBSCache.swift */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -851,6 +855,7 @@
 			files = (
 				36DCA4531F47441A007643A3 /* BBSAPI.swift in Sources */,
 				36DCA4411F473E14007643A3 /* TodayViewController.swift in Sources */,
+				36134C631F94ED5E00482E47 /* BBSCache.swift in Sources */,
 				36DCA4561F47441A007643A3 /* BBSUser.swift in Sources */,
 				36DCA44F1F47411B007643A3 /* ThreadModel.swift in Sources */,
 			);
@@ -880,6 +885,7 @@
 				367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */,
 				367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */,
 				36262A3B1F0D1A7E00C799B7 /* ImageTextAttachment.swift in Sources */,
+				36134C621F94CB3F00482E47 /* BBSCache.swift in Sources */,
 				36C8430E1F0B6F2E009C6887 /* UserDetailViewController.swift in Sources */,
 				36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */,
 				36DA59221EC1DF8800B56F07 /* ThreadListController.swift in Sources */,

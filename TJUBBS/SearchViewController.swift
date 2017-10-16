@@ -36,8 +36,12 @@ class SearchViewController: UIViewController {
         searchBar.placeholder = "搜索"
         searchBar.scopeButtonTitles = ["主题", "用户"]
         searchBar.delegate = self
-//        searchBar.becomeFirstResponder()
-        
+        // TODO: shadow
+//        searchBar.layer.shadowOffset = CGSize(width: -4, height: -4)
+//        searchBar.layer.shadowColor = UIColor.black.cgColor
+//        searchBar.layer.shadowRadius = 4
+//        searchBar.layer.masksToBounds = false
+        title = "搜索"
         // KVC 注意了 面试一定会问
         if let searchField = searchBar.value(forKey: "searchField") as? UITextField {
             searchField.backgroundColor = UIColor(colorLiteralRed: 240/255.0, green: 240/255.0, blue: 240/255.0, alpha: 1)
@@ -57,7 +61,16 @@ class SearchViewController: UIViewController {
         footer?.isAutomaticallyHidden = true
         tableView.mj_footer = footer
         self.view.addSubview(tableView)
-        tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        self.view.addSubview(searchBar)
+        searchBar.snp.makeConstraints { make in
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(100)
+        }
+//        tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom)
+            make.left.right.bottom.equalToSuperview()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,7 +85,6 @@ class SearchViewController: UIViewController {
 
         switch searchType {
         case .thread:
-            tableView.mj_footer.isHidden = false
             // Start a new search
             curPage = 0
             BBSJarvis.getThread(by: keyword, page: curPage, failure: { error in
@@ -84,18 +96,19 @@ class SearchViewController: UIViewController {
                 self.tableView.reloadData()
             })
         case .user:
-            tableView.mj_footer.isHidden = true
             BBSJarvis.getUser(by: keyword, failure: { error in
                 HUD.flash(.label("获取用户信息失败..."), delay: 1.2)
             }, success: { userList in
                 self.userList = userList
                 self.searchBar.resignFirstResponder()
+                self.tableView.mj_footer.endRefreshingWithNoMoreData()
                 self.tableView.reloadData()
             })
         }
     }
     
     func loadMore() {
+        // 确保类型是.thread
         guard searchType == .thread,
             let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed), searchText.characters.count > 0 else {
             return
@@ -117,6 +130,7 @@ class SearchViewController: UIViewController {
     }
 }
 
+// MARK: UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBarTextDidEndEditing(searchBar)
@@ -138,11 +152,6 @@ extension SearchViewController: UISearchBarDelegate {
             searchType = type
             tableView.reloadData()
             search(with: searchText)
-            if type == .thread {
-                tableView.mj_footer.isHidden = false
-            } else {
-                tableView.mj_footer.isHidden = true
-            }
         }
     }
 
@@ -151,13 +160,13 @@ extension SearchViewController: UISearchBarDelegate {
 
 // MARK: UITableViewDelegate
 extension SearchViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return searchBar
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 100
-    }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        return searchBar
+//    }
+//    
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 100
+//    }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.1
