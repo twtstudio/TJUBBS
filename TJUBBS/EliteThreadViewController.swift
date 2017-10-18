@@ -86,7 +86,7 @@ class EliteThreadViewController: UIViewController {
             }
         })
         
-        BBSJarvis.getIndex(failure: { _ in
+        BBSJarvis.getHot(failure: { _ in
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
             }

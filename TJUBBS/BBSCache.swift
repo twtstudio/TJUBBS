@@ -22,8 +22,8 @@ class BBSCache {
     static let shared = BBSCache()
     
     var topThreads: [ThreadModel] {
-        willSet(newValue) {
-            if newValue.isEmpty == false {
+        didSet {
+            if topThreads.isEmpty == false {
                 UserDefaults.standard.set(topThreads, forKey: BBSTOPTHREADCACHEKEY)
             }
         }

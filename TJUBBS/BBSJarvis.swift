@@ -104,9 +104,14 @@ struct BBSJarvis {
     }
 
     //TODO: cache Homepage
-    static func getIndex(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+    static func getIndex(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.index(page: page), parameters: nil, failure: failure, success: success)
+    }
+    
+    static func getHot(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.index, parameters: nil, failure: failure, success: success)
     }
+
     
     static func getThread(threadID: Int, page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, failure: failure, success: success)
