@@ -304,7 +304,22 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
-//            let imageView = DTLazyImageView(frame: frame)
+            let imageView = DTLazyImageView(frame: frame)
+            imageView.shouldShowProgressiveDownload = true
+            imageView.delegate = self
+            imageView.url = attachment.contentURL
+            imageView.contentMode = UIViewContentMode.scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
+            imageView.shouldShowProgressiveDownload = true
+            imageViews.append(imageView)
+            return imageView
+
+//            var newFrame = frame
+//            newFrame.size = CGSize(width: 100, height: 100)
+//            let imageView = DTLazyImageView(frame: newFrame)
+//            let progressView = ProgressView(frame: newFrame)
+//            imageView.addSubview(progressView)
 //            imageView.shouldShowProgressiveDownload = true
 //            imageView.delegate = self
 //            imageView.url = attachment.contentURL
@@ -314,33 +329,33 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
 //            imageView.shouldShowProgressiveDownload = true
 //            imageViews.append(imageView)
 //            return imageView
-            let imgView = UIImageView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
-            let progressView = ProgressView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
-            progressView.tag = -1
-            imgView.addSubview(progressView)
-            imgView.kf.setImage(with: ImageResource(downloadURL: attachment.contentURL), placeholder: UIImage(color: .gray), options: nil, progressBlock: { received, expected in
-                let progress = Double(received)/Double(expected)
-                if (progress-1) < 0.01 {
-                    progressView.removeFromSuperview()
-//                    imgView.subviews.removeAll()
-                } else {
-                    progressView.progress = progress
-                }
-            }, completionHandler: { (image, error, cacheType, url) in
-                if let image = image {
-                    if progressView.superview != nil {
-                        progressView.removeFromSuperview()
-                    }
-                    let width = image.size.width
-                    if width > 250 {
-                        let ratio = width/250
-                        imgView.frame.size = CGSize(width: 250, height: image.size.height/ratio)
-                    } else {
-                        imgView.frame.size = image.size
-                    }
-                }
-            })
-            return imgView
+//            let imgView = UIImageView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
+//            let progressView = ProgressView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
+//            progressView.tag = -1
+//            imgView.addSubview(progressView)
+//            imgView.kf.setImage(with: ImageResource(downloadURL: attachment.contentURL), placeholder: UIImage(color: .gray), options: nil, progressBlock: { received, expected in
+//                let progress = Double(received)/Double(expected)
+//                if (progress-1) < 0.01 {
+//                    progressView.removeFromSuperview()
+////                    imgView.subviews.removeAll()
+//                } else {
+//                    progressView.progress = progress
+//                }
+//            }, completionHandler: { (image, error, cacheType, url) in
+//                if let image = image {
+//                    if progressView.superview != nil {
+//                        progressView.removeFromSuperview()
+//                    }
+//                    let width = image.size.width
+//                    if width > 250 {
+//                        let ratio = width/250
+//                        imgView.frame.size = CGSize(width: 250, height: image.size.height/ratio)
+//                    } else {
+//                        imgView.frame.size = image.size
+//                    }
+//                }
+//            })
+//            return imgView
         }
         return nil
     }
@@ -349,10 +364,12 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         // fun functional programming
         // let rect = CGRect.insetBy(frame)(dx: 1, dy: 1)
         let roundedRect = UIBezierPath(roundedRect: CGRect.insetBy(frame)(dx: 1, dy: 1), cornerRadius: 2)
-        let color = textBlock.backgroundColor.cgColor
-        context.setFillColor(color)
-        context.addPath(roundedRect.cgPath)
-        context.fillPath()
+        if textBlock != nil && textBlock.backgroundColor != nil {
+            let color = textBlock.backgroundColor.cgColor
+            context.setFillColor(color)
+            context.addPath(roundedRect.cgPath)
+            context.fillPath()
+        }
         
         let rectangleRect = UIBezierPath(rect: CGRect(x: frame.origin.x, y: frame.origin.y+1, width: 4, height: frame.size.height-2))
 //        let rectangleRect = UIBezierPath(roundedRect: CGRect(x: frame.origin.x, y: frame.origin.y, width: 4, height: frame.size.height), cornerRadius: 2)
@@ -362,7 +379,6 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         
         return false
     }
-    
     // MARK: DTLazyImageViewDelegate
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
         let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)

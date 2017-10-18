@@ -27,7 +27,15 @@ class LatestThreadViewController: UIViewController {
             }
         }
     }
-    var curPage: Int = 0
+    var curPage: Int = 0 {
+        didSet {
+            // FIXME: 最新动态第多少页
+//            PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
+//            PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/board/\(board?.id ?? bid)/all/page/\(curPage)"
+//            PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
+//            PiwikTracker.shared.sendView("")
+        }
+    }
 
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -74,6 +82,11 @@ class LatestThreadViewController: UIViewController {
         tableView?.mj_header = header
 //        tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         tableView?.mj_header.beginRefreshing()
+        
+        let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(load))
+        footer?.setTitle("还没看过瘾？去分区看看吧~", for: .noMoreData)
+        self.tableView?.mj_footer = footer
+        self.tableView?.mj_footer.isAutomaticallyHidden = true
 
         
     }
@@ -148,21 +161,45 @@ extension LatestThreadViewController {
             }
         })
 
-        BBSJarvis.getIndex(failure: { _ in
+        curPage = 0
+        BBSJarvis.getIndex(page: curPage, failure: { _ in
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
             }
-        }) {
-            dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let latest = data["latest"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: latest) 
+        }, success: { dict in
+            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
+            self.tableView?.mj_footer.resetNoMoreData()
             if (self.tableView?.mj_header.isRefreshing())! {
                 self.tableView?.mj_header.endRefreshing()
             }
             self.tableView?.reloadData()
-        }
+        })
+    }
+    
+    func load() {
+        curPage += 1
+        
+        BBSJarvis.getIndex(page: curPage, failure: { _ in
+            self.curPage -= 1
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }, success: { dict in
+            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+                let newList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+                if newList.count > 0 {
+                    self.threadList += newList
+                } else {
+                    self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+                }
+            }
+            if (self.tableView?.mj_footer.isRefreshing())! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+            self.tableView?.reloadData()
+        })
     }
 }
 

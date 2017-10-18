@@ -18,7 +18,6 @@ target 'TJUBBS' do
   pod 'Kingfisher'
   pod 'DTCoreText'
   pod 'Marklight'
-  pod 'YYText'
   pod 'TOCropViewController'
   #pod 'PiwikTracker', '~> 4.0.0-beta'
 end

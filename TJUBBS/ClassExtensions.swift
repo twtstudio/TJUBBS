@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import WMPageController
 
 extension UIButton {
     convenience init(title: String, color: UIColor = .black, fontSize: Int = 15, isConfirmButton: Bool = false) {
@@ -521,9 +522,17 @@ extension UIViewController {
             nextResponder = frontView?.next
         }
         
+
         if let nextResponder = nextResponder as? UITabBarController {
             let navVC = nextResponder.selectedViewController
-            return navVC?.childViewControllers.last
+            let vc = navVC?.childViewControllers.last
+            if let vc = vc as? WMPageController {
+                return vc.currentViewController
+            }
+//            if let vc = vc?.value(forKey: "currentViewController") as? UIViewController {
+//                return vc
+//            }
+            return vc
         } else if let nextResponder = nextResponder as? UINavigationController {
             return nextResponder.childViewControllers.last
         } else if let vc = nextResponder as? UIViewController {

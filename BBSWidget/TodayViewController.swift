@@ -38,6 +38,21 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         activityView.center = self.view.center
         activityView.startAnimating()
         self.view.addSubview(activityView)
+//        print(BBSCache.shared.topThreads)
+        print("-----------")
+        // 12 hours
+//        if BBSCache.shared.topThreads.count > 0, Date().timeIntervalSince(BBSCache.shared.lastUpdateTime) < 43_200 {
+//            let random = abs(arc4random().distance(to: 0)) % BBSCache.shared.topThreads.count
+//            let thread = BBSCache.shared.topThreads[random]
+//            self.titleLabel.text = thread.title
+//            self.replyLabel.text = "回复 (\(thread.replyNumber))"
+//            // keep the thread id
+//            self.titleLabel.tag = thread.id
+//            print(self.titleLabel.tag)
+//            completionHandler(NCUpdateResult.newData)
+////            return
+//        }
+        
         Alamofire.request("https://bbs.twtstudio.com/api/index", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseString { response in
             activityView.stopAnimating()
             activityView.removeFromSuperview()
@@ -58,15 +73,21 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                                 self.titleLabel.tag = thread.id
                                 completionHandler(NCUpdateResult.newData)
                             } else {
+                                self.titleLabel.text = "网络错误 请稍后重试..."
+                                self.replyLabel.text = ""
                                 completionHandler(NCUpdateResult.failed)
                             }
                         }
                     } catch _ {
+                        self.titleLabel.text = "网络错误 请稍后重试..."
+                        self.replyLabel.text = ""
                         completionHandler(NCUpdateResult.failed)
                         // log.error(error)/
                     }
                 }
             case .failure( _):
+                self.titleLabel.text = "网络错误 请稍后重试..."
+                self.replyLabel.text = ""
                 completionHandler(NCUpdateResult.failed)
                 // log.error(error)/
             }

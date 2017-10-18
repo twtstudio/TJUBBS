@@ -483,7 +483,8 @@ extension AddThreadViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == IndexPath(row: 0, section: 3) {
-            return 205
+//            return 205
+            return 300
         } else {
             return 44.5
         }

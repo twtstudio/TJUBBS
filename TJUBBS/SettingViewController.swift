@@ -112,9 +112,9 @@ extension SettingViewController: UITableViewDelegate {
         case IndexPath(row: 2, section: 0):
             let setSizeVC = SetFontSizeViewController()
             self.navigationController?.pushViewController(setSizeVC, animated: true)
-        case IndexPath(row: 3, section: 0):
-            let setSizeVC = MyPostTestViewController()
-            self.navigationController?.pushViewController(setSizeVC, animated: true)
+//        case IndexPath(row: 3, section: 0):
+//            let setSizeVC = MyPostTestViewController()
+//            self.navigationController?.pushViewController(setSizeVC, animated: true)
         case IndexPath(row: 0, section: 1):
             BBSJarvis.logout()
             BBSUser.delete()

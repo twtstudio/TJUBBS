@@ -25,7 +25,7 @@ enum BBSError: String, Error {
 
 struct BBSBeacon {
     //TODO: change AnyObject to Any
-    static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
+    static func request(withType type: HTTPMethod = .get, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
         headers["X-Requested-With"] = "Mobile"
