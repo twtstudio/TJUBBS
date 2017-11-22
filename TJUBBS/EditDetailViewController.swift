@@ -49,6 +49,8 @@ class EditDetailViewController: UIViewController {
         textView.becomeFirstResponder()
         loadPlaceholder()
         
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+
         
         let cancelItem = UIBarButtonItem(title: "取消", style: .done, target: self, action: #selector(self.cancel(sender:)))
         self.navigationItem.leftBarButtonItem = cancelItem
@@ -94,15 +96,24 @@ class EditDetailViewController: UIViewController {
         bar.items = [imageItem, flexibleSpace, atItem, boldItem, italicItem, headItem, quoteItem]
         for item in bar.items! {
             if let button = item.customView as? UIButton {
-                item.width = 40
-                button.width = 40
+                item.width = 35
+                button.width = 35
                 button.height = 35
                 button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
                 button.addTarget(self, action: #selector(self.barButtonTapped(sender:)), for: .touchUpInside)
             }
         }
         
+        
         if canAnonymous {
+            if UIScreen.main.bounds.width < 321 {
+                for i in (3...6).reversed() {
+                    let negSpacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+                    negSpacer.width = -16
+                    bar.items?.insert(negSpacer, at: i)
+                }
+            }
+
             let anonymousView = UIView()
             let anonymousLabel = UILabel()
             let anonymousSwitch = UISwitch()
@@ -200,10 +211,14 @@ class EditDetailViewController: UIViewController {
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
             case "@":
                 let userSearchVC = UserSearchViewController()
-                userSearchVC.doneBlock = { string in
-                    
+                userSearchVC.doneBlock = { uid, username in
+                    self.textStorage.replaceCharacters(in: self.textView.selectedRange, with: "[@\(username)](/user/\(uid))")
+                    let offset = 2 + username.characters.count + 8 + uid.description.characters.count + 1
+                    self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location+offset, 0)
+                    self.textView.becomeFirstResponder()
                 }
-                self.navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
+                self.textView.resignFirstResponder()
+                self.navigationController?.pushViewController(userSearchVC, animated: true)
             default:
                 break
             }

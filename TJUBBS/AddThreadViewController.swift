@@ -83,6 +83,7 @@ class AddThreadViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(doneButtonTapped))
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.title = placeholder == "" ? "发帖" : "修改"
@@ -126,19 +127,21 @@ class AddThreadViewController: UIViewController {
             }
         }
         let imageItem = UIBarButtonItem(customView: imageButton)
+        let atButton = UIButton(title: "@")
+        let atItem = UIBarButtonItem(customView: atButton)
         let boldItem = UIBarButtonItem(customView: UIButton(title: "B"))
         let italicItem = UIBarButtonItem(customView: UIButton(title: "I"))
         let headItem = UIBarButtonItem(customView: UIButton(title: "#"))
         let quoteItem = UIBarButtonItem(customView: UIButton(title: "\""))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
-        nonAnonymousItems = [imageItem, flexibleSpace, boldItem, italicItem, headItem, quoteItem]
+        nonAnonymousItems = [imageItem, flexibleSpace, atItem, boldItem, italicItem, headItem, quoteItem]
         
         bar.items = nonAnonymousItems
         for item in bar.items! {
             if let button = item.customView as? UIButton {
-                item.width = 40
-                button.width = 40
+                item.width = 35
+                button.width = 35
                 button.height = 35
                 button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
                 button.addTarget(self, action: #selector(self.barButtonTapped(sender:)), for: .touchUpInside)
@@ -173,6 +176,13 @@ class AddThreadViewController: UIViewController {
         anonymousItem.width = anonymousView.width
         anonymousSwitch.addTarget(self, action: #selector(self.anonymousStateOnChange(sender:)), for: .valueChanged)
         anonymousItems = nonAnonymousItems
+        if UIScreen.main.bounds.width < 321 {
+            for i in (3...6).reversed() {
+                let negSpacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+                negSpacer.width = -16
+                anonymousItems.insert(negSpacer, at: i)
+            }
+        }
         anonymousItems.insert(anonymousItem, at: 1)
 
         
@@ -212,6 +222,17 @@ class AddThreadViewController: UIViewController {
                 textStorage.replaceCharacters(in: textView.selectedRange, with: ">")
                 //                textStorage.appendString(">")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+            case "@":
+                let userSearchVC = UserSearchViewController()
+                userSearchVC.doneBlock = { uid, username in
+                    self.textStorage.replaceCharacters(in: self.textView.selectedRange, with: "[@\(username)](/user/\(uid))")
+                    let offset = 2 + username.characters.count + 8 + uid.description.characters.count + 1
+                    self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location+offset, 0)
+                    self.textView.becomeFirstResponder()
+                }
+                self.textView.resignFirstResponder()
+                self.navigationController?.pushViewController(userSearchVC, animated: true)
+
             default:
                 break
             }

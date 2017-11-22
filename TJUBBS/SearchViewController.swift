@@ -11,7 +11,6 @@ import Kingfisher
 import PKHUD
 import MJRefresh
 
-fileprivate typealias User = UserWrapper
 
 fileprivate enum SearchType: Int {
     case thread = 0
@@ -24,6 +23,7 @@ class SearchViewController: UIViewController {
     var threadList: [ThreadModel] = []
     var curPage = 0
     fileprivate var searchType: SearchType = .thread
+    typealias User = UserWrapper
     fileprivate var userList: [User] = []
     
     override func viewDidLoad() {

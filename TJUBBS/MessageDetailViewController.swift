@@ -95,7 +95,8 @@ extension MessageDetailViewController: UITableViewDataSource {
         case 1:
             let cell = UITableViewCell()
             if let detailedModel = model.detailContent {
-                let summary = "回复了你:\n" + String.clearBBCode(string: detailedModel.content)
+                let hint = (model.tag == 10 || model.tag == 11) ? "提到了你:\n" : "回复了你:\n"
+                let summary = hint + String.clearBBCode(string: detailedModel.content)
                 let detailLabel = UILabel(text: summary, fontSize: 16)
                 detailLabel.numberOfLines = 0
                 cell.contentView.addSubview(detailLabel)

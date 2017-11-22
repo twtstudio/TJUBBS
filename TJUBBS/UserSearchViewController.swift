@@ -10,17 +10,19 @@ import UIKit
 import Kingfisher
 import PKHUD
 
-typealias User = UserWrapper
 
-// Create the class with shame
+// ashamed to create the class
 class UserSearchViewController: UIViewController {
+    typealias User = UserWrapper
     var searchBar: UISearchBar!
     var tableView: UITableView!
     var userList: [User] = []
-    var doneBlock: ((String)->())?
+    var doneBlock: ((Int, String)->())?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationController?.navigationBar.isTranslucent = false
         // 设置 searchBar 样式
         searchBar = UISearchBar()
         searchBar.showsScopeBar = true
@@ -41,7 +43,7 @@ class UserSearchViewController: UIViewController {
             //            searchField.text = "搜点什么吧！"
         }
         
-        tableView = UITableView(frame: self.view.bounds, style: .plain)
+        tableView = UITableView(frame: .zero, style: .plain)
         //        tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
@@ -52,13 +54,16 @@ class UserSearchViewController: UIViewController {
         self.view.addSubview(searchBar)
         searchBar.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-            make.height.equalTo(100)
+//            make.height.equalTo(40)
         }
         //        tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom)
             make.left.right.bottom.equalToSuperview()
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,16 +79,28 @@ class UserSearchViewController: UIViewController {
             HUD.flash(.label("获取用户信息失败..."), delay: 1.2)
         }, success: { userList in
             self.userList = userList
-            self.searchBar.resignFirstResponder()
+//            self.searchBar.resignFirstResponder()
             self.tableView.reloadData()
         })
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
 }
 
 // MARK: UISearchBarDelegate
 extension UserSearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBarTextDidEndEditing(searchBar)
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else {
+            return
+        }
+        search(with: searchText)
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -116,8 +133,34 @@ extension UserSearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let user = userList[indexPath.row]
-        doneBlock?(user.uid!)
+        doneBlock?(user.id!, user.username!)
         let _ = self.navigationController?.popViewController(animated: true)
+    }
+}
+
+extension UserSearchViewController {
+    func keyboardWillHide(notification: Notification) {
+//        let height = view.frame.size.height - searchBar.frame.size.height
+        tableView.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+        }
+//        tableView.frame = CGRect(x: 0, y: searchBar.frame.size.height, width: tableView.frame.size.width, height: height)
+        tableView.setNeedsLayout()
+        tableView.layoutIfNeeded()
+    }
+    
+    func keyboardWillShow(notification: Notification) {
+        if let endRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue {
+            //, let beginRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as AnyObject).cgRectValue {
+//            if beginRect.size.height > 0 && beginRect.origin.y - endRect.origin.y > 0 {
+//                let height = view.frame.size.height - searchBar.frame.size.height - endRect.size.height
+//                tableView.contentInset.bottom = 300
+                tableView.snp.makeConstraints { make in
+                    make.bottom.equalToSuperview().offset(-(endRect.height+20))
+                }
+//                tableView.frame = CGRect(x: 0, y: searchBar.frame.size.height, width: tableView.frame.size.width, height: height)
+//            }
+        }
     }
 }
 
