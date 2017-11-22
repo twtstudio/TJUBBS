@@ -74,6 +74,9 @@ class EditDetailViewController: UIViewController {
         }
         let imageItem = UIBarButtonItem(customView: imageButton)
         
+        let atButton = UIButton(title: "@")
+        let atItem = UIBarButtonItem(customView: atButton)
+        
         let boldButton = UIButton(title: "B")
         let boldItem = UIBarButtonItem(customView: boldButton)
         
@@ -88,7 +91,7 @@ class EditDetailViewController: UIViewController {
         
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
-        bar.items = [imageItem, flexibleSpace, boldItem, italicItem, headItem, quoteItem]
+        bar.items = [imageItem, flexibleSpace, atItem, boldItem, italicItem, headItem, quoteItem]
         for item in bar.items! {
             if let button = item.customView as? UIButton {
                 item.width = 40
@@ -195,6 +198,12 @@ class EditDetailViewController: UIViewController {
                 textStorage.replaceCharacters(in: textView.selectedRange, with: ">")
 //                textStorage.appendString(">")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+            case "@":
+                let userSearchVC = UserSearchViewController()
+                userSearchVC.doneBlock = { string in
+                    
+                }
+                self.navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
             default:
                 break
             }
