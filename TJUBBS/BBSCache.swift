@@ -16,27 +16,28 @@ let BBSTOPLASTUPDATETIMECACHEKEY = "BBSTOPLASTUPDATETIMECACHEKEY"
 
 class BBSCache {
     private init() {
-        topThreads = UserDefaults.standard.object(forKey: BBSTOPTHREADCACHEKEY) as? [ThreadModel] ?? []
-        lastUpdateTime = UserDefaults.standard.object(forKey: BBSTOPLASTUPDATETIMECACHEKEY) as? Date ?? Date(timeIntervalSince1970: 0)
+        topThreads = UserDefaults(suiteName: "com.TJUBBS")?.object(forKey: BBSTOPTHREADCACHEKEY) as? [ThreadModel] ?? []
+        lastUpdateTime = UserDefaults(suiteName: "com.TJUBBS")?.object(forKey: BBSTOPLASTUPDATETIMECACHEKEY) as? Date ?? Date(timeIntervalSince1970: 0)
     }
     static let shared = BBSCache()
     
     var topThreads: [ThreadModel] {
+
         didSet {
             if topThreads.isEmpty == false {
-                UserDefaults.standard.set(topThreads, forKey: BBSTOPTHREADCACHEKEY)
+                // 存起来
+                UserDefaults(suiteName: "com.TJUBBS")?.set(topThreads, forKey: BBSTOPTHREADCACHEKEY)
             }
         }
     }
     
     var lastUpdateTime: Date {
-        get {
-            return self.lastUpdateTime
-        }
-        set {
-            if newValue.compare(lastUpdateTime) == .orderedDescending {
-                self.lastUpdateTime = newValue
-                UserDefaults.standard.set(lastUpdateTime, forKey: BBSTOPTHREADCACHEKEY)
+        didSet {
+            if oldValue.compare(lastUpdateTime) == .orderedAscending {
+                // if time is more up to date
+                UserDefaults(suiteName: "com.TJUBBS")?.set(lastUpdateTime, forKey: BBSTOPTHREADCACHEKEY)
+            }  else {
+                lastUpdateTime = oldValue
             }
         }
     }
