@@ -455,6 +455,53 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.delegate = self
         cell?.load(post: post)
         
+        cell?.likeButton.addTarget { _ in
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            if cell?.likeButton.tag == 1 {
+                // 取消点赞
+                BBSJarvis.sendPostOpinion(action: "delete", pid: post.id, success: {
+                    var newPost = post
+                    newPost.likeCount -= 1
+                    newPost.isLiked = false
+                    cell?.likeButton.tag = 0
+                    if let index = self.postList.index(where: { post.id == $0.id }) {
+                        self.postList.remove(at: index)
+                        self.postList.insert(newPost, at: index)
+                        cell?.load(post: newPost)
+                    }
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            } else {
+                // 点赞
+                BBSJarvis.sendPostOpinion(action: "like", pid: post.id, success: {
+                    var newPost = post
+                    newPost.likeCount += 1
+                    newPost.isLiked = true
+                    cell?.likeButton.tag = 1
+                    if let index = self.postList.index(where: { post.id == $0.id }) {
+                        self.postList.remove(at: index)
+                        self.postList.insert(newPost, at: index)
+                        cell?.load(post: newPost)
+                    }
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            }
+        }
+        
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {
                 let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
@@ -566,6 +613,42 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
+        
+        cell?.likeButton.addTarget { _ in
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            if self.thread!.isLiked {
+                // 取消点赞
+                BBSJarvis.sendThreadOpinion(action: "delete", tid: self.thread!.id, success: {
+                    self.thread?.isLiked = false
+                    self.thread?.likeCount -= 1
+                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            } else {
+                // 点赞
+                BBSJarvis.sendThreadOpinion(action: "like", tid: self.thread!.id, success: {
+                    self.thread?.isLiked = true
+                    self.thread?.likeCount += 1
+                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            }
+        }
+
         
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {

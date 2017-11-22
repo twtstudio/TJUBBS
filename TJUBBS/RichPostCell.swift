@@ -24,7 +24,9 @@ class RichPostCell: DTAttributedTextCell {
     let usernameLabel = UILabel(text: "")
     let nickNameLabel = UILabel(text: "", color: .gray)
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
-    var moreButton = ExtendedButton()
+    let moreButton = ExtendedButton()
+    let likeButton = ExtendedButton()
+    let likeCountLabel = UILabel()
     let containerView = UIView()
     var buttons: [String : DTLinkButton] = [:]
     
@@ -60,6 +62,9 @@ class RichPostCell: DTAttributedTextCell {
         containerView.addSubview(timeLabel)
         containerView.addSubview(nickNameLabel)
         containerView.addSubview(moreButton)
+        containerView.addSubview(likeButton)
+        containerView.addSubview(likeCountLabel)
+        
 //        }
         initLayout()
     }
@@ -97,7 +102,25 @@ class RichPostCell: DTAttributedTextCell {
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
             make.right.equalToSuperview().offset(-18)
+//            make.bottom.equalToSuperview().offset(-8)
+        }
+        
+//        likeButton.setBackgroundImage(UIImage(named: "更多操作"), for: .normal)
+        likeButton.snp.makeConstraints { make in
+            make.top.equalTo(attributedTextContextView.snp.bottom)
             make.bottom.equalToSuperview().offset(-8)
+            make.right.equalToSuperview().offset(-18)
+            make.width.equalTo(20)
+            make.height.equalTo(20)
+        }
+        
+        likeCountLabel.textAlignment = .right
+        likeCountLabel.font = UIFont.systemFont(ofSize: 15)
+        likeCountLabel.snp.makeConstraints { make in
+            make.width.equalTo(40)
+            make.height.equalTo(20)
+            make.right.equalTo(likeButton.snp.left).offset(-5)
+            make.bottom.equalTo(likeButton.snp.bottom).offset(2)
         }
         
         moreButton.setBackgroundImage(UIImage(named: "更多操作"), for: .normal)
@@ -107,6 +130,7 @@ class RichPostCell: DTAttributedTextCell {
             make.right.equalToSuperview().offset(-18)
             make.top.equalTo(portraitImageView.snp.top)
         }
+        
         containerView.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
         }
@@ -127,7 +151,6 @@ class RichPostCell: DTAttributedTextCell {
     
     func load(thread: ThreadModel, boardName: String) {
         // add hyperLink
-//        let content = thread.content.replacingOccurrences(of: "^((https?|http?):\\/\\/)?([a-z]([a-z0-9\\-]*[\\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$", with: "[$0]($0)", options: .regularExpression, range: nil)
         let html = Markdown.parse(string: thread.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -143,6 +166,20 @@ class RichPostCell: DTAttributedTextCell {
         nickNameLabel.text = thread.anonymous == 0 ? "@"+thread.authorNickname : ""
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
+        
+        if thread.isLiked {
+            likeButton.setBackgroundImage(UIImage(named: "liked"), for: .normal)
+        } else {
+            likeButton.setBackgroundImage(UIImage(named: "like"), for: .normal)
+        }
+        if thread.likeCount > 0 {
+            likeCountLabel.isHidden = false
+            likeCountLabel.textColor = .gray
+            likeCountLabel.text = "\(thread.likeCount)"
+        } else {
+            likeCountLabel.isHidden = true
+        }
+
         
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
@@ -180,7 +217,6 @@ class RichPostCell: DTAttributedTextCell {
     }
     
     func load(post: PostModel) {
-//        let content = post.content.replacingOccurrences(of: "^((https?|http?):\\/\\/)?([a-z]([a-z0-9\\-]*[\\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$", with: "[$0]($0)", options: .regularExpression, range: nil)
         let html = Markdown.parse(string: post.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -198,6 +234,21 @@ class RichPostCell: DTAttributedTextCell {
         nickNameLabel.text = post.anonymous == 0 ? "@"+post.authorNickname : ""
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
+        
+        if post.isLiked {
+            likeButton.setBackgroundImage(UIImage(named: "liked"), for: .normal)
+        } else {
+            likeButton.setBackgroundImage(UIImage(named: "like"), for: .normal)
+        }
+        
+        if post.likeCount > 0 {
+            likeCountLabel.isHidden = false
+            likeCountLabel.textColor = .gray
+            likeCountLabel.text = "\(post.likeCount)"
+        } else {
+            likeCountLabel.isHidden = true
+        }
+
         // 68: avatar and margin // 38: moreButton // 4: padding
         let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
         if nickNameLabel.width + 8 + usernameLabel.width > maxWidth {

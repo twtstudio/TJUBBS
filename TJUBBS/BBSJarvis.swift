@@ -428,6 +428,38 @@ struct BBSJarvis {
             }
         })
     }
+    
+    static func sendPostOpinion(action: String, pid: Int, success:@escaping ()->(), failure: @escaping (String)->()) {
+        if action == "like" {
+            BBSBeacon.request(withType: .put, url: BBSAPI.like(pid: pid), parameters: nil, failure: { error in
+                failure(error.localizedDescription)
+            }, success: { dict in
+                success()
+            })
+        } else if action == "delete" {
+            BBSBeacon.request(withType: .delete, url: BBSAPI.like(pid: pid), parameters: nil, failure: { error in
+                failure(error.localizedDescription)
+            }, success: { dict in
+                success()
+            })
+        }
+    }
+    
+    static func sendThreadOpinion(action: String, tid: Int,  success:@escaping ()->(), failure: @escaping (String)->()) {
+        if action == "like" {
+            BBSBeacon.request(withType: .put, url: BBSAPI.like(tid: tid), parameters: nil, failure: { error in
+                failure(error.localizedDescription)
+            }, success: { dict in
+                success()
+            })
+        } else if action == "delete" {
+            BBSBeacon.request(withType: .delete, url: BBSAPI.like(tid: tid), parameters: nil, failure: { error in
+                failure(error.localizedDescription)
+            }, success: { dict in
+                success()
+            })
+        }
+    }
 }
 
 extension PiwikTracker {
