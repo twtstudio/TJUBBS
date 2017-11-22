@@ -128,6 +128,8 @@
 /* Begin PBXFileReference section */
 		1977C405936927832AD1537D /* Pods-TJUBBS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.debug.xcconfig"; sourceTree = "<group>"; };
 		2BD580876991C9F536CB1A82 /* Pods_BBSWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BBSWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		360299F61F98776800EDF99F /* TJUBBS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TJUBBS.entitlements; sourceTree = "<group>"; };
+		360299F71F98791A00EDF99F /* BBSWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BBSWidget.entitlements; sourceTree = "<group>"; };
 		36134C611F94CB3F00482E47 /* BBSCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSCache.swift; sourceTree = "<group>"; };
 		361A30AC1F000DA000DDF11C /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		36262A3A1F0D1A7E00C799B7 /* ImageTextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTextAttachment.swift; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 		36DCA43F1F473E14007643A3 /* BBSWidget */ = {
 			isa = PBXGroup;
 			children = (
+				360299F71F98791A00EDF99F /* BBSWidget.entitlements */,
 				36DCA4401F473E14007643A3 /* TodayViewController.swift */,
 				36DCA4421F473E14007643A3 /* MainInterface.storyboard */,
 				36DCA4451F473E14007643A3 /* Info.plist */,
@@ -429,6 +432,7 @@
 		682A84611EB5C3B900510FA4 /* TJUBBS */ = {
 			isa = PBXGroup;
 			children = (
+				360299F61F98776800EDF99F /* TJUBBS.entitlements */,
 				682A84901EB5C3CE00510FA4 /* Main */,
 				36FE25C41EB62A500090E805 /* Utilities */,
 				68B683501EC20F5000F7A0BF /* Shared */,
@@ -695,11 +699,21 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = TYRRVX7RWJ;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					682A845E1EB5C3B900510FA4 = {
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = TYRRVX7RWJ;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					682A84721EB5C3BA00510FA4 = {
 						CreatedOnToolsVersion = 8.3.2;
@@ -993,6 +1007,7 @@
 			baseConfigurationReference = 58B901174DA5D4E8C94B60C4 /* Pods-BBSWidget.debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = BBSWidget/BBSWidget.entitlements;
 				DEVELOPMENT_TEAM = TYRRVX7RWJ;
 				INFOPLIST_FILE = BBSWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
@@ -1009,6 +1024,7 @@
 			baseConfigurationReference = 93952F21B48D2736B35318D9 /* Pods-BBSWidget.release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = BBSWidget/BBSWidget.entitlements;
 				DEVELOPMENT_TEAM = TYRRVX7RWJ;
 				INFOPLIST_FILE = BBSWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
@@ -1119,6 +1135,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TJUBBS/TJUBBS.entitlements;
 				DEVELOPMENT_TEAM = TYRRVX7RWJ;
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1136,6 +1153,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TJUBBS/TJUBBS.entitlements;
 				DEVELOPMENT_TEAM = TYRRVX7RWJ;
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
