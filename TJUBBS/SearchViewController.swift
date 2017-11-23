@@ -32,6 +32,7 @@ class SearchViewController: UIViewController {
         searchBar = UISearchBar()
         searchBar.showsScopeBar = true
         searchBar.barTintColor = .white
+        searchBar.autocapitalizationType = .none
 //        searchBar.prompt = "搜索"
         searchBar.placeholder = "搜索"
         searchBar.scopeButtonTitles = ["主题", "用户"]

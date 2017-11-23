@@ -65,12 +65,17 @@ class UserDetailView: UIView {
         }
         
         signatureLabel.numberOfLines = 1
+        signatureLabel.adjustsFontSizeToFitWidth = true
+        signatureLabel.textAlignment = .center
+        signatureLabel.baselineAdjustment = .alignCenters
+//        signatureLabel.minimumScaleFactor = 0.5
         signatureLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(usernameLabel.snp.bottom).offset(10)
             make.height.equalTo(19.5)
+            make.width.equalTo(self.width-30)
         }
-        
+
         let baseWidth = rect.size.width/6
         
         scoreLabel.snp.makeConstraints { make in
