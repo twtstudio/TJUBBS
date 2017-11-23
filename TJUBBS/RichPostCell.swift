@@ -237,8 +237,10 @@ class RichPostCell: DTAttributedTextCell {
         
         if post.isLiked {
             likeButton.setBackgroundImage(UIImage(named: "liked"), for: .normal)
+            self.likeButton.tag = 1
         } else {
             likeButton.setBackgroundImage(UIImage(named: "like"), for: .normal)
+            self.likeButton.tag = 0
         }
         
         if post.likeCount > 0 {

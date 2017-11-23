@@ -475,7 +475,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
                     var newPost = post
                     newPost.likeCount -= 1
                     newPost.isLiked = false
-                    cell?.likeButton.tag = 0
                     if let index = self.postList.index(where: { post.id == $0.id }) {
                         self.postList.remove(at: index)
                         self.postList.insert(newPost, at: index)
@@ -490,7 +489,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
                     var newPost = post
                     newPost.likeCount += 1
                     newPost.isLiked = true
-                    cell?.likeButton.tag = 1
                     if let index = self.postList.index(where: { post.id == $0.id }) {
                         self.postList.remove(at: index)
                         self.postList.insert(newPost, at: index)
