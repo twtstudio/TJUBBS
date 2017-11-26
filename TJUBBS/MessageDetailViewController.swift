@@ -263,10 +263,11 @@ extension MessageDetailViewController: UITableViewDataSource {
             // cut secondary quotation
             let cutString = origin.replacingOccurrences(of: "[\\s]*>[\\s]*>(.|[\\s])*", with: "", options: .regularExpression, range: nil)
             var shortString = cutString
-            if cutString.characters.count > 61 {
-                shortString = (cutString as NSString).substring(with: NSMakeRange(0, 60))
+            if cutString.characters.count > 91 {
+                shortString = (cutString as NSString).substring(with: NSMakeRange(0, 90))
             }
-            let resultString = string + "\n > 回复 #\(detailedModel.floor) \(self.model.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
+//            let resultString = string + "\n > 回复 #\(detailedModel.floor) \(self.model.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
+            let resultString = string + "\n > 回复 #\(detailedModel.floor) \(self.model.authorName)：\n>" + shortString.replacingOccurrences(of: "\n", with: "\n>")
             
             BBSJarvis.reply(threadID: detailedModel.thread_id, content: resultString, toID: self.model.authorId, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                 HUD.flash(.label("出错了...请稍后重试"))

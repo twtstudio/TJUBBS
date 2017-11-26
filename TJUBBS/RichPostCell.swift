@@ -105,7 +105,8 @@ class RichPostCell: DTAttributedTextCell {
 //            make.bottom.equalToSuperview().offset(-8)
         }
         
-//        likeButton.setBackgroundImage(UIImage(named: "更多操作"), for: .normal)
+        likeButton.extendedWidth = 60
+        likeButton.extendedHeight = 52
         likeButton.snp.makeConstraints { make in
             make.top.equalTo(attributedTextContextView.snp.bottom)
             make.bottom.equalToSuperview().offset(-8)

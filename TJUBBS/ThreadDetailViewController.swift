@@ -454,8 +454,13 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.hasFixedRowHeight = false
         cell?.delegate = self
         cell?.load(post: post)
-        
-        cell?.likeButton.addTarget { _ in
+        let button = cell?.likeButton
+        cell?.likeButton.addTarget { [weak button] _ in
+            button?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+            UIView.animate(withDuration: 0.2, delay: 0.1, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+                button?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }, completion: nil)
+
             guard BBSUser.shared.token != nil else {
                 let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
                 let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -612,7 +617,12 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
         
-        cell?.likeButton.addTarget { _ in
+        let button = cell?.likeButton
+        cell?.likeButton.addTarget { [weak button] _ in
+            button?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+            UIView.animate(withDuration: 0.2, delay: 0.1, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+                button?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }, completion: nil)
             guard BBSUser.shared.token != nil else {
                 let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
                 let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -834,10 +844,12 @@ extension ThreadDetailViewController: UITableViewDelegate {
                 // cut secondary quotation
                 let cutString = origin.replacingOccurrences(of: "[\\s]*>[\\s]*>(.|[\\s])*", with: "", options: .regularExpression, range: nil)
                 var shortString = cutString
-                if cutString.characters.count > 61 {
-                    shortString = (cutString as NSString).substring(with: NSMakeRange(0, 60))
+                if cutString.characters.count > 91 {
+                    shortString = (cutString as NSString).substring(with: NSMakeRange(0, 90))
                 }
-                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
+//                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
+                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName)：\n>" + shortString.replacingOccurrences(of: "\n", with: "\n>")
+
                 
                 BBSJarvis.reply(threadID: self.thread!.id, content: resultString, toID: post.id, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
