@@ -126,6 +126,13 @@ extension MessageViewController: UITableViewDataSource {
         let url = URL(string: BBSAPI.avatar(uid: model.authorId))
         let cacheKey = "\(model.authorId)" + Date.today
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
+        // 移除以前添加的
+        for recognizer in cell.portraitImageView.gestureRecognizers ?? [] {
+            if recognizer is UITapGestureRecognizer {
+                cell.portraitImageView.removeGestureRecognizer(recognizer)
+            }
+        }
+        
         if model.authorId != 0 { // exclude anonymous user
             cell.portraitImageView.addTapGestureRecognizer { _ in
                 let userVC = UserDetailViewController(uid: model.authorId)

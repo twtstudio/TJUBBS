@@ -215,6 +215,11 @@ class RichPostCell: DTAttributedTextCell {
             }
         }
 //        attributedTextContextView.relayoutText()
+        
+        if thread.content.contains("圣诞") || thread.content.contains("Christmas") || thread.content.contains("christmas") {
+            decorateAvatar()
+        }
+
     }
     
     func load(post: PostModel) {
@@ -289,6 +294,34 @@ class RichPostCell: DTAttributedTextCell {
             }
         }
 //        attributedTextContextView.relayoutText()
+        
+        if post.content.contains("圣诞") || post.content.contains("Christmas") || post.content.contains("christmas") {
+            decorateAvatar()
+        }
+    }
+    
+    func decorateAvatar() {
+        guard !containerView.subviews.contains(where: { $0.tag == -10 }) else {
+            return
+        }
+        let imgView = UIImageView()
+        imgView.tag = -10
+        if arc4random() % 2 == 0 {
+            imgView.image = UIImage(named: "deer_horn")
+            containerView.addSubview(imgView)
+            imgView.snp.makeConstraints { make in
+                make.center.equalTo(portraitImageView.center)
+                make.width.height.equalTo(60)
+            }
+        } else {
+            imgView.image = UIImage(named: "xmas_hat")
+            containerView.addSubview(imgView)
+            imgView.snp.makeConstraints { make in
+                make.centerX.equalTo(portraitImageView.snp.right).offset(-8)
+                make.centerY.equalTo(portraitImageView.snp.top).offset(8)
+                make.width.height.equalTo(30)
+            }
+        }
     }
     
     override func layoutSubviews() {
@@ -369,47 +402,6 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             imageViews.append(imageView)
             return imageView
 
-//            var newFrame = frame
-//            newFrame.size = CGSize(width: 100, height: 100)
-//            let imageView = DTLazyImageView(frame: newFrame)
-//            let progressView = ProgressView(frame: newFrame)
-//            imageView.addSubview(progressView)
-//            imageView.shouldShowProgressiveDownload = true
-//            imageView.delegate = self
-//            imageView.url = attachment.contentURL
-//            imageView.contentMode = UIViewContentMode.scaleAspectFill
-//            imageView.clipsToBounds = true
-//            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
-//            imageView.shouldShowProgressiveDownload = true
-//            imageViews.append(imageView)
-//            return imageView
-//            let imgView = UIImageView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
-//            let progressView = ProgressView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
-//            progressView.tag = -1
-//            imgView.addSubview(progressView)
-//            imgView.kf.setImage(with: ImageResource(downloadURL: attachment.contentURL), placeholder: UIImage(color: .gray), options: nil, progressBlock: { received, expected in
-//                let progress = Double(received)/Double(expected)
-//                if (progress-1) < 0.01 {
-//                    progressView.removeFromSuperview()
-////                    imgView.subviews.removeAll()
-//                } else {
-//                    progressView.progress = progress
-//                }
-//            }, completionHandler: { (image, error, cacheType, url) in
-//                if let image = image {
-//                    if progressView.superview != nil {
-//                        progressView.removeFromSuperview()
-//                    }
-//                    let width = image.size.width
-//                    if width > 250 {
-//                        let ratio = width/250
-//                        imgView.frame.size = CGSize(width: 250, height: image.size.height/ratio)
-//                    } else {
-//                        imgView.frame.size = image.size
-//                    }
-//                }
-//            })
-//            return imgView
         }
         return nil
     }

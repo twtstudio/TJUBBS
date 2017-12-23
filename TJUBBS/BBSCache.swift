@@ -7,43 +7,31 @@
 //  Copyright © 2017年 twtstudio. All rights reserved.
 //
 
-import UIKit
+import Foundation
+import ObjectMapper
 
 let BBSCACHEKEY = "BBSCACHEKEY"
 // 全站十大 - topThreads
 let BBSTOPTHREADCACHEKEY = "BBSTOPTHREADCACHEKEY"
 let BBSTOPLASTUPDATETIMECACHEKEY = "BBSTOPLASTUPDATETIMECACHEKEY"
 
-class BBSCache {
-    private init() {
-        topThreads = UserDefaults(suiteName: "com.TJUBBS")?.object(forKey: BBSTOPTHREADCACHEKEY) as? [ThreadModel] ?? []
-        lastUpdateTime = UserDefaults(suiteName: "com.TJUBBS")?.object(forKey: BBSTOPLASTUPDATETIMECACHEKEY) as? Date ?? Date(timeIntervalSince1970: 0)
+struct BBSCache {
+    static func set(_ object: Any, forKey key: String) {
+        UserDefaults(suiteName: "com.TJUBBS")?.set(object, forKey: key)
     }
-    static let shared = BBSCache()
     
-    var topThreads: [ThreadModel] {
-
-        didSet {
-            if topThreads.isEmpty == false {
-                // 存起来
-                UserDefaults(suiteName: "com.TJUBBS")?.set(topThreads, forKey: BBSTOPTHREADCACHEKEY)
-            }
+    static func object(forKey key: String) -> Any? {
+        return UserDefaults(suiteName: "com.TJUBBS")?.object(forKey: key)
+    }
+    
+    static func getTopThread() -> [ThreadModel] {
+        if let json = object(forKey: BBSTOPTHREADCACHEKEY) as? [[String: Any]] {
+            return Mapper<ThreadModel>().mapArray(JSONArray: json)
         }
+        return []
     }
     
-    var lastUpdateTime: Date {
-        didSet {
-            if oldValue.compare(lastUpdateTime) == .orderedAscending {
-                // if time is more up to date
-                UserDefaults(suiteName: "com.TJUBBS")?.set(lastUpdateTime, forKey: BBSTOPTHREADCACHEKEY)
-            }  else {
-                lastUpdateTime = oldValue
-            }
-        }
-    }
-    
-    func save() {
-//        let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1, "blackList": list, "fontSize": BBSUser.shared.fontSize]
-//        UserDefaults.standard.set(NSDictionary(dictionary: dic), forKey: BBSCACHEKEY)
+    static func saveTopThread(threads: [ThreadModel]) {
+        set(threads.toJSON(), forKey: BBSTOPTHREADCACHEKEY)
     }
 }

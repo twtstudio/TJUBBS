@@ -24,14 +24,16 @@ class EliteThreadViewController: UIViewController {
                 }
                 return true
             }
+            BBSCache.saveTopThread(threads: threadList)
         }
     }
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
-        initUI()
+        threadList = BBSCache.getTopThread()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -40,11 +42,7 @@ class EliteThreadViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        initUI()
     }
     
     func initUI() {
@@ -73,8 +71,6 @@ class EliteThreadViewController: UIViewController {
         header?.lastUpdatedTimeLabel.isHidden = true
         header?.setImages(refreshingImages, for: .pulling)
         tableView?.mj_header = header
-        
-//        tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         tableView?.mj_header.beginRefreshing()
     }
     

@@ -22,14 +22,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         // Do any additional setup after loading the view from its nib.
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     func viewOnTap(sender: UITapGestureRecognizer) {
         self.extensionContext?.open(URL(string: "openTJUBBS://?tid=\(self.titleLabel.tag)")!, completionHandler: nil)
-//        UIApplication.shared.openURL(URL(string: "openTJUBBS://?tid=\(self.titleLabel.tag)")!)
     }
     
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
@@ -38,20 +32,22 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         activityView.center = self.view.center
         activityView.startAnimating()
         self.view.addSubview(activityView)
-//        print(BBSCache.shared.topThreads)
-        print("-----------")
-        // 12 hours
-//        if BBSCache.shared.topThreads.count > 0, Date().timeIntervalSince(BBSCache.shared.lastUpdateTime) < 43_200 {
-//            let random = abs(arc4random().distance(to: 0)) % BBSCache.shared.topThreads.count
-//            let thread = BBSCache.shared.topThreads[random]
-//            self.titleLabel.text = thread.title
-//            self.replyLabel.text = "回复 (\(thread.replyNumber))"
-//            // keep the thread id
-//            self.titleLabel.tag = thread.id
-//            print(self.titleLabel.tag)
-//            completionHandler(NCUpdateResult.newData)
-////            return
-//        }
+
+        let threads = BBSCache.getTopThread()
+        if threads.count > 0 {
+            let random = abs(arc4random().distance(to: 0)) % threads.count
+            let thread = threads[random]
+            self.titleLabel.text = thread.title
+            self.replyLabel.text = "回复 (\(thread.replyNumber))"
+            // keep the thread id
+            self.titleLabel.tag = thread.id
+            print(self.titleLabel.tag)
+            activityView.stopAnimating()
+            activityView.removeFromSuperview()
+            completionHandler(NCUpdateResult.newData)
+            return
+        }
+        // no data
         
         Alamofire.request("https://bbs.twtstudio.com/api/index", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseString { response in
             activityView.stopAnimating()
@@ -65,6 +61,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                             if let err = dict["err"] as? Int, err == 0, let data = dict["data"] as? Dictionary<String, Any>,
                                 let hot = data["hot"] as? Array<Dictionary<String, Any>> {
                                 let threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot)
+                                BBSCache.saveTopThread(threads: threadList)
                                 let random = abs(arc4random().distance(to: 0)) % threadList.count
                                 let thread = threadList[random]
                                 self.titleLabel.text = thread.title
