@@ -53,7 +53,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 ////            return
 //        }
         
-        Alamofire.request("https://bbs.twtstudio.com/api/index", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseString { response in
+        Alamofire.request("https://bbs.tju.edu.cn/api/index", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseString { response in
             activityView.stopAnimating()
             activityView.removeFromSuperview()
             switch response.result {

@@ -358,12 +358,13 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             let imageView = DTLazyImageView(frame: frame)
             imageView.shouldShowProgressiveDownload = true
             imageView.delegate = self
+            imageView.image = attachment.image
             imageView.url = attachment.contentURL
             imageView.contentMode = UIViewContentMode.scaleAspectFill
             imageView.clipsToBounds = true
-            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
-            imageView.shouldShowProgressiveDownload = true
-            imageViews.append(imageView)
+//            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
+            imageView.backgroundColor = .BBSLightGray
+//            imageViews.append(imageView)
             return imageView
 
 //            var newFrame = frame
@@ -448,7 +449,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             }
             attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
         }
-//        if shouldUpdate {
+        if shouldUpdate {
             // layout might have changed due to image sizes
             // do it on next run loop because a layout pass might be going on
 //            DispatchQueue.main.async {
@@ -456,6 +457,6 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
                 self.attributedTextContextView.relayoutText()
                 self.delegate?.htmlContentCellSizeDidChange!(cell: self)
 //            }
-//        }
+        }
     }
 }

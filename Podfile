@@ -11,7 +11,8 @@ end
 target 'TJUBBS' do
   shared_pods
   pod 'SnapKit'
-  pod 'PKHUD', '~> 4.0'
+#  pod 'PKHUD', '~> 4.0'
+  pod 'PKHUD', '~> 5.0'
   pod 'MJRefresh', '~> 3.1.12'
   pod 'WMPageController', '2.3.0'
   pod 'SlackTextViewController'
