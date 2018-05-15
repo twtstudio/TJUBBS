@@ -64,7 +64,7 @@ struct TimeStampTransfer {
             return self.daysString(time: time)
         } else if timeStamp-time > 3600 {
             return self.hoursString(time: time)
-        } else if timeStamp-time > 59 {
+        } else if timeStamp-time > 60 {
             return self.minutesString(time: time)
         } else if timeStamp-time > 10 {
             return self.secondsString(time: time)

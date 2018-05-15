@@ -65,9 +65,6 @@ class MainTabBarController: UITabBarController {
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        guard BBSUser.shared.token != nil else {
-            return
-        }
 //        super.tabBar(tabBar, didSelect: item)
         if item.tag != 2 {
             BBSJarvis.getMessageCount(success: { dict in

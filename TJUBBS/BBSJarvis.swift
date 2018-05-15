@@ -104,14 +104,9 @@ struct BBSJarvis {
     }
 
     //TODO: cache Homepage
-    static func getIndex(page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
-        BBSBeacon.request(withType: .get, url: BBSAPI.index(page: page), parameters: nil, failure: failure, success: success)
-    }
-    
-    static func getHot(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
+    static func getIndex(failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.index, parameters: nil, failure: failure, success: success)
     }
-
     
     static func getThread(threadID: Int, page: Int, failure: ((Error)->())? = nil, success: @escaping ([String: Any])->()) {
         BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, failure: failure, success: success)
@@ -409,56 +404,6 @@ struct BBSJarvis {
     
     static func friendRemove(uid: Int, failure: ((Error)->())? = nil, success: @escaping ([String : Any])->()) {
         BBSBeacon.request(withType: .delete, url: BBSAPI.friend(uid: uid), parameters: nil, failure: failure, success: success)
-    }
-    
-    static func getUser(by keyword: String, failure: ((Error)->())? = nil, success: @escaping ([UserWrapper])->()) {
-        BBSBeacon.request(url: BBSAPI.searchUser(keyword: keyword), parameters: nil, failure: failure, success: { dict in
-            if let data = dict["data"] as? [[String : Any]] {
-                let users = Mapper<UserWrapper>().mapArray(JSONArray: data)
-                success(users)
-            }
-        })
-    }
-    
-    static func getThread(by keyword: String, page: Int, failure: ((Error)->())? = nil, success: @escaping ([ThreadModel])->()) {
-        BBSBeacon.request(url: BBSAPI.searchThread(keyword: keyword, page: page), parameters: nil, failure: failure, success: { dict in
-            if let data = dict["data"] as? [[String : Any]] {
-                let threads = Mapper<ThreadModel>().mapArray(JSONArray: data)
-                success(threads)
-            }
-        })
-    }
-    
-    static func sendPostOpinion(action: String, pid: Int, success:@escaping ()->(), failure: @escaping (String)->()) {
-        if action == "like" {
-            BBSBeacon.request(withType: .put, url: BBSAPI.like(pid: pid), parameters: nil, failure: { error in
-                failure(error.localizedDescription)
-            }, success: { dict in
-                success()
-            })
-        } else if action == "delete" {
-            BBSBeacon.request(withType: .delete, url: BBSAPI.like(pid: pid), parameters: nil, failure: { error in
-                failure(error.localizedDescription)
-            }, success: { dict in
-                success()
-            })
-        }
-    }
-    
-    static func sendThreadOpinion(action: String, tid: Int,  success:@escaping ()->(), failure: @escaping (String)->()) {
-        if action == "like" {
-            BBSBeacon.request(withType: .put, url: BBSAPI.like(tid: tid), parameters: nil, failure: { error in
-                failure(error.localizedDescription)
-            }, success: { dict in
-                success()
-            })
-        } else if action == "delete" {
-            BBSBeacon.request(withType: .delete, url: BBSAPI.like(tid: tid), parameters: nil, failure: { error in
-                failure(error.localizedDescription)
-            }, success: { dict in
-                success()
-            })
-        }
     }
 }
 

@@ -51,6 +51,24 @@ class BBSUser {
     var blackList: [String : Int] = [:]
     var fontSize: Int = 14
     
+//    required init?(map: Map) {}
+//    
+//    func mapping(map: Map) {
+//        username <- map["username"]
+//        nickname <- map["nickname"]
+//        realName <- map["realName"]
+//        signature <- map["signature"]
+//        postCount <- map["postCount"]
+//        unreadCount <- map["unreadCount"]
+//        points <- map["points"]
+//        level <- map["level"]
+//        token <- map["token"]
+//        cOnline <- map["cOnline"]
+//        uid <- map["uid"]
+//        group <- map["group"]
+//    }
+    
+    
     static func load(wrapper: UserWrapper) {
         BBSUser.shared.username = wrapper.username
         BBSUser.shared.nickname = wrapper.nickname
@@ -133,7 +151,6 @@ class UserWrapper: NSObject, Mappable {
     var tCreate: Int?
     var uid: Int?
     var status: Int?
-    var id: Int?
     var recentThreads: [ThreadModel] = []
     
     required init?(map: Map) {}
@@ -150,8 +167,6 @@ class UserWrapper: NSObject, Mappable {
         tCreate <- map["t_create"]
         uid <- map["uid"]
         status <- map["status"]
-        // 搜索 API 用，辣鸡后台
-        id <- map["id"]
     }
 }
 

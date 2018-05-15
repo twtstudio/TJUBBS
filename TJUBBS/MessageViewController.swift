@@ -91,7 +91,7 @@ class MessageViewController: UIViewController {
 
         
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView?.mj_footer.isAutomaticallyHidden = true
+//        self.tableView?.mj_footer.isAutomaticallyHidden = true
         self.tableView?.mj_header.beginRefreshing()
     }
 }
@@ -114,8 +114,7 @@ extension MessageViewController: UITableViewDataSource {
             content = detail.content
         }
         if model.detailContent != nil {
-            let hint = (model.tag == 10 || model.tag == 11) ? "提到了你: " : "回复了你: "
-            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: (hint+content))
+            cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("回复了你: "+content))
         } else if model.friendRequest != nil {
             let message = model.friendRequest!.message == "" ? "想加你为好友" : model.friendRequest!.message
             cell.initUI(portraitImage: nil, username: model.authorName, time: String(model.createTime), detail: ("好友申请: " + message))
@@ -128,7 +127,7 @@ extension MessageViewController: UITableViewDataSource {
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         if model.authorId != 0 { // exclude anonymous user
             cell.portraitImageView.addTapGestureRecognizer { _ in
-                let userVC = UserDetailViewController(uid: model.authorId)
+                let userVC = HHUserDetailViewController(uid: model.authorId)
                 self.navigationController?.pushViewController(userVC, animated: true)
             }
         }
@@ -175,13 +174,13 @@ extension MessageViewController {
     func refresh() {
         self.page = 0
         BBSJarvis.getMessage(page: page, failure: { _ in
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
         }, success: { list in
             self.msgList = list.count == 0 ? self.msgList : list
             self.tableView?.reloadData()
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
 //            if self.msgList.count < 49 {
@@ -196,13 +195,13 @@ extension MessageViewController {
     func load() {
         self.page += 1
         BBSJarvis.getMessage(page: page, failure: { _ in
-            if (self.tableView?.mj_footer.isRefreshing())! {
+            if (self.tableView?.mj_footer.isRefreshing)! {
                 self.tableView?.mj_footer.endRefreshing()
             }
         }, success: { list in
             self.msgList += list
             self.tableView?.reloadData()
-            if (self.tableView?.mj_footer.isRefreshing())! {
+            if (self.tableView?.mj_footer.isRefreshing)! {
                 self.tableView?.mj_footer.endRefreshing()
             }
         })

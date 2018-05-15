@@ -9,7 +9,7 @@
 import UIKit
 import Marklight
 import PKHUD
-import TOCropViewController
+
 
 class EditDetailViewController: UIViewController {
     let textView = UITextView()
@@ -21,7 +21,6 @@ class EditDetailViewController: UIViewController {
     var imageMap: [Int : Int] = [:]
     var doneBlock: ((String) -> ())?
     var attachments: [ImageTextAttachment] = []
-    var imagePicker: UIImagePickerController!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -49,8 +48,6 @@ class EditDetailViewController: UIViewController {
         textView.becomeFirstResponder()
         loadPlaceholder()
         
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-
         
         let cancelItem = UIBarButtonItem(title: "取消", style: .done, target: self, action: #selector(self.cancel(sender:)))
         self.navigationItem.leftBarButtonItem = cancelItem
@@ -62,12 +59,12 @@ class EditDetailViewController: UIViewController {
         imageButton.addTarget { btn in
             // TODO: 拍照
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                self.imagePicker = UIImagePickerController()
-                self.imagePicker.delegate = self
-                self.imagePicker.allowsEditing = false
-                self.imagePicker.sourceType = .photoLibrary
+                let imagePicker = UIImagePickerController()
+                imagePicker.delegate = self
+                imagePicker.allowsEditing = true
+                imagePicker.sourceType = .photoLibrary
 //                imagePicker.cameraOverlayView?.transform = CGAffineTransform(scaleX: 1, y: self.view.height/self.view.width)
-                self.present(self.imagePicker, animated: true) {
+                self.present(imagePicker, animated: true) {
                     
                 }
             } else {
@@ -75,9 +72,6 @@ class EditDetailViewController: UIViewController {
             }
         }
         let imageItem = UIBarButtonItem(customView: imageButton)
-        
-        let atButton = UIButton(title: "@")
-        let atItem = UIBarButtonItem(customView: atButton)
         
         let boldButton = UIButton(title: "B")
         let boldItem = UIBarButtonItem(customView: boldButton)
@@ -93,27 +87,18 @@ class EditDetailViewController: UIViewController {
         
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
-        bar.items = [imageItem, flexibleSpace, atItem, boldItem, italicItem, headItem, quoteItem]
+        bar.items = [imageItem, flexibleSpace, boldItem, italicItem, headItem, quoteItem]
         for item in bar.items! {
             if let button = item.customView as? UIButton {
-                item.width = 35
-                button.width = 35
+                item.width = 40
+                button.width = 40
                 button.height = 35
                 button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
                 button.addTarget(self, action: #selector(self.barButtonTapped(sender:)), for: .touchUpInside)
             }
         }
         
-        
         if canAnonymous {
-            if UIScreen.main.bounds.width < 321 {
-                for i in (3...6).reversed() {
-                    let negSpacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-                    negSpacer.width = -16
-                    bar.items?.insert(negSpacer, at: i)
-                }
-            }
-
             let anonymousView = UIView()
             let anonymousLabel = UILabel()
             let anonymousSwitch = UISwitch()
@@ -209,16 +194,6 @@ class EditDetailViewController: UIViewController {
                 textStorage.replaceCharacters(in: textView.selectedRange, with: ">")
 //                textStorage.appendString(">")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
-            case "@":
-                let userSearchVC = UserSearchViewController()
-                userSearchVC.doneBlock = { uid, username in
-                    self.textStorage.replaceCharacters(in: self.textView.selectedRange, with: "[@\(username)](/user/\(uid))")
-                    let offset = 2 + username.characters.count + 8 + uid.description.characters.count + 1
-                    self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location+offset, 0)
-                    self.textView.becomeFirstResponder()
-                }
-                self.textView.resignFirstResponder()
-                self.navigationController?.pushViewController(userSearchVC, animated: true)
             default:
                 break
             }
@@ -252,6 +227,8 @@ extension EditDetailViewController {
                     self.bar.width = self.view.width
                     self.bar.height = barHeight
                 }
+//                UIView.animate(withDuration: 0.1, animations: {
+//                })
             }
         }
     }
@@ -259,10 +236,36 @@ extension EditDetailViewController {
 
 extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            let cropVC = TOCropViewController(image: image)
-            cropVC.delegate = self
-            picker.present(cropVC, animated: true, completion: nil)
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            let size = image.size
+            let maxWidth: CGFloat = 200
+            var ratio: CGFloat = 1.0
+            if size.width > maxWidth {
+                ratio = maxWidth/size.width
+            }
+            let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
+            
+            let attachment = ImageTextAttachment()
+            attachment.image = resizedImage
+            // resizedImage.hash as index
+            let attributedString = NSAttributedString(attachment: attachment)
+            textStorage.insert(attributedString, at: textView.selectedRange.location)
+            textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+            attachments.append(attachment)
+            BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
+                attachment.progressView.progress = progress.fractionCompleted
+                if progress.fractionCompleted >= 1.0 {
+                    if attachment.progressView.superview != nil {
+                        attachment.progressView.removeFromSuperview()
+                    }
+                }
+            }, failure: { error in
+                HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
+            }, success: { attachmentCode in
+                self.imageMap[resizedImage.hash] = attachmentCode
+            })
+            
+            picker.dismiss(animated: true, completion: nil)
         }
     }
     
@@ -272,8 +275,6 @@ extension EditDetailViewController: UIImagePickerControllerDelegate, UINavigatio
     
 }
 
-
-// overlay on images which are uploading
 extension EditDetailViewController: NSLayoutManagerDelegate {
     
     func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
@@ -334,39 +335,4 @@ extension EditDetailViewController: NSLayoutManagerDelegate {
             
         }
     }
-}
-
-extension EditDetailViewController: TOCropViewControllerDelegate {
-    func cropViewController(_ cropViewController: TOCropViewController, didCropToImage image: UIImage, rect cropRect: CGRect, angle: Int) {
-        let size = cropRect
-        let maxWidth: CGFloat = 200
-        var ratio: CGFloat = 1.0
-        if size.width > maxWidth {
-            ratio = maxWidth/size.width
-        }
-        cropViewController.dismiss(animated: true, completion: { self.imagePicker.dismiss(animated: false, completion: nil) })
-        let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
-        
-        let attachment = ImageTextAttachment()
-        attachment.image = resizedImage
-        // resizedImage.hash as index
-        let attributedString = NSAttributedString(attachment: attachment)
-        textStorage.insert(attributedString, at: textView.selectedRange.location)
-        textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
-        attachments.append(attachment)
-        BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
-            attachment.progressView.progress = progress.fractionCompleted
-            if progress.fractionCompleted >= 1.0 {
-                if attachment.progressView.superview != nil {
-                    attachment.progressView.removeFromSuperview()
-                }
-            }
-        }, failure: { error in
-            HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
-        }, success: { attachmentCode in
-            self.imageMap[resizedImage.hash] = attachmentCode
-        })
-        
-    }
-
 }

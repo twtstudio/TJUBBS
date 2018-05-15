@@ -109,7 +109,7 @@ extension FriendsListController: UITableViewDataSource {
         cell.timeLabel.isHidden = true
         if model.uid != 0 { // exclude anonymous user
             cell.portraitImageView.addTapGestureRecognizer { _ in
-                let userVC = UserDetailViewController(uid: model.uid ?? 0)
+                let userVC = HHUserDetailViewController(uid: model.uid ?? 0)
                 self.navigationController?.pushViewController(userVC, animated: true)
             }
         }
@@ -143,7 +143,7 @@ extension FriendsListController: UITableViewDelegate {
 extension FriendsListController {
     func refresh() {
         BBSJarvis.getFriendList(failure: { _ in
-            if self.tableView.mj_header.isRefreshing() {
+            if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
 
@@ -151,7 +151,7 @@ extension FriendsListController {
             self.friendList = friends
             DispatchQueue.main.async {
                 self.tableView.reloadData()
-                if self.tableView.mj_header.isRefreshing() {
+                if self.tableView.mj_header.isRefreshing {
                     self.tableView.mj_header.endRefreshing()
                 }
             }

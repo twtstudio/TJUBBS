@@ -37,14 +37,6 @@ class HomepageMainController: WMPageController {
     override func viewDidLoad() {
         menuBGColor = .BBSBlue
         progressColor = .yellow
-        
-        // 右侧搜索
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
-
-        // 左侧发帖
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-
-        
         // 把返回换成空白
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
 
@@ -55,35 +47,6 @@ class HomepageMainController: WMPageController {
             })
         }
         
-    }
-    
-    func addButtonTapped() {
-        
-        guard BBSUser.shared.token != nil else {
-            let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能发布消息", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-            alert.addAction(cancelAction)
-            let confirmAction = UIAlertAction(title: "好的", style: .default) {
-                _ in
-                let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                self.present(navigationController, animated: true, completion: nil)
-            }
-            alert.addAction(confirmAction)
-            self.present(alert, animated: true, completion: nil)
-            return
-        }
-        
-        let addVC = AddThreadViewController()
-        addVC.hidesBottomBarWhenPushed = true
-//        addVC.selectedForum = self.forum
-        self.navigationController?.pushViewController(addVC, animated: true)
-    }
-    
-
-    func searchToggled(sender: UIBarButtonItem) {
-        let searchVC = SearchViewController()
-        searchVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(searchVC, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {

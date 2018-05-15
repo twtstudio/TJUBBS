@@ -21,6 +21,8 @@ class UserInfoViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.navigationBar.isHidden = false
         if BBSUser.shared.isVisitor == false {
 //            refreshMessage()
         }
@@ -91,25 +93,6 @@ class UserInfoViewController: UIViewController {
         }
     }
     
-//    func refreshMessage() {
-////        print("refreshMessgae")
-//        BBSJarvis.getMessageCount(page: 0, success: {
-//            dict in
-//            //            print(dict)
-//            let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
-//            if let data = dict["data"] as? [[String: Any]],
-//                data.count > 0,
-//                let messageID = data[0]["id"] as? Int,
-//                messageID > latestMessageID {
-//                self.messageFlag = true
-//                UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
-//            }
-//            UIView.performWithoutAnimation {
-//                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
-//            }
-//        })
-//    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -142,10 +125,6 @@ extension UserInfoViewController: UITableViewDataSource {
             return cell
         }
     }
-    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return screenSize.height*(150/1920)
-//    }
     
 }
 
@@ -225,6 +204,9 @@ extension UserInfoViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 1):
             let detailVC = SettingViewController()
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 1, section: 1):
+            let detailVC = NewPersonalViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             let detailVC = UIViewController()

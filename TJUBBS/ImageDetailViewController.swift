@@ -23,6 +23,9 @@ class ImageDetailViewController: UIViewController {
                 saveBtn.isHidden = false
                 saveBtn.setTitle("保存", for: .normal)
                 saveBtn.frame = CGRect(x: UIScreen.main.bounds.width-60, y: UIScreen.main.bounds.height-60, width: 45, height: 25)
+//                saveBtn.sizeToFit()
+//                saveBtn.buttonType = .roundedRect
+//                saveBtn.titleLabel?.textColor = .white
                 saveBtn.setTitleColor(.white, for: .normal)
                 saveBtn.layer.borderColor = UIColor.white.cgColor
                 saveBtn.layer.cornerRadius = 3
@@ -70,18 +73,25 @@ class ImageDetailViewController: UIViewController {
         scrollView.addSubview(imgView)
         imgView.frame = scrollView.frame
         imgView.contentMode = .scaleAspectFit
+//        imgView.snp.makeConstraints { make in
+//            make.center.equalTo(scrollView)
+//            make.width.height.equalTo(self.view.bounds.size.width)
+//        }
         self.view.addSubview(scrollView)
+//        let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeDismiss(recognizer:)))
+//        swipeUpGesture.direction = .up
+//        
+//        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeDismiss(recognizer:)))
+//        swipeDownGesture.direction = .down
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.swipeDismiss(recognizer:)))
         imgView.addGestureRecognizer(panGesture)
+        
+//        imgView.addGestureRecognizer(swipeUpGesture)
+//        imgView.addGestureRecognizer(swipeDownGesture)
         
         let doubleGesture = UITapGestureRecognizer(target: self, action: #selector(self.doubleClicked(recognizer:)))
         doubleGesture.numberOfTapsRequired = 2
         imgView.addGestureRecognizer(doubleGesture)
-        
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress(recognizer:)))
-        imgView.addGestureRecognizer(longPressGesture)
-
-        
         
         imgView.addTapGestureRecognizer(gestureHandler: { recognizer in
             recognizer.require(toFail: doubleGesture)
@@ -101,32 +111,10 @@ class ImageDetailViewController: UIViewController {
                 self.dismiss(animated: true, completion: nil)
             }
         }
-    }
-    
-    func longPress(recognizer: UILongPressGestureRecognizer) {
-        let detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
-        if let cgImage = self.image.cgImage, let features = detector?.features(in: CIImage(cgImage: cgImage)) {
-            for feature in features {
-                if let feature = feature as? CIQRCodeFeature, let message = feature.messageString {
-                    let ac = UIAlertController(title: "二维码信息", message: message, preferredStyle: .actionSheet)
-                    if let url = URL(string: message) {
-                        ac.addAction(UIAlertAction(title: "使用 Safari 打开", style: .default) {
-                            action in
-                            UIApplication.shared.openURL(url)
-                        })
-                    }
-                    ac.addAction(UIAlertAction(title: "复制到剪贴板", style: .default) {
-                        action in
-                        UIPasteboard.general.string = message
-                        HUD.flash(.labeledSuccess(title: "已复制", subtitle: nil), delay: 1.0)
-                    })
-                    ac.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
-                    present(ac, animated: true, completion: nil)
-                    break
-                }
-            }
-        }
-        
+//        if recognizer.
+//        if recognizer.direction == .up || recognizer.direction == .down {
+//            self.dismiss(animated: true, completion: nil)
+//        }
     }
     
     func doubleClicked(recognizer: UITapGestureRecognizer) {

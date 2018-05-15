@@ -50,6 +50,7 @@ class MyPostHomeViewController: WMPageController {
 
     
     override func viewDidLoad() {
+        self.navigationController?.isToolbarHidden = false
         hidesBottomBarWhenPushed = true
         menuBGColor = .BBSBlue
         progressColor = .yellow

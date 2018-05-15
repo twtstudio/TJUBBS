@@ -24,9 +24,7 @@ class RichPostCell: DTAttributedTextCell {
     let usernameLabel = UILabel(text: "")
     let nickNameLabel = UILabel(text: "", color: .gray)
     let timeLabel = UILabel(text: "HH:mm yyyy-MM-dd", color: .lightGray, fontSize: 14)
-    let moreButton = ExtendedButton()
-    let likeButton = ExtendedButton()
-    let likeCountLabel = UILabel()
+    var moreButton = ExtendedButton()
     let containerView = UIView()
     var buttons: [String : DTLinkButton] = [:]
     
@@ -62,9 +60,6 @@ class RichPostCell: DTAttributedTextCell {
         containerView.addSubview(timeLabel)
         containerView.addSubview(nickNameLabel)
         containerView.addSubview(moreButton)
-        containerView.addSubview(likeButton)
-        containerView.addSubview(likeCountLabel)
-        
 //        }
         initLayout()
     }
@@ -102,25 +97,7 @@ class RichPostCell: DTAttributedTextCell {
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
             make.right.equalToSuperview().offset(-18)
-//            make.bottom.equalToSuperview().offset(-8)
-        }
-        
-//        likeButton.setBackgroundImage(UIImage(named: "更多操作"), for: .normal)
-        likeButton.snp.makeConstraints { make in
-            make.top.equalTo(attributedTextContextView.snp.bottom)
             make.bottom.equalToSuperview().offset(-8)
-            make.right.equalToSuperview().offset(-18)
-            make.width.equalTo(20)
-            make.height.equalTo(20)
-        }
-        
-        likeCountLabel.textAlignment = .right
-        likeCountLabel.font = UIFont.systemFont(ofSize: 15)
-        likeCountLabel.snp.makeConstraints { make in
-            make.width.equalTo(40)
-            make.height.equalTo(20)
-            make.right.equalTo(likeButton.snp.left).offset(-5)
-            make.bottom.equalTo(likeButton.snp.bottom).offset(2)
         }
         
         moreButton.setBackgroundImage(UIImage(named: "更多操作"), for: .normal)
@@ -130,7 +107,6 @@ class RichPostCell: DTAttributedTextCell {
             make.right.equalToSuperview().offset(-18)
             make.top.equalTo(portraitImageView.snp.top)
         }
-        
         containerView.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
         }
@@ -151,6 +127,7 @@ class RichPostCell: DTAttributedTextCell {
     
     func load(thread: ThreadModel, boardName: String) {
         // add hyperLink
+//        let content = thread.content.replacingOccurrences(of: "^((https?|http?):\\/\\/)?([a-z]([a-z0-9\\-]*[\\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$", with: "[$0]($0)", options: .regularExpression, range: nil)
         let html = Markdown.parse(string: thread.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -166,20 +143,6 @@ class RichPostCell: DTAttributedTextCell {
         nickNameLabel.text = thread.anonymous == 0 ? "@"+thread.authorNickname : ""
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
-        
-        if thread.isLiked {
-            likeButton.setBackgroundImage(UIImage(named: "liked"), for: .normal)
-        } else {
-            likeButton.setBackgroundImage(UIImage(named: "like"), for: .normal)
-        }
-        if thread.likeCount > 0 {
-            likeCountLabel.isHidden = false
-            likeCountLabel.textColor = .gray
-            likeCountLabel.text = "\(thread.likeCount)"
-        } else {
-            likeCountLabel.isHidden = true
-        }
-
         
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
@@ -217,6 +180,7 @@ class RichPostCell: DTAttributedTextCell {
     }
     
     func load(post: PostModel) {
+//        let content = post.content.replacingOccurrences(of: "^((https?|http?):\\/\\/)?([a-z]([a-z0-9\\-]*[\\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$", with: "[$0]($0)", options: .regularExpression, range: nil)
         let html = Markdown.parse(string: post.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
@@ -234,21 +198,6 @@ class RichPostCell: DTAttributedTextCell {
         nickNameLabel.text = post.anonymous == 0 ? "@"+post.authorNickname : ""
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
-        
-        if post.isLiked {
-            likeButton.setBackgroundImage(UIImage(named: "liked"), for: .normal)
-        } else {
-            likeButton.setBackgroundImage(UIImage(named: "like"), for: .normal)
-        }
-        
-        if post.likeCount > 0 {
-            likeCountLabel.isHidden = false
-            likeCountLabel.textColor = .gray
-            likeCountLabel.text = "\(post.likeCount)"
-        } else {
-            likeCountLabel.isHidden = true
-        }
-
         // 68: avatar and margin // 38: moreButton // 4: padding
         let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
         if nickNameLabel.width + 8 + usernameLabel.width > maxWidth {
@@ -358,56 +307,14 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             let imageView = DTLazyImageView(frame: frame)
             imageView.shouldShowProgressiveDownload = true
             imageView.delegate = self
-            imageView.image = attachment.image
             imageView.url = attachment.contentURL
+            imageView.image = attachment.image
             imageView.contentMode = UIViewContentMode.scaleAspectFill
             imageView.clipsToBounds = true
-//            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
-            imageView.backgroundColor = .BBSLightGray
-//            imageViews.append(imageView)
+            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
+            imageView.shouldShowProgressiveDownload = true
+            imageViews.append(imageView)
             return imageView
-
-//            var newFrame = frame
-//            newFrame.size = CGSize(width: 100, height: 100)
-//            let imageView = DTLazyImageView(frame: newFrame)
-//            let progressView = ProgressView(frame: newFrame)
-//            imageView.addSubview(progressView)
-//            imageView.shouldShowProgressiveDownload = true
-//            imageView.delegate = self
-//            imageView.url = attachment.contentURL
-//            imageView.contentMode = UIViewContentMode.scaleAspectFill
-//            imageView.clipsToBounds = true
-//            imageView.backgroundColor = UIColor(white: 0.98, alpha: 1.0)
-//            imageView.shouldShowProgressiveDownload = true
-//            imageViews.append(imageView)
-//            return imageView
-//            let imgView = UIImageView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
-//            let progressView = ProgressView(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: 100, height: 100))
-//            progressView.tag = -1
-//            imgView.addSubview(progressView)
-//            imgView.kf.setImage(with: ImageResource(downloadURL: attachment.contentURL), placeholder: UIImage(color: .gray), options: nil, progressBlock: { received, expected in
-//                let progress = Double(received)/Double(expected)
-//                if (progress-1) < 0.01 {
-//                    progressView.removeFromSuperview()
-////                    imgView.subviews.removeAll()
-//                } else {
-//                    progressView.progress = progress
-//                }
-//            }, completionHandler: { (image, error, cacheType, url) in
-//                if let image = image {
-//                    if progressView.superview != nil {
-//                        progressView.removeFromSuperview()
-//                    }
-//                    let width = image.size.width
-//                    if width > 250 {
-//                        let ratio = width/250
-//                        imgView.frame.size = CGSize(width: 250, height: image.size.height/ratio)
-//                    } else {
-//                        imgView.frame.size = image.size
-//                    }
-//                }
-//            })
-//            return imgView
         }
         return nil
     }
@@ -416,12 +323,10 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         // fun functional programming
         // let rect = CGRect.insetBy(frame)(dx: 1, dy: 1)
         let roundedRect = UIBezierPath(roundedRect: CGRect.insetBy(frame)(dx: 1, dy: 1), cornerRadius: 2)
-        if textBlock != nil && textBlock.backgroundColor != nil {
-            let color = textBlock.backgroundColor.cgColor
-            context.setFillColor(color)
-            context.addPath(roundedRect.cgPath)
-            context.fillPath()
-        }
+        let color = textBlock.backgroundColor.cgColor
+        context.setFillColor(color)
+        context.addPath(roundedRect.cgPath)
+        context.fillPath()
         
         let rectangleRect = UIBezierPath(rect: CGRect(x: frame.origin.x, y: frame.origin.y+1, width: 4, height: frame.size.height-2))
 //        let rectangleRect = UIBezierPath(roundedRect: CGRect(x: frame.origin.x, y: frame.origin.y, width: 4, height: frame.size.height), cornerRadius: 2)
@@ -431,32 +336,50 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         
         return false
     }
+    
     // MARK: DTLazyImageViewDelegate
     func lazyImageView(_ lazyImageView: DTLazyImageView!, didChangeImageSize size: CGSize) {
-        let predicate = NSPredicate(format: "contentURL == %@", lazyImageView.url as CVarArg)
-        let attachments = attributedTextContextView.layoutFrame.textAttachments(with: predicate) as? [DTImageTextAttachment] ?? []
+        guard let url = lazyImageView.url else {
+            return
+        }
+        print("\(lazyImageView.url)")
+        let predicate = NSPredicate(format: "contentURL == %@", url as CVarArg)
         var shouldUpdate = false
+
+        let attachments = attributedTextContextView.layoutFrame.textAttachments(with: predicate) as? [DTImageTextAttachment] ?? []
+        for attachment in attachments {
+            if (__CGSizeEqualToSize(attachment.originalSize, CGSize.zero)) {
+                attachment.originalSize = size
+                shouldUpdate = true
+            }
+        }
+        if shouldUpdate {
+            self.attributedTextContextView.layouter = nil
+            self.attributedTextContextView.relayoutText()
+            self.delegate?.htmlContentCellSizeDidChange!(cell: self)
+        }
         for attachment in attachments {
             attachment.originalSize = size
             let v = attributedTextContextView!
-            
+
             var scale: CGFloat = 1.0
-            // 5: offset 86: margin
+            // 5: offset / 86: margin
             let maxWidth = UIScreen.main.bounds.width - 86 - v.frame.origin.x - 5
+
             if size.width > maxWidth {
                 scale = maxWidth / size.width
                 shouldUpdate = true
             }
             attachment.displaySize = CGSize(width: size.width * scale, height: size.height * scale)
         }
-        if shouldUpdate {
-            // layout might have changed due to image sizes
-            // do it on next run loop because a layout pass might be going on
-//            DispatchQueue.main.async {
-                self.attributedTextContextView.layouter = nil
-                self.attributedTextContextView.relayoutText()
-                self.delegate?.htmlContentCellSizeDidChange!(cell: self)
-//            }
-        }
+        
+        self.attributedTextContextView.layouter = nil
+        self.attributedTextContextView.relayoutText()
+        self.delegate?.htmlContentCellSizeDidChange!(cell: self)
+
     }
+    
+
 }
+
+

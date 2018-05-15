@@ -10,7 +10,6 @@ import UIKit
 import ObjectMapper
 import PKHUD
 import Marklight
-import TOCropViewController
 
 class AddThreadViewController: UIViewController {
     
@@ -33,7 +32,6 @@ class AddThreadViewController: UIViewController {
     var doneBlock: ((String, String)->())?
     var placeholder: String = ""
     var placeholderTitle = ""
-    var imagePicker: UIImagePickerController!
     
     var selectedForum: ForumModel? {
         didSet {
@@ -83,7 +81,6 @@ class AddThreadViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(doneButtonTapped))
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.title = placeholder == "" ? "发帖" : "修改"
@@ -115,11 +112,11 @@ class AddThreadViewController: UIViewController {
         imageButton.addTarget { btn in
             // TODO: 拍照
             if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
-                self.imagePicker = UIImagePickerController()
-                self.imagePicker.delegate = self
-                self.imagePicker.allowsEditing = true
-                self.imagePicker.sourceType = .photoLibrary
-                self.present(self.imagePicker, animated: true) {
+                let imagePicker = UIImagePickerController()
+                imagePicker.delegate = self
+                imagePicker.allowsEditing = true
+                imagePicker.sourceType = .photoLibrary
+                self.present(imagePicker, animated: true) {
                     
                 }
             } else {
@@ -127,21 +124,19 @@ class AddThreadViewController: UIViewController {
             }
         }
         let imageItem = UIBarButtonItem(customView: imageButton)
-        let atButton = UIButton(title: "@")
-        let atItem = UIBarButtonItem(customView: atButton)
         let boldItem = UIBarButtonItem(customView: UIButton(title: "B"))
         let italicItem = UIBarButtonItem(customView: UIButton(title: "I"))
         let headItem = UIBarButtonItem(customView: UIButton(title: "#"))
         let quoteItem = UIBarButtonItem(customView: UIButton(title: "\""))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
-        nonAnonymousItems = [imageItem, flexibleSpace, atItem, boldItem, italicItem, headItem, quoteItem]
+        nonAnonymousItems = [imageItem, flexibleSpace, boldItem, italicItem, headItem, quoteItem]
         
         bar.items = nonAnonymousItems
         for item in bar.items! {
             if let button = item.customView as? UIButton {
-                item.width = 35
-                button.width = 35
+                item.width = 40
+                button.width = 40
                 button.height = 35
                 button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
                 button.addTarget(self, action: #selector(self.barButtonTapped(sender:)), for: .touchUpInside)
@@ -176,13 +171,6 @@ class AddThreadViewController: UIViewController {
         anonymousItem.width = anonymousView.width
         anonymousSwitch.addTarget(self, action: #selector(self.anonymousStateOnChange(sender:)), for: .valueChanged)
         anonymousItems = nonAnonymousItems
-        if UIScreen.main.bounds.width < 321 {
-            for i in (3...6).reversed() {
-                let negSpacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-                negSpacer.width = -16
-                anonymousItems.insert(negSpacer, at: i)
-            }
-        }
         anonymousItems.insert(anonymousItem, at: 1)
 
         
@@ -222,17 +210,6 @@ class AddThreadViewController: UIViewController {
                 textStorage.replaceCharacters(in: textView.selectedRange, with: ">")
                 //                textStorage.appendString(">")
                 textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
-            case "@":
-                let userSearchVC = UserSearchViewController()
-                userSearchVC.doneBlock = { uid, username in
-                    self.textStorage.replaceCharacters(in: self.textView.selectedRange, with: "[@\(username)](/user/\(uid))")
-                    let offset = 2 + username.characters.count + 8 + uid.description.characters.count + 1
-                    self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location+offset, 0)
-                    self.textView.becomeFirstResponder()
-                }
-                self.textView.resignFirstResponder()
-                self.navigationController?.pushViewController(userSearchVC, animated: true)
-
             default:
                 break
             }
@@ -504,8 +481,7 @@ extension AddThreadViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == IndexPath(row: 0, section: 3) {
-//            return 205
-            return 300
+            return 205
         } else {
             return 44.5
         }
@@ -553,10 +529,36 @@ extension AddThreadViewController {
 
 extension AddThreadViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            let cropVC = TOCropViewController(image: image)
-            cropVC.delegate = self
-            picker.present(cropVC, animated: true, completion: nil)
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            let size = image.size
+            let maxWidth: CGFloat = 200
+            var ratio: CGFloat = 1.0
+            if size.width > maxWidth {
+                ratio = maxWidth/size.width
+            }
+            let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
+            
+            let attachment = ImageTextAttachment()
+            attachment.image = resizedImage
+            // resizedImage.hash as index
+            let attributedString = NSAttributedString(attachment: attachment)
+            textStorage.insert(attributedString, at: textView.selectedRange.location)
+            textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+            attachments.append(attachment)
+            
+            BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
+                attachment.progressView.progress = progress.fractionCompleted
+                if progress.fractionCompleted >= 1.0 {
+                    if attachment.progressView.superview != nil {
+                        attachment.progressView.removeFromSuperview()
+                    }
+                }
+            }, failure: { error in
+                HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
+            }, success: { attachmentCode in
+                self.imageMap[resizedImage.hash] = attachmentCode
+            })
+            picker.dismiss(animated: true, completion: nil)
         }
     }
     
@@ -620,40 +622,4 @@ extension AddThreadViewController: NSLayoutManagerDelegate {
         }
     }
 }
-
-extension AddThreadViewController: TOCropViewControllerDelegate {
-    func cropViewController(_ cropViewController: TOCropViewController, didCropToImage image: UIImage, rect cropRect: CGRect, angle: Int) {
-        let size = cropRect
-        let maxWidth: CGFloat = 200
-        var ratio: CGFloat = 1.0
-        if size.width > maxWidth {
-            ratio = maxWidth/size.width
-        }
-        cropViewController.dismiss(animated: true, completion: { self.imagePicker.dismiss(animated: false, completion: nil) })
-        let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
-        
-        let attachment = ImageTextAttachment()
-        attachment.image = resizedImage
-        // resizedImage.hash as index
-        let attributedString = NSAttributedString(attachment: attachment)
-        textStorage.insert(attributedString, at: textView.selectedRange.location)
-        textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
-        attachments.append(attachment)
-        BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
-            attachment.progressView.progress = progress.fractionCompleted
-            if progress.fractionCompleted >= 1.0 {
-                if attachment.progressView.superview != nil {
-                    attachment.progressView.removeFromSuperview()
-                }
-            }
-        }, failure: { error in
-            HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
-        }, success: { attachmentCode in
-            self.imageMap[resizedImage.hash] = attachmentCode
-        })
-        
-    }
-    
-}
-
 

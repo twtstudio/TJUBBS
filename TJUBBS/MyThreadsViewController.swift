@@ -67,7 +67,6 @@ class MyThreadsViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = rightItem
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
-//        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         var refreshingImages = [UIImage]()
         for i in 1...6 {
@@ -81,7 +80,7 @@ class MyThreadsViewController: UIViewController {
         tableView?.mj_header = header
 
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView?.mj_footer.isAutomaticallyHidden = true
+//        self.tableView?.mj_footer.isAutomaticallyHidden = true
         self.tableView?.mj_header.beginRefreshing()
     }
     
@@ -99,7 +98,7 @@ class MyThreadsViewController: UIViewController {
                 self.tableView?.mj_footer.resetNoMoreData()
             }
             
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
             self.tableView?.reloadData()
@@ -117,7 +116,7 @@ class MyThreadsViewController: UIViewController {
                     self.tableView?.mj_footer.endRefreshingWithNoMoreData()
                 }
             }
-            if (self.tableView?.mj_footer.isRefreshing())! {
+            if (self.tableView?.mj_footer.isRefreshing)! {
                 self.tableView?.mj_footer.endRefreshing()
             }
             self.tableView?.reloadData()

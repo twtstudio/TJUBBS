@@ -73,8 +73,7 @@ class EliteThreadViewController: UIViewController {
         header?.lastUpdatedTimeLabel.isHidden = true
         header?.setImages(refreshingImages, for: .pulling)
         tableView?.mj_header = header
-        
-//        tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+
         tableView?.mj_header.beginRefreshing()
     }
     
@@ -86,8 +85,8 @@ class EliteThreadViewController: UIViewController {
             }
         })
         
-        BBSJarvis.getHot(failure: { _ in
-            if (self.tableView?.mj_header.isRefreshing())! {
+        BBSJarvis.getIndex(failure: { _ in
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
         }) {
@@ -96,7 +95,7 @@ class EliteThreadViewController: UIViewController {
                 let hot = data["hot"] as? Array<Dictionary<String, Any>> {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) 
             }
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
             self.tableView?.reloadData()
@@ -126,11 +125,11 @@ extension EliteThreadViewController: UITableViewDataSource {
         }
         if data.anonymous == 0 { // exclude anonymous user
             cell.usernameLabel.addTapGestureRecognizer { _ in
-                let userVC = UserDetailViewController(uid: data.authorID)
+                let userVC = HHUserDetailViewController(uid: data.authorID)
                 self.navigationController?.pushViewController(userVC, animated: true)
             }
             cell.portraitImageView.addTapGestureRecognizer { _ in
-                let userVC = UserDetailViewController(uid: data.authorID)
+                let userVC = HHUserDetailViewController(uid: data.authorID)
                 self.navigationController?.pushViewController(userVC, animated: true)
             }
         }

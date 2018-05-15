@@ -17,7 +17,7 @@ class UserDetailViewController: UIViewController {
     let headerView = UserDetailView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 276))
     var user: UserWrapper?
     let containerView = UIView() // empty
-
+    
     convenience init(user: UserWrapper) {
         self.init()
         self.user = user

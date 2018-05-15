@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import WMPageController
 
 extension UIButton {
     convenience init(title: String, color: UIColor = .black, fontSize: Int = 15, isConfirmButton: Bool = false) {
@@ -80,11 +79,11 @@ extension UIButton {
 }
 
 extension UILabel {
-    convenience init(text: String, color: UIColor = UIColor.black, fontSize: Int = 15) {
+    convenience init(text: String, color: UIColor = UIColor.black, fontSize: CGFloat = 15, weight: UIFontWeight = UIFontWeightRegular) {
         self.init()
         self.text = text
         self.textColor = color
-        self.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
+        self.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
 //        self.sizeToFit()
     }
     
@@ -283,6 +282,19 @@ extension UIFont {
             flexSize = size*1.1
         }
         return UIFont.systemFont(ofSize: flexSize)
+    }
+    
+    static func HHflexibleFont(ofBaseSize size: CGFloat) -> UIFont {
+        let width = UIScreen.main.bounds.width
+        var flexSize = size
+        if width <= 320 {
+            // small size
+            flexSize = size*0.85
+        } else if width >= 414 {
+            // big size
+            flexSize = size*1.1
+        }
+        return UIFont.systemFont(ofSize: flexSize, weight: UIFontWeightLight)
     }
 }
 
@@ -499,46 +511,5 @@ extension NSAttributedString {
             }
         }
         return ranges
-    }
-}
-
-extension UIViewController {
-    static var current: UIViewController? {
-        var window = UIApplication.shared.keyWindow
-        if window?.windowLevel != UIWindowLevelNormal {
-            for win in UIApplication.shared.windows {
-                if win.windowLevel == UIWindowLevelNormal {
-                    window = win
-                    break
-                }
-            }
-        }
-        var nextResponder: Any?
-        let appRootVC = window?.rootViewController
-        if appRootVC?.presentedViewController != nil {
-            nextResponder = appRootVC?.presentedViewController!
-        } else {
-            let frontView = window?.subviews.first
-            nextResponder = frontView?.next
-        }
-        
-
-        if let nextResponder = nextResponder as? UITabBarController {
-            let navVC = nextResponder.selectedViewController
-            let vc = navVC?.childViewControllers.last
-            if let vc = vc as? WMPageController {
-                return vc.currentViewController
-            }
-//            if let vc = vc?.value(forKey: "currentViewController") as? UIViewController {
-//                return vc
-//            }
-            return vc
-        } else if let nextResponder = nextResponder as? UINavigationController {
-            return nextResponder.childViewControllers.last
-        } else if let vc = nextResponder as? UIViewController {
-            return vc
-        } else {
-            return nil
-        }
     }
 }

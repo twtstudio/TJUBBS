@@ -65,8 +65,12 @@ class UserDetailView: UIView {
         }
         
         signatureLabel.numberOfLines = 1
+        signatureLabel.lineBreakMode = NSLineBreakMode.byTruncatingMiddle
         signatureLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
+            make.right.equalToSuperview().offset(-100)
+            
+           make.left.equalToSuperview().offset(100)
             make.top.equalTo(usernameLabel.snp.bottom).offset(10)
             make.height.equalTo(19.5)
         }

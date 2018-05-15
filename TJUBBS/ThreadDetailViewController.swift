@@ -52,6 +52,8 @@ class ThreadDetailViewController: UIViewController {
     
     convenience init(thread: ThreadModel) {
         self.init()
+        //self.contentInsetAdjustmentBehavior = false
+//        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
         self.thread = thread
         print(thread.id)
         self.hidesBottomBarWhenPushed = true
@@ -59,8 +61,6 @@ class ThreadDetailViewController: UIViewController {
         PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/thread/\(thread.id)/page/1"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
         PiwikTracker.shared.sendView("")
-
-//        self.automaticallyAdjustsScrollViewInsets = true
     }
     
     convenience init(tid: Int) {
@@ -116,6 +116,12 @@ class ThreadDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if UIScreen.main.bounds.size.height == 812 {
+            self.replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45-34, width: UIScreen.main.bounds.size.width, height: 45)
+        } else {
+            self.replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45)
+        }
+        
     }
     
     override func viewDidLoad() {
@@ -144,7 +150,7 @@ class ThreadDetailViewController: UIViewController {
         (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("滑到底部了哟🌝", for: .noMoreData)
         (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("加加加加加载中...", for: .refreshing)
 
-        self.tableView.mj_footer.isAutomaticallyHidden = true
+//        self.tableView.mj_footer.isAutomaticallyHidden = true
         
         tableView.allowsSelection = true
         
@@ -160,7 +166,7 @@ class ThreadDetailViewController: UIViewController {
         page = 0
         tid = thread?.id ?? tid
         BBSJarvis.getThread(threadID: tid, page: page, failure: { _ in
-            if (self.tableView.mj_header.isRefreshing()) {
+            if (self.tableView.mj_header.isRefreshing) {
                 self.tableView.mj_header.endRefreshing()
             }
         }) { dict in
@@ -168,7 +174,6 @@ class ThreadDetailViewController: UIViewController {
                 let thread = data["thread"] as? Dictionary<String, Any>,
                 let posts = data["post"] as? Array<Dictionary<String, Any>>,
                 let board = data["board"] as? [String: Any] {
-                
                 self.board = BoardModel(JSON: board)
                 let titleIsEmpty = self.thread!.title == "" // thread nil flag
 //                let threadNil = self.thread == nil
@@ -200,7 +205,7 @@ class ThreadDetailViewController: UIViewController {
 //                    self.tableView.reloadData()
 //                }
             }
-            if self.tableView.mj_header.isRefreshing() {
+            if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
         }
@@ -219,7 +224,7 @@ class ThreadDetailViewController: UIViewController {
             page += 1
         }
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
-            if (self.tableView.mj_footer.isRefreshing()) {
+            if (self.tableView.mj_footer.isRefreshing) {
                 self.tableView.mj_footer.endRefreshing()
             }
         }) {
@@ -228,9 +233,9 @@ class ThreadDetailViewController: UIViewController {
             let posts = data["post"] as? [[String: Any]] {
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
             }
-            if self.tableView.mj_footer.isRefreshing() {
+            if self.tableView.mj_footer.isRefreshing {
                 self.tableView.mj_footer.endRefreshing()
-                self.tableView.mj_footer.isAutomaticallyHidden = true
+//                self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             
             if self.currentPageList.count > 0 && self.postList.count != self.pastPageList.count + self.currentPageList.count {
@@ -244,7 +249,7 @@ class ThreadDetailViewController: UIViewController {
         self.pastPageList = []
         page = self.thread!.replyNumber/50
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
-            if (self.tableView.mj_footer.isRefreshing()) {
+            if (self.tableView.mj_footer.isRefreshing) {
                 self.tableView.mj_footer.endRefreshing()
             }
         }) {
@@ -253,9 +258,9 @@ class ThreadDetailViewController: UIViewController {
             let posts = data["post"] as? [[String: Any]]{
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
             }
-            if (self.tableView.mj_footer.isRefreshing()) {
+            if (self.tableView.mj_footer.isRefreshing) {
                 self.tableView.mj_footer.endRefreshing()
-                self.tableView.mj_footer.isAutomaticallyHidden = true
+//                self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             self.postList = self.pastPageList + self.currentPageList
             self.tableView.reloadData()
@@ -402,7 +407,7 @@ class ThreadDetailViewController: UIViewController {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + (self.thread?.authorName ?? "")
-            editDetailVC.canAnonymous = self.board?.anonymous == 1 ? true : false
+            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 BBSJarvis.reply(threadID: self.thread!.id, content: string, toID: nil, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
@@ -454,53 +459,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.hasFixedRowHeight = false
         cell?.delegate = self
         cell?.load(post: post)
-        
-        cell?.likeButton.addTarget { _ in
-            guard BBSUser.shared.token != nil else {
-                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-                alert.addAction(cancelAction)
-                let confirmAction = UIAlertAction(title: "好的", style: .default) {
-                    _ in
-                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                    self.present(navigationController, animated: true, completion: nil)
-                }
-                alert.addAction(confirmAction)
-                self.present(alert, animated: true, completion: nil)
-                return
-            }
-            if cell?.likeButton.tag == 1 {
-                // 取消点赞
-                BBSJarvis.sendPostOpinion(action: "delete", pid: post.id, success: {
-                    var newPost = post
-                    newPost.likeCount -= 1
-                    newPost.isLiked = false
-                    cell?.likeButton.tag = 0
-                    if let index = self.postList.index(where: { post.id == $0.id }) {
-                        self.postList.remove(at: index)
-                        self.postList.insert(newPost, at: index)
-                        cell?.load(post: newPost)
-                    }
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            } else {
-                // 点赞
-                BBSJarvis.sendPostOpinion(action: "like", pid: post.id, success: {
-                    var newPost = post
-                    newPost.likeCount += 1
-                    newPost.isLiked = true
-                    cell?.likeButton.tag = 1
-                    if let index = self.postList.index(where: { post.id == $0.id }) {
-                        self.postList.remove(at: index)
-                        self.postList.insert(newPost, at: index)
-                        cell?.load(post: newPost)
-                    }
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            }
-        }
         
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {
@@ -613,42 +571,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
-        
-        cell?.likeButton.addTarget { _ in
-            guard BBSUser.shared.token != nil else {
-                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-                alert.addAction(cancelAction)
-                let confirmAction = UIAlertAction(title: "好的", style: .default) {
-                    _ in
-                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                    self.present(navigationController, animated: true, completion: nil)
-                }
-                alert.addAction(confirmAction)
-                self.present(alert, animated: true, completion: nil)
-                return
-            }
-            if self.thread!.isLiked {
-                // 取消点赞
-                BBSJarvis.sendThreadOpinion(action: "delete", tid: self.thread!.id, success: {
-                    self.thread?.isLiked = false
-                    self.thread?.likeCount -= 1
-                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            } else {
-                // 点赞
-                BBSJarvis.sendThreadOpinion(action: "like", tid: self.thread!.id, success: {
-                    self.thread?.isLiked = true
-                    self.thread?.likeCount += 1
-                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            }
-        }
-
         
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {
@@ -765,11 +687,11 @@ extension ThreadDetailViewController: UITableViewDataSource {
             let cell = prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
             if self.thread?.anonymous == 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: self.thread!.authorID)
+                    let userVC = HHUserDetailViewController(uid: self.thread!.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
                 cell.portraitImageView.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: self.thread!.authorID)
+                    let userVC = HHUserDetailViewController(uid: self.thread!.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
             }
@@ -779,11 +701,11 @@ extension ThreadDetailViewController: UITableViewDataSource {
             let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
             if post.anonymous == 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: post.authorID)
+                    let userVC = HHUserDetailViewController(uid: post.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
                 cell.portraitImageView.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: post.authorID)
+                    let userVC = HHUserDetailViewController(uid: post.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
             }
@@ -829,7 +751,7 @@ extension ThreadDetailViewController: UITableViewDelegate {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + self.postList[indexPath.row].authorName
-            editDetailVC.canAnonymous = self.board?.anonymous == 1 ? true : false
+            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 let post = self.postList[indexPath.row]
                 let origin = post.content
@@ -925,7 +847,7 @@ extension ThreadDetailViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         refreshFlag = true
-        if (self.tableView.mj_footer.isRefreshing()) {
+        if (self.tableView.mj_footer.isRefreshing) {
             self.tableView.mj_footer.endRefreshing()
         }
     }

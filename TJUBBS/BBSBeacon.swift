@@ -25,7 +25,7 @@ enum BBSError: String, Error {
 
 struct BBSBeacon {
     //TODO: change AnyObject to Any
-    static func request(withType type: HTTPMethod = .get, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
+    static func request(withType type: HTTPMethod, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
         headers["X-Requested-With"] = "Mobile"
@@ -56,14 +56,7 @@ struct BBSBeacon {
                                 if let err = dict["err"] as? Int, err == 0 {
                                     success?(dict)
                                 } else {
-                                    if dict["data"] as? String == "无效的token" {
-                                        BBSUser.shared.token = nil
-//                                        HUD.flash(.labeledError(title: "登录过期😐 请重新登录", subtitle: nil), delay: 1.5)
-                                    } else {
-//                                        if BBSUser.shared.token != nil {
-                                            HUD.flash(.label(dict["data"] as? String), delay: 1.2)
-//                                        }
-                                    }
+                                    HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                                     failure?(BBSError.custom)
                                 }
                             }
@@ -80,6 +73,8 @@ struct BBSBeacon {
                 }
             }
             
+        } else if type == .put {
+            //
         } else if type == .delete {
             Alamofire.request(url, method: .delete, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
                 switch response.result {
@@ -155,6 +150,7 @@ struct BBSBeacon {
                     print(error)
                 }
             })
+            //URL(string: "1")!, to: "sdjaksdjal"
         } else if method == .post {
             Alamofire.upload(multipartFormData: { formdata in
                 formdata.append(data!, withName: "file", fileName: "image.jpeg", mimeType: "image/jpeg")
@@ -191,9 +187,7 @@ class FuckingWrapper: NSObject {
     override init() {}
     func startLoading() {
         if startTimer != nil {
-            let view = UIViewController.current?.view
-            HUD.show(.rotatingImage(UIImage(named: "progress")), onView: view)
-//            HUD.show(.rotatingImage(UIImage(named: "progress")))
+            HUD.show(.rotatingImage(UIImage(named: "progress")))
         }
     }
     func stopLoading() {
