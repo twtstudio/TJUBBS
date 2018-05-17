@@ -47,11 +47,13 @@ class ThreadDetailViewController: UIViewController {
     var replyButton = FakeTextFieldView(frame: CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45))
     
     var bottomButton = ExtendedButton(imageName: "down")
-
+    
     var refreshFlag = true
     
     convenience init(thread: ThreadModel) {
         self.init()
+        //self.contentInsetAdjustmentBehavior = false
+        //        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
         self.thread = thread
         print(thread.id)
         self.hidesBottomBarWhenPushed = true
@@ -59,8 +61,6 @@ class ThreadDetailViewController: UIViewController {
         PiwikTracker.shared.appName = "bbs.tju.edu.cn/forum/thread/\(thread.id)/page/1"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
         PiwikTracker.shared.sendView("")
-
-//        self.automaticallyAdjustsScrollViewInsets = true
     }
     
     convenience init(tid: Int) {
@@ -74,7 +74,7 @@ class ThreadDetailViewController: UIViewController {
             imageView.delegate = nil
         }
     }
-
+    
     func setNavigationSubview() {
         self.title = self.thread!.category
         centerTextView = UIView()
@@ -97,7 +97,7 @@ class ThreadDetailViewController: UIViewController {
         titleLabel.frame = CGRect(x: 0, y: 0, width: width, height: titleSize.height)
         titleLabel.numberOfLines = 1
         centerTextView.addSubview(titleLabel)
-
+        
         boardLabel.text = (self.board?.name ?? "详情" ) + " >"
         boardLabel.addTapGestureRecognizer { _ in
             if let board = self.board {
@@ -116,16 +116,22 @@ class ThreadDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if UIScreen.main.bounds.size.height == 812 {
+            self.replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45-34, width: UIScreen.main.bounds.size.width, height: 45)
+        } else {
+            self.replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45)
+        }
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.title = thread?.title
+        //        self.title = thread?.title
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         view.addSubview(tableView)
-//        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        //        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         var refreshingImages = [UIImage]()
         for i in 1...6 {
@@ -137,14 +143,14 @@ class ThreadDetailViewController: UIViewController {
         header?.lastUpdatedTimeLabel.isHidden = true
         header?.setImages(refreshingImages, for: .pulling)
         tableView.mj_header = header
-
+        
         
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("- 这是我的底线 -", for: .idle)
         (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("滑到底部了哟🌝", for: .noMoreData)
         (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("加加加加加载中...", for: .refreshing)
-
-        self.tableView.mj_footer.isAutomaticallyHidden = true
+        
+        //        self.tableView.mj_footer.isAutomaticallyHidden = true
         
         tableView.allowsSelection = true
         
@@ -168,10 +174,9 @@ class ThreadDetailViewController: UIViewController {
                 let thread = data["thread"] as? Dictionary<String, Any>,
                 let posts = data["post"] as? Array<Dictionary<String, Any>>,
                 let board = data["board"] as? [String: Any] {
-                
                 self.board = BoardModel(JSON: board)
                 let titleIsEmpty = self.thread!.title == "" // thread nil flag
-//                let threadNil = self.thread == nil
+                //                let threadNil = self.thread == nil
                 self.thread = ThreadModel(JSON: thread)
                 self.thread?.boardID = self.board!.id
                 if let name = self.board?.name {
@@ -190,15 +195,15 @@ class ThreadDetailViewController: UIViewController {
                     self.loadTitle()
                 }
                 
-//                let needRefresh = (self.pastPageList.count + self.currentPageList.count > self.postList.count || self.pastPageList.count == 0) && self.currentPageList.count != 0
-//                if needRefresh {
-                    self.postList = self.currentPageList + self.pastPageList
-                    self.tableView.reloadData()
-//                }
+                //                let needRefresh = (self.pastPageList.count + self.currentPageList.count > self.postList.count || self.pastPageList.count == 0) && self.currentPageList.count != 0
+                //                if needRefresh {
+                self.postList = self.currentPageList + self.pastPageList
+                self.tableView.reloadData()
+                //                }
                 
-//                if threadNil && !needRefresh {
-//                    self.tableView.reloadData()
-//                }
+                //                if threadNil && !needRefresh {
+                //                    self.tableView.reloadData()
+                //                }
             }
             if self.tableView.mj_header.isRefreshing() {
                 self.tableView.mj_header.endRefreshing()
@@ -225,12 +230,12 @@ class ThreadDetailViewController: UIViewController {
         }) {
             dict in
             if let data = dict["data"] as? [String: Any],
-            let posts = data["post"] as? [[String: Any]] {
+                let posts = data["post"] as? [[String: Any]] {
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
             }
             if self.tableView.mj_footer.isRefreshing() {
                 self.tableView.mj_footer.endRefreshing()
-                self.tableView.mj_footer.isAutomaticallyHidden = true
+                //                self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             
             if self.currentPageList.count > 0 && self.postList.count != self.pastPageList.count + self.currentPageList.count {
@@ -250,12 +255,12 @@ class ThreadDetailViewController: UIViewController {
         }) {
             dict in
             if let data = dict["data"] as? [String: Any],
-            let posts = data["post"] as? [[String: Any]]{
+                let posts = data["post"] as? [[String: Any]]{
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
             }
             if (self.tableView.mj_footer.isRefreshing()) {
                 self.tableView.mj_footer.endRefreshing()
-                self.tableView.mj_footer.isAutomaticallyHidden = true
+                //                self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             self.postList = self.pastPageList + self.currentPageList
             self.tableView.reloadData()
@@ -319,8 +324,8 @@ class ThreadDetailViewController: UIViewController {
             headerView!.addSubview(label)
             label.sizeToFit()
             label.snp.makeConstraints { make in
-//                make.left.top.right.bottom.equalToSuperview()
-//                make.left.top.right.equalToSuperview()
+                //                make.left.top.right.bottom.equalToSuperview()
+                //                make.left.top.right.equalToSuperview()
                 make.bottom.equalToSuperview().offset(-3)
                 make.top.equalToSuperview() 
                 make.left.equalToSuperview().offset(10)
@@ -344,7 +349,7 @@ class ThreadDetailViewController: UIViewController {
                 make.bottom.equalTo(spaceView.snp.top)
                 make.height.equalTo(1)
             }
-
+            
             
             headerView!.frame = CGRect(x: 0, y: 0, width: tableView.width, height: label.height+36)
         }
@@ -383,7 +388,7 @@ class ThreadDetailViewController: UIViewController {
         
         self.view.addSubview(replyButton)
         self.view.backgroundColor = .white
-
+        
         replyButton.addTapGestureRecognizer { _ in
             
             guard BBSUser.shared.token != nil else {
@@ -402,19 +407,19 @@ class ThreadDetailViewController: UIViewController {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + (self.thread?.authorName ?? "")
-            editDetailVC.canAnonymous = self.board?.anonymous == 1 ? true : false
+            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 BBSJarvis.reply(threadID: self.thread!.id, content: string, toID: nil, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
                 }, success: { _ in
                     HUD.flash(.success)
                     editDetailVC?.cancel(sender: UIBarButtonItem())
-//                    let _ = self.navigationController?.popViewController(animated: true)
+                    //                    let _ = self.navigationController?.popViewController(animated: true)
                     self.loadToBottom()
                 })
             }
             self.present(edictNC, animated: true, completion: nil)
-//            self.navigationController?.pushViewController(editDetailVC, animated: true)
+            //            self.navigationController?.pushViewController(editDetailVC, animated: true)
         }
     }
     
@@ -449,61 +454,11 @@ extension ThreadDetailViewController: UITableViewDataSource {
         var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell") as? RichPostCell
         if cell == nil {
             cell = RichPostCell(style: .default, reuseIdentifier: "RichReplyCell")
-//            cell = RichPostCell(reuseIdentifier: "RichReplyCell")
+            //            cell = RichPostCell(reuseIdentifier: "RichReplyCell")
         }
         cell?.hasFixedRowHeight = false
         cell?.delegate = self
         cell?.load(post: post)
-        let button = cell?.likeButton
-        cell?.likeButton.addTarget { [weak button] _ in
-            button?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-            UIView.animate(withDuration: 0.2, delay: 0.1, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
-                button?.transform = CGAffineTransform(scaleX: 1, y: 1)
-            }, completion: nil)
-
-            guard BBSUser.shared.token != nil else {
-                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-                alert.addAction(cancelAction)
-                let confirmAction = UIAlertAction(title: "好的", style: .default) {
-                    _ in
-                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                    self.present(navigationController, animated: true, completion: nil)
-                }
-                alert.addAction(confirmAction)
-                self.present(alert, animated: true, completion: nil)
-                return
-            }
-            if cell?.likeButton.tag == 1 {
-                // 取消点赞
-                BBSJarvis.sendPostOpinion(action: "delete", pid: post.id, success: {
-                    var newPost = post
-                    newPost.likeCount -= 1
-                    newPost.isLiked = false
-                    if let index = self.postList.index(where: { post.id == $0.id }) {
-                        self.postList.remove(at: index)
-                        self.postList.insert(newPost, at: index)
-                        cell?.load(post: newPost)
-                    }
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            } else {
-                // 点赞
-                BBSJarvis.sendPostOpinion(action: "like", pid: post.id, success: {
-                    var newPost = post
-                    newPost.likeCount += 1
-                    newPost.isLiked = true
-                    if let index = self.postList.index(where: { post.id == $0.id }) {
-                        self.postList.remove(at: index)
-                        self.postList.insert(newPost, at: index)
-                        cell?.load(post: newPost)
-                    }
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            }
-        }
         
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {
@@ -519,13 +474,13 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 self.present(alert, animated: true, completion: nil)
                 return
             }
-
+            
             let alertVC = UIAlertController()
             let copyAction = UIAlertAction(title: "复制", style: .default, handler: { action in
                 UIPasteboard.general.string = post.content
                 HUD.flash(.label("已复制到剪切板"), delay: 1.2)
             })
-
+            
             alertVC.addAction(copyAction)
             if post.authorID == BBSUser.shared.uid {
                 let editAction = UIAlertAction(title: "编辑", style: .default, handler: { action in
@@ -539,11 +494,11 @@ extension ThreadDetailViewController: UITableViewDataSource {
                         }, success: {
                             HUD.flash(.label("修改成功"), onView: self.view, delay: 1.2)
                             editController?.cancel(sender: UIBarButtonItem())
-//                            let _ = self.navigationController?.popViewController(animated: true)
+                            //                            let _ = self.navigationController?.popViewController(animated: true)
                         })
                     }
                     self.present(edictNC, animated: true, completion: nil)
-//                    self.navigationController?.pushViewController(editController, animated: true)
+                    //                    self.navigationController?.pushViewController(editController, animated: true)
                 })
                 
                 let deleteAction = UIAlertAction(title: "删除", style: .destructive, handler: { action in
@@ -562,10 +517,10 @@ extension ThreadDetailViewController: UITableViewDataSource {
                     deleteAlertVC.addAction(confirmAction)
                     self.present(deleteAlertVC, animated: true, completion: nil)
                 })
-                    alertVC.addAction(editAction)
-                    alertVC.addAction(deleteAction)
+                alertVC.addAction(editAction)
+                alertVC.addAction(deleteAction)
             }
-
+            
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
                 HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
@@ -617,47 +572,6 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
         
-        let button = cell?.likeButton
-        cell?.likeButton.addTarget { [weak button] _ in
-            button?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-            UIView.animate(withDuration: 0.2, delay: 0.1, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
-                button?.transform = CGAffineTransform(scaleX: 1, y: 1)
-            }, completion: nil)
-            guard BBSUser.shared.token != nil else {
-                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-                alert.addAction(cancelAction)
-                let confirmAction = UIAlertAction(title: "好的", style: .default) {
-                    _ in
-                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
-                    self.present(navigationController, animated: true, completion: nil)
-                }
-                alert.addAction(confirmAction)
-                self.present(alert, animated: true, completion: nil)
-                return
-            }
-            if self.thread!.isLiked {
-                // 取消点赞
-                BBSJarvis.sendThreadOpinion(action: "delete", tid: self.thread!.id, success: {
-                    self.thread?.isLiked = false
-                    self.thread?.likeCount -= 1
-                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            } else {
-                // 点赞
-                BBSJarvis.sendThreadOpinion(action: "like", tid: self.thread!.id, success: {
-                    self.thread?.isLiked = true
-                    self.thread?.likeCount += 1
-                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
-                }, failure: { errMsg in
-                    HUD.flash(.label(errMsg), delay: 1.2)
-                })
-            }
-        }
-
-        
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {
                 let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
@@ -672,7 +586,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 self.present(alert, animated: true, completion: nil)
                 return
             }
-
+            
             let alertVC = UIAlertController()
             if self.thread!.inCollection {
                 let disLikeAction = UIAlertAction(title: "取消收藏", style: .default, handler: { action in
@@ -734,7 +648,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
                 alertVC.addAction(editAction)
                 alertVC.addAction(deleteAction)
             }
-
+            
             let reportAction = UIAlertAction(title: "举报", style: .destructive, handler: { action in
                 HUD.flash(.label("举报成功"), onView: self.view, delay: 1.2)
             })
@@ -757,7 +671,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             }
             self.present(alertVC, animated: true, completion: nil)
         }
-
+        
         if thread!.anonymous == 1 {
             cell?.portraitImageView.image = UIImage(named: "anonymous")
         } else {
@@ -767,17 +681,17 @@ extension ThreadDetailViewController: UITableViewDataSource {
         }
         return cell!
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0{
             let cell = prepareCellForIndexPath(tableView: tableView, indexPath: indexPath)
             if self.thread?.anonymous == 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: self.thread!.authorID)
+                    let userVC = HHUserDetailViewController(uid: self.thread!.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
                 cell.portraitImageView.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: self.thread!.authorID)
+                    let userVC = HHUserDetailViewController(uid: self.thread!.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
             }
@@ -787,11 +701,11 @@ extension ThreadDetailViewController: UITableViewDataSource {
             let cell = prepareReplyCellForIndexPath(tableView: tableView, indexPath: indexPath, post: post)
             if post.anonymous == 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: post.authorID)
+                    let userVC = HHUserDetailViewController(uid: post.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
                 cell.portraitImageView.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: post.authorID)
+                    let userVC = HHUserDetailViewController(uid: post.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
             }
@@ -837,31 +751,29 @@ extension ThreadDetailViewController: UITableViewDelegate {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + self.postList[indexPath.row].authorName
-            editDetailVC.canAnonymous = self.board?.anonymous == 1 ? true : false
+            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 let post = self.postList[indexPath.row]
                 let origin = post.content
                 // cut secondary quotation
                 let cutString = origin.replacingOccurrences(of: "[\\s]*>[\\s]*>(.|[\\s])*", with: "", options: .regularExpression, range: nil)
                 var shortString = cutString
-                if cutString.characters.count > 91 {
-                    shortString = (cutString as NSString).substring(with: NSMakeRange(0, 90))
+                if cutString.characters.count > 61 {
+                    shortString = (cutString as NSString).substring(with: NSMakeRange(0, 60))
                 }
-//                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
-                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName)：\n>" + shortString.replacingOccurrences(of: "\n", with: "\n>")
-
+                let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)
                 
                 BBSJarvis.reply(threadID: self.thread!.id, content: resultString, toID: post.id, anonymous: editDetailVC?.isAnonymous ?? false, failure: { error in
                     HUD.flash(.label("出错了...请稍后重试"))
                 }, success: { _ in
                     HUD.flash(.success)
                     editDetailVC?.cancel(sender: UIBarButtonItem())
-//                    let _ = self.navigationController?.popViewController(animated: true)
+                    //                    let _ = self.navigationController?.popViewController(animated: true)
                     self.loadToBottom()
                 })
             }
             self.present(edictNC, animated: true, completion: nil)
-//            self.navigationController?.pushViewController(editDetailVC, animated: true)
+            //            self.navigationController?.pushViewController(editDetailVC, animated: true)
         }
     }
 }
@@ -955,7 +867,7 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
             self.navigationController?.pushViewController(detailVC, animated: true)
             return
         }
-    
+        
         let ac = UIAlertController(title: "链接", message: link.absoluteString, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "跳转到 Safari", style: .default) {
             action in
@@ -970,7 +882,7 @@ extension ThreadDetailViewController: HtmlContentCellDelegate {
         present(ac, animated: true, completion: nil)
     }
     func htmlContentCellSizeDidChange(cell: RichPostCell) {
-//        if let indexPath = tableView.indexPath(for: cell) {
+        //        if let indexPath = tableView.indexPath(for: cell) {
         if tableView.visibleCells.contains(cell) {
             self.tableView.reloadData()
         }

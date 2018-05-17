@@ -104,7 +104,7 @@ class AddThreadViewController: UIViewController {
         textView.layoutManager.delegate = self
         textStorage.appendString(placeholder)
         // set the cursor
-        textView.selectedRange = NSMakeRange(placeholder.characters.count, 0)
+        textView.selectedRange = NSMakeRange(placeholder.count, 0)
         initBar()
     }
 
@@ -226,7 +226,7 @@ class AddThreadViewController: UIViewController {
                 let userSearchVC = UserSearchViewController()
                 userSearchVC.doneBlock = { uid, username in
                     self.textStorage.replaceCharacters(in: self.textView.selectedRange, with: "[@\(username)](/user/\(uid))")
-                    let offset = 2 + username.characters.count + 8 + uid.description.characters.count + 1
+                    let offset = 2 + username.count + 8 + uid.description.count + 1
                     self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location+offset, 0)
                     self.textView.becomeFirstResponder()
                 }

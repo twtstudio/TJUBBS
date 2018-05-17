@@ -87,7 +87,7 @@ extension MessageDetailViewController: UITableViewDataSource {
             cell.timeLabel.isHidden = true
             if model.authorId != 0 { // exclude anonymous user
                 cell.portraitImageView.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: self.model.authorId)
+                    let userVC = HHUserDetailViewController(uid: self.model.authorId)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
             }
@@ -263,7 +263,7 @@ extension MessageDetailViewController: UITableViewDataSource {
             // cut secondary quotation
             let cutString = origin.replacingOccurrences(of: "[\\s]*>[\\s]*>(.|[\\s])*", with: "", options: .regularExpression, range: nil)
             var shortString = cutString
-            if cutString.characters.count > 91 {
+            if cutString.count > 91 {
                 shortString = (cutString as NSString).substring(with: NSMakeRange(0, 90))
             }
 //            let resultString = string + "\n > 回复 #\(detailedModel.floor) \(self.model.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)

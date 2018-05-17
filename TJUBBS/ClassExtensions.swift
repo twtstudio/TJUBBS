@@ -21,7 +21,7 @@ extension UIButton {
             //ugly
             var spaceTitle = title
             let index = title.index(after: title.startIndex)
-            spaceTitle.insert(contentsOf: "  ".characters, at: index)
+            spaceTitle.insert(contentsOf: "  ", at: index)
             self.setTitle(spaceTitle, for: .normal)
             self.setTitleColor(UIColor.white, for: .normal)
             self.setBackgroundImage(UIImage.init(color: UIColor.lightGray), for: .disabled)
@@ -80,11 +80,11 @@ extension UIButton {
 }
 
 extension UILabel {
-    convenience init(text: String, color: UIColor = UIColor.black, fontSize: Int = 15) {
+    convenience init(text: String, color: UIColor = UIColor.black, fontSize: Int = 15, weight: UIFontWeight = UIFontWeightRegular) {
         self.init()
         self.text = text
         self.textColor = color
-        self.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
+        self.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: weight)
 //        self.sizeToFit()
     }
     
@@ -284,6 +284,19 @@ extension UIFont {
         }
         return UIFont.systemFont(ofSize: flexSize)
     }
+    static func HHflexibleFont(ofBaseSize size: CGFloat) -> UIFont {
+        let width = UIScreen.main.bounds.width
+        var flexSize = size
+        if width <= 320 {
+            // small size
+            flexSize = size*0.85
+        } else if width >= 414 {
+            // big size
+            flexSize = size*1.1
+        }
+        return UIFont.systemFont(ofSize: flexSize, weight: UIFontWeightLight)
+    }
+
 }
 
 

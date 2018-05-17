@@ -82,7 +82,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     (tabBarVC.selectedViewController as? UINavigationController)?.pushViewController(detailVC, animated: true)
                     return true
                 } else if let uid = Int(query.replacingOccurrences(of: "^uid=([0-9]*?)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
-                    let detailVC = UserDetailViewController(uid: uid)
+                    let detailVC = HHUserDetailViewController(uid: uid)
                     (tabBarVC.selectedViewController as? UINavigationController)?.pushViewController(detailVC, animated: true)
                     return true
                 }

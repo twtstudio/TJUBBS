@@ -80,7 +80,7 @@ class SearchViewController: UIViewController {
     }
     
     func search(with keyword: String) {
-        guard keyword.characters.count > 0 else {
+        guard keyword.count > 0 else {
             return
         }
 
@@ -111,7 +111,7 @@ class SearchViewController: UIViewController {
     func loadMore() {
         // 确保类型是.thread
         guard searchType == .thread,
-            let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed), searchText.characters.count > 0 else {
+            let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed), searchText.count > 0 else {
             return
         }
 
@@ -186,7 +186,7 @@ extension SearchViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(threadVC, animated: true)
         case .user:
             let user = userList[indexPath.row]
-            let userVC = UserDetailViewController(uid: user.id ?? 0)
+            let userVC = HHUserDetailViewController(uid: user.id ?? 0)
             self.navigationController?.pushViewController(userVC, animated: true)
         }
 
@@ -208,11 +208,11 @@ extension SearchViewController: UITableViewDataSource {
             }
             if data.anonymous == 0 { // exclude anonymous user
                 cell.usernameLabel.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: data.authorID)
+                    let userVC = HHUserDetailViewController(uid: data.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
                 cell.portraitImageView.addTapGestureRecognizer { _ in
-                    let userVC = UserDetailViewController(uid: data.authorID)
+                    let userVC = HHUserDetailViewController(uid: data.authorID)
                     self.navigationController?.pushViewController(userVC, animated: true)
                 }
             } else {

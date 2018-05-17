@@ -315,7 +315,7 @@ extension InfoModifyController: UITextViewDelegate {
         }
         
         textView.textColor = UIColor.black
-        let count = textView.text.characters.count
+        let count = textView.text.count
         self.customCallback?(count)
     }
     

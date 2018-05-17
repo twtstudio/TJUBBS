@@ -38,7 +38,9 @@ class UserInfoViewController: UIViewController {
         let refreshItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.refresh))
         self.navigationItem.backBarButtonItem = backItem
         self.navigationItem.rightBarButtonItem = refreshItem
-        
+
+
+//        scrollViewDidScroll(tableView as UIScrollView)
         refresh()
         
         let cacheKey = "\(BBSUser.shared.uid ?? 0)" + Date.today
@@ -56,11 +58,19 @@ class UserInfoViewController: UIViewController {
         
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(-64)
+            //            make.top.equalToSuperview().offset(-64)
+            make.top.equalToSuperview()
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
+        } else {
+            self.automaticallyAdjustsScrollViewInsets = false
+            // Fallback on earlier versions
+        }
+
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UserInfoTableViewCell.self, forCellReuseIdentifier: "ID")
@@ -91,30 +101,7 @@ class UserInfoViewController: UIViewController {
         }
     }
     
-//    func refreshMessage() {
-////        print("refreshMessgae")
-//        BBSJarvis.getMessageCount(page: 0, success: {
-//            dict in
-//            //            print(dict)
-//            let latestMessageID = UserDefaults.standard.value(forKey: MESSAGEKEY) as? Int ?? 0
-//            if let data = dict["data"] as? [[String: Any]],
-//                data.count > 0,
-//                let messageID = data[0]["id"] as? Int,
-//                messageID > latestMessageID {
-//                self.messageFlag = true
-//                UserDefaults.standard.set(messageID, forKey: MESSAGEKEY)
-//            }
-//            UIView.performWithoutAnimation {
-//                self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
-//            }
-//        })
-//    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
@@ -236,7 +223,12 @@ extension UserInfoViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         var y = -scrollView.contentOffset.y
-        y = y - 64
+//        if UIDevice().userInterfaceIdiom == .phone && UIScreen.main.nativeBounds.height == 2436 {
+//            //iPhone X
+//        } else {
+//            y = y - 64
+//        }
+
         guard y > 0 else {
             return
         }

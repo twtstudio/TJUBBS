@@ -26,7 +26,7 @@ class InputItem: ExpressibleByStringLiteral {
     }
     
     func decodeString(value: String) {
-        let array = value.characters.split(separator: "-").map(String.init)
+        let array = value.split(separator: "-").map(String.init)
         guard array.count >= 3 else {
             fatalError("用错了啊兄弟 Usage: 标签-提示-字段(-s) -s 私密模式")
         }

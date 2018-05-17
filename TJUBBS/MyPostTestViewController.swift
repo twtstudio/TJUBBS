@@ -107,7 +107,7 @@
 //            
 //            let mu = NSMutableAttributedString(string: post)
 //            let regex = try? NSRegularExpression(pattern: "!\\[\\](\\(attach:(\\d+)\\))", options: .init(rawValue: 0))
-//            regex?.enumerateMatches(in: post, options: .init(rawValue: 0), range: NSMakeRange(0, post.characters.count), using: { result, flag, stop in
+//            regex?.enumerateMatches(in: post, options: .init(rawValue: 0), range: NSMakeRange(0, post.count), using: { result, flag, stop in
 //                if let result = result {
 //                    let r = result.range
 //                    let attachString = (post as NSString).substring(with: r)
@@ -168,7 +168,7 @@
 //            
 //            let mu = NSMutableAttributedString(string: post)
 //            let regex = try? NSRegularExpression(pattern: "!\\[\\](\\(attach:(\\d+)\\))", options: .init(rawValue: 0))
-//            regex?.enumerateMatches(in: post, options: .init(rawValue: 0), range: NSMakeRange(0, post.characters.count), using: { result, flag, stop in
+//            regex?.enumerateMatches(in: post, options: .init(rawValue: 0), range: NSMakeRange(0, post.count), using: { result, flag, stop in
 //                if let result = result {
 //                    let r = result.range
 //                    let attachString = (post as NSString).substring(with: r)

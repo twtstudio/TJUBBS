@@ -153,12 +153,12 @@ extension PostCell {
     func labeledTitle(label: String, content: String) -> NSMutableAttributedString {
         let fooString = "\(label) \(content)"
         let mutableAttributedString = NSMutableAttributedString(string: fooString)
-        mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.lightGray,range: NSRange(location: 0, length: label.characters.count))
-        mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.black, range: NSRange(location: label.characters.count+1, length: content.characters.count))
-//        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 16), range: NSRange(location: 0, length: label.characters.count))
-        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.flexibleFont(ofBaseSize: 13.3), range: NSRange(location: 0, length: label.characters.count))
-//        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 20), range: NSRange(location: label.characters.count+1 , length: content.characters.count))
-        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.flexibleFont(ofBaseSize: 16.6), range: NSRange(location: label.characters.count+1 , length: content.characters.count))
+        mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.lightGray,range: NSRange(location: 0, length: label.count))
+        mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.black, range: NSRange(location: label.count+1, length: content.count))
+//        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 16), range: NSRange(location: 0, length: label.count))
+        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.flexibleFont(ofBaseSize: 13.3), range: NSRange(location: 0, length: label.count))
+//        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 20), range: NSRange(location: label.count+1 , length: content.count))
+        mutableAttributedString.addAttribute(NSFontAttributeName, value: UIFont.flexibleFont(ofBaseSize: 16.6), range: NSRange(location: label.count+1 , length: content.count))
         
         return mutableAttributedString
     }

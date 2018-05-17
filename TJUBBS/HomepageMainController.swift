@@ -87,18 +87,15 @@ class HomepageMainController: WMPageController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
-        
+        super.viewWillAppear(animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         self.navigationController?.navigationBar.setBackgroundImage(fooNavigationBarImage, for: .default)
         self.navigationController?.navigationBar.shadowImage = fooNavigationBarShadowImage
         

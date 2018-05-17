@@ -271,7 +271,7 @@ public struct Markdown {
         
         var backslashPattern = ""
         
-        for c in "\\`*_{}[]()>#+-.!/".characters {
+        for c in "\\`*_{}[]()>#+-.!/" {
             let key = String(c)
             let hash = Markdown.getHashKey(key, isHtmlBlock: false)
             _escapeTable[key] = hash
@@ -1683,7 +1683,7 @@ public struct Markdown {
         var line = ""
         var valid = false
         
-        for i in text.characters.indices {
+        for i in text.indices {
             let c = text[i]
             switch (c) {
             case "\n":
@@ -1702,7 +1702,7 @@ public struct Markdown {
                 line = ""
                 valid = false
             case "\t":
-                let width = Markdown._tabWidth - line.characters.count % Markdown._tabWidth
+                let width = Markdown._tabWidth - line.count % Markdown._tabWidth
                 for _ in 0..<width {
                     line += " "
                 }
@@ -2023,7 +2023,7 @@ extension Markdown {
     static func parse(string: String) -> String {
         var mk = Markdown()
         let transformed = mk.transform(string)
-        let end = transformed.index(transformed.endIndex, offsetBy: transformed.characters.count > 1 ? -1:0)
+        let end = transformed.index(transformed.endIndex, offsetBy: transformed.count > 1 ? -1:0)
         let cut = transformed.substring(with: Range(uncheckedBounds: (transformed.startIndex, end)))
         return cut.replacingOccurrences(of: "\n", with: "<br>")
     }

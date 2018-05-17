@@ -39,15 +39,15 @@ class BubbleCell: UITableViewCell {
         var bubbleHeight: CGFloat = message.content.height(withConstrainedWidth: bubbleWidth-20, font: Metadata.Font.messageFont) + 14
         
         if message.content.containsChineseCharacters {
-            if message.content.characters.count < 17 {
+            if message.content.count < 17 {
                 let fooLabel = UILabel(text: message.content)
                 fooLabel.font = Metadata.Font.messageFont
                 fooLabel.sizeToFit()
                 bubbleWidth = fooLabel.bounds.size.width + 20
             }
         } else {
-            if message.content.characters.count < 34 {
-                //                bubbleWidth = CGFloat(message.content.characters.count) * 8 + 20
+            if message.content.count < 34 {
+                //                bubbleWidth = CGFloat(message.content.count) * 8 + 20
                 let fooLabel = UILabel(text: message.content)
                 fooLabel.font = Metadata.Font.messageFont
                 fooLabel.sizeToFit()
@@ -61,7 +61,7 @@ class BubbleCell: UITableViewCell {
         
         if message.type == .sent {
             
-            if message.content.characters.count < 5 && message.content.containsOnlyEmoji {
+            if message.content.count < 5 && message.content.containsOnlyEmoji {
                 let emojiBubble = UILabel(text: message.content, fontSize: 50)
                 emojiBubble.sizeToFit()
                 bubbleWidth = emojiBubble.bounds.size.width
@@ -90,7 +90,7 @@ class BubbleCell: UITableViewCell {
             // Using better UITextView for special data format detecting
             let messageTextView = UITextView(frame: CGRect(x: 10, y: 7, width: bubbleWidth - 20, height: bubbleHeight - 14))
             messageTextView.text = message.content
-            if message.content.characters.count < 4 && message.content.containsOnlyEmoji {
+            if message.content.count < 4 && message.content.containsOnlyEmoji {
                 messageTextView.font = Metadata.Font.messageEmojiFont
             } else {
                 messageTextView.font = Metadata.Font.messageFont
@@ -110,7 +110,7 @@ class BubbleCell: UITableViewCell {
             
         } else {
             
-            if message.content.characters.count < 5 && message.content.containsOnlyEmoji {
+            if message.content.count < 5 && message.content.containsOnlyEmoji {
                 let emojiBubble = UILabel(text: message.content, fontSize: 50)
                 emojiBubble.sizeToFit()
                 bubbleWidth = emojiBubble.bounds.size.width
@@ -138,7 +138,7 @@ class BubbleCell: UITableViewCell {
             // Using better UITextView for special data format detecting
             let messageTextView = UITextView(frame: CGRect(x: 10, y: 7, width: bubbleWidth - 20, height: bubbleHeight - 14))
             messageTextView.text = message.content
-            if message.content.characters.count < 4 && message.content.containsOnlyEmoji {
+            if message.content.count < 4 && message.content.containsOnlyEmoji {
                 messageTextView.font = Metadata.Font.messageEmojiFont
             } else {
                 messageTextView.font = Metadata.Font.messageFont
@@ -251,15 +251,15 @@ class GroupBubbleCell: UITableViewCell {
         var bubbleHeight: CGFloat = message.content.height(withConstrainedWidth: bubbleWidth-20, font: Metadata.Font.messageFont) + 14
         
         if message.content.containsChineseCharacters {
-            if message.content.characters.count < 17 {
+            if message.content.count < 17 {
                 let fooLabel = UILabel(text: message.content)
                 fooLabel.font = Metadata.Font.messageFont
                 fooLabel.sizeToFit()
                 bubbleWidth = fooLabel.bounds.size.width + 20
             }
         } else {
-            if message.content.characters.count < 34 {
-                //                bubbleWidth = CGFloat(message.content.characters.count) * 8 + 20
+            if message.content.count < 34 {
+                //                bubbleWidth = CGFloat(message.content.count) * 8 + 20
                 let fooLabel = UILabel(text: message.content)
                 fooLabel.font = Metadata.Font.messageFont
                 fooLabel.sizeToFit()
@@ -273,7 +273,7 @@ class GroupBubbleCell: UITableViewCell {
         
         if message.type == .sent {
             
-            if message.content.characters.count < 5 && message.content.containsOnlyEmoji {
+            if message.content.count < 5 && message.content.containsOnlyEmoji {
                 let emojiBubble = UILabel(text: message.content, fontSize: 50)
                 emojiBubble.sizeToFit()
                 bubbleWidth = emojiBubble.bounds.size.width
@@ -304,7 +304,7 @@ class GroupBubbleCell: UITableViewCell {
             // Using better UITextView for special data format detecting
             let messageTextView = UITextView(frame: CGRect(x: 10, y: 7, width: bubbleWidth - 20, height: bubbleHeight - 14))
             messageTextView.text = message.content
-            if message.content.characters.count < 4 && message.content.containsOnlyEmoji {
+            if message.content.count < 4 && message.content.containsOnlyEmoji {
                 messageTextView.font = Metadata.Font.messageEmojiFont
             } else {
                 messageTextView.font = Metadata.Font.messageFont
@@ -326,7 +326,7 @@ class GroupBubbleCell: UITableViewCell {
             
         } else {
             
-            if message.content.characters.count < 5 && message.content.containsOnlyEmoji {
+            if message.content.count < 5 && message.content.containsOnlyEmoji {
                 let emojiBubble = UILabel(text: message.content, fontSize: 50)
                 emojiBubble.sizeToFit()
                 bubbleWidth = emojiBubble.bounds.size.width
@@ -355,7 +355,7 @@ class GroupBubbleCell: UITableViewCell {
             // Using better UITextView for special data format detecting
             let messageTextView = UITextView(frame: CGRect(x: 10, y: 7, width: bubbleWidth - 20, height: bubbleHeight - 14))
             messageTextView.text = message.content
-            if message.content.characters.count < 4 && message.content.containsOnlyEmoji {
+            if message.content.count < 4 && message.content.containsOnlyEmoji {
                 messageTextView.font = Metadata.Font.messageEmojiFont
             } else {
                 messageTextView.font = Metadata.Font.messageFont

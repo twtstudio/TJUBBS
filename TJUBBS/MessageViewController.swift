@@ -135,7 +135,7 @@ extension MessageViewController: UITableViewDataSource {
         
         if model.authorId != 0 { // exclude anonymous user
             cell.portraitImageView.addTapGestureRecognizer { _ in
-                let userVC = UserDetailViewController(uid: model.authorId)
+                let userVC = HHUserDetailViewController(uid: model.authorId)
                 self.navigationController?.pushViewController(userVC, animated: true)
             }
         }

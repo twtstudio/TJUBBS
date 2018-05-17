@@ -1,5 +1,5 @@
 //
-//  UserDetailViewController.swift
+//  HHUserDetailViewController.swift
 //  TJUBBS
 //
 //  Created by Halcao on 2017/7/4.

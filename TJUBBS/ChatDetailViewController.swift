@@ -218,7 +218,7 @@ extension ChatDetailViewController {
 
         var bubbleHeight = messageHeight + 14
         
-        if currentMessage.content.characters.count < 5 && currentMessage.content.containsOnlyEmoji {
+        if currentMessage.content.count < 5 && currentMessage.content.containsOnlyEmoji {
             bubbleHeight = 60
         }
         

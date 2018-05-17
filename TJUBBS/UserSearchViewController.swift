@@ -73,7 +73,7 @@ class UserSearchViewController: UIViewController {
     }
     
     func search(with keyword: String) {
-        guard keyword.characters.count > 0 else {
+        guard keyword.count > 0 else {
             return
         }
         BBSJarvis.getUser(by: keyword, failure: { error in

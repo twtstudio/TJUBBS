@@ -109,7 +109,7 @@ extension FriendsListController: UITableViewDataSource {
         cell.timeLabel.isHidden = true
         if model.uid != 0 { // exclude anonymous user
             cell.portraitImageView.addTapGestureRecognizer { _ in
-                let userVC = UserDetailViewController(uid: model.uid ?? 0)
+                let userVC = HHUserDetailViewController(uid: model.uid ?? 0)
                 self.navigationController?.pushViewController(userVC, animated: true)
             }
         }
