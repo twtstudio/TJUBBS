@@ -143,7 +143,7 @@ extension FriendsListController: UITableViewDelegate {
 extension FriendsListController {
     func refresh() {
         BBSJarvis.getFriendList(failure: { _ in
-            if self.tableView.mj_header.isRefreshing() {
+            if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
 
@@ -151,7 +151,7 @@ extension FriendsListController {
             self.friendList = friends
             DispatchQueue.main.async {
                 self.tableView.reloadData()
-                if self.tableView.mj_header.isRefreshing() {
+                if self.tableView.mj_header.isRefreshing {
                     self.tableView.mj_header.endRefreshing()
                 }
             }

@@ -177,7 +177,7 @@ class HHUserDetailViewController: UIViewController {
     //下拉刷新
     func refresh() {
         // 结束刷新
-        if self.tableView.mj_header.isRefreshing() {
+        if self.tableView.mj_header.isRefreshing {
             self.tableView.mj_header.endRefreshing()
         }
     }

@@ -83,7 +83,7 @@ class EliteThreadViewController: UIViewController {
         })
         
         BBSJarvis.getHot(failure: { _ in
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
         }) {
@@ -92,7 +92,7 @@ class EliteThreadViewController: UIViewController {
                 let hot = data["hot"] as? Array<Dictionary<String, Any>> {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) 
             }
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
             self.tableView?.reloadData()

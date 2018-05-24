@@ -59,7 +59,7 @@ class SearchViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 200
         let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(loadMore))
-        footer?.isAutomaticallyHidden = true
+        //footer?.isAutomaticallyHidden = true
         tableView.mj_footer = footer
         self.view.addSubview(tableView)
         self.view.addSubview(searchBar)

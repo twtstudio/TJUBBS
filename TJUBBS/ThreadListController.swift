@@ -96,7 +96,7 @@ class ThreadListController: UIViewController {
         tableView?.mj_header = header
 
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView?.mj_footer.isAutomaticallyHidden = true
+        //self.tableView?.mj_footer.isAutomaticallyHidden = true
         self.tableView?.mj_header.beginRefreshing()
         
         // 右侧按钮
@@ -184,7 +184,7 @@ extension ThreadListController {
     func refresh() {
         self.curPage = 0
         BBSJarvis.getThreadList(boardID: board?.id ?? bid, page: 0, failure: { _ in
-                if (self.tableView?.mj_header.isRefreshing())! {
+                if (self.tableView?.mj_header.isRefreshing)! {
                     self.tableView?.mj_header.endRefreshing()
                 }
         }) {
@@ -192,7 +192,7 @@ extension ThreadListController {
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let board = data["board"] as? Dictionary<String, Any>,
                 let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-                if (self.tableView?.mj_header.isRefreshing())! {
+                if (self.tableView?.mj_header.isRefreshing)! {
                     self.tableView?.mj_header.endRefreshing()
                 }
                 self.curPage = 0
@@ -211,14 +211,14 @@ extension ThreadListController {
         self.curPage += 1
         BBSJarvis.getThreadList(boardID: board!.id, page: curPage, failure: { error in
             HUD.flash(.labeledError(title: "网络错误...", subtitle: nil), onView: self.view, delay: 1.2, completion: nil)
-            if (self.tableView?.mj_footer.isRefreshing())! {
+            if (self.tableView?.mj_footer.isRefreshing)! {
                 self.tableView?.mj_footer.endRefreshing()
             }
         }) {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let threads = data["thread"] as? Array<Dictionary<String, Any>> {
-                if (self.tableView?.mj_footer.isRefreshing())! {
+                if (self.tableView?.mj_footer.isRefreshing)! {
                     self.tableView?.mj_footer.endRefreshing()
                 }
                 let newList = Mapper<ThreadModel>().mapArray(JSONArray: threads) 

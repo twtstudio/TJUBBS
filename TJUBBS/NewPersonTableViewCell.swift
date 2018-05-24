@@ -15,7 +15,7 @@ class NewPersonTableViewCell: UITableViewCell {
     var titleLabel: UILabel = UILabel(text: "", color: .black, fontSize: 16)
     var subjectLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 14)
     var nameLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 14)
-    var timeLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 14)
+    var timeLabel: UILabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var likedLabel: UILabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var replyLabel: UILabel = UILabel(text: "", color: .lightGray, fontSize: 14)
     var avatarImageView: UIImageView = UIImageView()
@@ -33,7 +33,7 @@ class NewPersonTableViewCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(replyLabel)
         contentView.addSubview(timeLabel)
-//        contentView.addSubview(likedLabel)
+        contentView.addSubview(likedLabel)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -79,7 +79,7 @@ class NewPersonTableViewCell: UITableViewCell {
             make.right.equalToSuperview().offset(-16)
             make.top.equalTo(nameLabel.snp.bottom).offset(12)
             make.left.equalTo(avatarImageView)
-            //make.bottom.equalToSuperview().offset(-16)
+//            make.bottom.equalToSuperview().offset(-16)
         }
         
         //SubjectLabel
@@ -94,11 +94,43 @@ class NewPersonTableViewCell: UITableViewCell {
                 make.right.equalToSuperview().offset(-16)
                 make.bottom.equalToSuperview().offset(-40)
             }
+            
+            //replyLabel
+            replyLabel.text = "回复(\(thread.replyNumber))"
+            replyLabel.snp.makeConstraints { make in
+                make.left.equalTo(titleLabel)
+                make.bottom.equalToSuperview().offset(-16)
+            }
+            
+            //likedLabel
+            likedLabel.text = "点赞(\(thread.likeCount))"
+            likedLabel.snp.makeConstraints { make in
+                make.left.equalTo(replyLabel.snp.right).offset(5)
+                make.bottom.equalToSuperview().offset(-16)
+            }
+            
+            //timeLabel
+            let timeStr = TimeStampTransfer.timeLabelSince(time: thread.createTime)
+            timeLabel.text = timeStr
+            timeLabel.snp.makeConstraints { make in
+                make.centerY.equalTo(replyLabel)
+                //make.top.equalTo(subjectLabel.snp.bottom).offset(10)
+                make.right.equalToSuperview().offset(-16)
+                make.bottom.equalToSuperview().offset(-16)
+            }
         } else {
-            if subjectLabel.superview != nil {
-                subjectLabel.removeFromSuperview()
+//            if subjectLabel.superview != nil {
+//                subjectLabel.removeFromSuperview()
+//            }
+            subjectLabel.text = " "
+            subjectLabel.snp.makeConstraints { make in
+                make.top.equalTo(titleLabel.snp.bottom).offset(8)
+                make.left.equalTo(titleLabel)
+                make.right.equalToSuperview().offset(-16)
+                make.bottom.equalToSuperview().offset(-40)
             }
         }
+        
     
         //replyLabel
         replyLabel.text = "回复(\(thread.replyNumber))"
@@ -106,13 +138,13 @@ class NewPersonTableViewCell: UITableViewCell {
             make.left.equalTo(titleLabel)
             make.bottom.equalToSuperview().offset(-16)
         }
-//
-//        //likedLabel
-//        likedLabel.text = "点赞(\(thread.beLiked))"
-//        likedLabel.snp.makeConstraints { make in
-//            make.left.equalTo(replyLabel.snp.right).offset(5)
-//            make.bottom.equalToSuperview().offset(-16)
-//        }
+
+        //likedLabel
+        likedLabel.text = "点赞(\(thread.likeCount))"
+        likedLabel.snp.makeConstraints { make in
+            make.left.equalTo(replyLabel.snp.right).offset(5)
+            make.bottom.equalToSuperview().offset(-16)
+        }
 
         //timeLabel
         let timeStr = TimeStampTransfer.timeLabelSince(time: thread.createTime)

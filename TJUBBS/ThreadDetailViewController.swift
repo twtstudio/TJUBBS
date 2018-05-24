@@ -150,7 +150,7 @@ class ThreadDetailViewController: UIViewController {
         (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("滑到底部了哟🌝", for: .noMoreData)
         (self.tableView.mj_footer as? MJRefreshAutoStateFooter)?.setTitle("加加加加加载中...", for: .refreshing)
         
-        //        self.tableView.mj_footer.isAutomaticallyHidden = true
+        //        //self.tableView.mj_footer.isAutomaticallyHidden = true
         
         tableView.allowsSelection = true
         
@@ -166,7 +166,7 @@ class ThreadDetailViewController: UIViewController {
         page = 0
         tid = thread?.id ?? tid
         BBSJarvis.getThread(threadID: tid, page: page, failure: { _ in
-            if (self.tableView.mj_header.isRefreshing()) {
+            if (self.tableView.mj_header.isRefreshing) {
                 self.tableView.mj_header.endRefreshing()
             }
         }) { dict in
@@ -205,7 +205,7 @@ class ThreadDetailViewController: UIViewController {
                 //                    self.tableView.reloadData()
                 //                }
             }
-            if self.tableView.mj_header.isRefreshing() {
+            if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
         }
@@ -224,7 +224,7 @@ class ThreadDetailViewController: UIViewController {
             page += 1
         }
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
-            if (self.tableView.mj_footer.isRefreshing()) {
+            if (self.tableView.mj_footer.isRefreshing) {
                 self.tableView.mj_footer.endRefreshing()
             }
         }) {
@@ -233,9 +233,9 @@ class ThreadDetailViewController: UIViewController {
                 let posts = data["post"] as? [[String: Any]] {
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts) 
             }
-            if self.tableView.mj_footer.isRefreshing() {
+            if self.tableView.mj_footer.isRefreshing {
                 self.tableView.mj_footer.endRefreshing()
-                //                self.tableView.mj_footer.isAutomaticallyHidden = true
+                //                //self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             
             if self.currentPageList.count > 0 && self.postList.count != self.pastPageList.count + self.currentPageList.count {
@@ -249,7 +249,7 @@ class ThreadDetailViewController: UIViewController {
         self.pastPageList = []
         page = self.thread!.replyNumber/50
         BBSJarvis.getThread(threadID: thread!.id, page: page, failure: { _ in
-            if (self.tableView.mj_footer.isRefreshing()) {
+            if (self.tableView.mj_footer.isRefreshing) {
                 self.tableView.mj_footer.endRefreshing()
             }
         }) {
@@ -258,9 +258,9 @@ class ThreadDetailViewController: UIViewController {
                 let posts = data["post"] as? [[String: Any]]{
                 self.currentPageList = Mapper<PostModel>().mapArray(JSONArray: posts)
             }
-            if (self.tableView.mj_footer.isRefreshing()) {
+            if (self.tableView.mj_footer.isRefreshing) {
                 self.tableView.mj_footer.endRefreshing()
-                //                self.tableView.mj_footer.isAutomaticallyHidden = true
+                //                //self.tableView.mj_footer.isAutomaticallyHidden = true
             }
             self.postList = self.pastPageList + self.currentPageList
             self.tableView.reloadData()
@@ -460,6 +460,57 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.delegate = self
         cell?.load(post: post)
         
+        let button = cell?.likeButton
+        cell?.likeButton.addTarget { [weak button] _ in
+            button?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+            UIView.animate(withDuration: 0.2, delay: 0.1, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+                button?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }, completion: nil)
+            
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            if cell?.likeButton.tag == 1 {
+                // 取消点赞
+                BBSJarvis.sendPostOpinion(action: "delete", pid: post.id, success: {
+                    var newPost = post
+                    newPost.likeCount -= 1
+                    newPost.isLiked = false
+                    if let index = self.postList.index(where: { post.id == $0.id }) {
+                        self.postList.remove(at: index)
+                        self.postList.insert(newPost, at: index)
+                        cell?.load(post: newPost)
+                    }
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            } else {
+                // 点赞
+                BBSJarvis.sendPostOpinion(action: "like", pid: post.id, success: {
+                    var newPost = post
+                    newPost.likeCount += 1
+                    newPost.isLiked = true
+                    if let index = self.postList.index(where: { post.id == $0.id }) {
+                        self.postList.remove(at: index)
+                        self.postList.insert(newPost, at: index)
+                        cell?.load(post: newPost)
+                    }
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            }
+        }
+        
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {
                 let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
@@ -571,6 +622,46 @@ extension ThreadDetailViewController: UITableViewDataSource {
         cell?.attributedTextContextView.layoutIfNeeded()
         cell?.contentView.setNeedsLayout()
         cell?.contentView.layoutIfNeeded()
+        
+        let button = cell?.likeButton
+        cell?.likeButton.addTarget { [weak button] _ in
+            button?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+            UIView.animate(withDuration: 0.2, delay: 0.1, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: {
+                button?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }, completion: nil)
+            guard BBSUser.shared.token != nil else {
+                let alert = UIAlertController(title: "请先登录", message: "", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                alert.addAction(cancelAction)
+                let confirmAction = UIAlertAction(title: "好的", style: .default) {
+                    _ in
+                    let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
+                    self.present(navigationController, animated: true, completion: nil)
+                }
+                alert.addAction(confirmAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            if self.thread!.isLiked {
+                // 取消点赞
+                BBSJarvis.sendThreadOpinion(action: "delete", tid: self.thread!.id, success: {
+                    self.thread?.isLiked = false
+                    self.thread?.likeCount -= 1
+                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            } else {
+                // 点赞
+                BBSJarvis.sendThreadOpinion(action: "like", tid: self.thread!.id, success: {
+                    self.thread?.isLiked = true
+                    self.thread?.likeCount += 1
+                    cell?.load(thread: self.thread!, boardName: self.board?.name ?? "")
+                }, failure: { errMsg in
+                    HUD.flash(.label(errMsg), delay: 1.2)
+                })
+            }
+        }
         
         cell?.moreButton.addTarget { _ in
             guard BBSUser.shared.token != nil else {
@@ -847,7 +938,7 @@ extension ThreadDetailViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         refreshFlag = true
-        if (self.tableView.mj_footer.isRefreshing()) {
+        if (self.tableView.mj_footer.isRefreshing) {
             self.tableView.mj_footer.endRefreshing()
         }
     }
