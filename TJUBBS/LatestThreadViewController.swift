@@ -86,7 +86,7 @@ class LatestThreadViewController: UIViewController {
         let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(load))
         footer?.setTitle("还没看过瘾？去分区看看吧~", for: .noMoreData)
         self.tableView?.mj_footer = footer
-        self.tableView?.mj_footer.isAutomaticallyHidden = true
+        //self.tableView?.mj_footer.isAutomaticallyHidden = true
 
         
     }
@@ -163,7 +163,7 @@ extension LatestThreadViewController {
 
         curPage = 0
         BBSJarvis.getIndex(page: curPage, failure: { _ in
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
         }, success: { dict in
@@ -171,7 +171,7 @@ extension LatestThreadViewController {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
             self.tableView?.mj_footer.resetNoMoreData()
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
             self.tableView?.reloadData()
@@ -183,7 +183,7 @@ extension LatestThreadViewController {
         
         BBSJarvis.getIndex(page: curPage, failure: { _ in
             self.curPage -= 1
-            if (self.tableView?.mj_footer.isRefreshing())! {
+            if (self.tableView?.mj_footer.isRefreshing)! {
                 self.tableView?.mj_footer.endRefreshing()
             }
         }, success: { dict in
@@ -195,7 +195,7 @@ extension LatestThreadViewController {
                     self.tableView?.mj_footer.endRefreshingWithNoMoreData()
                 }
             }
-            if (self.tableView?.mj_footer.isRefreshing())! {
+            if (self.tableView?.mj_footer.isRefreshing)! {
                 self.tableView?.mj_footer.endRefreshing()
             }
             self.tableView?.reloadData()

@@ -67,7 +67,7 @@ class MyPostsViewController: UIViewController {
         self.navigationItem.backBarButtonItem = backItem
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView.mj_footer.isAutomaticallyHidden = true
+        //self.tableView.mj_footer.isAutomaticallyHidden = true
         self.tableView.mj_header.beginRefreshing()
     }
     
@@ -75,11 +75,11 @@ class MyPostsViewController: UIViewController {
     func refresh() {
         page = 0
         BBSJarvis.getMyPostList(page: page, failure: { err in
-            if self.tableView.mj_header.isRefreshing() {
+            if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
         }, success: { posts in
-            if self.tableView.mj_header.isRefreshing() {
+            if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
             self.postList = posts
@@ -92,12 +92,12 @@ class MyPostsViewController: UIViewController {
     func load() {
         page += 1
         BBSJarvis.getMyPostList(page: page, failure: { err in
-            if self.tableView.mj_footer.isRefreshing() {
+            if self.tableView.mj_footer.isRefreshing {
                 self.tableView.mj_footer.endRefreshing()
             }
             self.page -= 1
         }, success: { posts in
-            if self.tableView.mj_footer.isRefreshing() {
+            if self.tableView.mj_footer.isRefreshing {
                 self.tableView.mj_footer.endRefreshing()
             }
             if self.postList.count == 0 {

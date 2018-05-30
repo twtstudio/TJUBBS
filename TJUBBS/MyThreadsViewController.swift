@@ -81,7 +81,7 @@ class MyThreadsViewController: UIViewController {
         tableView?.mj_header = header
 
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        self.tableView?.mj_footer.isAutomaticallyHidden = true
+        //self.tableView?.mj_footer.isAutomaticallyHidden = true
         self.tableView?.mj_header.beginRefreshing()
     }
     
@@ -99,7 +99,7 @@ class MyThreadsViewController: UIViewController {
                 self.tableView?.mj_footer.resetNoMoreData()
             }
             
-            if (self.tableView?.mj_header.isRefreshing())! {
+            if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
             self.tableView?.reloadData()
@@ -117,7 +117,7 @@ class MyThreadsViewController: UIViewController {
                     self.tableView?.mj_footer.endRefreshingWithNoMoreData()
                 }
             }
-            if (self.tableView?.mj_footer.isRefreshing())! {
+            if (self.tableView?.mj_footer.isRefreshing)! {
                 self.tableView?.mj_footer.endRefreshing()
             }
             self.tableView?.reloadData()

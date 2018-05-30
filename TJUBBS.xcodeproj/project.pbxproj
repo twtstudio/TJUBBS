@@ -90,6 +90,7 @@
 		68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F461511EBDCCE900D784F4 /* FavorateViewController.swift */; };
 		68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F461551EBE264800D784F4 /* SettingViewController.swift */; };
 		6BEE2A6DD08EA5391EEECB6B /* Pods_TJUBBS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6F43ADEF3827A55E61BC12 /* Pods_TJUBBS.framework */; };
+		C8CAC79320B64A9E0092BD7B /* piwiktracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C8CAC79020B64A9D0092BD7B /* piwiktracker.xcdatamodeld */; };
 		D8DCDBDBC4B8E493C53054CF /* Pods_BBSWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BD580876991C9F536CB1A82 /* Pods_BBSWidget.framework */; };
 /* End PBXBuildFile section */
 
@@ -222,6 +223,8 @@
 		68F461511EBDCCE900D784F4 /* FavorateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavorateViewController.swift; sourceTree = "<group>"; };
 		68F461551EBE264800D784F4 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		93952F21B48D2736B35318D9 /* Pods-BBSWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BBSWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-BBSWidget/Pods-BBSWidget.release.xcconfig"; sourceTree = "<group>"; };
+		C8CAC79120B64A9D0092BD7B /* piwiktracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = piwiktracker.xcdatamodel; sourceTree = "<group>"; };
+		C8CAC79220B64A9D0092BD7B /* piwiktracker v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "piwiktracker v2.xcdatamodel"; sourceTree = "<group>"; };
 		E9E8BF7E00D1A1F9914D3943 /* Pods-TJUBBS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.release.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.release.xcconfig"; sourceTree = "<group>"; };
 		FA6F43ADEF3827A55E61BC12 /* Pods_TJUBBS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TJUBBS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -445,6 +448,7 @@
 		682A84611EB5C3B900510FA4 /* TJUBBS */ = {
 			isa = PBXGroup;
 			children = (
+				C8CAC79020B64A9D0092BD7B /* piwiktracker.xcdatamodeld */,
 				360299F61F98776800EDF99F /* TJUBBS.entitlements */,
 				682A84901EB5C3CE00510FA4 /* Main */,
 				36FE25C41EB62A500090E805 /* Utilities */,
@@ -990,6 +994,7 @@
 				68B6834D1EC200D800F7A0BF /* MyPostHomeViewController.swift in Sources */,
 				68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */,
 				36FE25C61EB62A630090E805 /* log.swift in Sources */,
+				C8CAC79320B64A9E0092BD7B /* piwiktracker.xcdatamodeld in Sources */,
 				368D36A31EBA224C002978C6 /* SetInfoViewController.swift in Sources */,
 				36B45E041F6060C600AF9E57 /* MyPostTestViewController.swift in Sources */,
 				36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */,
@@ -1194,6 +1199,22 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TJUBBS/TJUBBS.entitlements;
 				DEVELOPMENT_TEAM = TYRRVX7RWJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/DTCoreText\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/DTFoundation\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Kingfisher\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MJRefresh\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Marklight\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjectMapper\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/PiwikTracker\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/PKHUD\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SlackTextViewController\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SnapKit\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/TOCropViewController\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/WMPageController\"",
+				);
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1212,6 +1233,22 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TJUBBS/TJUBBS.entitlements;
 				DEVELOPMENT_TEAM = TYRRVX7RWJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/DTCoreText\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/DTFoundation\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Kingfisher\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MJRefresh\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Marklight\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjectMapper\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/PiwikTracker\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/PKHUD\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SlackTextViewController\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SnapKit\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/TOCropViewController\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/WMPageController\"",
+				);
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1333,6 +1370,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C8CAC79020B64A9D0092BD7B /* piwiktracker.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C8CAC79120B64A9D0092BD7B /* piwiktracker.xcdatamodel */,
+				C8CAC79220B64A9D0092BD7B /* piwiktracker v2.xcdatamodel */,
+			);
+			currentVersion = C8CAC79220B64A9D0092BD7B /* piwiktracker v2.xcdatamodel */;
+			path = piwiktracker.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 682A84571EB5C3B900510FA4 /* Project object */;
 }
