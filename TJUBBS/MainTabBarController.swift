@@ -25,7 +25,9 @@ class MainTabBarController: UITabBarController {
         self.tabBar.barTintColor = .white
 //        self.tabBar.tintColor = .red
         
-        homepageVC = HomepageMainController(para: 1)
+        // MARK: - 切换首页
+//        homepageVC = HomepageMainController(para: 1)
+        homepageVC = NewHomePageViewController()
         let homepageNC = UINavigationController(rootViewController: homepageVC!)
         homepageNC.navigationBar.isTranslucent = false
         homepageNC.tabBarItem = createBarItem(imageName: "首页")

@@ -174,13 +174,13 @@ class HHUserDetailViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    //下拉刷新
-    func refresh() {
-        // 结束刷新
-        if self.tableView.mj_header.isRefreshing {
-            self.tableView.mj_header.endRefreshing()
-        }
-    }
+//    //下拉刷新
+//    func refresh() {
+//        // 结束刷新
+//        if self.tableView.mj_header.isRefreshing {
+//            self.tableView.mj_header.endRefreshing()
+//        }
+//    }
     
     func loadThread() {
         let page = 0
@@ -282,3 +282,29 @@ extension HHUserDetailViewController: UIViewControllerPreviewingDelegate {
         show(viewControllerToCommit, sender: self)
     }
 }
+
+//extension HHUserDetailViewController: UIScrollViewDelegate {
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let y = -scrollView.contentOffset.y
+//        guard y > 0 else {
+//            tableView.y = UIScreen.main.bounds.height * 0.65 + 30 + y
+//            return
+//        }
+//        let ratio = self.view.width/(UIScreen.main.bounds.height * 0.65)
+//        let height = UIScreen.main.bounds.height * 0.65 + y
+//        let width = height*ratio
+//        headerView.avatarViewBackground.snp.remakeConstraints { make in
+//            make.bottom.equalToSuperview()
+//            make.width.equalTo(width)
+//            make.centerX.equalTo(headerView.avatarView)
+//            make.height.equalTo(height+1)
+//        }
+//        headerView.blackGlassView.snp.remakeConstraints { make in
+//            make.bottom.equalToSuperview()
+//            make.centerX.equalTo(headerView.avatarView)
+//            make.width.equalTo(width)
+//            make.height.equalTo(height+1)
+//        }
+//        tableView.y = height + 30
+//    }
+//}

@@ -13,7 +13,7 @@ let MESSAGEKEY = "messageKey"
 
 class UserInfoViewController: UIViewController {
     var tableView = UITableView(frame: .zero, style: .grouped)
-    let contentArray = [["我的收藏", "我的发布", "编辑资料"], ["通用设置"]]
+    let contentArray = [["我的收藏", "我的发布", "编辑资料"], ["通用设置", "测试界面"]]
     var messagePage: Int = 0
     var messageList: [MessageModel] = []
     var messageFlag = false
@@ -212,6 +212,9 @@ extension UserInfoViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(detailVC, animated: true)
         case IndexPath(row: 0, section: 1):
             let detailVC = SettingViewController()
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        case IndexPath(row: 1, section: 1):
+            let detailVC = NewHomePageViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             let detailVC = UIViewController()
