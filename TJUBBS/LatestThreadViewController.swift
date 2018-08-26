@@ -13,7 +13,7 @@ import MJRefresh
 import PiwikTracker
 
 class LatestThreadViewController: UIViewController {
-    
+
     var tableView: UITableView?
     var threadList: [ThreadModel] = [] {
         didSet {
@@ -37,24 +37,23 @@ class LatestThreadViewController: UIViewController {
         }
     }
 
-    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
-        
+
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
-                
+
         registerForPreviewing(with: self, sourceView: tableView!)
         tableView?.snp.makeConstraints {
             make in
@@ -66,7 +65,7 @@ class LatestThreadViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
-        
+
         let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         var refreshingImages = [UIImage]()
         for i in 1...6 {
@@ -78,19 +77,17 @@ class LatestThreadViewController: UIViewController {
         header?.lastUpdatedTimeLabel.isHidden = true
         header?.setImages(refreshingImages, for: .pulling)
 
-        
         tableView?.mj_header = header
 //        tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         tableView?.mj_header.beginRefreshing()
-        
+
         let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(load))
         footer?.setTitle("还没看过瘾？去分区看看吧~", for: .noMoreData)
         self.tableView?.mj_footer = footer
         //self.tableView?.mj_footer.isAutomaticallyHidden = true
 
-        
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
@@ -101,15 +98,15 @@ class LatestThreadViewController: UIViewController {
 }
 
 extension LatestThreadViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return threadList.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = threadList[indexPath.row]
@@ -131,12 +128,12 @@ extension LatestThreadViewController: UITableViewDataSource {
         }
         return cell
     }
-    
+
 }
 
 extension LatestThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true) 
+        tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
@@ -144,7 +141,7 @@ extension LatestThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.1
     }
@@ -177,10 +174,10 @@ extension LatestThreadViewController {
             self.tableView?.reloadData()
         })
     }
-    
+
     func load() {
         curPage += 1
-        
+
         BBSJarvis.getIndex(page: curPage, failure: { _ in
             self.curPage -= 1
             if (self.tableView?.mj_footer.isRefreshing)! {
@@ -212,7 +209,7 @@ extension LatestThreadViewController: UIViewControllerPreviewingDelegate {
         }
         return nil
     }
-    
+
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         show(viewControllerToCommit, sender: self)
     }

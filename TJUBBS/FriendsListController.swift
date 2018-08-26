@@ -13,7 +13,7 @@ import MJRefresh
 import PKHUD
 
 class FriendsListController: UIViewController {
-    
+
     let screenSize = UIScreen.main.bounds.size
 
     var tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
@@ -26,7 +26,7 @@ class FriendsListController: UIViewController {
                 if containerView.subviews.count == 0 {
                     let label = UILabel()
                     label.text = "还没有好友 快去找小伙伴聊天吧!"
-                    label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
+                    label.textColor = UIColor(red: 0.80, green: 0.80, blue: 0.80, alpha: 1.00)
                     label.font = UIFont.boldSystemFont(ofSize: 19)
                     containerView.addSubview(label)
                     label.snp.makeConstraints { make in
@@ -35,14 +35,14 @@ class FriendsListController: UIViewController {
                     }
                     label.sizeToFit()
                 }
-                containerView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+                containerView.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
                 self.view.addSubview(containerView)
                 containerView.frame = CGRect(x: 0, y: 60, width: self.view.width, height: 40)
                 containerView.sizeToFit()
             }
         }
     }
-    
+
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = .lightGray
@@ -50,7 +50,7 @@ class FriendsListController: UIViewController {
         self.hidesBottomBarWhenPushed = true
         self.title = "好友"
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.addSubview(tableView)
@@ -60,7 +60,7 @@ class FriendsListController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 200
-        tableView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+        tableView.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         self.tableView.mj_header.beginRefreshing()
         tableView.snp.makeConstraints {
@@ -69,38 +69,38 @@ class FriendsListController: UIViewController {
             make.left.right.bottom.equalToSuperview()
         }
     }
-    
+
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
         return .delete
     }
-    
+
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         let pal = friendList[indexPath.row]
         friendList.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .automatic)
         BBSJarvis.friendRemove(uid: pal.uid ?? 0, failure: { _ in
-            
+
         }, success: { _ in
-        
+
         })
     }
 
 }
 
 extension FriendsListController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friendList.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "friendCell") as! MessageCell
         let model = friendList[indexPath.row]
-        
+
         cell.initUI(portraitImage: nil, username: model.username ?? "好友", time: "0", detail: model.signature ?? "")
         let portraitImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: model.uid ?? 0))
@@ -115,11 +115,11 @@ extension FriendsListController: UITableViewDataSource {
         }
         return cell
     }
-    
+
 }
 
 extension FriendsListController: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         // present friend dialog
@@ -128,17 +128,16 @@ extension FriendsListController: UITableViewDelegate {
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-    
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.1
     }
 
 }
-
 
 extension FriendsListController {
     func refresh() {

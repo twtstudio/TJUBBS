@@ -19,15 +19,15 @@ class InfoModifyController: UIViewController {
     var items: [InputItem] = []
     var headerMsg: String? = "修改信息"
     var customView: UIView?
-    var customCallback: ((Any)->())?
-    var handler: ((Any)->())?
-    var results: [String : String] = [:]
+    var customCallback: ((Any) -> Void)?
+    var handler: ((Any) -> Void)?
+    var results: [String: String] = [:]
     var style: InfoModifyStyle = .bottom
     var doneView: UIView?
     var doneText = "完成"
     var extraView: UIView?
-    
-    convenience init(title: String, items: [InputItem] = [], style: InfoModifyStyle, headerMsg: String? = nil, handler: ((Any)->())?) {
+
+    convenience init(title: String, items: [InputItem] = [], style: InfoModifyStyle, headerMsg: String? = nil, handler: ((Any) -> Void)?) {
         self.init()
         self.items = items
         self.title = title
@@ -35,7 +35,7 @@ class InfoModifyController: UIViewController {
         self.handler = handler
         self.style = style
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
@@ -45,11 +45,11 @@ class InfoModifyController: UIViewController {
         tableView.isScrollEnabled = false
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 40
-        
+
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.delegate = self
         view.addGestureRecognizer(tap)
-        
+
         self.view.addSubview(tableView)
         // 初始化完成操作View
         if style == .rightTop || style == .custom {
@@ -68,11 +68,11 @@ class InfoModifyController: UIViewController {
                 make.width.equalTo(screenFrame.width*(800/1080))
                 make.height.equalTo(screenFrame.height*(100/1920))
             }
-            
+
             button.addTarget(self, action: #selector(self.doneTapped), for: .touchUpInside)
             button.isEnabled = false
         }
-        
+
         if let extraView = extraView {
             self.view.addSubview(extraView)
             extraView.snp.makeConstraints { make in
@@ -89,15 +89,15 @@ class InfoModifyController: UIViewController {
 }
 
 extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.row]
         if item.type == .textField {
@@ -124,19 +124,19 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
             cell.textView?.autocapitalizationType = .none
             cell.textView?.spellCheckingType = .no
             cell.textView?.text = item.placeholder
-            cell.textView?.textColor = UIColor(red:0.52, green:0.53, blue:0.53, alpha:1.00)
+            cell.textView?.textColor = UIColor(red: 0.52, green: 0.53, blue: 0.53, alpha: 1.00)
             cell.textView?.delegate = self
             return cell
         }
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return headerMsg == nil ? 0.1 : 35
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if headerMsg != nil {
-            return  {
+            return {
                 let label = UILabel(text: "    "+headerMsg!)
                 label.font = UIFont.systemFont(ofSize: 13)
                 return label
@@ -145,7 +145,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
             return nil
         }
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         switch style {
         case .bottom:
@@ -156,7 +156,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
             return customView?.frame.height ?? 40
         }
     }
-    
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if style == .bottom {
             return doneView
@@ -168,7 +168,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
         }
         return nil
     }
-    
+
     func doneTapped() {
         if style != .custom {
             handler?(self.results)
@@ -187,7 +187,7 @@ extension InfoModifyController: UITableViewDelegate, UITableViewDataSource {
             }
         }
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if let cell = tableView.cellForRow(at: indexPath) as? TextInputCell {
@@ -215,7 +215,7 @@ extension InfoModifyController: UITextFieldDelegate {
             self.navigationItem.rightBarButtonItem?.isEnabled = results.count == items.count
         }
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let cell = textField.superview?.superview as? UITableViewCell, let indexPath = tableView.indexPath(for: cell) {
             let row = indexPath.row + 1
@@ -235,7 +235,7 @@ extension InfoModifyController: UITextFieldDelegate {
         }
         return false
     }
-    
+
     func moveUpwards(_ cell: UITableViewCell) {
         let screenHeight = UIScreen.main.bounds.height
         if style == .rightTop {
@@ -250,7 +250,7 @@ extension InfoModifyController: UITextFieldDelegate {
             }
         }
     }
-    
+
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let cell = textField.superview?.superview as? TextInputCell, let indexPath = tableView.indexPath(for: cell) {
             let row = indexPath.row
@@ -266,34 +266,34 @@ extension InfoModifyController: UITextFieldDelegate {
             moveUpwards(cell)
         }
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         UIView.animate(withDuration: 0.3) {
             self.tableView.frame = CGRect(x: 0, y: 0, width: self.tableView.frame.size.width, height: self.tableView.frame.size.height)
         }
     }
-    
+
 }
 
 extension InfoModifyController: UITextViewDelegate {
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         let itemIndex = -(textView.tag + 1)
-        if textView.tag < 0 && textView.text == items[itemIndex].placeholder  {
+        if textView.tag < 0 && textView.text == items[itemIndex].placeholder {
             textView.textColor = UIColor.black
             textView.text = ""
         }
         return true
     }
-    
+
     func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         if textView.tag < 0 && !textView.hasText {
             let itemIndex = -(textView.tag + 1)
-            textView.textColor = UIColor(red:0.52, green:0.53, blue:0.53, alpha:1.00)
+            textView.textColor = UIColor(red: 0.52, green: 0.53, blue: 0.53, alpha: 1.00)
             textView.text = items[itemIndex].placeholder
         }
         return true
     }
-    
+
     func textViewDidChange(_ textView: UITextView) {
         let index = textView.tag < 0 ? -(textView.tag + 1) : textView.tag
         if textView.tag < 0 {
@@ -305,7 +305,7 @@ extension InfoModifyController: UITextViewDelegate {
                 let item = items[index]
                 results.removeValue(forKey: item.rawName)
             }
-        } 
+        }
         if style == .bottom {
             if let btn = doneView?.subviews.first as? UIButton {
                 btn.isEnabled = results.count == items.count
@@ -313,12 +313,12 @@ extension InfoModifyController: UITextViewDelegate {
         } else {
             self.navigationItem.rightBarButtonItem?.isEnabled = results.count == items.count
         }
-        
+
         textView.textColor = UIColor.black
         let count = textView.text.count
         self.customCallback?(count)
     }
-    
+
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if range.location >= 50 {
             if text.isEmpty {
@@ -329,7 +329,7 @@ extension InfoModifyController: UITextViewDelegate {
             return true
         }
     }
-    
+
     override func dismissKeyboard() {
         view.endEditing(true)
         UIView.animate(withDuration: 0.3) {
@@ -346,4 +346,3 @@ extension InfoModifyController: UIGestureRecognizerDelegate {
         return true
     }
 }
-

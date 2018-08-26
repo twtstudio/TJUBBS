@@ -13,7 +13,7 @@ import Marklight
 import TOCropViewController
 
 class AddThreadViewController: UIViewController {
-    
+
     let screenSize = UIScreen.main.bounds.size
     var tableView = UITableView(frame: .zero, style: .plain)
     var forumList: [ForumModel] = []
@@ -26,15 +26,15 @@ class AddThreadViewController: UIViewController {
     let bar = UIToolbar()
     var anonymousItems = [UIBarButtonItem]()
     var nonAnonymousItems = [UIBarButtonItem]()
-    var imageMap: [Int : Int] = [:]
+    var imageMap: [Int: Int] = [:]
     var isAnonymous = false
     var canAnonymous = false
     var attachments: [ImageTextAttachment] = []
-    var doneBlock: ((String, String)->())?
+    var doneBlock: ((String, String) -> Void)?
     var placeholder: String = ""
     var placeholderTitle = ""
     var imagePicker: UIImagePickerController!
-    
+
     var selectedForum: ForumModel? {
         didSet {
             openForumListFlag = false
@@ -61,58 +61,56 @@ class AddThreadViewController: UIViewController {
     }
     var forumString = "讨论区"
     var boardString = "板块"
-    
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(doneButtonTapped))
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.title = placeholder == "" ? "发帖" : "修改"
-        
+
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableView.delegate = self
         tableView.dataSource = self
 //        tableView.backgroundColor = UIColor.BBSLightGray
         tableView.backgroundColor = .white
-        
+
         textView.font = UIFont.systemFont(ofSize: 17)
         textView.frame = CGRect(x: 15, y: 10, width: self.view.width - 30, height: self.view.height-10)
         textView.backgroundColor = .white
-        
+
         // markdown parser
         textStorage.addLayoutManager(textView.layoutManager)
         textView.layoutManager.delegate = self
         textStorage.appendString(placeholder)
         // set the cursor
-        textView.selectedRange = NSMakeRange(placeholder.count, 0)
+        textView.selectedRange = NSRange(location: placeholder.count, length: 0)
         initBar()
     }
 
-    
     func initBar() {
         let imageButton = UIButton(imageName: "icn_upload")
         imageButton.tintColor = .gray
-        imageButton.addTarget { btn in
+        imageButton.addTarget { _ in
             // TODO: 拍照
             if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
                 self.imagePicker = UIImagePickerController()
@@ -120,7 +118,7 @@ class AddThreadViewController: UIViewController {
                 self.imagePicker.allowsEditing = true
                 self.imagePicker.sourceType = .photoLibrary
                 self.present(self.imagePicker, animated: true) {
-                    
+
                 }
             } else {
                 HUD.flash(.label("相册不可用🤒请在设置中打开 BBS 的相册权限"), delay: 2.0)
@@ -134,9 +132,9 @@ class AddThreadViewController: UIViewController {
         let headItem = UIBarButtonItem(customView: UIButton(title: "#"))
         let quoteItem = UIBarButtonItem(customView: UIButton(title: "\""))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        
+
         nonAnonymousItems = [imageItem, flexibleSpace, atItem, boldItem, italicItem, headItem, quoteItem]
-        
+
         bar.items = nonAnonymousItems
         for item in bar.items! {
             if let button = item.customView as? UIButton {
@@ -147,14 +145,14 @@ class AddThreadViewController: UIViewController {
                 button.addTarget(self, action: #selector(self.barButtonTapped(sender:)), for: .touchUpInside)
             }
         }
-        
+
         let anonymousView = UIView()
         let anonymousLabel = UILabel()
         let anonymousSwitch = UISwitch()
-        
+
         anonymousView.addSubview(anonymousLabel)
         anonymousView.addSubview(anonymousSwitch)
-        
+
         anonymousLabel.text = "匿名"
         anonymousLabel.sizeToFit()
         anonymousSwitch.onTintColor = .BBSBlue
@@ -185,16 +183,15 @@ class AddThreadViewController: UIViewController {
         }
         anonymousItems.insert(anonymousItem, at: 1)
 
-        
         if selectedBoard?.id == 193 { //青年湖
             canAnonymous = true
         } else {
             canAnonymous = false
         }
-        
+
         refreshAnonymousState()
     }
-    
+
     func refreshAnonymousState() {
         if canAnonymous {
             bar.items = anonymousItems
@@ -202,32 +199,32 @@ class AddThreadViewController: UIViewController {
             bar.items = nonAnonymousItems
         }
     }
-    
+
     func barButtonTapped(sender: UIButton) {
         if let title = sender.titleLabel?.text {
             switch title {
             case "B":
                 //                textStorage.appendString("****")
                 textStorage.replaceCharacters(in: textView.selectedRange, with: "****")
-                textView.selectedRange = NSMakeRange(textView.selectedRange.location+2, 0)
+                textView.selectedRange = NSRange(location: textView.selectedRange.location+2, length: 0)
             case "I":
                 //                textStorage.appendString("**")
                 textStorage.replaceCharacters(in: textView.selectedRange, with: "**")
-                textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+                textView.selectedRange = NSRange(location: textView.selectedRange.location+1, length: 0)
             case "#":
                 textStorage.replaceCharacters(in: textView.selectedRange, with: "#")
                 //                textStorage.appendString("#")
-                textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+                textView.selectedRange = NSRange(location: textView.selectedRange.location+1, length: 0)
             case "\"":
                 textStorage.replaceCharacters(in: textView.selectedRange, with: ">")
                 //                textStorage.appendString(">")
-                textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+                textView.selectedRange = NSRange(location: textView.selectedRange.location+1, length: 0)
             case "@":
                 let userSearchVC = UserSearchViewController()
                 userSearchVC.doneBlock = { uid, username in
                     self.textStorage.replaceCharacters(in: self.textView.selectedRange, with: "[@\(username)](/user/\(uid))")
                     let offset = 2 + username.count + 8 + uid.description.count + 1
-                    self.textView.selectedRange = NSMakeRange(self.textView.selectedRange.location+offset, 0)
+                    self.textView.selectedRange = NSRange(location: self.textView.selectedRange.location+offset, length: 0)
                     self.textView.becomeFirstResponder()
                 }
                 self.textView.resignFirstResponder()
@@ -238,26 +235,25 @@ class AddThreadViewController: UIViewController {
             }
         }
     }
-    
+
     func anonymousStateOnChange(sender: UISwitch) {
         isAnonymous = sender.isOn
     }
 
-    
     func doneButtonTapped() {
         guard let board = selectedBoard else {
             HUD.flash(.label("请选择板块"))
             return
         }
-        
+
         guard let title = textField.text, !title.isEmpty else {
             HUD.flash(.label("请填写主题"))
             return
         }
-        let fullRange = NSMakeRange(0, textStorage.length)
+        let fullRange = NSRange(location: 0, length: textStorage.length)
         let resultString = NSMutableAttributedString(attributedString: textStorage.attributedSubstring(from: fullRange))
         var isUploading = false
-        textStorage.enumerateAttributes(in: fullRange, options: .reverse, using: { attributes, range, stop in
+        textStorage.enumerateAttributes(in: fullRange, options: .reverse, using: { attributes, range, _ in
             if let attribute = attributes["NSAttachment"] as? NSTextAttachment, let image = attribute.image {
                 // get the code
                 if let code = imageMap[image.hash] {
@@ -274,13 +270,13 @@ class AddThreadViewController: UIViewController {
             if !resultString.string.isEmpty {
 
                 let content = resultString.string
-                if let done = doneBlock{
+                if let done = doneBlock {
                     done(title, content)
                 } else {
                     BBSJarvis.postThread(boardID: board.id, title: title, anonymous: isAnonymous, content: content) { dic in
                         HUD.flash(.success)
-                        let _ = self.navigationController?.popViewController(animated: true)
-                        if let data = dic["data"] as? [String : Any], let tidStr = data["id"] as? String, let tid = Int(tidStr) {
+                        _ = self.navigationController?.popViewController(animated: true)
+                        if let data = dic["data"] as? [String: Any], let tidStr = data["id"] as? String, let tid = Int(tidStr) {
                             let threadVC = ThreadDetailViewController(tid: tid)
                             self.navigationController?.pushViewController(threadVC, animated: true)
                         }
@@ -294,11 +290,11 @@ class AddThreadViewController: UIViewController {
 }
 
 extension AddThreadViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -313,7 +309,7 @@ extension AddThreadViewController: UITableViewDataSource {
             return 0
         }
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
@@ -323,7 +319,7 @@ extension AddThreadViewController: UITableViewDataSource {
                 if let board = selectedBoard {
                     cell.textLabel?.text = "讨论区: " + board.forumName
                 }
-                
+
                 let rightImageView = UIImageView(image: UIImage(named: openForumListFlag ? "upArrow" : "downArrow"))
                 cell.contentView.addSubview(rightImageView)
                 rightImageView.snp.makeConstraints {
@@ -332,11 +328,11 @@ extension AddThreadViewController: UITableViewDataSource {
                     make.right.equalToSuperview().offset(-16)
                     make.height.width.equalTo(15)
                 }
-                
+
                 // if there's default value for the cell
                 if tableView.allowsSelection {
                     cell.addTapGestureRecognizer {
-                        sender in
+                        _ in
                         self.textView.resignFirstResponder()
                         if self.openForumListFlag == false {
                             BBSJarvis.getForumList {
@@ -359,7 +355,7 @@ extension AddThreadViewController: UITableViewDataSource {
                 }
                 rightImageView.isHidden = !tableView.allowsSelection
                 cell.isUserInteractionEnabled = tableView.allowsSelection
-                
+
                 let separator = UIView()
                 cell.contentView.addSubview(separator)
                 separator.backgroundColor = .gray
@@ -382,7 +378,7 @@ extension AddThreadViewController: UITableViewDataSource {
             if indexPath.row == 0 {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
                 cell.textLabel?.text = boardString
-                
+
                 let rightImageView = UIImageView(image: UIImage(named: openBoardListFlag ? "upArrow" : "downArrow"))
                 cell.contentView.addSubview(rightImageView)
                 rightImageView.snp.makeConstraints {
@@ -392,11 +388,11 @@ extension AddThreadViewController: UITableViewDataSource {
 //                    make.height.width.equalTo(screenSize.height*(88/1920))
                     make.height.width.equalTo(15)
                 }
-                
+
                 // if there's default value for the cell
                 if tableView.allowsSelection {
                     cell.addTapGestureRecognizer { [weak tableView]
-                        sender in
+                        _ in
                         self.textView.resignFirstResponder()
                         //                    print("选板块啊")
                         if self.openBoardListFlag == false {
@@ -493,7 +489,7 @@ extension AddThreadViewController: UITableViewDelegate {
             selectedBoard = boardList[indexPath.row-1]
         }
     }
-    
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
@@ -501,7 +497,7 @@ extension AddThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
             return 0.01
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == IndexPath(row: 0, section: 3) {
 //            return 205
@@ -523,10 +519,10 @@ extension AddThreadViewController {
         tableView.updateConstraintsIfNeeded()
         textView.updateConstraintsIfNeeded()
     }
-    
+
     func keyboardWillShow(notification: NSNotification) {
         if let endRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let beginRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            if(beginRect.size.height > 0 && (beginRect.origin.y - endRect.origin.y >= 0)){
+            if(beginRect.size.height > 0 && (beginRect.origin.y - endRect.origin.y >= 0)) {
                 self.view.addSubview(bar)
                 bar.y = 0
                 let barHeight: CGFloat = 40
@@ -552,25 +548,25 @@ extension AddThreadViewController {
 }
 
 extension AddThreadViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             let cropVC = TOCropViewController(image: image)
             cropVC.delegate = self
             picker.present(cropVC, animated: true, completion: nil)
         }
     }
-    
+
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
-    
+
 }
 
 extension AddThreadViewController: NSLayoutManagerDelegate {
-    
+
     func layoutManager(_ layoutManager: NSLayoutManager, didCompleteLayoutFor textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
         if layoutFinishedFlag {
-            let imgAttachments = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges.map { $0.attachment }
+            let imgAttachments = textStorage.attributedSubstring(from: NSRange(location: 0, length: textStorage.length)).attachmentRanges.map { $0.attachment }
             let diff = attachments.filter { !imgAttachments.contains($0) }
             for attachment in diff {
                 if attachment.progressView.superview != nil {
@@ -583,29 +579,29 @@ extension AddThreadViewController: NSLayoutManagerDelegate {
             }
         }
     }
-    
+
     func layoutSubviews() {
         let layoutManager = textView.layoutManager
-        
-        let attachs = textStorage.attributedSubstring(from: NSMakeRange(0, textStorage.length)).attachmentRanges
+
+        let attachs = textStorage.attributedSubstring(from: NSRange(location: 0, length: textStorage.length)).attachmentRanges
         for  (attachment, range) in attachs {
-            let glyphRange = layoutManager.glyphRange(forCharacterRange: NSMakeRange(range.location, 1), actualCharacterRange: nil)
+            let glyphRange = layoutManager.glyphRange(forCharacterRange: NSRange(location: range.location, length: 1), actualCharacterRange: nil)
             let glyphIndex = glyphRange.location
             guard glyphIndex != NSNotFound && glyphRange.length == 1 else {
                 return
             }
-            
+
             let attachmentSize = layoutManager.attachmentSize(forGlyphAt: glyphIndex)
             guard attachmentSize.width > 0.0 && attachmentSize.height > 0.0 else {
                 return
             }
-            
+
             let lineFragmentRect = layoutManager.lineFragmentRect(forGlyphAt: glyphIndex, effectiveRange: nil)
             let glyphLocation = layoutManager.location(forGlyphAt: glyphIndex)
             guard lineFragmentRect.width > 0.0 && lineFragmentRect.height > 0.0 else {
                 return
             }
-            let attachmentRect = CGRect(origin: CGPoint(x: lineFragmentRect.minX + glyphLocation.x,y: lineFragmentRect.minY + glyphLocation.y - attachmentSize.height), size: attachmentSize)
+            let attachmentRect = CGRect(origin: CGPoint(x: lineFragmentRect.minX + glyphLocation.x, y: lineFragmentRect.minY + glyphLocation.y - attachmentSize.height), size: attachmentSize)
             let insets = self.textView.textContainerInset
             let convertedRect = attachmentRect.offsetBy(dx: insets.left, dy: insets.top)
             UIView.performWithoutAnimation {
@@ -631,13 +627,13 @@ extension AddThreadViewController: TOCropViewControllerDelegate {
         }
         cropViewController.dismiss(animated: true, completion: { self.imagePicker.dismiss(animated: false, completion: nil) })
         let resizedImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: size.width*ratio, height: size.height*ratio))
-        
+
         let attachment = ImageTextAttachment()
         attachment.image = resizedImage
         // resizedImage.hash as index
         let attributedString = NSAttributedString(attachment: attachment)
         textStorage.insert(attributedString, at: textView.selectedRange.location)
-        textView.selectedRange = NSMakeRange(textView.selectedRange.location+1, 0)
+        textView.selectedRange = NSRange(location: textView.selectedRange.location+1, length: 0)
         attachments.append(attachment)
         BBSJarvis.getImageAttachmentCode(image: image, progressBlock: { progress in
             attachment.progressView.progress = progress.fractionCompleted
@@ -646,14 +642,12 @@ extension AddThreadViewController: TOCropViewControllerDelegate {
                     attachment.progressView.removeFromSuperview()
                 }
             }
-        }, failure: { error in
+        }, failure: { _ in
             HUD.flash(.labeledError(title: "上传失败🙄", subtitle: nil))
         }, success: { attachmentCode in
             self.imageMap[resizedImage.hash] = attachmentCode
         })
-        
+
     }
-    
+
 }
-
-

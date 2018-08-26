@@ -9,63 +9,63 @@
 import UIKit
 
 class MainTabBarController: UITabBarController {
-    
+
     var homepageVC: UIViewController?
     var BBSVC: UIViewController?
     var infoVC: UIViewController?
     var messageVC: UIViewController?
 //    var addVC: UIViewController?
-    
+
     convenience init(para: Int) {
         self.init()
         self.view.backgroundColor = .white
-        
+
         self.tabBar.backgroundColor = .white
         self.tabBar.isTranslucent = false
         self.tabBar.barTintColor = .white
 //        self.tabBar.tintColor = .red
-        
+
         // MARK: - 切换首页
 //        homepageVC = HomepageMainController(para: 1)
         homepageVC = NewHomePageViewController()
         let homepageNC = UINavigationController(rootViewController: homepageVC!)
         homepageNC.navigationBar.isTranslucent = false
-        homepageNC.tabBarItem = createBarItem(imageName: "首页")
+        homepageNC.tabBarItem = createBarItem(imageName: "home")
         homepageNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-        
-        BBSVC = ForumListController()
+
+        BBSVC = ForumListVC()
         let bbcNC = UINavigationController(rootViewController: BBSVC!)
         bbcNC.navigationBar.isTranslucent = false
-        BBSVC?.tabBarItem = createBarItem(imageName: "论坛")
+        BBSVC?.tabBarItem = createBarItem(imageName: "taolunqu")
         BBSVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-        
+
 //        addVC = AddThreadViewController()
 //        let addNC = UINavigationController(rootViewController: addVC!)
 //        addVC?.tabBarItem = createBarItem(imageName: "消息")
 //        addVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-        
+
         messageVC = MessageHomePageViewController(para: 0)
         let messageNC = UINavigationController(rootViewController: messageVC!)
         messageNC.navigationBar.isTranslucent = false
-        messageVC?.tabBarItem = createBarItem(imageName: "消息")
+        messageVC?.tabBarItem = createBarItem(imageName: "message")
         messageVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         messageVC?.tabBarItem.tag = 2
 //        messageVC?.tabBarItem.badgeColor = .red
-        
+
         infoVC = UserInfoViewController()
 //        infoVC?.title = "个人中心"
         let infoNC = UINavigationController(rootViewController: infoVC!)
-        infoNC.tabBarItem = createBarItem(imageName: "个人中心")
+        infoNC.tabBarItem = createBarItem(imageName: "mine")
         infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         setViewControllers([homepageNC, bbcNC, messageNC, infoNC], animated: true)
-        
+
         UITabBar.appearance().tintColor = .BBSBlue
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
-    
+
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         guard BBSUser.shared.token != nil else {
             return
@@ -83,7 +83,7 @@ class MainTabBarController: UITabBarController {
             self.tabBar.items![2].badgeValue = nil
         }
     }
-    
+
     func createBarItem(imageName: String) -> UITabBarItem {
 //        let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)
 //        let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)

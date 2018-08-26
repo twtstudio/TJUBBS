@@ -30,7 +30,7 @@ class ImageDetailViewController: UIViewController {
                 saveBtn.backgroundColor = .clear
                 saveBtn.alpha = 0.8
                 self.view.addSubview(saveBtn)
-                saveBtn.addTarget { [weak self] button in
+                saveBtn.addTarget { [weak self] _ in
                     if let image = self?.image {
                         UIImageWriteToSavedPhotosAlbum(image, self, #selector(self?.image(image:didFinishSavingWithError:contextInfo:)), nil)
                     }
@@ -41,20 +41,20 @@ class ImageDetailViewController: UIViewController {
             }
         }
     }
-    
+
     convenience init(image: UIImage) {
         self.init()
         self.image = image
     }
-        
-    func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafeRawPointer) {
+
+    func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
         guard error == nil else {
             HUD.flash(.labeledError(title: "保存失败", subtitle: "是不是没有在设置中开启相册访问权限😐"), delay: 1.2)
             return
         }
         HUD.flash(.labeledSuccess(title: "保存成功", subtitle: nil), delay: 1.2)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView = UIScrollView(frame: self.view.bounds)
@@ -73,16 +73,14 @@ class ImageDetailViewController: UIViewController {
         self.view.addSubview(scrollView)
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.swipeDismiss(recognizer:)))
         imgView.addGestureRecognizer(panGesture)
-        
+
         let doubleGesture = UITapGestureRecognizer(target: self, action: #selector(self.doubleClicked(recognizer:)))
         doubleGesture.numberOfTapsRequired = 2
         imgView.addGestureRecognizer(doubleGesture)
-        
+
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress(recognizer:)))
         imgView.addGestureRecognizer(longPressGesture)
 
-        
-        
         imgView.addTapGestureRecognizer(gestureHandler: { recognizer in
             recognizer.require(toFail: doubleGesture)
         }) { [weak self] _ in
@@ -102,7 +100,7 @@ class ImageDetailViewController: UIViewController {
             }
         }
     }
-    
+
     func longPress(recognizer: UILongPressGestureRecognizer) {
         let detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
         if let cgImage = self.image.cgImage, let features = detector?.features(in: CIImage(cgImage: cgImage)) {
@@ -111,12 +109,12 @@ class ImageDetailViewController: UIViewController {
                     let ac = UIAlertController(title: "二维码信息", message: message, preferredStyle: .actionSheet)
                     if let url = URL(string: message) {
                         ac.addAction(UIAlertAction(title: "使用 Safari 打开", style: .default) {
-                            action in
+                            _ in
                             UIApplication.shared.openURL(url)
                         })
                     }
                     ac.addAction(UIAlertAction(title: "复制到剪贴板", style: .default) {
-                        action in
+                        _ in
                         UIPasteboard.general.string = message
                         HUD.flash(.labeledSuccess(title: "已复制", subtitle: nil), delay: 1.0)
                     })
@@ -126,9 +124,9 @@ class ImageDetailViewController: UIViewController {
                 }
             }
         }
-        
+
     }
-    
+
     func doubleClicked(recognizer: UITapGestureRecognizer) {
         recognizer.numberOfTapsRequired = 2
         if self.scrollView.zoomScale > CGFloat(1.0) {
@@ -145,7 +143,7 @@ class ImageDetailViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

@@ -27,7 +27,7 @@ class SetInfoViewController: UIViewController {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -39,7 +39,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -50,18 +50,18 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
             return 0
         }
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.0001
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 0 && indexPath.section == 0 {
             return 80
         }
         return 50
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
@@ -101,7 +101,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
         }
         return UITableViewCell()
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
@@ -123,7 +123,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                         imagePicker.allowsEditing = true
                         imagePicker.sourceType = .photoLibrary
                         self.present(imagePicker, animated: true) {
-                            
+
                         }
                     } else {
                         HUD.flash(.label("相册不可用🤒请在设置中打开 BBS 的相册权限"), delay: 2.0)
@@ -136,7 +136,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                         imagePicker.allowsEditing = true
                         imagePicker.sourceType = .camera
                         self.present(imagePicker, animated: true) {
-                            
+
                         }
                     } else {
                         HUD.flash(.label("相机不可用🤒请在设置中打开 BBS 的相机权限"), delay: 2.0)
@@ -144,12 +144,12 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
                 let detailAction = UIAlertAction(title: "查看大图", style: .default) { _ in
                     let detailVC = ImageDetailViewController(image: BBSUser.shared.avatar ?? UIImage(named: "default")!)
-                        
+
                     self.modalPresentationStyle = .overFullScreen
-                    
+
                     self.present(detailVC, animated: true, completion: nil)
                 }
-                
+
                 let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
                 alertVC.addAction(pictureAction)
                 alertVC.addAction(photoAction)
@@ -167,7 +167,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     }, failure: { _ in
 //                        HUD.flash(.labeledError(title: "修改失败...请稍后再试", subtitle: nil), delay: 1.0)
                     })
-                    let _ = setUsernameVC?.navigationController?.popViewController(animated: true)
+                    _ = setUsernameVC?.navigationController?.popViewController(animated: true)
                 }
                 setUsernameVC.headerMsg = "请输入新昵称"
                 self.navigationController?.pushViewController(setUsernameVC, animated: true)
@@ -181,7 +181,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     }, failure: { _ in
 //                        HUD.flash(.labeledError(title: "修改失败...请稍后再试", subtitle: nil), delay: 1.0)
                     })
-                    let _ = setSignatureVC?.navigationController?.popViewController(animated: true)
+                    _ = setSignatureVC?.navigationController?.popViewController(animated: true)
                 }
                 let contentView = UIView()
                 contentView.backgroundColor = UIColor.white
@@ -194,7 +194,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     make.right.equalTo(contentView).offset(-20)
                     make.height.equalTo(100)
                 }
-                
+
                 let label = UILabel()
                 label.text = "0/50字"
                 label.font = UIFont.systemFont(ofSize: 13)
@@ -221,7 +221,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
             }
         case 1:
             let setPasswordVC = InfoModifyController(title: "修改密码", items: ["旧密码-请输入旧密码-old_password-s", "新密码-请输入新密码-password-s", "确认密码-请输入新密码-repass-s"], style: .rightTop, handler: nil)
-            let check: ([String : String])->(Bool) = { result in
+            let check: ([String: String]) -> (Bool) = { result in
                 guard result["repass"] == result["password"] else {
                     HUD.flash(.label("两次密码不符！请重新输入👀"), delay: 1.2)
                     return false
@@ -229,14 +229,14 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 return true
             }
             setPasswordVC.handler = { [weak setPasswordVC] result in
-                if let result = result as? [String : String]{
+                if let result = result as? [String: String] {
                     if check(result) == true {
                         var para = result
                         para.removeValue(forKey: "repass")
                         BBSJarvis.setInfo(para: para, success: {
                             HUD.flash(.label("修改成功🎉请重新登录"), delay: 1.0)
                             BBSUser.delete()
-                            let _ = self.navigationController?.popToRootViewController(animated: false)
+                            _ = self.navigationController?.popToRootViewController(animated: false)
                             let loginVC = LoginViewController(para: 1)
                             let loginNC = UINavigationController(rootViewController: loginVC)
                             self.present(loginNC, animated: true, completion: nil)
@@ -245,7 +245,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                         })
                     }
                 }
-                let _ = setPasswordVC?.navigationController?.popViewController(animated: true)
+                _ = setPasswordVC?.navigationController?.popViewController(animated: true)
 
             }
             self.navigationController?.pushViewController(setPasswordVC, animated: true)
@@ -256,7 +256,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension SetInfoViewController: UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             let smallerImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: 200, height: 200))
             BBSJarvis.setAvatar(image: smallerImage, success: {
@@ -273,13 +273,12 @@ extension SetInfoViewController: UIImagePickerControllerDelegate {
             HUD.flash(.labeledError(title: "选择失败，请重试", subtitle: nil), onView: self.view)
         }
     }
-    
+
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
 }
 
 extension SetInfoViewController: UINavigationControllerDelegate {
-    
-}
 
+}

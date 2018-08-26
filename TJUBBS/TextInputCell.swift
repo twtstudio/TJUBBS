@@ -15,7 +15,7 @@ enum TextInputCellType {
 }
 
 class TextInputCell: UITableViewCell {
-    
+
     var titleLabel: UILabel?
     var textField: UITextField?
     var textView: UITextView?
@@ -35,7 +35,7 @@ class TextInputCell: UITableViewCell {
             }
             textField?.placeholder = placeholder
             textField?.textAlignment = .right
-            
+
             titleLabel = UILabel(text: title)
             titleLabel?.font = UIFont.systemFont(ofSize: 17)
             contentView.addSubview(titleLabel!)
@@ -55,7 +55,7 @@ class TextInputCell: UITableViewCell {
                 make.left.equalTo(contentView).offset(16)
                 make.top.equalTo(contentView).offset(10)
             }
-            
+
             textView = UITextView()
 //            textStorage.addLayoutManager((textView?.layoutManager)!)
             textView?.font = UIFont.systemFont(ofSize: 17)
@@ -71,11 +71,10 @@ class TextInputCell: UITableViewCell {
         }
     }
 
-    
     override func awakeFromNib() {
         super.awakeFromNib()
     }
-    
+
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: false)
     }

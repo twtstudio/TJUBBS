@@ -20,8 +20,7 @@ enum ScrollOrientation {
 }
 
 class ChatDetailViewController: SLKTextViewController {
-    
-    
+
     var scrollOrientation: ScrollOrientation?
     //    var chatBubbleTable = UITableView()
 //    var session: PiperChatSession!
@@ -29,42 +28,41 @@ class ChatDetailViewController: SLKTextViewController {
     var messages: [MessageModel] = []
     var page = 0
     var tableViewLastPosition = CGPoint.zero
-    
+
 //    convenience init(session: PiperChatSession) {
 //        self.init()
 //        self.session = session
 //    }
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
 //        SocketManager.shared.delegate = self
-        
+
         // TODO: save the draft
-        
+
 //        if let messageToSend = UserDefaults.standard.object(forKey: "messageToSendTo\(session.palID)") {
 //            textView.text = messageToSend as! String
 //        }
-        
+
         // Using SlackTextViewController is funny because my tableView is all inverted by default
 //        isInverted = false
-        
+
         tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.loadMore))
 //        tableView?.mj_header = MJRefreshHeader(refreshingTarget: self, refreshingAction: #selector(self.loadMore))
         (tableView?.mj_header as? MJRefreshNormalHeader)?.lastUpdatedTimeLabel.isHidden = true
         (tableView?.mj_header as? MJRefreshNormalHeader)?.stateLabel.isHidden = true
-        
+
         isInverted = false
         bounces = true
         isKeyboardPanningEnabled = true
         textView.layer.borderColor = UIColor(colorLiteralRed: 217.0/255.0, green: 217.0/255.0, blue: 217.0/255.0, alpha: 1.0).cgColor
 //        textView.placeholder = ""
         textView.placeholderColor = .gray
-        
+
 //        textView.backgroundColor = .white
-        textView.backgroundColor = UIColor(red:0.98, green:0.98, blue:0.98, alpha:1.00)
-        textView.layer.borderColor = UIColor(red:0.89, green:0.89, blue:0.89, alpha:1.00).cgColor
+        textView.backgroundColor = UIColor(red: 0.98, green: 0.98, blue: 0.98, alpha: 1.00)
+        textView.layer.borderColor = UIColor(red: 0.89, green: 0.89, blue: 0.89, alpha: 1.00).cgColor
         textView.layer.borderWidth = 1
 //        textInputbar.editorRightButton.tintColor = Metadata.Color.accentColor
 //        textInputbar.rightButton.tintColor = Metadata.Color.accentColor
@@ -76,13 +74,13 @@ class ChatDetailViewController: SLKTextViewController {
         // TODO: send photo
 //        leftButton.tintColor = .gray
         rightButton.setTitle("发送", for: .normal)
-        
+
 //        session.messages = session.messages
 //        title = session.palName
         self.title = pal?.nickname
-        
+
         tableView?.separatorColor = .clear
-        
+
         //TODO: Fix it
         BBSJarvis.getDialog(uid: pal?.uid ?? 0, page: page, success: { messages in
             self.messages = messages
@@ -95,14 +93,14 @@ class ChatDetailViewController: SLKTextViewController {
 
         // Do any additional setup after loading the view.
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
-    
+
     func loadMore() {
         page += 1
-        BBSJarvis.getDialog(uid: pal?.uid ?? 0, page: page, failure: { error in
+        BBSJarvis.getDialog(uid: pal?.uid ?? 0, page: page, failure: { _ in
             self.page -= 1
             self.tableView?.mj_header.endRefreshing()
         }, success: { messages in
@@ -124,7 +122,7 @@ class ChatDetailViewController: SLKTextViewController {
             }
         })
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         // TODO: save the draft
 
@@ -135,29 +133,27 @@ class ChatDetailViewController: SLKTextViewController {
 //            UserDefaults.standard.removeObject(forKey: "messageToSendTo\(session.palID)")
 //        }
     }
-    
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
+
     func scrollToBottom(animated: Bool) {
         if tableView?.numberOfRows(inSection: 0) != 0 {
             let indexPath = IndexPath(row: (tableView?.numberOfRows(inSection: 0))!-1, section: 0)
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.tableView?.scrollToRow(at: indexPath, at: .bottom, animated: animated)
             }
             //            log.word("scrolled to bottom")/
         }
     }
-    
+
     func prepareTextView() {
-        
+
     }
-    
+
 }
 
 //extension ChatDetailViewController: MessageOnReceiveDelegate {
@@ -181,47 +177,46 @@ class ChatDetailViewController: SLKTextViewController {
 //}
 
 extension ChatDetailViewController {
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }
-    
+
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 20.0
     }
-    
+
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let fooView = UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 20))
-        
+
         return fooView
     }
-    
+
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30.0
     }
-    
+
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let fooView = UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 30))
-        
+
         return fooView
     }
-    
-    
+
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
+
         let currentMessage = messages[indexPath.row]
         let messageHeight = currentMessage.content.height(withConstrainedWidth: (Metadata.Size.Screen.width / 3.0) * 2 - 20, font: Metadata.Font.messageFont)
 
         var bubbleHeight = messageHeight + 14
-        
+
         if currentMessage.content.count < 5 && currentMessage.content.containsOnlyEmoji {
             bubbleHeight = 60
         }
-        
+
         if indexPath.row < messages.count - 1 {
             //Broken because of using SlackTextViewController
             let nextMessage = messages[indexPath.row + 1]
@@ -230,18 +225,16 @@ extension ChatDetailViewController {
             } else {
                 bubbleHeight = bubbleHeight + 8
             }
-            
+
             //            return bubbleHeight + 8
         }
-        
-        
+
         return bubbleHeight //+ 15
     }
-    
-    
+
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if tableView.isDragging { // ?
-            
+
             if scrollOrientation == .down {
                 cell.contentView.layer.transform = CATransform3DMakeTranslation(0, 30, 0)
             } else {
@@ -252,12 +245,12 @@ extension ChatDetailViewController {
             }, completion: nil)
         }
     }
-    
+
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         super.scrollViewDidScroll(scrollView)
-        
+
         scrollOrientation = scrollView.contentOffset.y > tableViewLastPosition.y ? .down : .up
-        
+
         tableViewLastPosition = scrollView.contentOffset
 
         let count = tableView!.visibleCells.count
@@ -266,10 +259,9 @@ extension ChatDetailViewController {
             cell.alpha = CGFloat(index)*0.25/CGFloat(count)+0.75
         }
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
+
 //        let cell = BubbleCell(message: messages[indexPath.row])
         let message = messages[indexPath.row]
         let cell = GroupBubbleCell(message: message)
@@ -281,31 +273,29 @@ extension ChatDetailViewController {
     }
 }
 
-
-//MARK: TextViewDelegate
+// MARK: TextViewDelegate
 extension ChatDetailViewController {
-    
+
     override func textViewDidBeginEditing(_ textView: UITextView) {
         scrollToBottom(animated: true)
     }
-    
+
     override func didPressRightButton(_ sender: Any?) {
-        
-        
+
         //        let messageToSend = PiperChatMessage(string: textView.text, timestamp: Date().ticks, type: .sent, palID: session.palID)
         let messageToSend = MessageModel(string: textView.text, timestamp: Int(Date().timeIntervalSince1970), type: .sent, palName: pal?.username ?? "", palNickName: pal?.nickname ?? "", palID: pal?.uid ?? 0, id: 0)
-        
+
 //        let messageToSend = PiperChatMessage(string: textView.text, timestamp: Date().ticks, type: .sent, palUserName: session.palUserName, palID: session.palID)
         //Send the message via socket and do networking and data storing
-        
+
 //
 //        session.insert(message: messageToSend)
 //        tableView?.insertRows(at: [indexPath], with: )
-        
+
         DispatchQueue.main.async {
             let indexPath = IndexPath(row: self.messages.count, section: 0)
             let rowAnimation: UITableViewRowAnimation = .top
-            
+
             self.tableView?.beginUpdates()
             self.messages.append(messageToSend)
             //
@@ -317,7 +307,7 @@ extension ChatDetailViewController {
             self.textView.refreshFirstResponder()
         }
 
-        BBSJarvis.sendMessage(uid: "\(pal?.uid ?? 0)", content: textView.text, failure: { error in
+        BBSJarvis.sendMessage(uid: "\(pal?.uid ?? 0)", content: textView.text, failure: { _ in
             HUD.flash(.labeledError(title: "发送失败😐请稍后重试", subtitle: ""), delay: 1.0)
         }, success: { dict in
 //            DispatchQueue.main.async {
@@ -336,16 +326,13 @@ extension ChatDetailViewController {
 //            }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             }
-            
+
             print(dict)
         })
-        
-        
-        
+
 //        SocketManager.shared.send(message: messageToSend.content, to: session.palUserName)
-        
-        
+
         super.didPressRightButton(sender)
     }
-    
+
 }

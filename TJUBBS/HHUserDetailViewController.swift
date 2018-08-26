@@ -14,22 +14,22 @@ import PiwikTracker
 import PKHUD
 
 class HHUserDetailViewController: UIViewController {
-    
+
     //ThreadList TableView
     var tableView: UITableView!
     var threadList: [ThreadModel] = []
     var user: UserWrapper?
     var uid: Int?
-    
+
     let header = MJRefreshNormalHeader()
     //    let footer = MJRefreshAutoNormalFooter()
-    
+
     var scrollView: UIScrollView?
     let headerView = NewPersonalPageView(frame: CGRect(x: 0, y: -UIScreen.main.bounds.height * 0.65, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.65))
-    
+
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //self.tabBarController?.tabBar.isHidden = true
@@ -43,7 +43,7 @@ class HHUserDetailViewController: UIViewController {
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
     }
-    
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         //view.backgroundColor = .lightGray
@@ -51,14 +51,14 @@ class HHUserDetailViewController: UIViewController {
         UIApplication.shared.statusBarStyle = .lightContent
         //self.hidesBottomBarWhenPushed = true
     }
-    
+
     convenience init(user: UserWrapper) {
         self.init()
         self.user = user
         headerView.loadModel(user: user)
         self.loadDetail()
     }
-    
+
     convenience init(uid: Int) {
         self.init()
         self.hidesBottomBarWhenPushed = true
@@ -68,7 +68,7 @@ class HHUserDetailViewController: UIViewController {
             self.loadDetail()
             self.headerView.loadModel(user: user)
             self.loadThread()
-            
+
             if user.recentThreads.count == 0 {
                 let NoMoreDataLabel = UILabel(text: "Ta还没有发布过帖子哟", color: .darkGray, fontSize: 14)
                 self.tableView.addSubview(NoMoreDataLabel)
@@ -77,18 +77,18 @@ class HHUserDetailViewController: UIViewController {
                     make.top.equalTo(self.tableView.snp.bottom).offset(80)
                 }
             }
-            
+
             self.tableView.reloadData()
         }, failure: { _ in
             // FIXME: error page
 
         })
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func loadDetail() {
         if let user = user {
             let cacheKey = "\(user.uid ?? 0)" + Date.today
@@ -97,9 +97,9 @@ class HHUserDetailViewController: UIViewController {
                 headerView.avatarViewBackground.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default"))
             }
         }
-        
+
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.loadModel()
@@ -108,12 +108,11 @@ class HHUserDetailViewController: UIViewController {
         self.hidesBottomBarWhenPushed = true
     }
 
-    
     func loadModel() {
         tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight), style: .grouped)
-        tableView.contentInset = UIEdgeInsetsMake(UIScreen.main.bounds.height * 0.65, 0, 0, 0)
+        tableView.contentInset = UIEdgeInsets(top: UIScreen.main.bounds.height * 0.65, left: 0, bottom: 0, right: 0)
         self.view.addSubview(tableView!)
-        
+
         tableView.showsVerticalScrollIndicator = false
         tableView.estimatedRowHeight = 300
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -122,7 +121,7 @@ class HHUserDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.estimatedSectionHeaderHeight = 0
         headerView.setNeedsDisplay()
-        
+
         headerView.messageButton.addTarget { _ in
             let dialogVC = ChatDetailViewController()
             dialogVC.pal = self.user
@@ -130,12 +129,12 @@ class HHUserDetailViewController: UIViewController {
         }
         headerView.friendButton.addTarget { _ in
             let alertVC = UIAlertController(title: "发送好友申请", message: "打个招呼", preferredStyle: .alert)
-            alertVC.addTextField(configurationHandler: { textField in
-                
+            alertVC.addTextField(configurationHandler: { _ in
+
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(cancelAction)
-            let confirmAction = UIAlertAction(title: "发送", style: .default) { action in
+            let confirmAction = UIAlertAction(title: "发送", style: .default) { _ in
                 if let textField = alertVC.textFields?[0], let text = textField.text {
                     BBSJarvis.friendRequest(uid: self.user?.uid ?? 0, message: text, type: "post", success: { dic in
                         print(dic)
@@ -147,7 +146,7 @@ class HHUserDetailViewController: UIViewController {
             self.present(alertVC, animated: true, completion: nil)
         }
         self.tableView.addSubview(headerView)
-        
+
 //        //header and footer of MJRefresh
 //        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
 //        self.tableView!.mj_header = header
@@ -161,19 +160,19 @@ class HHUserDetailViewController: UIViewController {
 //        header?.stateLabel.isHidden = true
 //        header?.lastUpdatedTimeLabel.isHidden = true
 //        header?.setImages(refreshingImages, for: .pulling)
-        
+
         self.headerView.avatarViewBackground.contentMode = .scaleAspectFill
         self.headerView.blackGlassView.contentMode = .scaleAspectFill
         self.headerView.avatarViewBackground.clipsToBounds = true
         self.headerView.blackGlassView.clipsToBounds = true
-        self.view.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+        self.view.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
 //    //下拉刷新
 //    func refresh() {
 //        // 结束刷新
@@ -181,7 +180,7 @@ class HHUserDetailViewController: UIViewController {
 //            self.tableView.mj_header.endRefreshing()
 //        }
 //    }
-    
+
     func loadThread() {
         let page = 0
         let count = user?.recentThreads.count
@@ -204,18 +203,17 @@ class HHUserDetailViewController: UIViewController {
         threadGroup.notify(queue: DispatchQueue.main, execute: {
             self.threadList.sort(by: {$0.createTime > $1.createTime})
             self.tableView.reloadData()
-            
+
         })
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         //tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.always
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
     }
-    
-    
+
 }
 
 extension HHUserDetailViewController: UITableViewDelegate {
@@ -232,11 +230,11 @@ extension HHUserDetailViewController: UITableViewDelegate {
 }
 
 extension HHUserDetailViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard user?.recentThreads.count != nil else {
             return 0
@@ -244,8 +242,7 @@ extension HHUserDetailViewController: UITableViewDataSource {
         let number = (user?.recentThreads.count)! + 1
         return number
     }
-    
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         if indexPath.row == 0 {
@@ -261,7 +258,7 @@ extension HHUserDetailViewController: UITableViewDataSource {
             var thread = (user?.recentThreads.count != 0 && threadList.isEmpty == true) ? user!.recentThreads[indexPath.row - 1] : threadList[indexPath.row - 1]
             thread.authorName = user!.username!
             thread.authorID = user!.uid!
-            
+
             cell.loadModel(thread: thread)
             return cell
         }
@@ -277,7 +274,7 @@ extension HHUserDetailViewController: UIViewControllerPreviewingDelegate {
         }
         return nil
     }
-    
+
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         show(viewControllerToCommit, sender: self)
     }

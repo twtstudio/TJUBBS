@@ -10,18 +10,17 @@ import UIKit
 import Kingfisher
 import PKHUD
 
-
 // ashamed to create the class
 class UserSearchViewController: UIViewController {
     typealias User = UserWrapper
     var searchBar: UISearchBar!
     var tableView: UITableView!
     var userList: [User] = []
-    var doneBlock: ((Int, String)->())?
-    
+    var doneBlock: ((Int, String) -> Void)?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.navigationController?.navigationBar.isTranslucent = false
         // 设置 searchBar 样式
         searchBar = UISearchBar()
@@ -43,7 +42,7 @@ class UserSearchViewController: UIViewController {
             searchField.becomeFirstResponder()
             //            searchField.text = "搜点什么吧！"
         }
-        
+
         tableView = UITableView(frame: .zero, style: .plain)
         //        tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.delegate = self
@@ -62,21 +61,21 @@ class UserSearchViewController: UIViewController {
             make.top.equalTo(searchBar.snp.bottom)
             make.left.right.bottom.equalToSuperview()
         }
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         searchBar.becomeFirstResponder()
     }
-    
+
     func search(with keyword: String) {
         guard keyword.count > 0 else {
             return
         }
-        BBSJarvis.getUser(by: keyword, failure: { error in
+        BBSJarvis.getUser(by: keyword, failure: { _ in
             HUD.flash(.label("获取用户信息失败..."), delay: 1.2)
         }, success: { userList in
             self.userList = userList
@@ -84,7 +83,7 @@ class UserSearchViewController: UIViewController {
             self.tableView.reloadData()
         })
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -96,14 +95,14 @@ extension UserSearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBarTextDidEndEditing(searchBar)
     }
-    
+
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else {
             return
         }
         search(with: searchText)
     }
-    
+
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         guard let searchText = searchBar.text?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else {
             return
@@ -111,7 +110,6 @@ extension UserSearchViewController: UISearchBarDelegate {
         search(with: searchText)
     }
 }
-
 
 // MARK: UITableViewDelegate
 extension UserSearchViewController: UITableViewDelegate {
@@ -122,20 +120,20 @@ extension UserSearchViewController: UITableViewDelegate {
     //    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     //        return 100
     //    }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.1
     }
-    
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let user = userList[indexPath.row]
         doneBlock?(user.id!, user.username!)
-        let _ = self.navigationController?.popViewController(animated: true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
 }
 
@@ -145,11 +143,10 @@ extension UserSearchViewController {
         tableView.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
         }
-//        tableView.frame = CGRect(x: 0, y: searchBar.frame.size.height, width: tableView.frame.size.width, height: height)
         tableView.setNeedsLayout()
         tableView.layoutIfNeeded()
     }
-    
+
     func keyboardWillShow(notification: Notification) {
         if let endRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue {
             //, let beginRect = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as AnyObject).cgRectValue {
@@ -170,7 +167,7 @@ extension UserSearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "friendCell") as! MessageCell
         let model = userList[indexPath.row]
-        
+
         cell.initUI(portraitImage: nil, username: model.username ?? "好友", time: "0", detail: model.signature ?? "")
         let portraitImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: model.id ?? 0))
@@ -179,11 +176,11 @@ extension UserSearchViewController: UITableViewDataSource {
         cell.timeLabel.isHidden = true
         return cell
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userList.count
     }

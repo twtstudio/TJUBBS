@@ -16,7 +16,7 @@ class InputItem: ExpressibleByStringLiteral {
     required init(stringLiteral value: String) {
         decodeString(value: value)
     }
-    
+
     required init(extendedGraphemeClusterLiteral value: String) {
         decodeString(value: value)
     }
@@ -24,7 +24,7 @@ class InputItem: ExpressibleByStringLiteral {
     required init(unicodeScalarLiteral value: String) {
         decodeString(value: value)
     }
-    
+
     func decodeString(value: String) {
         let array = value.split(separator: "-").map(String.init)
         guard array.count >= 3 else {

@@ -1,4 +1,4 @@
- //
+//
 //  AppDelegate.swift
 //  TJUBBS
 //
@@ -14,23 +14,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
+
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
             window.backgroundColor = .white
-            
+
             //Handle NavigationBar Appearance
-            UINavigationBar.appearance().barTintColor = .BBSBlue
-            UINavigationBar.appearance().tintColor = .white
+            UINavigationBar.appearance().barTintColor = .white
+            UINavigationBar.appearance().tintColor = .black
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-            
+
             //            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
             if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {
                 BBSUser.load()
-                
+
                 // 如果token不为空
                 if let token = BBSUser.shared.token, token != "" {
                     BBSJarvis.getAvatar(success: { image in
@@ -55,22 +54,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+
 //        let detailVC = ThreadDetailViewController()
         let tabBarVC = MainTabBarController(para: 1)
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
             window.backgroundColor = .white
-            
+
             //Handle NavigationBar Appearance
             UINavigationBar.appearance().barTintColor = .BBSBlue
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
             BBSUser.load()
-            
+
             window.rootViewController = tabBarVC
-            
+
             window.makeKeyAndVisible()
             if let query = url.query {
                 if let bid = Int(query.replacingOccurrences(of: "^bid=([0-9]*?)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
@@ -91,7 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         return true
     }
-    
+
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -114,6 +113,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
 }
-

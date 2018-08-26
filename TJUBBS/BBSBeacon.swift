@@ -22,24 +22,23 @@ enum BBSError: String, Error {
     case custom = ""
 }
 
-
 struct BBSBeacon {
     //TODO: change AnyObject to Any
-    static func request(withType type: HTTPMethod = .get, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error)->())? = nil, success: ((Dictionary<String, Any>)->())?) {
+    static func request(withType type: HTTPMethod = .get, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error) -> Void)? = nil, success: ((Dictionary<String, Any>) -> Void)?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
         headers["X-Requested-With"] = "Mobile"
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             headers["authentication"] = String(uid) + "|" + tokenStr
         }
-        
+
         // the next line absofuckinglutely sucks
 //         let para = parameters ?? [:]
         Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 7.0
-        
+
         FuckingWrapper.shared.startTimer = Timer.scheduledTimer(timeInterval: 1.0, target: FuckingWrapper.shared, selector: #selector(FuckingWrapper.startLoading), userInfo: nil, repeats: false)
         FuckingWrapper.shared.stopTimer = Timer.scheduledTimer(timeInterval: 7.0, target: FuckingWrapper.shared, selector: #selector(FuckingWrapper.stopLoading), userInfo: nil, repeats: false)
-        
+
         if type == .get || type == .post || type == .put {
             Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseString { response in
                 HUD.hide()
@@ -79,12 +78,12 @@ struct BBSBeacon {
                     // log.error(error)/
                 }
             }
-            
+
         } else if type == .delete {
             Alamofire.request(url, method: .delete, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
                 switch response.result {
                 case .success:
-                    if let data = response.result.value  {
+                    if let data = response.result.value {
                         if let dict = data as? Dictionary<String, Any>, dict["err"] as? Int == 0 {
                             success?(dict)
                         } else {
@@ -93,7 +92,7 @@ struct BBSBeacon {
                         }
                     }
                 case .failure(let error):
-                    if let data = response.result.value  {
+                    if let data = response.result.value {
                         if let dict = data as? Dictionary<String, Any> {
 //                            log.errorMessage(dict["data"] as? String)/
                             HUD.hide()
@@ -106,8 +105,8 @@ struct BBSBeacon {
             }
         }
     }
-    
-    static func requestImage(url: String, failure: ((Error)->())? = nil, success: ((UIImage)->())?) {
+
+    static func requestImage(url: String, failure: ((Error) -> Void)? = nil, success: ((UIImage) -> Void)?) {
         //        Alamofire.request( , method:  , parameters:  , encoding:  , headers:  )
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
@@ -127,8 +126,8 @@ struct BBSBeacon {
             }
         }
     }
-    
-    static func uploadImage(url: String, method: HTTPMethod = .put, image: UIImage, progressBlock: ((Progress)->())? = nil, failure: ((Error)->())? = nil, success: (([String : Any])->())?) {
+
+    static func uploadImage(url: String, method: HTTPMethod = .put, image: UIImage, progressBlock: ((Progress) -> Void)? = nil, failure: ((Error) -> Void)? = nil, success: (([String: Any]) -> Void)?) {
         let data = UIImageJPEGRepresentation(image, 1.0)
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
@@ -136,14 +135,14 @@ struct BBSBeacon {
             return
         }
         headers["authentication"] = String(uid) + "|" + tokenStr
-        
+
         if method == .put {
             Alamofire.upload(multipartFormData: { formdata in
                 formdata.append(data!, withName: "1", fileName: "avatar.jpeg", mimeType: "image/jpeg")
             }, to: url, method: .put, headers: headers, encodingCompletion: { response in
                 switch response {
                 case .success(let upload, _, _):
-                    upload.responseJSON { response in
+                    upload.responseJSON { _ in
                         success?([:])
                     }
                     upload.uploadProgress { progress in
@@ -163,7 +162,7 @@ struct BBSBeacon {
                 switch response {
                 case .success(let upload, _, _):
                     upload.responseJSON { response in
-                        if let dic = response.result.value as? [String : Any] {
+                        if let dic = response.result.value as? [String: Any] {
                             if(dic["err"] as? Int) == 0 {
                                 success?(dic)
                             } else {
@@ -186,7 +185,7 @@ struct BBSBeacon {
 class FuckingWrapper: NSObject {
     var startTimer: Timer?
     var stopTimer: Timer?
-    
+
     static let shared = FuckingWrapper()
     override init() {}
     func startLoading() {

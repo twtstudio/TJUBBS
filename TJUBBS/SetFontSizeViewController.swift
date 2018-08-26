@@ -11,14 +11,14 @@ import UIKit
 class SetFontSizeViewController: UIViewController {
     let minSize = 12
     let maxSize = 25
-    
+
     var sizeSlider: UISlider!
     var previewLabel: UILabel!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "字体设置"
-        
+
         self.view.backgroundColor = .white
         let selectedSize = BBSUser.shared.fontSize
         sizeSlider = UISlider()
@@ -30,18 +30,18 @@ class SetFontSizeViewController: UIViewController {
         previewLabel = UILabel()
         previewLabel.font = UIFont.systemFont(ofSize: CGFloat(selectedSize))
         previewLabel.numberOfLines = 0
-        
+
         let minLabel = UILabel(text: "A", fontSize: minSize)
         let maxLabel = UILabel(text: "A", fontSize: maxSize)
-        
+
         minLabel.sizeToFit()
         maxLabel.sizeToFit()
-        
+
         // layout
         minLabel.x = 10
 //        minLabel.center.x = self.view.center.x
         minLabel.center.y = self.view.height/6
-        
+
         maxLabel.x = self.view.width - 10 - maxLabel.width
         maxLabel.center.y = minLabel.center.y
 
@@ -49,7 +49,7 @@ class SetFontSizeViewController: UIViewController {
         sizeSlider.center.y = minLabel.center.y
         sizeSlider.width = self.view.width - 10*2 - 10*2 - minLabel.width - maxLabel.width
         sizeSlider.height = maxLabel.height
-        
+
 //        previewLabel.x = 20
         previewLabel.width = self.view.width - 20*2
 //        previewLabel.text = "我知道\n地球的年龄是45.5亿年\n岩浆的温度是700到1200度\n世界上的花大概有45万种\n但是\n相比于这个世界\n我更想"
@@ -70,20 +70,20 @@ class SetFontSizeViewController: UIViewController {
         previewLabel.sizeToFit()
         previewLabel.center.x = self.view.center.x
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         BBSUser.shared.fontSize = Int(sizeSlider.value)
         BBSUser.save()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
 }

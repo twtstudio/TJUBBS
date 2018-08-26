@@ -12,7 +12,7 @@ import PKHUD
 let GUIDEDIDSHOW = "GuideKey"
 
 class GuideViewController: UIViewController {
-    
+
     var pageControl = UIPageControl()
     var scorllView = UIScrollView()
     let screenSize = UIScreen.main.bounds.size
@@ -21,13 +21,13 @@ class GuideViewController: UIViewController {
     var oldUserButton = UIButton.borderButton(title: "我是老用户")
     var loginBtn = UIButton(title: "直接登录>")
 //    var loginBtn = UIButton.borderButton(title: "马上体验")
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         initUI()
     }
-    
+
     func initUI() {
         view.addSubview(scorllView)
         scorllView.contentSize = CGSize(width: screenSize.width*CGFloat(pageNameList.count), height: screenSize.height)
@@ -37,21 +37,20 @@ class GuideViewController: UIViewController {
         scorllView.delegate = self
         scorllView.isPagingEnabled = true
         scorllView.bounces = false
-        
+
         for i in 0..<pageNameList.count {
             let imageView = UIImageView(image: UIImage(named: pageNameList[i]))
             imageView.frame = CGRect(x: screenSize.width*CGFloat(i), y: 0, width: screenSize.width, height: screenSize.height)
             scorllView.addSubview(imageView)
         }
-        
+
         pageControl.backgroundColor = .clear
         pageControl.pageIndicatorTintColor = .BBSLightGray
         pageControl.currentPageIndicatorTintColor = .BBSBlue
         pageControl.numberOfPages = pageNameList.count
         pageControl.currentPage = 0
-        
-        
-        let check: ([String : String])->(Bool) = { result in
+
+        let check: ([String: String]) -> (Bool) = { result in
             guard result["repass"] == result["password"] else {
                 HUD.flash(.label("两次密码不符！请重新输入👀"), delay: 1.2)
                 return false
@@ -79,7 +78,7 @@ class GuideViewController: UIViewController {
             vc.doneText = "确认"
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        
+
         oldUserButton.alpha = 0
         oldUserButton.addTarget { _ in
             let veteranCheckVC = InfoModifyController(title: "老用户认证", items: ["老用户名-输入用户名-username", "老密码-输入密码-password-s"], style: .bottom, headerMsg: "老用户登录", handler: nil)
@@ -111,8 +110,7 @@ class GuideViewController: UIViewController {
                     }
                 }
             }
-            
-            
+
             // 坑人的需求魔改
             let manualView = UILabel(text: "验证遇到问题？点这里")
             manualView.font = UIFont.systemFont(ofSize: 14)
@@ -128,30 +126,30 @@ class GuideViewController: UIViewController {
                             dict in
                             if let status = dict["err"] as? Int, status == 0 {
                                 HUD.flash(.label("验证信息已经发送至后台管理员，验证结果将会在 7 个工作日内发送至您的邮箱，请注意查收~"), delay: 4.0)
-                                let _ = manualCheckVC?.navigationController?.popToRootViewController(animated: false)
+                                _ = manualCheckVC?.navigationController?.popToRootViewController(animated: false)
                             }
                         }
                     }
                 }
                 manualCheckVC.doneText = "验证"
                 self.navigationController?.pushViewController(manualCheckVC, animated: true)
-                
+
             }
             veteranCheckVC.extraView = manualView
             veteranCheckVC.doneText = "验证"
             self.navigationController?.pushViewController(veteranCheckVC, animated: true)
         }
-        
+
         view.addSubview(scorllView)
         scorllView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        
+
         view.addSubview(pageControl)
         pageControl.snp.makeConstraints {
             make in
             make.bottom.equalToSuperview().offset(-48)
             make.centerX.equalToSuperview()
         }
-        
+
         view.addSubview(newUserButton)
         newUserButton.snp.makeConstraints {
             make in
@@ -160,7 +158,7 @@ class GuideViewController: UIViewController {
             make.height.equalTo(screenSize.height*(100/1920))
             make.centerX.equalToSuperview().offset(-screenSize.width/4)
         }
-        
+
         view.addSubview(oldUserButton)
         oldUserButton.snp.makeConstraints {
             make in
@@ -169,7 +167,7 @@ class GuideViewController: UIViewController {
             make.height.equalTo(screenSize.height*(100/1920))
             make.centerX.equalToSuperview().offset(screenSize.width/4)
         }
-        
+
         loginBtn.setTitleColor(UIColor.BBSBlue, for: .normal)
         loginBtn.alpha = 0
         view.addSubview(loginBtn)
@@ -181,40 +179,39 @@ class GuideViewController: UIViewController {
         }
         loginBtn.addTarget { _ in
             UserDefaults.standard.set(true, forKey: GUIDEDIDSHOW)
-            let _ = self.navigationController?.popToRootViewController(animated: false)
+            _ = self.navigationController?.popToRootViewController(animated: false)
             let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
             self.present(navigationController, animated: true, completion: nil)
         }
 
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
         UIApplication.shared.isStatusBarHidden = true
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         UIApplication.shared.isStatusBarHidden = false
     }
-    
 
 }
 
 extension GuideViewController: UIScrollViewDelegate {
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offset = scrollView.contentOffset
         pageControl.currentPage = Int(offset.x/screenSize.width)
-        
+
         if pageControl.currentPage == pageNameList.count-1 {
             UIView.animate(withDuration: 0.8, animations: {
                 self.newUserButton.alpha = 1
