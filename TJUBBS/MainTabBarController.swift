@@ -31,6 +31,7 @@ class MainTabBarController: UITabBarController {
         let homepageNC = UINavigationController(rootViewController: homepageVC!)
         homepageNC.navigationBar.isTranslucent = false
         homepageNC.tabBarItem = createBarItem(imageName: "home")
+    
         homepageNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
         BBSVC = ForumListVC()

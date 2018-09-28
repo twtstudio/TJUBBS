@@ -19,17 +19,16 @@ class ForumListTableViewCell: UITableViewCell {
     var modelButton = UIButton()
  
     var isHot = false  //R242 G104 B14
-    var hotBoardName = ["段子手 音乐汇 文学艺术 鹊桥 青年湖 绿茵足球 找工作 招聘信息"]
+    var hotBoard = ["段子手", "音乐汇"]
 
-//   //从左往右数第一个第二个第三个stackview  R242 G104 B14 " ヾ(≧▽≦*)o"
+//   //从左往右数第一个第二个第三个stackview  R242 G104 B14 " ヾ(≧▽≦*)o" "段子手", "音乐汇", "文学艺术", "鹊桥", "青年湖", "绿茵足球", "招聘信息", "找工作"]
     var defaultFaceArray = ["(๑•̀ㅂ•́)و✧", " ", " o(*≧▽≦)ツ", "ヽ(✿ﾟ▽ﾟ)ノ", "o(^▽^)o", "(ง •_•)ง", "￣O￣)ノ"]
 
     //broad button
     //装board的数组，从里面拿到board的name
     //var boardArray: [BoardModel] = []
     var numOfButtonInStack = 0
-    var threeStack: [UIStackView] = []
-    var buttonInStack =  UIButton()
+   
     var buttonNameArray : [String] = []
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -95,7 +94,7 @@ class ForumListTableViewCell: UITableViewCell {
         self.contentView.addSubview(modelButton)
     }
   
-    @available(iOS 10.0, *)
+ 
     func buttonLayout(numberOfButton: Int) {
         let heightOfButton = SCREENWIDTH / 8
         print("buttonLayout")
@@ -105,9 +104,36 @@ class ForumListTableViewCell: UITableViewCell {
                 //通过计算给每个button编号，下标从1开始，从左往右，从上往下蛇形遍历
                 let index  = i * 3 + j
                 button.backgroundColor = .clear
-                button.setTitle(buttonNameArray[index - 1], for: .normal)
-                button.setTitleColor(.black, for: .normal)
-                button.titleLabel?.font = UIFont(name: "AppleGothic", size: 16)
+                  button.setTitle(buttonNameArray[index - 1], for: .normal)
+                
+                hotBoard.forEach{(element) in
+                    if buttonNameArray[index - 1] == element{
+                        button.setTitleColor(.BBSHotOrange, for: .normal)
+                        print("match")
+                    }
+                    else{
+                        button.setTitleColor(.black, for: .normal)
+                        print("else")
+
+                    }
+                }
+                
+//                for k in 0..<hotBoard.count{
+//
+//                if buttonNameArray[index - 1] == hotBoard[k]{
+//                   button.setTitleColor(.BBSHotOrange, for: .normal)
+//                    print("match")
+//                }
+//                else{
+//                   button.setTitleColor(.black, for: .normal)
+//
+//
+//                }
+//
+//                }
+               
+               //  button.titleLabel?.font = UIFont(name: "AppleGothic", size: 16)
+                button.titleLabel?.font = UIFont.HHflexibleFont(ofBaseSize: 15)
                 button.layer.borderColor = UIColor.BBSLightGray.cgColor
                 button.layer.borderWidth = 0.5
                 //button.layer.masksToBounds = true
@@ -126,10 +152,6 @@ class ForumListTableViewCell: UITableViewCell {
     func boardButtonTapped(sender: UIButton) {
        print(sender.tag)
 
-    }
-
-    func creatButtonInStack() {
-      print("creatButton")
     }
 
     required init?(coder aDecoder: NSCoder) {

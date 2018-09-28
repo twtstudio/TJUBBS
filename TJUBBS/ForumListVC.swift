@@ -103,11 +103,9 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
                                 boardCopy["forum_name"] = forum.name
                                 let fooBoard = BoardModel(JSON: boardCopy)
                                 self.boardList.append(fooBoard!)
-//                                print("board append finished, #of boardList " + String(self.boardList.count))
                             }
                         }
-                       
-      // print("break")
+                 
                     })
                     
                 }
@@ -115,10 +113,6 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
             }
             
             group.notify(queue: .main, execute: {
-                 print( self.forumList.count)
-                 print( self.boardList.count)
-              
-                
                 for i in 0..<self.forumList.count{
                     var tempBoard : [BoardModel] = []
                         for board in self.boardList{
@@ -132,27 +126,7 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
                         self.cellBorad.append(tempBoard)
                         tempBoard.removeAll()
                     }
-                    print(self.cellBorad.count)
-                    
-                    
                 }
-            //  print(self.boardList.description)
-//                for i in 0 ..< self.forumList.count{
-//                    var board : [BoardModel] = []
-//                    var count = 0
-//                    for j in count ..< self.forumList[i].boardCount + count{
-//
-//                       board.append(self.boardList[j])
-//                        count += self.forumList[i].boardCount
-//
-//                    }
-//                    self.cellBorad.append(board)
-//                    board.removeAll()
-//                   // print(self.cellBorad[i].description + "\n")
-//
-//                }
-              // print( self.forumList.count)
-               // print( self.cellBorad.count)
                 self.ForumTableView.reloadData()
             })
         }
@@ -174,7 +148,7 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("\ntabelViewCell start layout (8cells)")
+        print("\ntabelViewCell start layout (8cells) # \(indexPath.section)")
         let cell = ForumListTableViewCell()
         cell.initUI(forumName: forumList[indexPath.section].name,
                     numButtonInStack: numOfButtonInStack[indexPath.section],
@@ -190,6 +164,7 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         return 0.001
     }
 }
+
 
 
 

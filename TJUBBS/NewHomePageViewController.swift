@@ -13,8 +13,11 @@ import Kingfisher
 import MJRefresh
 import PiwikTracker
 
+
 class NewHomePageViewController: UIViewController {
 
+    
+    var tabBar = MainTabBarController()
     var tableView: UITableView?
     var threadList: [ThreadModel] = [] {
         didSet {
@@ -74,6 +77,7 @@ class NewHomePageViewController: UIViewController {
 //        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
 
         self.refresh()
+        self.tabBar.hidesBottomBarWhenPushed = false
 
     }
 
