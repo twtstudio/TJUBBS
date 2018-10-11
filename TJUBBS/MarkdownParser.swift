@@ -112,7 +112,7 @@
  software, even if advised of the possibility of such damage.
  */
 
-let base = "https://bbs.twtstudio.com"
+let base = "https://bbs.tju.edu.cn/api"
 
 
 import Foundation

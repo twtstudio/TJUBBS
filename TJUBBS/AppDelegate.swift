@@ -23,9 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window.backgroundColor = .white
             
             //Handle NavigationBar Appearance
-            UINavigationBar.appearance().barTintColor = .BBSBlue
-            UINavigationBar.appearance().tintColor = .white
-            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            UINavigationBar.appearance().barTintColor = .white
+            UINavigationBar.appearance().tintColor = .darkGray
+            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.darkGray]
             
             //            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
             if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {

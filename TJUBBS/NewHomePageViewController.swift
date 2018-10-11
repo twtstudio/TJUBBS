@@ -37,7 +37,16 @@ class NewHomePageViewController: UIViewController {
             //            PiwikTracker.shared.sendView("")
         }
     }
-    var headerView = HomePageHeaderView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.40))
+    static var topHeight: CGFloat {
+        get {
+            guard UIDevice.current.isX() else {
+                return 20
+            }
+            return 44
+        }
+    }
+
+    var headerView = HomePageHeaderView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.30))
     
     var pic: [UIImageView] = [UIImageView]()
     
@@ -45,8 +54,8 @@ class NewHomePageViewController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .lightContent
-        self.hidesBottomBarWhenPushed = true
+        UIApplication.shared.statusBarStyle = .default
+//        self.hidesBottomBarWhenPushed = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -72,7 +81,24 @@ class NewHomePageViewController: UIViewController {
         
         self.headerView.searchButton.addTarget(self, action: #selector(self.searchToggled(sender:)), for: .touchUpInside)
         
-//        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "最新动态", style: UIBarButtonItemStyle.plain, target: self, action: nil)
+        self.navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.darkGray], for: .normal)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.darkGray
+        
+        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
+        
+        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        var refreshingImages = [UIImage]()
+        for i in 1...6 {
+            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
+            refreshingImages.append(image!)
+        }
+        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
+        header?.stateLabel.isHidden = true
+        header?.lastUpdatedTimeLabel.isHidden = true
+        header?.setImages(refreshingImages, for: .pulling)
+        tableView?.mj_header = header
         
         self.refresh()
         
@@ -91,9 +117,12 @@ class NewHomePageViewController: UIViewController {
             self.automaticallyAdjustsScrollViewInsets = false
             // Fallback on earlier versions
         }
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.navigationBar.hideBottomHairline()
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
+//        self.navigationController?.navigationBar.isTranslucent = true
+        
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.default
         
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
         PiwikTracker.shared.appName = "bbs.tju.edu.cn"
@@ -105,10 +134,10 @@ class NewHomePageViewController: UIViewController {
         super.viewWillDisappear(animated)
         //tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.always
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
     }
     
-    @objc func searchToggled(sender: UIButton) {
+    func searchToggled(sender: UIBarButtonItem) {
         let searchVC = SearchViewController()
         searchVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(searchVC, animated: true)
@@ -127,17 +156,17 @@ extension NewHomePageViewController {
         
         curPage = 0
         BBSJarvis.getIndex(page: curPage, failure: { _ in
-//            if (self.tableView?.mj_header.isRefreshing)! {
-//                self.tableView?.mj_header.endRefreshing()
-//            }
+            if (self.tableView?.mj_header.isRefreshing)! {
+                self.tableView?.mj_header.endRefreshing()
+            }
         }, success: { dict in
             if let data = dict["data"] as? Array<Dictionary<String, Any>> {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
 //            self.tableView?.mj_footer.resetNoMoreData()
-//            if (self.tableView?.mj_header.isRefreshing)! {
-//                self.tableView?.mj_header.endRefreshing()
-//            }
+            if (self.tableView?.mj_header.isRefreshing)! {
+                self.tableView?.mj_header.endRefreshing()
+            }
             self.tableView?.reloadData()
         })
     }
@@ -234,3 +263,14 @@ extension NewHomePageViewController: UIViewControllerPreviewingDelegate {
         show(viewControllerToCommit, sender: self)
     }
 }
+
+extension UIDevice {
+    public func isX() -> Bool {
+        if UIScreen.main.bounds.height == 812 {
+            return true
+        }
+        
+        return false
+    }
+}
+
