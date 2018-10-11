@@ -96,6 +96,8 @@
 		C82D092120C7834C0078FD5E /* HomePageThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */; };
 		C883CD3D20C9594900842A2A /* HomePageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883CD3C20C9594900842A2A /* HomePageHeaderView.swift */; };
 		C8CAC79320B64A9E0092BD7B /* piwiktracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C8CAC79020B64A9D0092BD7B /* piwiktracker.xcdatamodeld */; };
+		C8DCA2AB20FDAC90000C7656 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DCA2AA20FDAC90000C7656 /* Variables.swift */; };
+		C8DCA2AF20FDC495000C7656 /* TimerScrollerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DCA2AE20FDC495000C7656 /* TimerScrollerView.swift */; };
 		D8DCDBDBC4B8E493C53054CF /* Pods_BBSWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BD580876991C9F536CB1A82 /* Pods_BBSWidget.framework */; };
 /* End PBXBuildFile section */
 
@@ -235,6 +237,8 @@
 		C883CD3C20C9594900842A2A /* HomePageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageHeaderView.swift; sourceTree = "<group>"; };
 		C8CAC79120B64A9D0092BD7B /* piwiktracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = piwiktracker.xcdatamodel; sourceTree = "<group>"; };
 		C8CAC79220B64A9D0092BD7B /* piwiktracker v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "piwiktracker v2.xcdatamodel"; sourceTree = "<group>"; };
+		C8DCA2AA20FDAC90000C7656 /* Variables.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
+		C8DCA2AE20FDC495000C7656 /* TimerScrollerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerScrollerView.swift; sourceTree = "<group>"; };
 		E9E8BF7E00D1A1F9914D3943 /* Pods-TJUBBS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TJUBBS.release.xcconfig"; path = "Pods/Target Support Files/Pods-TJUBBS/Pods-TJUBBS.release.xcconfig"; sourceTree = "<group>"; };
 		FA6F43ADEF3827A55E61BC12 /* Pods_TJUBBS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TJUBBS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -460,6 +464,7 @@
 		682A84611EB5C3B900510FA4 /* TJUBBS */ = {
 			isa = PBXGroup;
 			children = (
+				C8DCA2A920FDAC48000C7656 /* BBSV3 */,
 				C8CAC79020B64A9D0092BD7B /* piwiktracker.xcdatamodeld */,
 				360299F61F98776800EDF99F /* TJUBBS.entitlements */,
 				682A84901EB5C3CE00510FA4 /* Main */,
@@ -532,9 +537,6 @@
 				68B6834E1EC2086200F7A0BF /* HomepageMainController.swift */,
 				68B683571EC31BE700F7A0BF /* LatestThreadViewController.swift */,
 				6849ABBE1EC897B200042B5F /* EliteThreadViewController.swift */,
-				C82D091E20C782020078FD5E /* NewHomePageViewController.swift */,
-				C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */,
-				C883CD3C20C9594900842A2A /* HomePageHeaderView.swift */,
 			);
 			name = HomePage;
 			sourceTree = "<group>";
@@ -640,6 +642,42 @@
 				93952F21B48D2736B35318D9 /* Pods-BBSWidget.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		C8CBB28021007EE000D6D5DB /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				C82D091E20C782020078FD5E /* NewHomePageViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		C8DCA2A920FDAC48000C7656 /* BBSV3 */ = {
+			isa = PBXGroup;
+			children = (
+				C8DCA2AC20FDC402000C7656 /* HomePage */,
+				C8DCA2AA20FDAC90000C7656 /* Variables.swift */,
+			);
+			name = BBSV3;
+			sourceTree = "<group>";
+		};
+		C8DCA2AC20FDC402000C7656 /* HomePage */ = {
+			isa = PBXGroup;
+			children = (
+				C8CBB28021007EE000D6D5DB /* Controller */,
+				C8DCA2AD20FDC40B000C7656 /* View */,
+			);
+			name = HomePage;
+			sourceTree = "<group>";
+		};
+		C8DCA2AD20FDC40B000C7656 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */,
+				C883CD3C20C9594900842A2A /* HomePageHeaderView.swift */,
+				C8DCA2AE20FDC495000C7656 /* TimerScrollerView.swift */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -963,6 +1001,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8DCA2AF20FDC495000C7656 /* TimerScrollerView.swift in Sources */,
 				6849ABC11EC8BF8100042B5F /* PostModel.swift in Sources */,
 				36D21F3F1EB6F67E00677534 /* InfoModifyController.swift in Sources */,
 				36B8D0251EC34025006D58F8 /* BBSUser.swift in Sources */,
@@ -1033,6 +1072,7 @@
 				3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */,
 				8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */,
 				36E6A8DC1F8FEB5600E216FD /* SearchViewController.swift in Sources */,
+				C8DCA2AB20FDAC90000C7656 /* Variables.swift in Sources */,
 				68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */,
 				36E054501F100FCE00B913F0 /* ExtendedButton.swift in Sources */,
 				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,

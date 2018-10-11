@@ -13,7 +13,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
 
     let screenSize = UIScreen.main.bounds.size
     var thread: ThreadModel?
-    var titleLabel: UILabel = UILabel(text: "", color: .black, fontSize: 21)
+    var titleLabel: UILabel = UILabel(text: "", color: .black, fontSize: 21, weight: UIFontWeightLight)
     var nameLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 16, weight: UIFontWeightLight)
     var timeLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 13, weight: UIFontWeightLight)
     var likedLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 14, weight: UIFontWeightLight)
@@ -92,6 +92,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
         //replyImageView
         replyImageView.image = UIImage(named: "点赞")
         replyImageView.snp.makeConstraints { make in
+
             make.bottom.equalToSuperview().offset(-6)
             make.left.equalTo(titleLabel)
             make.height.equalTo(24)
@@ -108,11 +109,13 @@ class HomePageThreadTableViewCell: UITableViewCell {
         //likeImageView
         likeImageView.image = UIImage(named: "评论")
         likeImageView.snp.makeConstraints { make in
+
             make.bottom.equalToSuperview().offset(-6)
             make.left.equalTo(replyLabel.snp.right).offset(10)
             make.height.equalTo(24)
             make.width.equalTo(24)
         }
+        
         //likedLabel
         likedLabel.text = "\(thread.likeCount)"
         likedLabel.snp.makeConstraints { make in

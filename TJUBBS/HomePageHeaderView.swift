@@ -49,6 +49,7 @@ class HomePageHeaderView: UIView {
 
         container.addSubview(latestActivityLabel)
         container.addSubview(searchButton)
+
         container.addSubview(announceButton)
         container.addSubview(activityButton)
         container.addSubview(eliteButton)
@@ -89,6 +90,7 @@ class HomePageHeaderView: UIView {
             make.height.equalTo(15)
             make.width.equalTo(15)
         }
+
 
         let annonceBtnImage = UIImage(named: "公告")
         announceButton.setBackgroundImage(annonceBtnImage, for: .normal)
@@ -148,6 +150,7 @@ class HomePageHeaderView: UIView {
 
         self.headScrollView.snp.makeConstraints { make in
             make.top.equalTo(latestActivityLabel.snp.bottom).offset(10)
+
             make.bottom.equalTo(announceButton.snp.top).offset(-10)
             make.width.equalTo(UIScreen.main.bounds.width)
         }
@@ -171,6 +174,7 @@ class HomePageHeaderView: UIView {
                 make.top.equalTo(searchButton.snp.bottom).offset(10)
                 make.bottom.equalTo(announceButton.snp.top).offset(-10)
                 make.width.equalTo(UIScreen.main.bounds.width)
+
                 make.left.equalToSuperview().offset(i * Int(UIScreen.main.bounds.width))
             }
         }
@@ -231,5 +235,31 @@ extension HomePageHeaderView: UIScrollViewDelegate {
         let wid = scrollerPicView.frame.size.width
         let pageNumber: CGFloat = scrollerPicView.contentOffset.x / wid
         self.pageControl?.currentPage = (Int)(pageNumber)
+    }
+}
+
+extension UIImage {
+    
+    //将图片缩放成指定尺寸（多余部分自动删除）
+    func scaled(to newSize: CGSize) -> UIImage {
+        //计算比例
+        let aspectWidth  = newSize.width/size.width
+        let aspectHeight = newSize.height/size.height
+        let aspectRatio = max(aspectWidth, aspectHeight)
+        
+        //图片绘制区域
+        var scaledImageRect = CGRect.zero
+        scaledImageRect.size.width  = size.width * aspectRatio
+        scaledImageRect.size.height = size.height * aspectRatio
+        scaledImageRect.origin.x    = (newSize.width - size.width * aspectRatio) / 2.0
+        scaledImageRect.origin.y    = (newSize.height - size.height * aspectRatio) / 2.0
+        
+        //绘制并获取最终图片
+        UIGraphicsBeginImageContext(newSize)
+        draw(in: scaledImageRect)
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return scaledImage!
     }
 }

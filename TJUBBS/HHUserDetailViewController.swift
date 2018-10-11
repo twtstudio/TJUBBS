@@ -239,7 +239,12 @@ extension HHUserDetailViewController: UITableViewDataSource {
         guard user?.recentThreads.count != nil else {
             return 0
         }
-        let number = (user?.recentThreads.count)! + 1
+        var number: Int = 1
+        for thread in (user?.recentThreads)! {
+            if thread.visibility == 0 {
+                number += 1
+            }
+        }
         return number
     }
 
@@ -254,7 +259,7 @@ extension HHUserDetailViewController: UITableViewDataSource {
             cell.textLabel?.textAlignment = .center
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "NewPersonCell", for: indexPath) as! NewPersonTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NewPersonCell") as! NewPersonTableViewCell
             var thread = (user?.recentThreads.count != 0 && threadList.isEmpty == true) ? user!.recentThreads[indexPath.row - 1] : threadList[indexPath.row - 1]
             thread.authorName = user!.username!
             thread.authorID = user!.uid!

@@ -47,8 +47,8 @@ class NewHomePageViewController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .lightContent
-        self.hidesBottomBarWhenPushed = true
+        UIApplication.shared.statusBarStyle = .default
+//        self.hidesBottomBarWhenPushed = true
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -97,7 +97,6 @@ class NewHomePageViewController: UIViewController {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
-
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
         PiwikTracker.shared.appName = "bbs.tju.edu.cn"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
@@ -108,7 +107,7 @@ class NewHomePageViewController: UIViewController {
         super.viewWillDisappear(animated)
         //tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.always
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
     }
 
     @objc func searchToggled(sender: UIButton) {
@@ -129,17 +128,17 @@ extension NewHomePageViewController {
 
         curPage = 0
         BBSJarvis.getIndex(page: curPage, failure: { _ in
-//            if (self.tableView?.mj_header.isRefreshing)! {
-//                self.tableView?.mj_header.endRefreshing()
-//            }
+            if (self.tableView?.mj_header.isRefreshing)! {
+                self.tableView?.mj_header.endRefreshing()
+            }
         }, success: { dict in
             if let data = dict["data"] as? Array<Dictionary<String, Any>> {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
 //            self.tableView?.mj_footer.resetNoMoreData()
-//            if (self.tableView?.mj_header.isRefreshing)! {
-//                self.tableView?.mj_header.endRefreshing()
-//            }
+            if (self.tableView?.mj_header.isRefreshing)! {
+                self.tableView?.mj_header.endRefreshing()
+            }
             self.tableView?.reloadData()
         })
     }
@@ -235,3 +234,14 @@ extension NewHomePageViewController: UIViewControllerPreviewingDelegate {
         show(viewControllerToCommit, sender: self)
     }
 }
+
+extension UIDevice {
+    public func isX() -> Bool {
+        if UIScreen.main.bounds.height == 812 {
+            return true
+        }
+        
+        return false
+    }
+}
+

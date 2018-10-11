@@ -105,7 +105,7 @@ class ThreadDetailViewController: UIViewController {
             }
         }
         boardLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        boardLabel.textColor = .white
+        boardLabel.textColor = .darkGray
         boardLabel.sizeToFit()
         boardLabel.width = width
         boardLabel.textAlignment = .center
@@ -120,7 +120,6 @@ class ThreadDetailViewController: UIViewController {
         } else {
             self.replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45)
         }
-
     }
 
     override func viewDidLoad() {
