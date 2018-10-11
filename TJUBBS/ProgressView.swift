@@ -1,7 +1,3 @@
-
-
-
-
 //
 //  ProgressView.swift
 //  TJUBBS
@@ -20,7 +16,7 @@ class ProgressView: UIView {
             self.setNeedsDisplay()
         }
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 //        self.backgroundColor = .clear
@@ -31,11 +27,11 @@ class ProgressView: UIView {
             make.center.equalToSuperview()
         }
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
@@ -45,8 +41,8 @@ class ProgressView: UIView {
         let center = CGPoint(x: rect.size.width/2, y: rect.size.height/2)
         let radius: CGFloat = 18
         let start: CGFloat = -CGFloat(M_PI_2)
-        let end: CGFloat = -CGFloat(M_PI_2) + CGFloat(M_PI)*2*CGFloat(progress)
-        
+        let end: CGFloat = -CGFloat(M_PI_2) + CGFloat.pi*2*CGFloat(progress)
+
         let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: start, endAngle: end, clockwise: true)
         ctx?.setLineWidth(5)
         ctx?.setStrokeColor(UIColor.white.cgColor)

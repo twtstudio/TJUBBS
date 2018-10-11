@@ -11,12 +11,12 @@ import SnapKit
 import PKHUD
 
 class AuthenticateViewController: UIViewController {
-    
+
     let screenSize = UIScreen.main.bounds.size
     var tableView: UITableView?
     var authenticateButton: UIButton?
     var footerView: UIView?
-    
+
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = UIColor.white
@@ -25,17 +25,17 @@ class AuthenticateViewController: UIViewController {
         initUI()
         addTapGestures()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     func initUI() {
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
@@ -50,30 +50,29 @@ class AuthenticateViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.register(TextInputCell.self, forCellReuseIdentifier: "ID")
     }
-    
+
     func addTapGestures() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
     }
-    
-    
+
     func authenticateButtonTapped() {
         print("func authenticateButtonTapped")
         HUD.flash(.label("验证未通过！请检查信息是否有误"), delay: 1.0)
     }
-    
+
 }
 
 extension AuthenticateViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
@@ -89,16 +88,15 @@ extension AuthenticateViewController: UITableViewDataSource {
             return UITableViewCell()
         }
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return screenSize.height*(150/1920)
     }
-    
 
 }
 
 extension AuthenticateViewController: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenSize.height*(120/1920)))
         let textLabel = UILabel(text: "老用户(即已拥有BBS账号)请填写以下信息认证", fontSize: 16)
@@ -108,14 +106,14 @@ extension AuthenticateViewController: UITableViewDelegate {
             make.left.equalTo(headerView).offset(16)
             make.centerY.equalTo(headerView)
         }
-        
+
         return headerView
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return screenSize.height*(120/1920)
     }
-    
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         footerView = UIView(frame: CGRect(x: 0, y: 0, width: 375, height: screenSize.height*(300/1920)))
         authenticateButton = UIButton(title: "验 证", isConfirmButton: true)
@@ -130,12 +128,11 @@ extension AuthenticateViewController: UITableViewDelegate {
         authenticateButton?.addTarget(self, action: #selector(authenticateButtonTapped), for: .touchUpInside)
         return footerView
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return screenSize.height*(300/1920)
     }
 
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if let cell = tableView.cellForRow(at: indexPath) as? TextInputCell {

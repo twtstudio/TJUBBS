@@ -14,7 +14,7 @@ class NewThreadModel {
     var postTime: String?
     var replyNum: String?
     var threadContent: String?
-    
+
     init(threadTitle: String, userName: String, postTime: String, replyNum: String, threadContent: String) {
         self.threadTitle = threadTitle
         self.userName = userName
@@ -23,4 +23,3 @@ class NewThreadModel {
         self.threadContent = threadContent
     }
 }
-

@@ -28,7 +28,7 @@ let BBSUSERSHAREDKEY = "BBSUserSharedKey"
 class BBSUser {
     private init() {}
     static let shared = BBSUser()
-    
+
     var username: String?
     var nickname: String?
     var realName: String?
@@ -48,9 +48,9 @@ class BBSUser {
     var oldToken: String?
     var resetPasswordToken: String?
     var isVisitor: Bool = false
-    var blackList: [String : Int] = [:]
+    var blackList: [String: Int] = [:]
     var fontSize: Int = 14
-    
+
     static func load(wrapper: UserWrapper) {
         BBSUser.shared.username = wrapper.username
         BBSUser.shared.nickname = wrapper.nickname
@@ -63,7 +63,7 @@ class BBSUser {
         BBSUser.shared.tCreate = wrapper.tCreate
         BBSUser.save()
     }
-    
+
     static func save() {
 //        let list = NSDictionary(dictionary: BBSUser.shared.blackList)
         let list = NSMutableDictionary()
@@ -72,10 +72,10 @@ class BBSUser {
                 list.setValue(uid, forKey: key)
             }
         }
-        let dic: [String : Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1, "blackList": list, "fontSize": BBSUser.shared.fontSize]
+        let dic: [String: Any] = ["username": BBSUser.shared.username ?? "", "token": BBSUser.shared.token ?? "", "uid": BBSUser.shared.uid ?? -1, "group": BBSUser.shared.group ?? -1, "blackList": list, "fontSize": BBSUser.shared.fontSize]
         UserDefaults.standard.set(NSDictionary(dictionary: dic), forKey: BBSUSERSHAREDKEY)
     }
-    
+
     static func load() {
         if let dic = UserDefaults.standard.object(forKey: BBSUSERSHAREDKEY) as? NSDictionary,
             let username = dic["username"] as? String,
@@ -100,7 +100,7 @@ class BBSUser {
             BBSUser.shared.blackList = dict
         }
     }
-    
+
     static func delete() {
         //TODO: ??????  delete "BBSUser.shared."
         BBSUser.shared.username = nil
@@ -117,7 +117,7 @@ class BBSUser {
         BBSUser.shared.blackList.removeAll()
         UserDefaults.standard.removeObject(forKey: BBSUSERSHAREDKEY)
     }
-    
+
 }
 
 class UserWrapper: NSObject, Mappable {
@@ -135,9 +135,9 @@ class UserWrapper: NSObject, Mappable {
     var status: Int?
     var id: Int?
     var recentThreads: [ThreadModel] = []
-    
+
     required init?(map: Map) {}
-    
+
     func mapping(map: Map) {
         username <- map["name"]
         nickname <- map["nickname"]
@@ -154,4 +154,3 @@ class UserWrapper: NSObject, Mappable {
         id <- map["id"]
     }
 }
-

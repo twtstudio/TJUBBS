@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 
 struct ThreadModel: Mappable {
-    
+
     var id = 0
     var title = ""
     var authorID = 0
@@ -33,9 +33,9 @@ struct ThreadModel: Mappable {
     var isFriend = false
     var likeCount = 0
     var isLiked = false
-    
+
     init?(map: Map) {}
-    
+
     mutating func mapping(map: Map) {
         id <- map["id"]
         title <- map["title"]
@@ -60,5 +60,5 @@ struct ThreadModel: Mappable {
         likeCount <- map["like"]
         isLiked <- map["liked"]
     }
-    
+
 }

@@ -1,4 +1,3 @@
-
 //
 //  MessageModel.swift
 //  TJUBBS
@@ -28,9 +27,9 @@ struct MessageModel: Mappable {
     var type: CellType = .sent
     var detailContent: MessageContentModel?
     var friendRequest: FriendRequestModel?
-    
+
     init?(map: Map) {}
-    
+
     mutating func mapping(map: Map) {
         id <- map["id"]
         content <- map["content"]
@@ -65,7 +64,7 @@ struct MessageContentModel: Mappable {
     var reply_content: String = ""
     var allow_anonymous: Int = 0
     init?(map: Map) {}
-    
+
     mutating func mapping(map: Map) {
         id <- map["id"]
         thread_id <- map["thread_id"]
@@ -87,11 +86,10 @@ struct FriendRequestModel: Mappable {
     var status = 0
     var uid = 0
     init?(map: Map) {}
-    
+
     mutating func mapping(map: Map) {
         id <- map["id"]
         message <- map["message"]
         status <- map["status"]
     }
 }
-

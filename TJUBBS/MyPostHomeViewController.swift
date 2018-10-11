@@ -19,19 +19,19 @@ class MyPostHomeViewController: WMPageController {
         self.title = "我的发布"
         UIApplication.shared.statusBarStyle = .lightContent
         // customization for pageController
-        pageAnimatable = true;
-        titleSizeSelected = 16.0;
-        titleSizeNormal = 15.0;
-        menuViewStyle = .line;
-        titleColorSelected = .white;
-        titleColorNormal = .white;
-        menuItemWidth = self.view.frame.size.width/2;
-        bounces = true;
+        pageAnimatable = true
+        titleSizeSelected = 16.0
+        titleSizeNormal = 15.0
+        menuViewStyle = .line
+        titleColorSelected = .white
+        titleColorNormal = .white
+        menuItemWidth = self.view.frame.size.width/2
+        bounces = true
         //        menuHeight = 44;
-        menuHeight = 35;
-        menuViewBottomSpace = -(self.menuHeight + 64.0 + 9);
+        menuHeight = 35
+        menuViewBottomSpace = -(self.menuHeight + 64.0 + 9)
     }
-    
+
 //    override func viewWillAppear(_ animated: Bool) {
 //        super.viewWillAppear(animated)
 //        self.navigationController?.navigationBar.isTranslucent = false
@@ -40,22 +40,21 @@ class MyPostHomeViewController: WMPageController {
 //    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
-        
+
     }
 
-    
     override func viewDidLoad() {
         hidesBottomBarWhenPushed = true
         menuBGColor = .BBSBlue
         progressColor = .yellow
         // 把返回换成空白
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        
+
         super.viewDidLoad()
         if BBSUser.shared.isVisitor == false {
             BBSJarvis.getHome(success: nil, failure: {
@@ -63,13 +62,13 @@ class MyPostHomeViewController: WMPageController {
             })
         }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         self.navigationController?.navigationBar.setBackgroundImage(fooNavigationBarImage, for: .default)
         self.navigationController?.navigationBar.shadowImage = fooNavigationBarShadowImage
-        
+
     }
 
 }

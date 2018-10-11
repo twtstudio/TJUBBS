@@ -15,19 +15,19 @@ struct DeviceStatus {
         }
         return "null"
     }
-    
+
     static var appName: String {
         return getInfo(withKey: "CFBundleName")
     }
-    
+
     static var appVersion: String {
         return getInfo(withKey: "CFBundleVersion")
     }
-    
+
     static var appBuild: String {
         return getInfo(withKey: "CFBundleVersion")
     }
-    
+
     static var deviceModel: String {
         /*
          NSLog(@"设备所有者的名称－－%@",device_.name);
@@ -74,15 +74,15 @@ struct DeviceStatus {
 //        freeifaddrs(ifaddr)
 //        return addresses
     }
-    
+
     static var deviceOSVersion: String {
         return UIDevice.current.systemVersion
     }
-    
+
     static var userAgent: String {
         return "\(appName)/\(appVersion)(\(deviceModel); iOS \(deviceOSVersion))"
     }
-    
+
     static func getIPAddress(preferIPv4 preference: Bool) -> String {
         let dict = getIPAddresses()
         if preference == true {
@@ -99,5 +99,5 @@ struct DeviceStatus {
         }
         return preference ? "0.0.0.0": "::"
     }
-    
+
 }

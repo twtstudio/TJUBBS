@@ -12,7 +12,7 @@ import ObjectMapper
 import Alamofire
 
 class TodayViewController: UIViewController, NCWidgetProviding {
-        
+
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var replyLabel: UILabel!
     override func viewDidLoad() {
@@ -21,11 +21,11 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         self.view.addGestureRecognizer(tapGesture)
         // Do any additional setup after loading the view from its nib.
     }
-    
+
     func viewOnTap(sender: UITapGestureRecognizer) {
         self.extensionContext?.open(URL(string: "openTJUBBS://?tid=\(self.titleLabel.tag)")!, completionHandler: nil)
     }
-    
+
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
         let activityView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
@@ -48,7 +48,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             return
         }
         // no data
-        
+
         Alamofire.request("https://bbs.tju.edu.cn/api/index", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseString { response in
             activityView.stopAnimating()
             activityView.removeFromSuperview()
@@ -82,18 +82,18 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                         // log.error(error)/
                     }
                 }
-            case .failure( _):
+            case .failure:
                 self.titleLabel.text = "网络错误 请稍后重试..."
                 self.replyLabel.text = ""
                 completionHandler(NCUpdateResult.failed)
                 // log.error(error)/
             }
         }
-        
+
         // If an error is encountered, use NCUpdateResult.Failed
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
-        
+
     }
-    
+
 }

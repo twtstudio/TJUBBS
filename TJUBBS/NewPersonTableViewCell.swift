@@ -21,12 +21,12 @@ class NewPersonTableViewCell: UITableViewCell {
     var avatarImageView: UIImageView = UIImageView()
     //var replyImage = UIImageView()
     //(frame: CGRect(x: 0, y: 0, width: 5, height: 5))
-    
+
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         titleLabel.numberOfLines = 1
         subjectLabel.numberOfLines = 5
-        
+
         contentView.addSubview(nameLabel)
         contentView.addSubview(subjectLabel)
         contentView.addSubview(avatarImageView)
@@ -35,25 +35,25 @@ class NewPersonTableViewCell: UITableViewCell {
         contentView.addSubview(timeLabel)
         contentView.addSubview(likedLabel)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
     }
-    
+
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    
+
     func loadModel(thread: ThreadModel) {
         self.thread = thread
         let avatarImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
         let cacheKey = "\(thread.authorID)" + Date.today
-        
+
         //avatarImageView
         avatarImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: avatarImage)
         avatarImageView.snp.makeConstraints { make in
@@ -62,7 +62,7 @@ class NewPersonTableViewCell: UITableViewCell {
         }
         avatarImageView.layer.cornerRadius = screenSize.height*(54/1920)/2
         avatarImageView.clipsToBounds = true
-        
+
         //nameLabel
         nameLabel.text = "\(thread.authorName) 发布了帖子"
         nameLabel.sizeToFit()
@@ -81,7 +81,7 @@ class NewPersonTableViewCell: UITableViewCell {
             make.left.equalTo(avatarImageView)
 //            make.bottom.equalToSuperview().offset(-16)
         }
-        
+
         //SubjectLabel
         if thread.content != "" {
             if subjectLabel.superview == nil {
@@ -94,21 +94,21 @@ class NewPersonTableViewCell: UITableViewCell {
                 make.right.equalToSuperview().offset(-16)
                 make.bottom.equalToSuperview().offset(-40)
             }
-            
+
             //replyLabel
             replyLabel.text = "回复(\(thread.replyNumber))"
             replyLabel.snp.makeConstraints { make in
                 make.left.equalTo(titleLabel)
                 make.bottom.equalToSuperview().offset(-16)
             }
-            
+
             //likedLabel
             likedLabel.text = "点赞(\(thread.likeCount))"
             likedLabel.snp.makeConstraints { make in
                 make.left.equalTo(replyLabel.snp.right).offset(5)
                 make.bottom.equalToSuperview().offset(-16)
             }
-            
+
             //timeLabel
             let timeStr = TimeStampTransfer.timeLabelSince(time: thread.createTime)
             timeLabel.text = timeStr
@@ -130,8 +130,7 @@ class NewPersonTableViewCell: UITableViewCell {
                 make.bottom.equalToSuperview().offset(-40)
             }
         }
-        
-    
+
         //replyLabel
         replyLabel.text = "回复(\(thread.replyNumber))"
         replyLabel.snp.makeConstraints { make in

@@ -13,7 +13,7 @@ import MJRefresh
 import PKHUD
 
 class MessageViewController: UIViewController {
-    
+
     var tableView: UITableView?
     var msgList: [MessageModel] = [] {
         didSet {
@@ -40,7 +40,7 @@ class MessageViewController: UIViewController {
         }
     }
     var page: Int = 0
-    
+
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = .lightGray
@@ -48,12 +48,12 @@ class MessageViewController: UIViewController {
         self.hidesBottomBarWhenPushed = true
         self.title = "我的消息"
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         refresh()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -75,7 +75,7 @@ class MessageViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 200
-        
+
 //        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         var refreshingImages = [UIImage]()
@@ -89,7 +89,6 @@ class MessageViewController: UIViewController {
         header?.setImages(refreshingImages, for: .pulling)
         tableView?.mj_header = header
 
-        
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
         //self.tableView?.mj_footer.isAutomaticallyHidden = true
         self.tableView?.mj_header.beginRefreshing()
@@ -97,15 +96,15 @@ class MessageViewController: UIViewController {
 }
 
 extension MessageViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return msgList.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell") as! MessageCell
         let model = msgList[indexPath.row]
@@ -132,7 +131,7 @@ extension MessageViewController: UITableViewDataSource {
                 cell.portraitImageView.removeGestureRecognizer(recognizer)
             }
         }
-        
+
         if model.authorId != 0 { // exclude anonymous user
             cell.portraitImageView.addTapGestureRecognizer { _ in
                 let userVC = HHUserDetailViewController(uid: model.authorId)
@@ -141,11 +140,11 @@ extension MessageViewController: UITableViewDataSource {
         }
         return cell
     }
-    
+
 }
 
 extension MessageViewController: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = msgList[indexPath.row]
@@ -165,18 +164,17 @@ extension MessageViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }
-    
+
     //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.1
     }
 
 }
-
 
 extension MessageViewController {
     func refresh() {
@@ -199,7 +197,7 @@ extension MessageViewController {
         })
         self.tableView?.reloadData()
     }
-    
+
     func load() {
         self.page += 1
         BBSJarvis.getMessage(page: page, failure: { _ in

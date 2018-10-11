@@ -12,7 +12,7 @@ import PKHUD
 let EULACONFIRMKEY = "ConfirmEULA"
 
 class LoginViewController: UIViewController {
-    
+
     let screenSize = UIScreen.main.bounds.size
     var portraitImageView: UIImageView?
     var usernameTextField: UITextField?
@@ -30,35 +30,34 @@ class LoginViewController: UIViewController {
     var EULACancelButton: UIButton?
     var EULAShowButton: UIButton?
     var isEULAConfirmed = false
-    
+
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = UIColor.white
         UIApplication.shared.statusBarStyle = .lightContent
         becomeKeyboardObserver()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
         // Do any additional setup after loading the view, typically from a nib.
-        
+
         initUI()
-        
+
         EULATitleLabel = UILabel(text: "用户许可协议", color: .BBSBlue, fontSize: 16)
         EULABackground = UIView()
         EULATextView = UITextView()
         EULAConfirmButton = UIButton(title: "同意", color: .BBSBlue)
         EULACancelButton = UIButton(title: "关闭", color: .BBSRed)
-        
+
         EULABackground?.addSubview(EULATitleLabel!)
         EULABackground?.addSubview(EULATextView!)
         EULABackground?.addSubview(EULACancelButton!)
         EULABackground?.addSubview(EULAConfirmButton!)
         view.addSubview(EULABackground!)
-        
-        
+
         //TODO: Better UI
         EULABackground?.snp.makeConstraints {
             make in
@@ -88,7 +87,7 @@ class LoginViewController: UIViewController {
             make.centerX.equalToSuperview().offset(-(screenSize.width-48)/4)
             make.bottom.equalToSuperview().offset(-16)
         }
-        
+
         EULABackground?.backgroundColor = .BBSLightGray
         EULABackground?.alpha = 0
         EULABackground?.layer.cornerRadius = 5.0
@@ -164,7 +163,7 @@ class LoginViewController: UIViewController {
         EULATextView?.text = content
         EULATextView?.isEditable = false
         EULATextView?.isSelectable = false
-        
+
         EULACancelButton?.addTarget(withBlock: { _ in
             self.loginButton?.isEnabled = false
             self.visitorButton?.isEnabled = false
@@ -177,7 +176,7 @@ class LoginViewController: UIViewController {
                 self.EULABackground?.alpha = 0
             })
         })
-        
+
         EULAConfirmButton?.addTarget(withBlock: { _ in
             self.loginButton?.isEnabled = true
             self.visitorButton?.isEnabled = true
@@ -193,14 +192,14 @@ class LoginViewController: UIViewController {
 //            self.loginButton?.isEnabled = true
 //            self.visitorButton?.isEnabled = true
         })
-        
+
 //        UserDefaults.standard.removeObject(forKey: EULACONFIRMKEY)
 //        let EULAKey = UserDefaults.standard.value(forKey: EULACONFIRMKEY) as? Bool
 //        if EULAKey == nil || EULAKey == false {
 //            EULABackground?.alpha = 1
 //        }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if isEULAConfirmed == false {
@@ -211,21 +210,21 @@ class LoginViewController: UIViewController {
         }
         // 用户名帮用户输好
         usernameTextField?.text = BBSUser.shared.username
-        
+
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     func initUI() {
         portraitImageView = UIImageView(image: UIImage(named: "启动页0"))
         view.addSubview(portraitImageView!)
@@ -236,7 +235,7 @@ class LoginViewController: UIViewController {
             make.right.equalToSuperview()
             make.height.equalTo(screenSize.height)
         }
-        
+
         usernameTextField = UITextField()
         view.addSubview(usernameTextField!)
         usernameTextField?.snp.makeConstraints {
@@ -264,7 +263,7 @@ class LoginViewController: UIViewController {
         usernameTextField?.autocorrectionType = .no
         usernameTextField?.autocapitalizationType = .none
         usernameTextField?.spellCheckingType = .no
-        
+
         passwordTextField = UITextField()
         view.addSubview(passwordTextField!)
         passwordTextField?.snp.makeConstraints {
@@ -292,7 +291,7 @@ class LoginViewController: UIViewController {
         passwordTextField?.autocapitalizationType = .none
         passwordTextField?.spellCheckingType = .no
         passwordTextField?.isSecureTextEntry = true
-        
+
         forgetButton = UIButton(title: "忘记密码?")
         view.addSubview(forgetButton!)
         forgetButton?.snp.makeConstraints {
@@ -300,21 +299,20 @@ class LoginViewController: UIViewController {
             make.top.equalTo(passwordTextField!.snp.bottom).offset(8)
             make.right.equalTo(passwordTextField!.snp.right)
         }
-        
-        let check: ([String : String])->(Bool) = { result in
+
+        let check: ([String: String]) -> (Bool) = { result in
             guard result["repass"] == result["password"] else {
                 HUD.flash(.label("两次密码不符！请重新输入👀"), delay: 1.2)
                 return false
             }
             return true
         }
-        
+
         // 这是个好用的方法 欢迎去看我的博客 www.halcao.me/tips-using-block-instead-of-selector-of-uibutton/
-        
-        
+
         forgetButton?.addTarget { _ in
             let vc = InfoModifyController(title: "密码重置", items: ["用户名-输入用户名-username", "学号-输入学号(新生请输入通知书号)-schoolid", "真实姓名-输入真实姓名-realname", "身份证号-身份证号仅用于身份验证-cid"], style: .bottom, headerMsg: "忘记密码？填写以下信息进行验证", handler: nil)
-            vc.handler =  { [weak vc] result in
+            vc.handler = { [weak vc] result in
                 if let result = result as? [String: String] {
                     print(result)
                     if check(result) == true {
@@ -328,8 +326,8 @@ class LoginViewController: UIViewController {
                                 resetVC.handler = { [weak resetVC] result in
                                     if let result = result as? [String: String] {
                                         BBSJarvis.resetPassword(password: result["newpass"]!) {
-                                            dict in
-                                            let _ = resetVC?.navigationController?.popToRootViewController(animated: false)
+                                            _ in
+                                            _ = resetVC?.navigationController?.popToRootViewController(animated: false)
                                         }
                                     }
                                 }
@@ -343,7 +341,7 @@ class LoginViewController: UIViewController {
             vc.doneText = "验证"
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        
+
         loginButton = UIButton(title: "登录", isConfirmButton: true)
         view.addSubview(loginButton!)
         loginButton?.snp.makeConstraints {
@@ -359,9 +357,9 @@ class LoginViewController: UIViewController {
 //            loginButton?.isEnabled = false
 //        }
         // 注意这里可能会有循环引用 self->button->block->self.portraitImageView
-        loginButton?.addTarget { [weak self] button in
+        loginButton?.addTarget { [weak self] _ in
             //            print("loginButtonTapped")
-            
+
             if let username = self?.usernameTextField?.text, let password = self?.passwordTextField?.text, username != "", password != "" {
                 HUD.show(.rotatingImage(#imageLiteral(resourceName: "progress")))
                 BBSJarvis.login(username: username, password: password) {
@@ -376,7 +374,7 @@ class LoginViewController: UIViewController {
                 HUD.flash(.label("用户名或密码不能为空"), onView: self?.view, delay: 0.7, completion: nil)
             }
         }
-        
+
         EULAShowButton = UIButton(title: "《用户许可协议》", color: .BBSBlue, fontSize: 16)
         view.addSubview(EULAShowButton!)
         EULAShowButton?.snp.makeConstraints {
@@ -390,7 +388,7 @@ class LoginViewController: UIViewController {
                 self.EULABackground?.frame.origin.y = 24
             })
         })
-        
+
         let pleaseLabel = UILabel(text: "请同意", color: .black, fontSize: 16)
         view.addSubview(pleaseLabel)
         pleaseLabel.snp.makeConstraints {
@@ -398,7 +396,7 @@ class LoginViewController: UIViewController {
             make.centerY.equalTo(EULAShowButton!)
             make.right.equalTo(EULAShowButton!.snp.left)
         }
-        
+
         registerButton = UIButton(title: "新用户注册")
         view.addSubview(registerButton!)
         registerButton?.snp.makeConstraints {
@@ -407,17 +405,17 @@ class LoginViewController: UIViewController {
             make.left.equalTo(loginButton!.snp.left)
         }
         registerButton?.alpha = 0
-        
+
         registerButton?.addTarget { _ in
             let vc =  InfoModifyController(title: "用户注册", items: ["姓名-输入真实姓名-real_name", "学号-输入学号-stunum", "身份证号-输入身份证号-cid", "用户名-2~12个字母或数字(不能为纯数字)-username", "密码-8~16位英文/符号/数字-password-s", "再次确认-再次输入密码-repass-s"], style: .bottom, headerMsg: "欢迎新用户！请填写以下信息") { result in
-                if let result = result as? [String : String] {
+                if let result = result as? [String: String] {
                     if check(result) == true {
                         var para = result
                         para.removeValue(forKey: "repass")
                         BBSJarvis.register(parameters: para) { _ in
                             HUD.flash(.label("注册成功！🎉"), delay: 1.0)
                             BBSUser.shared.username = result["username"]
-                            let _ = self.navigationController?.popViewController(animated: true)
+                            _ = self.navigationController?.popViewController(animated: true)
                         }
                     }
                 }
@@ -425,7 +423,7 @@ class LoginViewController: UIViewController {
             vc.doneText = "确认"
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        
+
         authenticateButton = UIButton(title: "老用户认证")
         view.addSubview(authenticateButton!)
         authenticateButton?.snp.makeConstraints {
@@ -443,7 +441,7 @@ class LoginViewController: UIViewController {
                 resetVC.doneText = "确认"
                 self.navigationController?.pushViewController(resetVC, animated: true)
             }
-            
+
             // 坑人的需求魔改
             let manualView = UILabel(text: "验证遇到问题？点这里")
             manualView.font = UIFont.systemFont(ofSize: 14)
@@ -458,13 +456,13 @@ class LoginViewController: UIViewController {
                 }
                 manualCheckVC.doneText = "验证"
                 self.navigationController?.pushViewController(manualCheckVC, animated: true)
-                
+
             }
             veteranCheckVC.extraView = manualView
             veteranCheckVC.doneText = "验证"
             self.navigationController?.pushViewController(veteranCheckVC, animated: true)
         }
-        
+
         visitorButton = UIButton(title: "先去看看 >", color: UIColor.BBSBlue, fontSize: 16)
         view.addSubview(visitorButton!)
         visitorButton?.snp.makeConstraints {
@@ -487,7 +485,7 @@ class LoginViewController: UIViewController {
             self.present(tabBarVC, animated: false, completion: nil)
         }
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -506,4 +504,3 @@ extension LoginViewController: UITextFieldDelegate {
         return true
     }
 }
-

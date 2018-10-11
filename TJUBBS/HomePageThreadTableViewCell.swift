@@ -10,7 +10,7 @@ import UIKit
 import Kingfisher
 
 class HomePageThreadTableViewCell: UITableViewCell {
-    
+
     let screenSize = UIScreen.main.bounds.size
     var thread: ThreadModel?
     var titleLabel: UILabel = UILabel(text: "", color: .black, fontSize: 21, weight: UIFontWeightLight)
@@ -19,16 +19,16 @@ class HomePageThreadTableViewCell: UITableViewCell {
     var likedLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 14, weight: UIFontWeightLight)
     var replyLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 14, weight: UIFontWeightLight)
     var avatarImageView: UIImageView = UIImageView()
-    
+
     var likeImageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     var replyImageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-    
+
     var boardButton = ExtendedButton(title: "", color: UIColor(hex6: 0x1e88e5), fontSize: 14, isConfirmButton: false)
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         titleLabel.numberOfLines = 1
-        
+
         contentView.addSubview(nameLabel)
         contentView.addSubview(avatarImageView)
         contentView.addSubview(titleLabel)
@@ -39,11 +39,11 @@ class HomePageThreadTableViewCell: UITableViewCell {
         contentView.addSubview(likeImageView)
         contentView.addSubview(replyImageView)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -54,13 +54,13 @@ class HomePageThreadTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+
     func loadModel(thread: ThreadModel) {
         self.thread = thread
         let avatarImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
         let cacheKey = "\(thread.authorID)" + Date.today
-        
+
         //avatarImageView
         avatarImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: avatarImage)
         avatarImageView.snp.makeConstraints { make in
@@ -69,7 +69,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
         }
         avatarImageView.layer.cornerRadius = screenSize.height*(64/1920)/2
         avatarImageView.clipsToBounds = true
-        
+
         //nameLabel
         nameLabel.text = "\(thread.authorName)"
         nameLabel.sizeToFit()
@@ -77,7 +77,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
             make.centerY.equalTo(avatarImageView)
             make.left.equalTo(avatarImageView.snp.right).offset(7)
         }
-        
+
         //TitleLabel
         titleLabel.text = thread.title
         titleLabel.numberOfLines = 0
@@ -88,10 +88,11 @@ class HomePageThreadTableViewCell: UITableViewCell {
             make.left.equalTo(avatarImageView)
             make.bottom.equalTo(replyLabel.snp.top).offset(-5)
         }
-        
+
         //replyImageView
-        replyImageView.image = UIImage(named: "评论")
-        replyImageView.snp.makeConstraints() { make in
+        replyImageView.image = UIImage(named: "点赞")
+        replyImageView.snp.makeConstraints { make in
+
             make.bottom.equalToSuperview().offset(-6)
             make.left.equalTo(titleLabel)
             make.height.equalTo(24)
@@ -104,10 +105,11 @@ class HomePageThreadTableViewCell: UITableViewCell {
 //            make.bottom.equalToSuperview().offset(-12)
             make.centerY.equalTo(replyImageView.snp.centerY)
         }
-        
+
         //likeImageView
-        likeImageView.image = UIImage(named: "点赞")
-        likeImageView.snp.makeConstraints() { make in
+        likeImageView.image = UIImage(named: "评论")
+        likeImageView.snp.makeConstraints { make in
+
             make.bottom.equalToSuperview().offset(-6)
             make.left.equalTo(replyLabel.snp.right).offset(10)
             make.height.equalTo(24)
@@ -121,7 +123,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
 //            make.bottom.equalToSuperview().offset(-12)
             make.centerY.equalTo(likeImageView.snp.centerY)
         }
-        
+
         //timeLabel
         let timeStr = TimeStampTransfer.timeLabelSinceNewly(time: thread.createTime)
         timeLabel.text = timeStr
@@ -131,14 +133,13 @@ class HomePageThreadTableViewCell: UITableViewCell {
             make.right.equalToSuperview().offset(-16)
             make.bottom.equalToSuperview().offset(-6)
         }
-        
+
         //boardButton
-        boardButton.snp.makeConstraints() { make in
+        boardButton.snp.makeConstraints { make in
             make.centerY.equalTo(nameLabel.snp.centerY)
             make.right.equalToSuperview().offset(-15)
         }
         boardButton.setTitle("\(thread.boardName)", for: .normal)
     }
-    
 
 }

@@ -11,12 +11,12 @@ import ObjectMapper
 import PiwikTracker
 
 class BoardListController: UIViewController {
-    
+
     var forum: ForumModel?
     var tableView: UITableView?
     var boardList: [BoardModel] = []
     var threadList: [[ThreadModel]] = []
-    
+
     convenience init(forum: ForumModel) {
         self.init()
         //why this line cause nil forum
@@ -33,28 +33,27 @@ class BoardListController: UIViewController {
         tableView?.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        tableView?.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.94, alpha:1.00)
+        tableView?.backgroundColor = UIColor(red: 0.93, green: 0.93, blue: 0.94, alpha: 1.00)
         tableView?.delegate = self
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.separatorStyle = .none
         tableView?.estimatedRowHeight = 120
 
-        
         BBSJarvis.getBoardList(forumID: (self.forum?.id)!, success: {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
-                let boards = data["boards"] as? Array<Dictionary<String, Any>>{
+                let boards = data["boards"] as? Array<Dictionary<String, Any>> {
                 for board in boards {
                     var boardCopy = board
                     boardCopy["forum_name"] = self.forum?.name
                     let fooBoard = BoardModel(JSON: boardCopy)
                     self.boardList.append(fooBoard!)
-                    
+
                     //2 threads
                     var fooThreadList: [ThreadModel] = []
                     if let threads = board["threads"] as? Array<Dictionary<String, Any>> {
-                        fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: threads) 
+                        fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: threads)
                     }
                     self.threadList.append(fooThreadList)
                 }
@@ -65,7 +64,7 @@ class BoardListController: UIViewController {
         })
 
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -74,17 +73,17 @@ class BoardListController: UIViewController {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        
+
         // Do any additional setup after loading the view.
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     func addButtonTapped() {
-        
+
         guard BBSUser.shared.token != nil else {
             let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能发布消息", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -98,12 +97,12 @@ class BoardListController: UIViewController {
             self.present(alert, animated: true, completion: nil)
             return
         }
-        
+
         let addVC = AddThreadViewController()
         addVC.selectedForum = self.forum
         self.navigationController?.pushViewController(addVC, animated: true)
     }
-    
+
 }
 
 extension BoardListController: UITableViewDelegate {
@@ -112,7 +111,7 @@ extension BoardListController: UITableViewDelegate {
         let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section][indexPath.row])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = UITableViewCell()
         let square = UIView()
@@ -137,7 +136,7 @@ extension BoardListController: UITableViewDelegate {
         }
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 36
     }
@@ -149,7 +148,7 @@ extension BoardListController: UITableViewDataSource {
 //        print("boardListCount:\(boardList.count)")
         return boardList.count
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // preview
         if section >= threadList.count {
@@ -166,7 +165,7 @@ extension BoardListController: UITableViewDataSource {
         cell.imgView?.image = UIImage(named: "封面")
         return cell
     }
-    
+
 }
 
 extension BoardListController: UIViewControllerPreviewingDelegate {
@@ -178,9 +177,8 @@ extension BoardListController: UIViewControllerPreviewingDelegate {
         }
         return nil
     }
-    
+
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         show(viewControllerToCommit, sender: self)
     }
 }
-

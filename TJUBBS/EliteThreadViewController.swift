@@ -12,7 +12,7 @@ import Kingfisher
 import MJRefresh
 
 class EliteThreadViewController: UIViewController {
-    
+
     var tableView: UITableView?
     var threadList: [ThreadModel] = [] {
         didSet {
@@ -27,7 +27,7 @@ class EliteThreadViewController: UIViewController {
             BBSCache.saveTopThread(threads: threadList)
         }
     }
-    
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
@@ -35,16 +35,16 @@ class EliteThreadViewController: UIViewController {
         self.hidesBottomBarWhenPushed = true
         threadList = BBSCache.getTopThread()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
     }
-    
+
     func initUI() {
         tableView = UITableView(frame: .zero, style: .grouped)
         registerForPreviewing(with: self, sourceView: tableView!)
@@ -59,7 +59,7 @@ class EliteThreadViewController: UIViewController {
         tableView?.dataSource = self
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
-        
+
         let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         var refreshingImages = [UIImage]()
         for i in 1...6 {
@@ -73,7 +73,7 @@ class EliteThreadViewController: UIViewController {
         tableView?.mj_header = header
         tableView?.mj_header.beginRefreshing()
     }
-    
+
     func refresh() {
         // refresh message count
         BBSJarvis.getMessageCount(success: { dict in
@@ -81,7 +81,7 @@ class EliteThreadViewController: UIViewController {
                 self.tabBarController?.tabBar.items![2].badgeValue = "\(count)"
             }
         })
-        
+
         BBSJarvis.getHot(failure: { _ in
             if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
@@ -90,7 +90,7 @@ class EliteThreadViewController: UIViewController {
             dict in
             if let data = dict["data"] as? Dictionary<String, Any>,
                 let hot = data["hot"] as? Array<Dictionary<String, Any>> {
-                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot) 
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot)
             }
             if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
@@ -101,15 +101,15 @@ class EliteThreadViewController: UIViewController {
 }
 
 extension EliteThreadViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return threadList.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell") as! PostCell
         let data = threadList[indexPath.row]
@@ -132,7 +132,7 @@ extension EliteThreadViewController: UITableViewDataSource {
         }
         return cell
     }
-    
+
 }
 
 extension EliteThreadViewController: UITableViewDelegate {
@@ -145,7 +145,7 @@ extension EliteThreadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.1
     }
@@ -161,7 +161,7 @@ extension EliteThreadViewController: UIViewControllerPreviewingDelegate {
         }
         return nil
     }
-    
+
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         show(viewControllerToCommit, sender: self)
     }

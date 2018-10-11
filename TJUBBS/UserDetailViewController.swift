@@ -36,10 +36,10 @@ class UserDetailViewController: UIViewController {
             self.tableView.reloadData()
         }, failure: { _ in
             // FIXME: error page
-        
+
         })
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // set navigationBar clear        
@@ -48,7 +48,7 @@ class UserDetailViewController: UIViewController {
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
     }
-    
+
     func loadDetail() {
         if let user = user {
             let cacheKey = "\(user.uid ?? 0)" + Date.today
@@ -60,7 +60,7 @@ class UserDetailViewController: UIViewController {
                 //                let label = UILabel(text: "Ta最近还没有发表过帖子", color: UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00), fontSize: 17)
                 let label = UILabel()
                 label.text = "Ta最近还没有发表过帖子"
-                label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
+                label.textColor = UIColor(red: 0.80, green: 0.80, blue: 0.80, alpha: 1.00)
                 label.font = UIFont.boldSystemFont(ofSize: 19)
                 containerView.addSubview(label)
                 label.snp.makeConstraints { make in
@@ -68,7 +68,7 @@ class UserDetailViewController: UIViewController {
                     make.centerX.equalTo(containerView)
                 }
                 //                containerView.backgroundColor = .white
-                containerView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+                containerView.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
                 label.sizeToFit()
                 self.view.addSubview(containerView)
                 containerView.frame = CGRect(x: 0, y: 306, width: self.view.width, height: 40)
@@ -77,28 +77,27 @@ class UserDetailViewController: UIViewController {
         }
 
     }
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         // 3D Touch
         registerForPreviewing(with: self, sourceView: self.tableView)
-        
+
         // layout here
-        tableView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
-        
+        tableView.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
+
         headerView.avatarView.addTapGestureRecognizer { [weak headerView]_ in
             let detailVC = ImageDetailViewController(image: headerView?.avatarView.image ?? UIImage(named: "default")!)
             detailVC.showSaveBtn = true
             self.modalPresentationStyle = .overFullScreen
             self.present(detailVC, animated: true, completion: nil)
         }
-        
+
         let bottomView = UIView()
         bottomView.backgroundColor = .white
-        let messageButton = UIButton(title: "发送私信", color: UIColor(red:0.00, green:0.62, blue:0.91, alpha:1.00), fontSize: 16)
-        let friendButton = UIButton(title: "加为好友", color: UIColor(red:0.00, green:0.62, blue:0.91, alpha:1.00), fontSize: 16)
+        let messageButton = UIButton(title: "发送私信", color: UIColor(red: 0.00, green: 0.62, blue: 0.91, alpha: 1.00), fontSize: 16)
+        let friendButton = UIButton(title: "加为好友", color: UIColor(red: 0.00, green: 0.62, blue: 0.91, alpha: 1.00), fontSize: 16)
         bottomView.addSubview(messageButton)
         bottomView.addSubview(friendButton)
         messageButton.snp.makeConstraints { make in
@@ -113,7 +112,7 @@ class UserDetailViewController: UIViewController {
             dialogVC.pal = self.user
             self.navigationController?.pushViewController(dialogVC, animated: true)
         }
-        
+
         friendButton.snp.makeConstraints { make in
             make.centerX.equalTo(self.view.width*3/4)
             make.top.equalToSuperview().offset(10)
@@ -123,12 +122,12 @@ class UserDetailViewController: UIViewController {
         friendButton.sizeToFit()
         friendButton.addTarget { _ in
             let alertVC = UIAlertController(title: "发送好友申请", message: "打个招呼", preferredStyle: .alert)
-            alertVC.addTextField(configurationHandler: { textField in
-                
+            alertVC.addTextField(configurationHandler: { _ in
+
             })
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(cancelAction)
-            let confirmAction = UIAlertAction(title: "发送", style: .default) { action in
+            let confirmAction = UIAlertAction(title: "发送", style: .default) { _ in
                 if let textField = alertVC.textFields?[0], let text = textField.text {
                     BBSJarvis.friendRequest(uid: self.user?.uid ?? 0, message: text, type: "post", success: { dic in
                         print(dic)
@@ -153,13 +152,13 @@ class UserDetailViewController: UIViewController {
         bottomView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
         }
-        
+
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
             make.bottom.equalTo(bottomView.snp.top)
         }
-        
+
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -171,23 +170,23 @@ class UserDetailViewController: UIViewController {
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
         self.navigationController?.navigationBar.shadowImage = UINavigationBar.appearance().shadowImage
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
 }
 
 extension UserDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return headerView
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 276
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let detailVC = ThreadDetailViewController(thread: user!.recentThreads[indexPath.row])
@@ -199,11 +198,11 @@ extension UserDetailViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return user?.recentThreads.count ?? 0
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let thread = user!.recentThreads[indexPath.row]
         let cell = UITableViewCell(style: .default, reuseIdentifier: "UserThreadCell")
@@ -262,9 +261,8 @@ extension UserDetailViewController: UIViewControllerPreviewingDelegate {
         }
         return nil
     }
-    
+
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         show(viewControllerToCommit, sender: self)
     }
 }
-

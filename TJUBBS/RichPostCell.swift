@@ -17,9 +17,8 @@ import Kingfisher
     @objc optional func imageCellSizeDidChange(cell: UITableViewCell, row: Int)
 }
 
-
 class RichPostCell: DTAttributedTextCell {
-    
+
     let portraitImageView = UIImageView(image: UIImage(named: "default"))
     let usernameLabel = UILabel(text: "")
     let nickNameLabel = UILabel(text: "", color: .gray)
@@ -28,8 +27,8 @@ class RichPostCell: DTAttributedTextCell {
     let likeButton = ExtendedButton()
     let likeCountLabel = UILabel()
     let containerView = UIView()
-    var buttons: [String : DTLinkButton] = [:]
-    
+    var buttons: [String: DTLinkButton] = [:]
+
     let screenSize = UIScreen.main.bounds
     /*
      // Only override draw() if you perform custom drawing.
@@ -39,19 +38,19 @@ class RichPostCell: DTAttributedTextCell {
      }
      */
     override func draw(_ rect: CGRect) {
-        
+
     }
-    
+
     var imageViews = [DTLazyImageView]()
     weak var delegate: HtmlContentCellDelegate?
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         textDelegate = self
         initLayout()
     }
-    
+
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textDelegate = self
@@ -64,12 +63,11 @@ class RichPostCell: DTAttributedTextCell {
         containerView.addSubview(moreButton)
         containerView.addSubview(likeButton)
         containerView.addSubview(likeCountLabel)
-        
+
 //        }
         initLayout()
     }
-    
-    
+
     func initLayout() {
         containerView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
@@ -81,22 +79,22 @@ class RichPostCell: DTAttributedTextCell {
         }
         portraitImageView.layer.cornerRadius = 44/2
         portraitImageView.clipsToBounds = true
-        
+
         usernameLabel.snp.makeConstraints { make in
             make.top.equalTo(portraitImageView.snp.top)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
-        
+
         nickNameLabel.snp.makeConstraints { make in
             make.top.equalTo(portraitImageView.snp.top)
             make.left.equalTo(usernameLabel.snp.right).offset(8)
         }
-        
+
         timeLabel.snp.makeConstraints { make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(4)
             make.left.equalTo(portraitImageView.snp.right).offset(8)
         }
-        
+
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.snp.makeConstraints { make in
             make.top.equalTo(portraitImageView.snp.bottom).offset(8)
@@ -104,7 +102,7 @@ class RichPostCell: DTAttributedTextCell {
             make.right.equalToSuperview().offset(-18)
 //            make.bottom.equalToSuperview().offset(-8)
         }
-        
+
         likeButton.extendedWidth = 60
         likeButton.extendedHeight = 52
         likeButton.snp.makeConstraints { make in
@@ -114,7 +112,7 @@ class RichPostCell: DTAttributedTextCell {
             make.width.equalTo(20)
             make.height.equalTo(20)
         }
-        
+
         likeCountLabel.textAlignment = .right
         likeCountLabel.font = UIFont.systemFont(ofSize: 15)
         likeCountLabel.snp.makeConstraints { make in
@@ -123,7 +121,7 @@ class RichPostCell: DTAttributedTextCell {
             make.right.equalTo(likeButton.snp.left).offset(-5)
             make.bottom.equalTo(likeButton.snp.bottom).offset(2)
         }
-        
+
         moreButton.setBackgroundImage(UIImage(named: "更多操作"), for: .normal)
         moreButton.snp.makeConstraints { make in
             make.width.equalTo(20)
@@ -131,12 +129,12 @@ class RichPostCell: DTAttributedTextCell {
             make.right.equalToSuperview().offset(-18)
             make.top.equalTo(portraitImageView.snp.top)
         }
-        
+
         containerView.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
         }
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         portraitImageView.kf.cancelDownloadTask()
@@ -149,7 +147,7 @@ class RichPostCell: DTAttributedTextCell {
             imageView.cancelLoading()
         }
     }
-    
+
     func load(thread: ThreadModel, boardName: String) {
         // add hyperLink
         let html = Markdown.parse(string: thread.content)
@@ -157,8 +155,8 @@ class RichPostCell: DTAttributedTextCell {
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
                       DTDefaultFontSize: BBSUser.shared.fontSize,
                       DTDefaultFontFamily: UIFont.systemFont(ofSize: 14).familyName,
-                      DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
-                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String : Any]
+                      DTDefaultTextColor: UIColor(red: 0.21, green: 0.21, blue: 0.21, alpha: 1.00),
+                      DTDefaultFontName: UIFont.systemFont(ofSize: 14).fontName] as [String: Any]
         setHTMLString(html, options: option)
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.shouldDrawImages = true
@@ -167,7 +165,7 @@ class RichPostCell: DTAttributedTextCell {
         nickNameLabel.text = thread.anonymous == 0 ? "@"+thread.authorNickname : ""
         let timeString = TimeStampTransfer.string(from: String(thread.createTime), with: "yyyy-MM-dd HH:mm")
         timeLabel.text = timeString
-        
+
         if thread.isLiked {
             likeButton.setBackgroundImage(UIImage(named: "liked"), for: .normal)
         } else {
@@ -181,7 +179,6 @@ class RichPostCell: DTAttributedTextCell {
             likeCountLabel.isHidden = true
         }
 
-        
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
         let maxWidth = UIScreen.main.bounds.width - 68 - 38 - 4
@@ -215,21 +212,21 @@ class RichPostCell: DTAttributedTextCell {
             }
         }
 //        attributedTextContextView.relayoutText()
-        
+
         if thread.content.contains("圣诞") || thread.content.contains("Christmas") || thread.content.contains("christmas") {
             decorateAvatar()
         }
 
     }
-    
+
     func load(post: PostModel) {
         let html = Markdown.parse(string: post.content)
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
                       DTDefaultFontSize: BBSUser.shared.fontSize,
                       DTDefaultFontFamily: UIFont.systemFont(ofSize: CGFloat(BBSUser.shared.fontSize)).familyName,
-                      DTDefaultTextColor: UIColor(red:0.21, green:0.21, blue:0.21, alpha:1.00),
-                      DTDefaultFontName: UIFont.systemFont(ofSize: CGFloat(BBSUser.shared.fontSize)).fontName] as [String : Any]
+                      DTDefaultTextColor: UIColor(red: 0.21, green: 0.21, blue: 0.21, alpha: 1.00),
+                      DTDefaultFontName: UIFont.systemFont(ofSize: CGFloat(BBSUser.shared.fontSize)).fontName] as [String: Any]
         setHTMLString(html, options: option)
         attributedTextContextView.edgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         attributedTextContextView.shouldDrawImages = true
@@ -240,7 +237,7 @@ class RichPostCell: DTAttributedTextCell {
         nickNameLabel.text = post.anonymous == 0 ? "@"+post.authorNickname : ""
         nickNameLabel.sizeToFit()
         usernameLabel.sizeToFit()
-        
+
         if post.isLiked {
             likeButton.setBackgroundImage(UIImage(named: "liked"), for: .normal)
             self.likeButton.tag = 1
@@ -248,7 +245,7 @@ class RichPostCell: DTAttributedTextCell {
             likeButton.setBackgroundImage(UIImage(named: "like"), for: .normal)
             self.likeButton.tag = 0
         }
-        
+
         if post.likeCount > 0 {
             likeCountLabel.isHidden = false
             likeCountLabel.textColor = .gray
@@ -294,12 +291,12 @@ class RichPostCell: DTAttributedTextCell {
             }
         }
 //        attributedTextContextView.relayoutText()
-        
+
         if post.content.contains("圣诞") || post.content.contains("Christmas") || post.content.contains("christmas") {
             decorateAvatar()
         }
     }
-    
+
     func decorateAvatar() {
         guard !containerView.subviews.contains(where: { $0.tag == -10 }) else {
             return
@@ -323,7 +320,7 @@ class RichPostCell: DTAttributedTextCell {
             }
         }
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         // Fix warning when layer is to high
@@ -331,11 +328,11 @@ class RichPostCell: DTAttributedTextCell {
 //        contentView.setNeedsUpdateConstraints()
 //        contentView.updateConstraintsIfNeeded()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     deinit {
         for imageView in imageViews {
             imageView.delegate = nil
@@ -345,7 +342,6 @@ class RichPostCell: DTAttributedTextCell {
         self.textDelegate = nil
     }
 }
-
 
 extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDelegate {
 //    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor string: NSAttributedString!, frame: CGRect) -> UIView! {
@@ -366,7 +362,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
 //        
 //        return button
 //    }
-    
+
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewForLink url: URL!, identifier: String!, frame: CGRect) -> UIView! {
         if let button = buttons[identifier] {
             return button
@@ -383,12 +379,12 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         buttons[identifier] = button
         return button
     }
-    
+
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, didDraw layoutFrame: DTCoreTextLayoutFrame!, in context: CGContext!) {
         attributedTextContextView.layouter = nil
         attributedTextContextView.relayoutText()
     }
-    
+
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
         if let attachment = attachment as? DTImageTextAttachment {
             let imageView = DTLazyImageView(frame: frame)
@@ -405,7 +401,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         }
         return nil
     }
-    
+
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, shouldDrawBackgroundFor textBlock: DTTextBlock!, frame: CGRect, context: CGContext!, for layoutFrame: DTCoreTextLayoutFrame!) -> Bool {
         // fun functional programming
         // let rect = CGRect.insetBy(frame)(dx: 1, dy: 1)
@@ -416,13 +412,13 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
             context.addPath(roundedRect.cgPath)
             context.fillPath()
         }
-        
+
         let rectangleRect = UIBezierPath(rect: CGRect(x: frame.origin.x, y: frame.origin.y+1, width: 4, height: frame.size.height-2))
 //        let rectangleRect = UIBezierPath(roundedRect: CGRect(x: frame.origin.x, y: frame.origin.y, width: 4, height: frame.size.height), cornerRadius: 2)
         context.addPath(rectangleRect.cgPath)
         context.setFillColor(UIColor(hex6: 0x2565ac).cgColor)
         context.fillPath()
-        
+
         return false
     }
     // MARK: DTLazyImageViewDelegate
@@ -433,7 +429,7 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         for attachment in attachments {
             attachment.originalSize = size
             let v = attributedTextContextView!
-            
+
             var scale: CGFloat = 1.0
             // 5: offset 86: margin
             let maxWidth = UIScreen.main.bounds.width - 86 - v.frame.origin.x - 5

@@ -29,41 +29,41 @@ class UserDetailView: UIView {
         self.addSubview(scoreLabel)
         self.addSubview(threadCountLabel)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         avatarViewBackground.snp.makeConstraints { make in
             make.top.bottom.left.right.equalToSuperview()
         }
-        
+
         frostView.effect = UIBlurEffect(style: .dark)
         frostView.snp.makeConstraints { make in
             make.left.right.bottom.top.equalTo(avatarViewBackground)
         }
-        
+
         let avatarHeight: CGFloat = 80
         avatarView.layer.cornerRadius = avatarHeight/2
         avatarView.layer.borderWidth = 3
         avatarView.layer.borderColor = UIColor.white.cgColor
         avatarView.layer.masksToBounds = true
-        
+
         avatarView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(64)
             make.height.width.equalTo(avatarHeight)
         }
-        
+
         usernameLabel.numberOfLines = 1
         usernameLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(avatarView.snp.bottom).offset(10)
             make.height.equalTo(21.5)
         }
-        
+
         signatureLabel.numberOfLines = 1
         signatureLabel.adjustsFontSizeToFitWidth = true
         signatureLabel.textAlignment = .center
@@ -77,7 +77,7 @@ class UserDetailView: UIView {
         }
 
         let baseWidth = rect.size.width/6
-        
+
         scoreLabel.snp.makeConstraints { make in
             make.centerX.equalTo(1*baseWidth)
             make.top.equalTo(signatureLabel.snp.bottom).offset(10)
@@ -91,7 +91,7 @@ class UserDetailView: UIView {
             make.height.equalTo(17)
             make.bottom.equalToSuperview().offset(-10)
         }
-        
+
         threadCountLabel.snp.makeConstraints { make in
             make.centerX.equalTo(3*baseWidth)
             make.top.equalTo(signatureLabel.snp.bottom).offset(10)
@@ -105,7 +105,7 @@ class UserDetailView: UIView {
             make.height.equalTo(17)
             make.bottom.equalToSuperview().offset(-10)
         }
-        
+
         self.addSubview(ageLabel)
         ageLabel.snp.makeConstraints { make in
             make.centerX.equalTo(5*baseWidth)
@@ -126,12 +126,12 @@ class UserDetailView: UIView {
             make.bottom.equalTo(ageLabel.snp.bottom)
             make.left.equalTo(ageLabel.snp.right)
         }
-        
+
         let divider1 = UIView()
         divider1.backgroundColor = .white
         let divider2 = UIView()
         divider2.backgroundColor = .white
-        
+
         self.addSubview(divider1)
         divider1.snp.makeConstraints { make in
             make.top.equalTo(scoreLabel.snp.top)

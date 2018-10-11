@@ -11,7 +11,7 @@ import MJRefresh
 import PKHUD
 
 class MyPostsViewController: UIViewController {
-    
+
     var tableView = UITableView(frame: .zero, style: .grouped)
     var postList: [PostModel] = [] {
         didSet {
@@ -21,7 +21,7 @@ class MyPostsViewController: UIViewController {
                 if containerView.subviews.count == 0 {
                     let label = UILabel()
                     label.text = "你还没有发表过回复呢"
-                    label.textColor = UIColor(red:0.80, green:0.80, blue:0.80, alpha:1.00)
+                    label.textColor = UIColor(red: 0.80, green: 0.80, blue: 0.80, alpha: 1.00)
                     label.font = UIFont.boldSystemFont(ofSize: 19)
                     containerView.addSubview(label)
                     label.snp.makeConstraints { make in
@@ -30,7 +30,7 @@ class MyPostsViewController: UIViewController {
                     }
                     label.sizeToFit()
                 }
-                containerView.backgroundColor = UIColor(red:0.96, green:0.96, blue:0.96, alpha:1.00)
+                containerView.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
                 self.view.addSubview(containerView)
                 containerView.frame = CGRect(x: 0, y: 60, width: self.view.width, height: 40)
                 containerView.sizeToFit()
@@ -39,14 +39,14 @@ class MyPostsViewController: UIViewController {
     }
     var page = 0
     var containerView = UIView()
-    
+
     convenience init(para: Int) {
         self.init()
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
@@ -60,7 +60,7 @@ class MyPostsViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300
-        
+
 //        let rightItem = UIBarButtonItem(title: "编辑", style: .plain, target: self, action: #selector(self.editingStateOnChange(sender:)))
 //        self.navigationItem.rightBarButtonItem = rightItem
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
@@ -70,11 +70,10 @@ class MyPostsViewController: UIViewController {
         //self.tableView.mj_footer.isAutomaticallyHidden = true
         self.tableView.mj_header.beginRefreshing()
     }
-    
-    
+
     func refresh() {
         page = 0
-        BBSJarvis.getMyPostList(page: page, failure: { err in
+        BBSJarvis.getMyPostList(page: page, failure: { _ in
             if self.tableView.mj_header.isRefreshing {
                 self.tableView.mj_header.endRefreshing()
             }
@@ -88,10 +87,10 @@ class MyPostsViewController: UIViewController {
             }
         })
     }
-    
+
     func load() {
         page += 1
-        BBSJarvis.getMyPostList(page: page, failure: { err in
+        BBSJarvis.getMyPostList(page: page, failure: { _ in
             if self.tableView.mj_footer.isRefreshing {
                 self.tableView.mj_footer.endRefreshing()
             }
@@ -109,7 +108,7 @@ class MyPostsViewController: UIViewController {
             }
         })
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -138,19 +137,19 @@ extension MyPostsViewController {
 //            self.tableView.reloadData()
 //        })
 //    }
-    
+
 }
 
 extension MyPostsViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return postList.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "RichReplyCell") as? RichPostCell
         if cell == nil {
@@ -171,7 +170,7 @@ extension MyPostsViewController: UITableViewDataSource {
         }
         cell?.moreButton.addTarget { _ in
             let alertVC = UIAlertController()
-            let editAction = UIAlertAction(title: "编辑", style: .default, handler: { action in
+            let editAction = UIAlertAction(title: "编辑", style: .default, handler: { _ in
                 let editController = EditDetailViewController()
                 let edictNC = UINavigationController(rootViewController: editController)
                 editController.title = "修改回复"
@@ -187,8 +186,8 @@ extension MyPostsViewController: UITableViewDataSource {
                 self.present(edictNC, animated: true, completion: nil)
 //                self.navigationController?.pushViewController(editController, animated: true)
             })
-            
-            let deleteAction = UIAlertAction(title: "删除", style: .destructive, handler: { action in
+
+            let deleteAction = UIAlertAction(title: "删除", style: .destructive, handler: { _ in
                 let deleteAlertVC = UIAlertController(title: "确认删除", message: "真的要删除吗？", preferredStyle: .alert)
                 let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
                 deleteAlertVC.addAction(cancelAction)
@@ -206,7 +205,7 @@ extension MyPostsViewController: UITableViewDataSource {
             })
             alertVC.addAction(editAction)
             alertVC.addAction(deleteAction)
-            
+
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             alertVC.addAction(cancelAction)
             if let popoverPresentationController = alertVC.popoverPresentationController {
@@ -221,7 +220,7 @@ extension MyPostsViewController: UITableViewDataSource {
         cell?.contentView.layoutIfNeeded()
         return cell!
     }
-    
+
 }
 
 extension MyPostsViewController: UITableViewDelegate {
@@ -231,12 +230,12 @@ extension MyPostsViewController: UITableViewDelegate {
         let detailVC = ThreadDetailViewController(tid: tid)
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-    
+
     //TODO: Better way to hide first headerView
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0.1
     }
@@ -250,20 +249,20 @@ extension MyPostsViewController: HtmlContentCellDelegate {
             self.navigationController?.pushViewController(detailVC, animated: true)
             return
         }
-        
+
         if let bid = Int(link.absoluteString.replacingOccurrences(of: "^([a-zA-Z://]*?)bbs.tju.edu.cn/forum/([0-9]*)(.*)$", with: "$2", options: .regularExpression, range: nil)) {
             let detailVC = ThreadListController(bid: bid)
             self.navigationController?.pushViewController(detailVC, animated: true)
             return
         }
-        
+
         let ac = UIAlertController(title: "链接", message: link.absoluteString, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "跳转到 Safari", style: .default) {
-            action in
+            _ in
             UIApplication.shared.openURL(link)
         })
         ac.addAction(UIAlertAction(title: "复制到剪贴板", style: .default) {
-            action in
+            _ in
             UIPasteboard.general.string = link.absoluteString
             HUD.flash(.labeledSuccess(title: "已复制", subtitle: nil), delay: 1.0)
         })
@@ -274,7 +273,7 @@ extension MyPostsViewController: HtmlContentCellDelegate {
         if let _ = tableView.indexPath(for: cell) {
             self.tableView.reloadData()
         }
-        
+
         // imageViewer
         for imgView in cell.imageViews {
             imgView.addTapGestureRecognizer { _ in

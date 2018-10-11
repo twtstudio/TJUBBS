@@ -13,8 +13,11 @@ import Kingfisher
 import MJRefresh
 import PiwikTracker
 
+
 class NewHomePageViewController: UIViewController {
+
     
+    var tabBar = MainTabBarController()
     var tableView: UITableView?
     var threadList: [ThreadModel] = [] {
         didSet {
@@ -37,36 +40,26 @@ class NewHomePageViewController: UIViewController {
             //            PiwikTracker.shared.sendView("")
         }
     }
-    static var topHeight: CGFloat {
-        get {
-            guard UIDevice.current.isX() else {
-                return 20
-            }
-            return 44
-        }
-    }
+    var headerView = HomePageHeaderView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.40))
 
-    var headerView = HomePageHeaderView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.30))
-    
     var pic: [UIImageView] = [UIImageView]()
-    
-    
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .default
 //        self.hidesBottomBarWhenPushed = true
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: .zero, style: .grouped)
         view.addSubview(tableView!)
-        
+
         registerForPreviewing(with: self, sourceView: tableView!)
         tableView?.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -78,37 +71,21 @@ class NewHomePageViewController: UIViewController {
         tableView?.rowHeight = UITableViewAutomaticDimension
         tableView?.estimatedRowHeight = 300
         self.tableView?.separatorStyle = .none
-        
+
         self.headerView.searchButton.addTarget(self, action: #selector(self.searchToggled(sender:)), for: .touchUpInside)
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "最新动态", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        self.navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.darkGray], for: .normal)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
-        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.darkGray
-        
-        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
-        
-        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        var refreshingImages = [UIImage]()
-        for i in 1...6 {
-            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-            refreshingImages.append(image!)
-        }
-        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
-        header?.stateLabel.isHidden = true
-        header?.lastUpdatedTimeLabel.isHidden = true
-        header?.setImages(refreshingImages, for: .pulling)
-        tableView?.mj_header = header
-        
+
+//        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
+
         self.refresh()
-        
+        self.tabBar.hidesBottomBarWhenPushed = false
+
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if #available(iOS 11.0, *) {
@@ -117,32 +94,27 @@ class NewHomePageViewController: UIViewController {
             self.automaticallyAdjustsScrollViewInsets = false
             // Fallback on earlier versions
         }
-        self.navigationController?.navigationBar.hideBottomHairline()
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-//        self.navigationController?.navigationBar.shadowImage = UIImage()
-//        self.navigationController?.navigationBar.isTranslucent = true
-        
-        UIApplication.shared.statusBarStyle = UIStatusBarStyle.default
-        
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
         PiwikTracker.shared.appName = "bbs.tju.edu.cn"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
         PiwikTracker.shared.sendView("")
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         //tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.always
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
 //        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
     }
-    
-    func searchToggled(sender: UIBarButtonItem) {
+
+    @objc func searchToggled(sender: UIButton) {
         let searchVC = SearchViewController()
         searchVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(searchVC, animated: true)
     }
-    
 
 }
 
@@ -153,7 +125,7 @@ extension NewHomePageViewController {
                 self.tabBarController?.tabBar.items![2].badgeValue = "\(count)"
             }
         })
-        
+
         curPage = 0
         BBSJarvis.getIndex(page: curPage, failure: { _ in
             if (self.tableView?.mj_header.isRefreshing)! {
@@ -177,39 +149,38 @@ extension NewHomePageViewController: UITableViewDelegate {
         let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section])
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
- 
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard section == 0 else {
             return UIView(frame: .zero)
         }
-    
+
         return headerView
     }
-    
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView(frame: .zero)
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
             return headerView.height
         }
         return 4
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 4
     }
-    
-    
+
 }
 
 extension NewHomePageViewController: UITableViewDataSource {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return threadList.count
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
@@ -235,14 +206,14 @@ extension NewHomePageViewController: UITableViewDataSource {
         }
         return cell
     }
-    
+
     @objc func pageNumberChanged(sender: Any) {
         if self.headerView.pageControl!.currentPage == (self.headerView.pageControl!.numberOfPages - 1) {
             self.headerView.pageControl!.currentPage = 0
         } else {
             self.headerView.pageControl!.currentPage += 1
         }
-        
+
         let page: CGFloat = (CGFloat)((self.headerView.pageControl?.currentPage)!)
         let x = page * self.headerView.scrollerPicView.frame.size.width
         self.headerView.scrollerPicView.contentOffset = CGPoint(x: x, y: self.headerView.scrollerPicView.contentOffset.y)
@@ -258,7 +229,7 @@ extension NewHomePageViewController: UIViewControllerPreviewingDelegate {
         }
         return nil
     }
-    
+
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         show(viewControllerToCommit, sender: self)
     }
