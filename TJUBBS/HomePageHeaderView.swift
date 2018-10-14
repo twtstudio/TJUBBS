@@ -10,15 +10,12 @@ import UIKit
 import SnapKit
 
 class HomePageHeaderView: UIView {
-    let container = UIView(frame: CGRect(x: 0, y: 20, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.40 - 30))
-
-    let latestActivityLabel = UILabel(text: "最新动态", color: UIColor(white: 0.30, alpha: 1), fontSize: 15)
+    let container = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.15 - 10))
+    
     let announceLabel = UILabel(text: "公告", color: UIColor(white: 0.15, alpha: 1), fontSize: 12, weight: UIFontWeightLight)
     let activityLabel = UILabel(text: "活动", color: UIColor(white: 0.15, alpha: 1), fontSize: 12, weight: UIFontWeightLight)
     let eliteLabel = UILabel(text: "十大", color: UIColor(white: 0.15, alpha: 1), fontSize: 12, weight: UIFontWeightLight)
     let rankLabel = UILabel(text: "排行", color: UIColor(white: 0.15, alpha: 1), fontSize: 12, weight: UIFontWeightLight)
-
-    let searchButton = UIButton(frame: CGRect(x: 0, y: 0, width: 15, height: 15))
 
     let announceButton = UIButton(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     let activityButton = UIButton(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
@@ -27,28 +24,25 @@ class HomePageHeaderView: UIView {
 
     let baseWidth = UIScreen.main.bounds.width / 8
     let buttonSize = 35
-    let bottomHeight = -30
+    let bottomHeight = -25
     let topHeight = 5
 
-    var headScrollView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20))
-    var scrollerPicView = UIScrollView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20))
-    var pageControl: UIPageControl?
+//    var headScrollView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20))
+//    var scrollerPicView = UIScrollView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20))
+//    var pageControl: UIPageControl?
 
-    static var loadingImage1 = UIImage(named: "轮播1")
-    static var loadingPic1 = UIImageView(image: loadingImage1)
-    static var loadingImage3 = UIImage(named: "轮播3")
-    static var loadingPic3 = UIImageView(image: loadingImage3)
-    static var loadingImage2 = UIImage(named: "轮播2")
-    static var loadingPic2 = UIImageView(image: loadingImage2)
-    static var pic = [loadingPic1, loadingPic2, loadingPic3]
+//    static var loadingImage1 = UIImage(named: "轮播1")
+//    static var loadingPic1 = UIImageView(image: loadingImage1)
+//    static var loadingImage3 = UIImage(named: "轮播3")
+//    static var loadingPic3 = UIImageView(image: loadingImage3)
+//    static var loadingImage2 = UIImage(named: "轮播2")
+//    static var loadingPic2 = UIImageView(image: loadingImage2)
+//    static var pic = [loadingPic1, loadingPic2, loadingPic3]
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         container.backgroundColor = UIColor.white
         self.addSubview(container)
-
-        container.addSubview(latestActivityLabel)
-        container.addSubview(searchButton)
 
         container.addSubview(announceButton)
         container.addSubview(activityButton)
@@ -60,14 +54,14 @@ class HomePageHeaderView: UIView {
         container.addSubview(rankLabel)
         self.backgroundColor = UIColor.clear
 
-        creatScrollView()
-        container.addSubview(headScrollView)
-        container.addSubview(scrollerPicView)
-        container.addSubview(pageControl!)
+//        creatScrollView()
+//        container.addSubview(headScrollView)
+//        container.addSubview(scrollerPicView)
+//        container.addSubview(pageControl!)
 
-        for i in 0..<3 {
-            self.scrollerPicView.addSubview(HomePageHeaderView.pic[i])
-        }
+//        for i in 0..<3 {
+//            self.scrollerPicView.addSubview(HomePageHeaderView.pic[i])
+//        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -76,21 +70,6 @@ class HomePageHeaderView: UIView {
 
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-
-        latestActivityLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(15)
-            make.top.equalToSuperview().offset(10)
-        }
-
-        let searchBtnImage = UIImage(named: "搜索")
-        searchButton.setBackgroundImage(searchBtnImage, for: .normal)
-        searchButton.snp.makeConstraints { make in
-            make.centerY.equalTo(latestActivityLabel)
-            make.right.equalToSuperview().offset(-15)
-            make.height.equalTo(15)
-            make.width.equalTo(15)
-        }
-
 
         let annonceBtnImage = UIImage(named: "公告")
         announceButton.setBackgroundImage(annonceBtnImage, for: .normal)
@@ -148,36 +127,36 @@ class HomePageHeaderView: UIView {
             make.top.equalTo(eliteButton.snp.bottom).offset(topHeight)
         }
 
-        self.headScrollView.snp.makeConstraints { make in
-            make.top.equalTo(latestActivityLabel.snp.bottom).offset(10)
-
-            make.bottom.equalTo(announceButton.snp.top).offset(-10)
-            make.width.equalTo(UIScreen.main.bounds.width)
-        }
-
-        self.scrollerPicView.snp.makeConstraints { make in
-            make.top.equalTo(headScrollView.snp.top)
-            make.bottom.equalTo(headScrollView.snp.bottom)
-            make.width.equalTo(UIScreen.main.bounds.width)
-            make.centerX.equalTo(headScrollView.snp.centerX)
-        }
-
-        self.pageControl?.snp.makeConstraints { make in
-            make.bottom.equalTo(headScrollView.snp.bottom)
-            make.height.equalTo(30)
-            make.width.equalTo(140)
-            make.centerX.equalTo(scrollerPicView.snp.centerX)
-        }
-
-        for i in 0..<3 {
-            HomePageHeaderView.pic[i].snp.makeConstraints { make in
-                make.top.equalTo(searchButton.snp.bottom).offset(10)
-                make.bottom.equalTo(announceButton.snp.top).offset(-10)
-                make.width.equalTo(UIScreen.main.bounds.width)
-
-                make.left.equalToSuperview().offset(i * Int(UIScreen.main.bounds.width))
-            }
-        }
+//        self.headScrollView.snp.makeConstraints { make in
+//            make.top.equalTo(latestActivityLabel.snp.bottom).offset(10)
+//
+//            make.bottom.equalTo(announceButton.snp.top).offset(-10)
+//            make.width.equalTo(UIScreen.main.bounds.width)
+//        }
+//
+//        self.scrollerPicView.snp.makeConstraints { make in
+//            make.top.equalTo(headScrollView.snp.top)
+//            make.bottom.equalTo(headScrollView.snp.bottom)
+//            make.width.equalTo(UIScreen.main.bounds.width)
+//            make.centerX.equalTo(headScrollView.snp.centerX)
+//        }
+//
+//        self.pageControl?.snp.makeConstraints { make in
+//            make.bottom.equalTo(headScrollView.snp.bottom)
+//            make.height.equalTo(30)
+//            make.width.equalTo(140)
+//            make.centerX.equalTo(scrollerPicView.snp.centerX)
+//        }
+//
+//        for i in 0..<3 {
+//            HomePageHeaderView.pic[i].snp.makeConstraints { make in
+//                make.top.equalTo(searchButton.snp.bottom).offset(10)
+//                make.bottom.equalTo(announceButton.snp.top).offset(-10)
+//                make.width.equalTo(UIScreen.main.bounds.width)
+//
+//                make.left.equalToSuperview().offset(i * Int(UIScreen.main.bounds.width))
+//            }
+//        }
 
 //        HomePageHeaderView.pic[0].snp.makeConstraints() { make in
 //            make.top.equalTo(searchButton.snp.bottom).offset(10)
@@ -202,40 +181,40 @@ class HomePageHeaderView: UIView {
 
     }
 
-    func creatScrollView() {
-        self.headScrollView.addSubview(scrollerPicView)
-        self.headScrollView.backgroundColor = UIColor.clear
+//    func creatScrollView() {
+//        self.headScrollView.addSubview(scrollerPicView)
+//        self.headScrollView.backgroundColor = UIColor.clear
+//
+//        let height = self.scrollerPicView.frame.size.height
+//        let width = self.scrollerPicView.frame.size.width
+//
+//        self.scrollerPicView.contentSize = CGSize(width: width * 3, height: height)
+//        self.scrollerPicView.isPagingEnabled = true
+//        self.scrollerPicView.showsVerticalScrollIndicator = false
+//        self.scrollerPicView.showsHorizontalScrollIndicator = false
+//
+//        self.scrollerPicView.delegate = self
+//        creatPageControl()
+//    }
 
-        let height = self.scrollerPicView.frame.size.height
-        let width = self.scrollerPicView.frame.size.width
-
-        self.scrollerPicView.contentSize = CGSize(width: width * 3, height: height)
-        self.scrollerPicView.isPagingEnabled = true
-        self.scrollerPicView.showsVerticalScrollIndicator = false
-        self.scrollerPicView.showsHorizontalScrollIndicator = false
-
-        self.scrollerPicView.delegate = self
-        creatPageControl()
-    }
-
-    func creatPageControl() {
-        self.pageControl = UIPageControl(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-        self.pageControl!.numberOfPages = 3
-        self.pageControl!.currentPage = 0
-
-        self.pageControl!.currentPageIndicatorTintColor = UIColor.darkGray
-        self.pageControl!.pageIndicatorTintColor = UIColor.white
-
-        self.headScrollView.addSubview(self.pageControl!)
-    }
+//    func creatPageControl() {
+//        self.pageControl = UIPageControl(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+//        self.pageControl!.numberOfPages = 3
+//        self.pageControl!.currentPage = 0
+//
+//        self.pageControl!.currentPageIndicatorTintColor = UIColor.darkGray
+//        self.pageControl!.pageIndicatorTintColor = UIColor.white
+//
+//        self.headScrollView.addSubview(self.pageControl!)
+//    }
 }
 
 extension HomePageHeaderView: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let wid = scrollerPicView.frame.size.width
-        let pageNumber: CGFloat = scrollerPicView.contentOffset.x / wid
-        self.pageControl?.currentPage = (Int)(pageNumber)
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let wid = scrollerPicView.frame.size.width
+//        let pageNumber: CGFloat = scrollerPicView.contentOffset.x / wid
+//        self.pageControl?.currentPage = (Int)(pageNumber)
+//    }
 }
 
 extension UIImage {

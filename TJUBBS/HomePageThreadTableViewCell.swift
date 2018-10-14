@@ -90,7 +90,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
         }
 
         //replyImageView
-        replyImageView.image = UIImage(named: "点赞")
+        replyImageView.image = UIImage(named: "评论")
         replyImageView.snp.makeConstraints { make in
 
             make.bottom.equalToSuperview().offset(-6)
@@ -107,7 +107,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
         }
 
         //likeImageView
-        likeImageView.image = UIImage(named: "评论")
+        likeImageView.image = UIImage(named: "点赞")
         likeImageView.snp.makeConstraints { make in
 
             make.bottom.equalToSuperview().offset(-6)

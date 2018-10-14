@@ -14,7 +14,7 @@ class MainTabBarController: UITabBarController {
     var BBSVC: UIViewController?
     var infoVC: UIViewController?
     var messageVC: UIViewController?
-//    var addVC: UIViewController?
+    var addVC: UIViewController?
 
     convenience init(para: Int) {
         self.init()
@@ -31,7 +31,6 @@ class MainTabBarController: UITabBarController {
         let homepageNC = UINavigationController(rootViewController: homepageVC!)
         homepageNC.navigationBar.isTranslucent = false
         homepageNC.tabBarItem = createBarItem(imageName: "home")
-    
         homepageNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
         BBSVC = ForumListVC()
@@ -40,10 +39,10 @@ class MainTabBarController: UITabBarController {
         BBSVC?.tabBarItem = createBarItem(imageName: "taolunqu")
         BBSVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
-//        addVC = AddThreadViewController()
-//        let addNC = UINavigationController(rootViewController: addVC!)
-//        addVC?.tabBarItem = createBarItem(imageName: "消息")
-//        addVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        addVC = AddThreadViewController()
+        let addNC = UINavigationController(rootViewController: addVC!)
+        addVC?.tabBarItem = createBarItem(imageName: "send")
+        addVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
         messageVC = MessageHomePageViewController(para: 0)
         let messageNC = UINavigationController(rootViewController: messageVC!)
@@ -58,7 +57,7 @@ class MainTabBarController: UITabBarController {
         let infoNC = UINavigationController(rootViewController: infoVC!)
         infoNC.tabBarItem = createBarItem(imageName: "mine")
         infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-        setViewControllers([homepageNC, bbcNC, messageNC, infoNC], animated: true)
+        setViewControllers([homepageNC, bbcNC, addNC, messageNC, infoNC], animated: true)
 
         UITabBar.appearance().tintColor = .BBSBlue
     }
@@ -86,12 +85,16 @@ class MainTabBarController: UITabBarController {
     }
 
     func createBarItem(imageName: String) -> UITabBarItem {
-//        let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)
-//        let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)
-        let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysTemplate)
-        let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysTemplate)
-        let item = UITabBarItem(title: nil, image: image, selectedImage: selectedImage)
-        item.image = item.selectedImage?.imageWithColor(color1: .black).withRenderingMode(.alwaysOriginal)
-        return item
+        if imageName == "send" {
+            let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 36, height: 36)).withRenderingMode(.alwaysOriginal)
+            let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 36, height: 36)).withRenderingMode(.alwaysOriginal)
+            let item = UITabBarItem(title: nil, image: image, selectedImage: selectedImage)
+            return item
+        } else {
+            let image = UIImage.resizedImage(image: UIImage(named: "\(imageName)-2")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)
+            let selectedImage = UIImage.resizedImage(image: UIImage(named: "\(imageName)-1")!, scaledToSize: CGSize(width: 24, height: 24)).withRenderingMode(.alwaysOriginal)
+            let item = UITabBarItem(title: nil, image: image, selectedImage: selectedImage)
+            return item
+        }
     }
 }

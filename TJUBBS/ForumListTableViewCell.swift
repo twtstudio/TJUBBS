@@ -104,18 +104,13 @@ class ForumListTableViewCell: UITableViewCell {
                 //通过计算给每个button编号，下标从1开始，从左往右，从上往下蛇形遍历
                 let index  = i * 3 + j
                 button.backgroundColor = .clear
-                  button.setTitle(buttonNameArray[index - 1], for: .normal)
-                
-                hotBoard.forEach{(element) in
-                    if buttonNameArray[index - 1] == element{
-                        button.setTitleColor(.BBSHotOrange, for: .normal)
-                        print("match")
-                    }
-                    else{
-                        button.setTitleColor(.black, for: .normal)
-                        print("else")
-
-                    }
+                button.setTitle(buttonNameArray[index - 1], for: .normal)
+                button.setTitleColor(.black, for: .normal)
+                if let title = hotBoard.first(where: { name in
+                    return buttonNameArray[index - 1] == name
+                }) { button.setTitleColor(.BBSHotOrange, for: .normal)
+                } else {
+                   button.setTitleColor(.black, for: .normal)
                 }
                 
 //                for k in 0..<hotBoard.count{

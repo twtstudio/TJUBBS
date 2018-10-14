@@ -40,9 +40,9 @@ class NewHomePageViewController: UIViewController {
             //            PiwikTracker.shared.sendView("")
         }
     }
-    var headerView = HomePageHeaderView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.40))
+    var headerView = HomePageHeaderView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.15))
 
-    var pic: [UIImageView] = [UIImageView]()
+//    var pic: [UIImageView] = [UIImageView]()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -72,9 +72,24 @@ class NewHomePageViewController: UIViewController {
         tableView?.estimatedRowHeight = 300
         self.tableView?.separatorStyle = .none
 
-        self.headerView.searchButton.addTarget(self, action: #selector(self.searchToggled(sender:)), for: .touchUpInside)
+        self.navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.darkGray], for: .normal)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.darkGray
 
 //        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "最新动态", style: UIBarButtonItemStyle.plain, target: self, action: nil)
+        
+        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+        var refreshingImages = [UIImage]()
+        for i in 1...6 {
+            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
+            refreshingImages.append(image!)
+        }
+        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
+        header?.stateLabel.isHidden = true
+        header?.lastUpdatedTimeLabel.isHidden = true
+        header?.setImages(refreshingImages, for: .pulling)
+        tableView?.mj_header = header
 
         self.refresh()
         self.tabBar.hidesBottomBarWhenPushed = false
@@ -94,9 +109,10 @@ class NewHomePageViewController: UIViewController {
             self.automaticallyAdjustsScrollViewInsets = false
             // Fallback on earlier versions
         }
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
+//        self.navigationController?.navigationBar.isTranslucent = true
+//        self.navigationController?.navigationBar.hideBottomHairline()
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
         PiwikTracker.shared.appName = "bbs.tju.edu.cn"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
@@ -108,6 +124,7 @@ class NewHomePageViewController: UIViewController {
         //tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.always
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
 //        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
+        self.navigationController?.navigationBar.showBottomHairline()
     }
 
     @objc func searchToggled(sender: UIButton) {
@@ -130,6 +147,7 @@ extension NewHomePageViewController {
         BBSJarvis.getIndex(page: curPage, failure: { _ in
             if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
+
             }
         }, success: { dict in
             if let data = dict["data"] as? Array<Dictionary<String, Any>> {
@@ -207,17 +225,6 @@ extension NewHomePageViewController: UITableViewDataSource {
         return cell
     }
 
-    @objc func pageNumberChanged(sender: Any) {
-        if self.headerView.pageControl!.currentPage == (self.headerView.pageControl!.numberOfPages - 1) {
-            self.headerView.pageControl!.currentPage = 0
-        } else {
-            self.headerView.pageControl!.currentPage += 1
-        }
-
-        let page: CGFloat = (CGFloat)((self.headerView.pageControl?.currentPage)!)
-        let x = page * self.headerView.scrollerPicView.frame.size.width
-        self.headerView.scrollerPicView.contentOffset = CGPoint(x: x, y: self.headerView.scrollerPicView.contentOffset.y)
-    }
 }
 
 extension NewHomePageViewController: UIViewControllerPreviewingDelegate {

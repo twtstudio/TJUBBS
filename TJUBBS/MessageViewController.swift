@@ -90,7 +90,7 @@ class MessageViewController: UIViewController {
         tableView?.mj_header = header
 
         self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        //self.tableView?.mj_footer.isAutomaticallyHidden = true
+        self.tableView?.mj_footer.height = self.msgList.count >= 10 ? 20 : 0
         self.tableView?.mj_header.beginRefreshing()
     }
 }
@@ -189,11 +189,11 @@ extension MessageViewController {
             if (self.tableView?.mj_header.isRefreshing)! {
                 self.tableView?.mj_header.endRefreshing()
             }
-//            if self.msgList.count < 49 {
-//                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
-//            } else {
-//                self.tableView?.mj_footer.resetNoMoreData()
-//            }
+            if self.msgList.count < 10 {
+                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+            } else {
+                self.tableView?.mj_footer.resetNoMoreData()
+            }
         })
         self.tableView?.reloadData()
     }

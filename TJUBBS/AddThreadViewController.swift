@@ -78,6 +78,7 @@ class AddThreadViewController: UIViewController {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
     }
 
     override func viewDidLoad() {
@@ -85,7 +86,7 @@ class AddThreadViewController: UIViewController {
 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发布", style: .done, target: self, action: #selector(doneButtonTapped))
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        self.title = placeholder == "" ? "发帖" : "修改"
+//        self.title = placeholder == "" ? "发帖" : "修改"
 
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
