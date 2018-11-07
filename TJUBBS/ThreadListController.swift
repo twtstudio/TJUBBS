@@ -43,17 +43,19 @@ class ThreadListController: UIViewController {
         self.init()
         self.board = board
         view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
     }
 
     convenience init(bid: Int) {
         self.init()
         view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
         self.bid = bid
 //        refresh()
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 
     override func viewDidLoad() {
@@ -101,7 +103,8 @@ class ThreadListController: UIViewController {
 
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        self.title = board?.name ?? "帖子"
+        let titleLabel = UILabel(text: board?.name ?? "帖子", color: .black, fontSize: 16, weight: UIFontWeightBold)
+        self.navigationItem.titleView = titleLabel
     }
 
     override func didReceiveMemoryWarning() {
@@ -196,6 +199,8 @@ extension ThreadListController {
                 let boardModel = Mapper<BoardModel>().map(JSON: board)
                 self.board = boardModel
                 self.title = boardModel?.name
+                (self.navigationItem.titleView as? UILabel)?.text = boardModel?.name
+                self.navigationItem.titleView?.sizeToFit()
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads)
             }
             DispatchQueue.main.async {

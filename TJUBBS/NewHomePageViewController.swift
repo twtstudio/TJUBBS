@@ -13,11 +13,7 @@ import Kingfisher
 import MJRefresh
 import PiwikTracker
 
-
 class NewHomePageViewController: UIViewController {
-
-    
-    var tabBar = MainTabBarController()
     var tableView = UITableView(frame: .zero, style: .grouped)
     var threadList: [ThreadModel] = [] {
         didSet {
@@ -89,8 +85,6 @@ class NewHomePageViewController: UIViewController {
         tableView.mj_header = header
 
         self.refresh()
-        self.tabBar.hidesBottomBarWhenPushed = false
-
     }
 
     override func didReceiveMemoryWarning() {

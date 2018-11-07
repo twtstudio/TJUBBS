@@ -9,12 +9,11 @@
 import UIKit
 
 class MainTabBarController: UITabBarController {
-
-    var homepageVC: UIViewController?
-    var BBSVC: UIViewController?
-    var infoVC: UIViewController?
-    var messageVC: UIViewController?
-    var addVC: UIViewController?
+    var homepageVC = NewHomePageViewController()
+    var BBSVC = ForumListVC()
+    var infoVC = UserInfoViewController()
+    var messageVC = MessageHomePageViewController(para: 0)
+    var addVC = AddThreadViewController()
 
     convenience init(para: Int) {
         self.init()
@@ -27,34 +26,29 @@ class MainTabBarController: UITabBarController {
 
         // MARK: - 切换首页
 //        homepageVC = HomepageMainController(para: 1)
-        homepageVC = NewHomePageViewController()
-        let homepageNC = UINavigationController(rootViewController: homepageVC!)
+        let homepageNC = UINavigationController(rootViewController: homepageVC)
         homepageNC.navigationBar.isTranslucent = false
         homepageNC.tabBarItem = createBarItem(imageName: "home")
         homepageNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
-        BBSVC = ForumListVC()
-        let bbcNC = UINavigationController(rootViewController: BBSVC!)
+        let bbcNC = UINavigationController(rootViewController: BBSVC)
         bbcNC.navigationBar.isTranslucent = false
-        BBSVC?.tabBarItem = createBarItem(imageName: "taolunqu")
-        BBSVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        BBSVC.tabBarItem = createBarItem(imageName: "taolunqu")
+        BBSVC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
-        addVC = AddThreadViewController()
-        let addNC = UINavigationController(rootViewController: addVC!)
-        addVC?.tabBarItem = createBarItem(imageName: "send")
-        addVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        let addNC = UINavigationController(rootViewController: addVC)
+        addVC.tabBarItem = createBarItem(imageName: "send")
+        addVC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
-        messageVC = MessageHomePageViewController(para: 0)
-        let messageNC = UINavigationController(rootViewController: messageVC!)
+        let messageNC = UINavigationController(rootViewController: messageVC)
         messageNC.navigationBar.isTranslucent = false
-        messageVC?.tabBarItem = createBarItem(imageName: "message")
-        messageVC?.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
-        messageVC?.tabBarItem.tag = 2
+        messageVC.tabBarItem = createBarItem(imageName: "message")
+        messageVC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+        messageVC.tabBarItem.tag = 2
 //        messageVC?.tabBarItem.badgeColor = .red
 
-        infoVC = UserInfoViewController()
 //        infoVC?.title = "个人中心"
-        let infoNC = UINavigationController(rootViewController: infoVC!)
+        let infoNC = UINavigationController(rootViewController: infoVC)
         infoNC.tabBarItem = createBarItem(imageName: "mine")
         infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         setViewControllers([homepageNC, bbcNC, addNC, messageNC, infoNC], animated: true)
@@ -74,13 +68,13 @@ class MainTabBarController: UITabBarController {
         if item.tag != 2 {
             BBSJarvis.getMessageCount(success: { dict in
                 if let count = dict["data"] as? Int, count != 0 {
-                    self.tabBar.items![2].badgeValue = "\(count)"
+                    self.tabBar.items?[2].badgeValue = "\(count)"
                 }
             })
         }
         if item.tag == 2 {
             BBSJarvis.setMessageRead(success: {_ in })
-            self.tabBar.items![2].badgeValue = nil
+            self.tabBar.items?[2].badgeValue = nil
         }
     }
 

@@ -8,11 +8,18 @@
 
 import UIKit
 
-class Variables {
+struct Variables {
     public static var statusBarHeight: CGFloat {
         return UIApplication.shared.statusBarFrame.height
     }
-    
+    public static var screenWidth: CGFloat {
+        return UIScreen.main.bounds.width
+    }
+
+    public static var screenHeight: CGFloat {
+        return UIScreen.main.bounds.height
+    }
+
     public static let navigationNormalHeight: CGFloat = 44
 }
 

@@ -15,7 +15,7 @@ class MessageHomePageViewController: WMPageController {
     var fooNavigationBarImage: UIImage?
     var fooNavigationBarShadowImage: UIImage?
 
-    convenience init?(para: Int) {
+    convenience init(para: Int) {
         self.init(viewControllerClasses: [MessageViewController.self, FriendsListController.self], andTheirTitles: ["消息", "好友"])
         self.title = "我的消息"
         UIApplication.shared.statusBarStyle = .lightContent

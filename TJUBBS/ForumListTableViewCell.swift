@@ -7,28 +7,26 @@
 //
 
 import UIKit
-import SnapKit
 import ObjectMapper
 
- //全局定义屏宽
- let SCREENWIDTH = UIScreen.main.bounds.width
- let widthOfItemInCell = SCREENWIDTH / 4
-
 class ForumListTableViewCell: UITableViewCell {
+    //全局定义屏宽
+    let widthOfItemInCell = Variables.screenWidth / 4
 
     var modelButton = UIButton()
- 
+
     var isHot = false  //R242 G104 B14
     var hotBoard = ["段子手", "音乐汇"]
 
-//   //从左往右数第一个第二个第三个stackview  R242 G104 B14 " ヾ(≧▽≦*)o" "段子手", "音乐汇", "文学艺术", "鹊桥", "青年湖", "绿茵足球", "招聘信息", "找工作"]
+    //   //从左往右数第一个第二个第三个stackview  R242 G104 B14 " ヾ(≧▽≦*)o" "段子手", "音乐汇", "文学艺术", "鹊桥", "青年湖", "绿茵足球", "招聘信息", "找工作"]
     var defaultFaceArray = ["(๑•̀ㅂ•́)و✧", " ", " o(*≧▽≦)ツ", "ヽ(✿ﾟ▽ﾟ)ノ", "o(^▽^)o", "(ง •_•)ง", "￣O￣)ノ"]
 
+    var buttonTapped: ((Int) -> Void)?
     //broad button
     //装board的数组，从里面拿到board的name
     //var boardArray: [BoardModel] = []
     var numOfButtonInStack = 0
-   
+
     var buttonNameArray : [String] = []
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -36,7 +34,7 @@ class ForumListTableViewCell: UITableViewCell {
 
     }
 
-   // func initUI(forumName: String, boardArray: [BoardModel], numButtonInStack: Int) {
+    // func initUI(forumName: String, boardArray: [BoardModel], numButtonInStack: Int) {
     func initUI(forumName: String, numButtonInStack: Int, boardArray: [BoardModel]) {
 
         for a in 0 ..< numButtonInStack * 3{
@@ -48,16 +46,16 @@ class ForumListTableViewCell: UITableViewCell {
             }
         }
         //定义相关变量，消除Magic Number
-        let heightOfCell = CGFloat(numButtonInStack) * SCREENWIDTH / 8
-        let imageCenterX = SCREENWIDTH / 8
-        let titleCenterX = SCREENWIDTH / 8
+        let heightOfCell = CGFloat(numButtonInStack) * Variables.screenWidth / 8
+        let imageCenterX = Variables.screenWidth / 8
+        let titleCenterX = Variables.screenWidth / 8
         let imageCenterY = heightOfCell / 2  - 15
         let titleCenterY = heightOfCell / 2  + 17
 
         contentView.frame = UIScreen.main.bounds
         numOfButtonInStack = numButtonInStack
 
-        modelButton = UIButton(frame: CGRect(x: 0, y: 0, width: SCREENWIDTH/4, height: CGFloat(numButtonInStack) * SCREENWIDTH / 8))
+        modelButton = UIButton(frame: CGRect(x: 0, y: 0, width: Variables.screenWidth/4, height: CGFloat(numButtonInStack) * Variables.screenWidth / 8))
 
         let myTitleLabel = UILabel(text: "\(forumName)")
         myTitleLabel.frame = CGRect(x: 0, y: 0, width: 64, height: 20)
@@ -77,7 +75,7 @@ class ForumListTableViewCell: UITableViewCell {
         } else {
             // Fallback on earlier versions
         }
-       
+
     }
 
     func defaultInit() {
@@ -93,10 +91,10 @@ class ForumListTableViewCell: UITableViewCell {
 
         self.contentView.addSubview(modelButton)
     }
-  
- 
+
+
     func buttonLayout(numberOfButton: Int) {
-        let heightOfButton = SCREENWIDTH / 8
+        let heightOfButton = Variables.screenWidth / 8
         print("buttonLayout")
         for j in 1...3 {
             for i in 0 ..< numberOfButton {
@@ -106,47 +104,26 @@ class ForumListTableViewCell: UITableViewCell {
                 button.backgroundColor = .clear
                 button.setTitle(buttonNameArray[index - 1], for: .normal)
                 button.setTitleColor(.black, for: .normal)
-                if let title = hotBoard.first(where: { name in
-                    return buttonNameArray[index - 1] == name
-                }) { button.setTitleColor(.BBSHotOrange, for: .normal)
+                if hotBoard.first(where: { $0 == buttonNameArray[index - 1] }) != nil { button.setTitleColor(.BBSHotOrange, for: .normal)
                 } else {
-                   button.setTitleColor(.black, for: .normal)
+                    button.setTitleColor(.black, for: .normal)
                 }
                 
-//                for k in 0..<hotBoard.count{
-//
-//                if buttonNameArray[index - 1] == hotBoard[k]{
-//                   button.setTitleColor(.BBSHotOrange, for: .normal)
-//                    print("match")
-//                }
-//                else{
-//                   button.setTitleColor(.black, for: .normal)
-//
-//
-//                }
-//
-//                }
-               
-               //  button.titleLabel?.font = UIFont(name: "AppleGothic", size: 16)
                 button.titleLabel?.font = UIFont.HHflexibleFont(ofBaseSize: 15)
                 button.layer.borderColor = UIColor.BBSLightGray.cgColor
                 button.layer.borderWidth = 0.5
                 //button.layer.masksToBounds = true
                 button.tag = index
                 button.addTarget(self, action: #selector(boardButtonTapped(sender:)), for:
-                                    .touchUpInside)
+                    .touchUpInside)
 
                 self.contentView.addSubview(button.viewWithTag(index)!)
-
             }
         }
-        
-
-
     }
     func boardButtonTapped(sender: UIButton) {
-       print(sender.tag)
-
+        print(sender.tag)
+        buttonTapped?(sender.tag)
     }
 
     required init?(coder aDecoder: NSCoder) {
