@@ -47,7 +47,7 @@ class SetFontSizeViewController: UIViewController {
 
         sizeSlider.x = minLabel.x + minLabel.width + 10
         sizeSlider.center.y = minLabel.center.y
-        sizeSlider.width = self.view.width - 10*2 - 10*2 - minLabel.width - maxLabel.width
+        sizeSlider.width = self.view.width - 10*4 - minLabel.width - maxLabel.width
         sizeSlider.height = maxLabel.height
 
 //        previewLabel.x = 20

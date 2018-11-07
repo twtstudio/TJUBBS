@@ -18,7 +18,7 @@ class HomepageMainController: WMPageController {
     convenience init?(para: Int) {
         self.init(viewControllerClasses: [LatestThreadViewController.self, EliteThreadViewController.self], andTheirTitles: ["最新动态", "全站十大"])
         self.title = "首 页"
-        UIApplication.shared.statusBarStyle = .lightContent
+
         // customization for pageController
         pageAnimatable = true
         titleSizeSelected = 16.0
@@ -75,6 +75,10 @@ class HomepageMainController: WMPageController {
         addVC.hidesBottomBarWhenPushed = true
 //        addVC.selectedForum = self.forum
         self.navigationController?.pushViewController(addVC, animated: true)
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 
     func searchToggled(sender: UIBarButtonItem) {

@@ -16,7 +16,7 @@ class BlackListViewController: UIViewController {
             return BBSUser.shared.blackList
     }
     var names: [String] {
-        return Array<String>(blackList.keys)
+        return [String](blackList.keys)
     }
 
     convenience init(para: Int) {

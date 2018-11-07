@@ -42,8 +42,8 @@ class BoardListController: UIViewController {
 
         BBSJarvis.getBoardList(forumID: (self.forum?.id)!, success: {
             dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let boards = data["boards"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [String: Any],
+                let boards = data["boards"] as? [[String: Any]] {
                 for board in boards {
                     var boardCopy = board
                     boardCopy["forum_name"] = self.forum?.name
@@ -52,7 +52,7 @@ class BoardListController: UIViewController {
 
                     //2 threads
                     var fooThreadList: [ThreadModel] = []
-                    if let threads = board["threads"] as? Array<Dictionary<String, Any>> {
+                    if let threads = board["threads"] as? [[String: Any]] {
                         fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: threads)
                     }
                     self.threadList.append(fooThreadList)

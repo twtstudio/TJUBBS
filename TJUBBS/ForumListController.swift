@@ -48,7 +48,7 @@ class ForumListController: UIViewController {
         self.navigationItem.backBarButtonItem = backItem
         HUD.show(.rotatingImage(UIImage(named: "progress")))
         BBSJarvis.getForumList { dict in
-            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [[String: Any]] {
 //                print(data)
                 self.forumList = Mapper<ForumModel>().mapArray(JSONArray: data)
             }

@@ -192,8 +192,8 @@ class HHUserDetailViewController: UIViewController {
                 threadGroup.leave()
             }) { dict in
                 threadGroup.leave()
-                if let data = dict["data"] as? Dictionary<String, Any>,
-                    let thread = data["thread"] as? Dictionary<String, Any> {
+                if let data = dict["data"] as? [String: Any],
+                    let thread = data["thread"] as? [String: Any] {
                     let gettedThread = ThreadModel(JSON: thread)
                     self.threadList.append(gettedThread!)
                     //self.tableView.reloadData()

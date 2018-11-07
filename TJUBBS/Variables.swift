@@ -10,12 +10,7 @@ import UIKit
 
 class Variables {
     public static var statusBarHeight: CGFloat {
-        get {
-            guard UIDevice.current.isX() else {
-                return 20
-            }
-            return 44
-        }
+        return UIApplication.shared.statusBarFrame.height
     }
     
     public static let navigationNormalHeight: CGFloat = 44

@@ -167,7 +167,7 @@ struct BBSJarvis {
     static func getMessage(page: Int, failure: ((Error) -> Void)? = nil, success: @escaping ([MessageModel]) -> Void) {
         BBSBeacon.request(withType: .get, url: BBSAPI.message(page: page), parameters: nil, failure: failure) { dict in
             if let data = dict["data"] as? [[String: Any]] {
-                var msgList = Array<MessageModel>()
+                var msgList = [MessageModel]()
                 for msg in data {
                     let model = MessageModel(JSON: msg)
                     if var model = model {
@@ -210,7 +210,7 @@ struct BBSJarvis {
 
     static func getMyPostList(page: Int, failure: ((Error) -> Void)? = nil, success: @escaping ([PostModel]) -> Void) {
         BBSBeacon.request(withType: .get, url: BBSAPI.myPostList(page: page), parameters: nil, failure: failure, success: { dict in
-            if let posts = dict["data"] as? [Dictionary<String, Any>] {
+            if let posts = dict["data"] as? [[String: Any]] {
                let postModels = Mapper<PostModel>().mapArray(JSONArray: posts)
                 success(postModels)
             }

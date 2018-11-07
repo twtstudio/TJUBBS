@@ -21,7 +21,7 @@ class TimerScrollerView: UIView, UIScrollViewDelegate{
     var scrollerView: UIScrollView?
     var pageCT: UIPageControl?
     
-    func configScrollView(picArray: Array<UIImageView>, contentOffsetIndex: Int) {
+    func configScrollView(picArray: [UIImageView], contentOffsetIndex: Int) {
         count = picArray.count
         self.clipsToBounds = false
         self.backgroundColor = UIColor.white
@@ -44,7 +44,7 @@ class TimerScrollerView: UIView, UIScrollViewDelegate{
         timerBegin()
     }
     
-    func createImageViews(picArray: Array<UIImageView>, contentOffsetIndex: Int) {
+    func createImageViews(picArray: [UIImageView], contentOffsetIndex: Int) {
         for i in 0 ..< picArray.count + 2 {
             scrollerView!.addSubview(picArray[i])
         }

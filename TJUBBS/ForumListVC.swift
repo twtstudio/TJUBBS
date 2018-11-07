@@ -86,7 +86,7 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         let group = DispatchGroup()
         
         BBSJarvis.getForumList{ dict in
-            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [[String: Any]] {
                 let forums = Mapper<ForumModel>().mapArray(JSONArray: data)
                 self.forumList = forums
                 //请求到以后，接着请求board
@@ -96,8 +96,8 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
                         group.leave()
                     }, success: { dict in
                         group.leave()
-                        if let data = dict["data"] as? Dictionary<String, Any>,
-                            let boards = data["boards"] as? Array<Dictionary<String, Any>> {
+                        if let data = dict["data"] as? [String: Any],
+                            let boards = data["boards"] as? [[String: Any]] {
                             for board in boards {
                                 var boardCopy = board
                                 boardCopy["forum_name"] = forum.name

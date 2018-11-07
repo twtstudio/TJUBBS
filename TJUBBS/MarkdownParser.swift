@@ -245,13 +245,13 @@ public struct Markdown {
     fileprivate static let _markerUL = "[*+-]"
     fileprivate static let _markerOL = "\\d+[.]"
 
-    fileprivate static var _escapeTable = Dictionary<String, String>()
-    fileprivate static var _invertedEscapeTable = Dictionary<String, String>()
-    fileprivate static var _backslashEscapeTable = Dictionary<String, String>()
+    fileprivate static var _escapeTable = [String: String]()
+    fileprivate static var _invertedEscapeTable = [String: String]()
+    fileprivate static var _backslashEscapeTable = [String: String]()
 
-    fileprivate var _urls = Dictionary<String, String>()
-    fileprivate var _titles = Dictionary<String, String>()
-    fileprivate var _htmlBlocks = Dictionary<String, String>()
+    fileprivate var _urls = [String: String]()
+    fileprivate var _titles = [String: String]()
+    fileprivate var _htmlBlocks = [String: String]()
 
     fileprivate var _listLevel: Int = 0
     fileprivate static let autoLinkPreventionMarker = "\u{1A}P" // temporarily replaces "://" where auto-linking shouldn't happen;
@@ -261,10 +261,10 @@ public struct Markdown {
     /// property in init() to force initialization.
     fileprivate static let staticsInitialized: Bool = {
         // Table of hash values for escaped characters:
-        _escapeTable = Dictionary<String, String>()
-        _invertedEscapeTable = Dictionary<String, String>()
+        _escapeTable = [String: String]()
+        _invertedEscapeTable = [String: String]()
         // Table of hash value for backslash escaped characters:
-        _backslashEscapeTable = Dictionary<String, String>()
+        _backslashEscapeTable = [String: String]()
 
         var backslashPattern = ""
 
@@ -690,7 +690,7 @@ public struct Markdown {
     fileprivate func tokenizeHTML(_ text: String) -> [Token] {
         var pos = 0
         var tagStart = 0
-        var tokens = Array<Token>()
+        var tokens = [Token]()
 
         let str = text as NSString
 
@@ -1823,7 +1823,7 @@ private struct MarkdownRegex {
 
     fileprivate func replace(_ input: String, evaluator: (MarkdownRegexMatch) -> String) -> String {
         // Get list of all replacements to be made
-        var replacements = Array<(NSRange, String)>()
+        var replacements = [(NSRange, String)]()
         let s = input as NSString
         let options = NSRegularExpression.MatchingOptions(rawValue: 0)
         let range = NSRange(location: 0, length: s.length)
@@ -1865,7 +1865,7 @@ private struct MarkdownRegex {
     }
 
     fileprivate func matches(_ input: String) -> [MarkdownRegexMatch] {
-        var matchArray = Array<MarkdownRegexMatch>()
+        var matchArray = [MarkdownRegexMatch]()
 
         let s = input as NSString
         let options = NSRegularExpression.MatchingOptions(rawValue: 0)
@@ -1900,7 +1900,7 @@ private struct MarkdownRegex {
     }
 
     fileprivate func split(_ input: String) -> [String] {
-        var stringArray: [String] = Array<String>()
+        var stringArray: [String] = [String]()
 
         var nextStartIndex = 0
 

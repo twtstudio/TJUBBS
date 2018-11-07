@@ -167,9 +167,9 @@ class ThreadDetailViewController: UIViewController {
                 self.tableView.mj_header.endRefreshing()
             }
         }) { dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let thread = data["thread"] as? Dictionary<String, Any>,
-                let posts = data["post"] as? Array<Dictionary<String, Any>>,
+            if let data = dict["data"] as? [String: Any],
+                let thread = data["thread"] as? [String: Any],
+                let posts = data["post"] as? [[String: Any]],
                 let board = data["board"] as? [String: Any] {
                 self.board = BoardModel(JSON: board)
                 let titleIsEmpty = self.thread!.title == "" // thread nil flag

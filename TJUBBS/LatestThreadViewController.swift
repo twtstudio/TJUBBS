@@ -164,7 +164,7 @@ extension LatestThreadViewController {
                 self.tableView?.mj_header.endRefreshing()
             }
         }, success: { dict in
-            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
             self.tableView?.mj_footer.resetNoMoreData()
@@ -184,7 +184,7 @@ extension LatestThreadViewController {
                 self.tableView?.mj_footer.endRefreshing()
             }
         }, success: { dict in
-            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [[String: Any]] {
                 let newList = Mapper<ThreadModel>().mapArray(JSONArray: data)
                 if newList.count > 0 {
                     self.threadList += newList

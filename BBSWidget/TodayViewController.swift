@@ -57,9 +57,9 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 if let data = response.data {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                        if let dict = json as? Dictionary<String, AnyObject> {
-                            if let err = dict["err"] as? Int, err == 0, let data = dict["data"] as? Dictionary<String, Any>,
-                                let hot = data["hot"] as? Array<Dictionary<String, Any>> {
+                        if let dict = json as? [String: AnyObject] {
+                            if let err = dict["err"] as? Int, err == 0, let data = dict["data"] as? [String: Any],
+                                let hot = data["hot"] as? [[String: Any]] {
                                 let threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot)
                                 BBSCache.saveTopThread(threads: threadList)
                                 let random = abs(arc4random().distance(to: 0)) % threadList.count

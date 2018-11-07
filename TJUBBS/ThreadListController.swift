@@ -186,9 +186,9 @@ extension ThreadListController {
                 }
         }) {
             dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let board = data["board"] as? Dictionary<String, Any>,
-                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [String: Any],
+                let board = data["board"] as? [String: Any],
+                let threads = data["thread"] as? [[String: Any]] {
                 if (self.tableView?.mj_header.isRefreshing)! {
                     self.tableView?.mj_header.endRefreshing()
                 }
@@ -213,8 +213,8 @@ extension ThreadListController {
             }
         }) {
             dict in
-            if let data = dict["data"] as? Dictionary<String, Any>,
-                let threads = data["thread"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [String: Any],
+                let threads = data["thread"] as? [[String: Any]] {
                 if (self.tableView?.mj_footer.isRefreshing)! {
                     self.tableView?.mj_footer.endRefreshing()
                 }

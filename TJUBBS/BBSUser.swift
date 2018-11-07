@@ -67,7 +67,7 @@ class BBSUser {
     static func save() {
 //        let list = NSDictionary(dictionary: BBSUser.shared.blackList)
         let list = NSMutableDictionary()
-        for key in Array<String>(BBSUser.shared.blackList.keys) {
+        for key in [String](BBSUser.shared.blackList.keys) {
             if let uid = BBSUser.shared.blackList[key] {
                 list.setValue(uid, forKey: key)
             }
@@ -89,7 +89,7 @@ class BBSUser {
             BBSUser.shared.token = (token == "") ? nil : token
             BBSUser.shared.group = (group == -1) ? nil : group
             BBSUser.shared.fontSize = fontSize
-            var dict = Dictionary<String, Int>()
+            var dict = [String: Int]()
             if let keys = list.allKeys as? [String] {
                 for key in keys {
                     if let uid = list[key] as? Int {

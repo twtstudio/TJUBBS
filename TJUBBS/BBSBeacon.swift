@@ -24,7 +24,7 @@ enum BBSError: String, Error {
 
 struct BBSBeacon {
     //TODO: change AnyObject to Any
-    static func request(withType type: HTTPMethod = .get, url: String, token: String? = nil, parameters: Dictionary<String, String>?, failure: ((Error) -> Void)? = nil, success: ((Dictionary<String, Any>) -> Void)?) {
+    static func request(withType type: HTTPMethod = .get, url: String, token: String? = nil, parameters: [String: String]?, failure: ((Error) -> Void)? = nil, success: (([String: Any]) -> Void)?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
         headers["X-Requested-With"] = "Mobile"
@@ -51,7 +51,7 @@ struct BBSBeacon {
                     if let data = response.data {
                         do {
                             let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                            if let dict = json as? Dictionary<String, AnyObject> {
+                            if let dict = json as? [String: AnyObject] {
                                 if let err = dict["err"] as? Int, err == 0 {
                                     success?(dict)
                                 } else {
@@ -84,7 +84,7 @@ struct BBSBeacon {
                 switch response.result {
                 case .success:
                     if let data = response.result.value {
-                        if let dict = data as? Dictionary<String, Any>, dict["err"] as? Int == 0 {
+                        if let dict = data as? [String: Any], dict["err"] as? Int == 0 {
                             success?(dict)
                         } else {
                             HUD.hide()
@@ -93,7 +93,7 @@ struct BBSBeacon {
                     }
                 case .failure(let error):
                     if let data = response.result.value {
-                        if let dict = data as? Dictionary<String, Any> {
+                        if let dict = data as? [String: Any] {
 //                            log.errorMessage(dict["data"] as? String)/
                             HUD.hide()
                             HUD.flash(.label(dict["data"] as? String), delay: 1.0)

@@ -18,16 +18,11 @@ class NewHomePageViewController: UIViewController {
 
     
     var tabBar = MainTabBarController()
-    var tableView: UITableView?
+    var tableView = UITableView(frame: .zero, style: .grouped)
     var threadList: [ThreadModel] = [] {
         didSet {
             threadList = threadList.filter { element in
-                for username in BBSUser.shared.blackList.keys {
-                    if username == element.authorName {
-                        return false
-                    }
-                }
-                return true
+                return BBSUser.shared.blackList.keys.contains(element.authorName) == false
             }
         }
     }
@@ -47,7 +42,6 @@ class NewHomePageViewController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .default
 //        self.hidesBottomBarWhenPushed = true
     }
 
@@ -55,22 +49,25 @@ class NewHomePageViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: .zero, style: .grouped)
-        view.addSubview(tableView!)
+        view.addSubview(tableView)
 
         registerForPreviewing(with: self, sourceView: tableView!)
-        tableView?.snp.makeConstraints { make in
+        tableView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.left.right.bottom.equalToSuperview()
         }
-        tableView?.register(HomePageThreadTableViewCell.self, forCellReuseIdentifier: "NewThreadCell")
-        tableView?.delegate = self
-        tableView?.dataSource = self
-        tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 300
-        self.tableView?.separatorStyle = .none
+        tableView.register(HomePageThreadTableViewCell.self, forCellReuseIdentifier: "NewThreadCell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 300
+        self.tableView.separatorStyle = .none
 
         self.navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.darkGray], for: .normal)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
@@ -89,7 +86,7 @@ class NewHomePageViewController: UIViewController {
         header?.stateLabel.isHidden = true
         header?.lastUpdatedTimeLabel.isHidden = true
         header?.setImages(refreshingImages, for: .pulling)
-        tableView?.mj_header = header
+        tableView.mj_header = header
 
         self.refresh()
         self.tabBar.hidesBottomBarWhenPushed = false
@@ -104,7 +101,7 @@ class NewHomePageViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if #available(iOS 11.0, *) {
-            tableView?.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
+            tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
         } else {
             self.automaticallyAdjustsScrollViewInsets = false
             // Fallback on earlier versions
@@ -145,19 +142,18 @@ extension NewHomePageViewController {
 
         curPage = 0
         BBSJarvis.getIndex(page: curPage, failure: { _ in
-            if (self.tableView?.mj_header.isRefreshing)! {
-                self.tableView?.mj_header.endRefreshing()
-
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
             }
         }, success: { dict in
-            if let data = dict["data"] as? Array<Dictionary<String, Any>> {
+            if let data = dict["data"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
             }
-//            self.tableView?.mj_footer.resetNoMoreData()
-            if (self.tableView?.mj_header.isRefreshing)! {
-                self.tableView?.mj_header.endRefreshing()
+//            self.tableView.mj_footer.resetNoMoreData()
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
             }
-            self.tableView?.reloadData()
+            self.tableView.reloadData()
         })
     }
 }
@@ -229,7 +225,7 @@ extension NewHomePageViewController: UITableViewDataSource {
 
 extension NewHomePageViewController: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = tableView?.indexPathForRow(at: location), let cell = tableView?.cellForRow(at: indexPath) {
+        if let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) {
             previewingContext.sourceRect = cell.frame
             let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section])
             return detailVC
@@ -241,14 +237,3 @@ extension NewHomePageViewController: UIViewControllerPreviewingDelegate {
         show(viewControllerToCommit, sender: self)
     }
 }
-
-extension UIDevice {
-    public func isX() -> Bool {
-        if UIScreen.main.bounds.height == 812 {
-            return true
-        }
-        
-        return false
-    }
-}
-
