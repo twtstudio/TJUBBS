@@ -261,7 +261,7 @@ extension SetInfoViewController: UIImagePickerControllerDelegate {
             let smallerImage = UIImage.resizedImage(image: image, scaledToSize: CGSize(width: 200, height: 200))
             BBSJarvis.setAvatar(image: smallerImage, success: {
                 BBSUser.shared.avatar = smallerImage
-                let cacheKey = "\(BBSUser.shared.uid!)" + Date.today
+                let cacheKey = "\(BBSUser.shared.uid!)"
                 ImageCache.default.removeImage(forKey: cacheKey)
                 self.tableView.reloadData()
                 HUD.flash(.label("头像设置成功🎉"), delay: 1.5)
