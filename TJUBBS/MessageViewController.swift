@@ -123,7 +123,7 @@ extension MessageViewController: UITableViewDataSource {
         }
         let portraitImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: model.authorId))
-        let cacheKey = "\(model.authorId)" + Date.today
+        let cacheKey = "\(model.authorId)"
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         // 移除以前添加的
         for recognizer in cell.portraitImageView.gestureRecognizers ?? [] {

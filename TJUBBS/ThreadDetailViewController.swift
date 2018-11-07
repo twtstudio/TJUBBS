@@ -595,7 +595,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             cell?.portraitImageView.image = UIImage(named: "anonymous")
         } else {
             let url = URL(string: BBSAPI.avatar(uid: post.authorID))
-            let cacheKey = "\(post.authorID)" + Date.today
+            let cacheKey = "\(post.authorID)"
             cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: UIImage(named: "default"))
         }
         return cell!
@@ -761,7 +761,7 @@ extension ThreadDetailViewController: UITableViewDataSource {
             cell?.portraitImageView.image = UIImage(named: "anonymous")
         } else {
             let url = URL(string: BBSAPI.avatar(uid: thread!.authorID))
-            let cacheKey = "\(thread!.authorID)" + Date.today
+            let cacheKey = "\(thread!.authorID)"
             cell?.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: UIImage(named: "default"))
         }
         return cell!

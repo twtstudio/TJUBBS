@@ -42,7 +42,7 @@ class UserInfoViewController: UIViewController {
 //        scrollViewDidScroll(tableView as UIScrollView)
         refresh()
 
-        let cacheKey = "\(BBSUser.shared.uid ?? 0)" + Date.today
+        let cacheKey = "\(BBSUser.shared.uid ?? 0)"
         if let url = URL(string: BBSAPI.avatar(uid: BBSUser.shared.uid ?? 0)) {
             headerView.avatarView.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default")) { image, _, _, _ in
                 BBSUser.shared.avatar = image

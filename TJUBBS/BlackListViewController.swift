@@ -114,7 +114,7 @@ extension BlackListViewController: UITableViewDataSource {
 
         let portraitImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: uid))
-        let cacheKey = "\(uid)" + Date.today
+        let cacheKey = "\(uid)"
         avatarView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         return cell
     }

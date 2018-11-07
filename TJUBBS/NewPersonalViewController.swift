@@ -54,7 +54,7 @@ class NewPersonalViewController: UIViewController {
         tableView?.delegate = self
         tableView?.dataSource = self
 
-        let cacheKey = "\(BBSUser.shared.uid ?? 0)" + Date.today
+        let cacheKey = "\(BBSUser.shared.uid ?? 0)"
 
         if let url = URL(string: BBSAPI.avatar(uid: BBSUser.shared.uid ?? 0)) {
             headerView.avatarView.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default")) { image, _, _, _ in

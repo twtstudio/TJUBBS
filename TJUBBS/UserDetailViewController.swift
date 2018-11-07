@@ -51,7 +51,7 @@ class UserDetailViewController: UIViewController {
 
     func loadDetail() {
         if let user = user {
-            let cacheKey = "\(user.uid ?? 0)" + Date.today
+            let cacheKey = "\(user.uid ?? 0)"
             if let url = URL(string: BBSAPI.avatar(uid: user.uid ?? 0)) {
                 headerView.avatarView.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default"))
                 headerView.avatarViewBackground.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default"))

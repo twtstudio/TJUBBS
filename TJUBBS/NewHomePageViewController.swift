@@ -57,7 +57,7 @@ class NewHomePageViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
 
-        registerForPreviewing(with: self, sourceView: tableView!)
+        registerForPreviewing(with: self, sourceView: tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.left.right.bottom.equalToSuperview()

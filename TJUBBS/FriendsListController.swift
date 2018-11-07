@@ -104,7 +104,7 @@ extension FriendsListController: UITableViewDataSource {
         cell.initUI(portraitImage: nil, username: model.username ?? "好友", time: "0", detail: model.signature ?? "")
         let portraitImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: model.uid ?? 0))
-        let cacheKey = "\(model.uid ?? 0)" + Date.today
+        let cacheKey = "\(model.uid ?? 0)"
         cell.portraitImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: portraitImage)
         cell.timeLabel.isHidden = true
         if model.uid != 0 { // exclude anonymous user

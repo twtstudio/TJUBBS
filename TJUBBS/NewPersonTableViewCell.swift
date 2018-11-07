@@ -52,7 +52,7 @@ class NewPersonTableViewCell: UITableViewCell {
         self.thread = thread
         let avatarImage = UIImage(named: "default")
         let url = URL(string: BBSAPI.avatar(uid: thread.authorID))
-        let cacheKey = "\(thread.authorID)" + Date.today
+        let cacheKey = "\(thread.authorID)"
 
         //avatarImageView
         avatarImageView.kf.setImage(with: ImageResource(downloadURL: url!, cacheKey: cacheKey), placeholder: avatarImage)
