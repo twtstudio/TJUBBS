@@ -53,8 +53,8 @@ struct BBSJarvis {
                 if let data = dict["data"] as? [String: Any], let wrapper = Mapper<UserWrapper>().map(JSON: data) {
                     BBSUser.load(wrapper: wrapper)
                     success?(wrapper)
-                } else if let err = dict["err"] as? Int, err == 0 {
-                    failure(BBSError.custom)
+                } else if let err = dict["err"] as? Int, err == 0, let msg = dict["msg"] as? String {
+                    failure(BBSError.custom(msg))
                 }
             }
         } else {
@@ -63,8 +63,8 @@ struct BBSJarvis {
                     wrapper.uid = uid
                     wrapper.recentThreads = Mapper<ThreadModel>().mapArray(JSONArray: recent)
                     success?(wrapper)
-                } else if let err = dict["err"] as? Int, err == 0 {
-                    failure(BBSError.custom)
+                } else if let err = dict["err"] as? Int, err == 0, let msg = dict["msg"] as? String {
+                    failure(BBSError.custom(msg))
                 }
             }
         }

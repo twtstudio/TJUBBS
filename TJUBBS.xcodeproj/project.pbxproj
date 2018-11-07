@@ -15,6 +15,7 @@
 		363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */; };
 		3659B5841F4ED91200B65D13 /* SetFontSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659B5831F4ED91200B65D13 /* SetFontSizeViewController.swift */; };
 		36636FEA1EC7723200C45CB8 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */; };
+		3673E1BE2193545200344A56 /* BBSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3673E1BD2193545200344A56 /* BBSError.swift */; };
 		367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD9061F11EB00008C14C7 /* MyPostsViewController.swift */; };
 		367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */; };
 		367D67BE1FC5C9210028B670 /* UserSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367D67BD1FC5C9210028B670 /* UserSearchViewController.swift */; };
@@ -152,6 +153,7 @@
 		363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlackListViewController.swift; sourceTree = "<group>"; };
 		3659B5831F4ED91200B65D13 /* SetFontSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetFontSizeViewController.swift; sourceTree = "<group>"; };
 		36636FE91EC7723200C45CB8 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
+		3673E1BD2193545200344A56 /* BBSError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSError.swift; sourceTree = "<group>"; };
 		367AD9061F11EB00008C14C7 /* MyPostsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostsViewController.swift; sourceTree = "<group>"; };
 		367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyThreadsViewController.swift; sourceTree = "<group>"; };
 		367D67BD1FC5C9210028B670 /* UserSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSearchViewController.swift; sourceTree = "<group>"; };
@@ -596,6 +598,7 @@
 			isa = PBXGroup;
 			children = (
 				6826D7421EB5F561000F520B /* ClassExtensions.swift */,
+				3673E1BD2193545200344A56 /* BBSError.swift */,
 				36D0BC8A1EFE6B5D00265D8B /* Metadata.swift */,
 				361A30AC1F000DA000DDF11C /* MarkdownParser.swift */,
 				68B683511EC20F7100F7A0BF /* ThreadDetailViewController.swift */,
@@ -1077,6 +1080,7 @@
 				36E6A8DC1F8FEB5600E216FD /* SearchViewController.swift in Sources */,
 				C8DCA2AB20FDAC90000C7656 /* Variables.swift in Sources */,
 				68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */,
+				3673E1BE2193545200344A56 /* BBSError.swift in Sources */,
 				36E054501F100FCE00B913F0 /* ExtendedButton.swift in Sources */,
 				682A84631EB5C3B900510FA4 /* AppDelegate.swift in Sources */,
 				36F451E01EE11F7F009BA627 /* RichPostCell.swift in Sources */,
