@@ -16,9 +16,7 @@ class ForumListTableViewCell: UITableViewCell {
     var modelButton = UIButton()
 
     var isHot = false  //R242 G104 B14
-    var hotBoard = ["段子手", "音乐汇"]
-
-    //   //从左往右数第一个第二个第三个stackview  R242 G104 B14 " ヾ(≧▽≦*)o" "段子手", "音乐汇", "文学艺术", "鹊桥", "青年湖", "绿茵足球", "招聘信息", "找工作"]
+    var hotBoard = ["段子手", "音乐汇", "文学艺术", "鹊桥", "青年湖", "绿茵足球", "招聘信息", "找工作"]
     var defaultFaceArray = ["(๑•̀ㅂ•́)و✧", " ", " o(*≧▽≦)ツ", "ヽ(✿ﾟ▽ﾟ)ノ", "o(^▽^)o", "(ง •_•)ง", "￣O￣)ノ"]
 
     var buttonTapped: ((Int) -> Void)?

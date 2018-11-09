@@ -11,7 +11,7 @@ import UIKit
 class MainTabBarController: UITabBarController {
     var homepageVC = NewHomePageViewController()
     var BBSVC = ForumListVC()
-    var infoVC = UserInfoViewController()
+    var infoVC = NewUserInfoViewController()
     var messageVC = MessageHomePageViewController(para: 0)
     var addVC = AddThreadViewController()
 

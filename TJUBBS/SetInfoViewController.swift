@@ -19,6 +19,8 @@ class SetInfoViewController: UIViewController {
         tableView = UITableView(frame: self.view.bounds, style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
+        self.tableView.estimatedSectionHeaderHeight = 0
+        self.tableView.estimatedSectionFooterHeight = 0
         self.view.addSubview(tableView)
         self.navigationController?.navigationBar.isTranslucent = false
     }
@@ -50,11 +52,15 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
             return 0
         }
     }
-
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.0001
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 0 && indexPath.section == 0 {
             return 80

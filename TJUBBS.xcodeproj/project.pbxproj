@@ -93,6 +93,9 @@
 		6BEE2A6DD08EA5391EEECB6B /* Pods_TJUBBS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6F43ADEF3827A55E61BC12 /* Pods_TJUBBS.framework */; };
 		8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51220FDD7130058EACC /* ForumListVC.swift */; };
 		8574A51520FDD72B0058EACC /* ForumListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51420FDD72B0058EACC /* ForumListTableViewCell.swift */; };
+		85A97FE62195207C0059C8EC /* NewUserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE52195207C0059C8EC /* NewUserInfoViewController.swift */; };
+		85A97FE9219520C60059C8EC /* NewUserDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE7219520C60059C8EC /* NewUserDataTableViewCell.swift */; };
+		85A97FEA219520C60059C8EC /* NewUserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE8219520C60059C8EC /* NewUserInfoTableViewCell.swift */; };
 		C82D091F20C782020078FD5E /* NewHomePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D091E20C782020078FD5E /* NewHomePageViewController.swift */; };
 		C82D092120C7834C0078FD5E /* HomePageThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */; };
 		C86DBD162173833100830E95 /* HottestThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C86DBD152173833100830E95 /* HottestThreadViewController.swift */; };
@@ -234,6 +237,9 @@
 		68F461551EBE264800D784F4 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		8574A51220FDD7130058EACC /* ForumListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListVC.swift; sourceTree = "<group>"; };
 		8574A51420FDD72B0058EACC /* ForumListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListTableViewCell.swift; sourceTree = "<group>"; };
+		85A97FE52195207C0059C8EC /* NewUserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserInfoViewController.swift; sourceTree = "<group>"; };
+		85A97FE7219520C60059C8EC /* NewUserDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserDataTableViewCell.swift; sourceTree = "<group>"; };
+		85A97FE8219520C60059C8EC /* NewUserInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserInfoTableViewCell.swift; sourceTree = "<group>"; };
 		93952F21B48D2736B35318D9 /* Pods-BBSWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BBSWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-BBSWidget/Pods-BBSWidget.release.xcconfig"; sourceTree = "<group>"; };
 		C82D091E20C782020078FD5E /* NewHomePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHomePageViewController.swift; sourceTree = "<group>"; };
 		C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageThreadTableViewCell.swift; sourceTree = "<group>"; };
@@ -590,6 +596,8 @@
 				68B5A52C1EBB1FFB00968FFD /* UserInfoTableViewCell.swift */,
 				68B683461EBEC36400F7A0BF /* MessageCell.swift */,
 				368F4A041F0F3D95003A0E05 /* UserDetailView.swift */,
+				85A97FE7219520C60059C8EC /* NewUserDataTableViewCell.swift */,
+				85A97FE8219520C60059C8EC /* NewUserInfoTableViewCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -634,6 +642,7 @@
 				367AD9081F11EB0C008C14C7 /* MyThreadsViewController.swift */,
 				36C8430D1F0B6F2E009C6887 /* UserDetailViewController.swift */,
 				363D07B51F0FDF0B00F0EC97 /* BlackListViewController.swift */,
+				85A97FE52195207C0059C8EC /* NewUserInfoViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1013,6 +1022,7 @@
 				68B683521EC20F7100F7A0BF /* ThreadDetailViewController.swift in Sources */,
 				68B5A52A1EBB162700968FFD /* UserInfoViewController.swift in Sources */,
 				68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */,
+				85A97FE9219520C60059C8EC /* NewUserDataTableViewCell.swift in Sources */,
 				36D0BC871EFE6A8000265D8B /* BubbleCell.swift in Sources */,
 				682A84651EB5C3B900510FA4 /* LoginViewController.swift in Sources */,
 				36E9AF8D20ADC2F400E77645 /* NewPersonTableViewCell.swift in Sources */,
@@ -1031,6 +1041,7 @@
 				36D0BC891EFE6AA600265D8B /* UserCell.swift in Sources */,
 				367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */,
 				367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */,
+				85A97FEA219520C60059C8EC /* NewUserInfoTableViewCell.swift in Sources */,
 				36E9AF8C20ADC2F400E77645 /* NewPersonalPageView.swift in Sources */,
 				36262A3B1F0D1A7E00C799B7 /* ImageTextAttachment.swift in Sources */,
 				36134C621F94CB3F00482E47 /* BBSCache.swift in Sources */,
@@ -1077,6 +1088,7 @@
 				36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */,
 				3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */,
 				8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */,
+				85A97FE62195207C0059C8EC /* NewUserInfoViewController.swift in Sources */,
 				36E6A8DC1F8FEB5600E216FD /* SearchViewController.swift in Sources */,
 				C8DCA2AB20FDAC90000C7656 /* Variables.swift in Sources */,
 				68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */,
