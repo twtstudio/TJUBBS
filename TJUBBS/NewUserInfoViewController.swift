@@ -178,10 +178,6 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             break
-//            let detailVC = UIViewController()
-//            detailVC.view.backgroundColor = .white
-//
-//            self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }
     func numberOfSections(in tableView: UITableView) -> Int {

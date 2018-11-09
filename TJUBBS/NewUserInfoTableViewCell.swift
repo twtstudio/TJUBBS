@@ -15,12 +15,10 @@ class NewUserInfoTableViewCell: UITableViewCell {
     var nameLabel = UILabel()
     var gradeLabel = UILabel()
     var signatureLabel = UILabel()
-    //var avatar = UIImage(named: "hot")
+
     // 个人主页label
-    var rightSelectLabel = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 65, height: 20)))
-    
-    
-    
+    var personalPageLabel = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 65, height: 20)))
+  
     override init(style: UITableViewCellStyle, reuseIdentifier: String?){
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
@@ -30,11 +28,9 @@ class NewUserInfoTableViewCell: UITableViewCell {
     }
     
     func initUI(avatarImageView: UIImageView, userName: String, signature: String, grade: String) {
-       // self.init()
        
         avatarView = avatarImageView
-//        avatarView.frame = CGRect(origin:.zero, size: CGSize(width: 70, height: 70))
-//        avatarView.image = avatarImageView.image?.toCircle()
+
         let avatarHeight: CGFloat = 70
         avatarView.layer.cornerRadius = avatarHeight/2
         avatarView.layer.borderWidth = 1
@@ -44,11 +40,11 @@ class NewUserInfoTableViewCell: UITableViewCell {
         self.accessoryType = .disclosureIndicator
         self.contentView.frame = UIScreen.main.bounds
         
-        self.rightSelectLabel.text = "个人主页"
-        rightSelectLabel.textAlignment = .right
-        rightSelectLabel.textColor = .darkGray
-        rightSelectLabel.font = UIFont.systemFont(ofSize: 17)
-        self.contentView.addSubview(rightSelectLabel)
+        self.personalPageLabel.text = "个人主页"
+        personalPageLabel.textAlignment = .right
+        personalPageLabel.textColor = .darkGray
+        personalPageLabel.font = UIFont.systemFont(ofSize: 17)
+        self.contentView.addSubview(personalPageLabel)
            self.contentView.addSubview(avatarView)
        
         self.nameLabel.text = userName
@@ -68,7 +64,7 @@ class NewUserInfoTableViewCell: UITableViewCell {
     func initLayout(){
         
         self.contentView.addSubview(nameLabel)
-        self.contentView.addSubview(gradeLabel)
+//        self.contentView.addSubview(gradeLabel)
         self.contentView.addSubview(signatureLabel)
         
         
@@ -79,28 +75,28 @@ class NewUserInfoTableViewCell: UITableViewCell {
             make.width.equalTo(80)
         }
         nameLabel.snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(contentView).offset(25)
-            make.left.equalTo(avatarView).offset(100)
+            make.top.equalTo(contentView).offset(38)
+            make.left.equalTo(avatarView).offset(110)
             make.width.equalTo(130)
-            make.height.equalTo(25)
+            make.height.equalTo(36)
         }
-        gradeLabel.snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(nameLabel).offset(35)
-            make.left.equalTo(nameLabel)
-            make.width.equalTo(130)
-            make.height.equalTo(21)
-        }
+//        gradeLabel.snp.makeConstraints { (make) -> Void in
+//            make.top.equalTo(nameLabel).offset(35)
+//            make.left.equalTo(nameLabel)
+//            make.width.equalTo(130)
+//            make.height.equalTo(21)
+//        }
         signatureLabel.snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(gradeLabel).offset(20)
+            make.top.equalTo(nameLabel).offset(34)
             make.left.equalTo(nameLabel)
             make.width.equalTo(150)
             make.height.equalTo(21)
         }
-        rightSelectLabel.snp.makeConstraints { (make) -> Void in
+        personalPageLabel.snp.makeConstraints { (make) -> Void in
             make.right.equalTo(contentView)
             make.centerY.equalTo(contentView.snp.centerY)
         }
-        nameLabel.font = UIFont.systemFont(ofSize: 26)
+        nameLabel.font = UIFont(name: "Arial Hebrew", size: 30)
         nameLabel.textAlignment = .left
         
         gradeLabel.textColor = .darkGray

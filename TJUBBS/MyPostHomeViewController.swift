@@ -38,6 +38,15 @@ class MyPostHomeViewController: WMPageController {
 //        self.navigationController?.navigationBar.shadowImage = nil
 ////        self.navigationController?.navigationBar.
 //    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//        fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
+//        fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .white), for: .default)
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
+//        
+//    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
