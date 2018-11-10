@@ -32,7 +32,7 @@ class NewUserInfoTableViewCell: UITableViewCell {
         avatarView = avatarImageView
 
         let avatarHeight: CGFloat = 70
-        avatarView.layer.cornerRadius = avatarHeight/2
+        avatarView.layer.cornerRadius = avatarHeight/2 + 4
         avatarView.layer.borderWidth = 1
         avatarView.layer.borderColor = UIColor.white.cgColor
         avatarView.layer.masksToBounds = true

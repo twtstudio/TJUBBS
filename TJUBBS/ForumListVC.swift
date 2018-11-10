@@ -13,8 +13,6 @@ import Kingfisher
 import SnapKit
 import PiwikTracker
 
-/* Layout gloable varible */
-//定义屏幕的宽度和高度
 
 class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 

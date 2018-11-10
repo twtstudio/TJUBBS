@@ -17,14 +17,19 @@ class MyPostHomeViewController: WMPageController {
     convenience init() {
         self.init(viewControllerClasses: [MyThreadsViewController.self, MyPostsViewController.self], andTheirTitles: ["我的主题", "我的回复"])
         self.title = "我的发布"
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        let titleLabel = UILabel(text: "我的发布", color: .black, fontSize: 16, weight: UIFontWeightBold)
+        self.navigationItem.titleView = titleLabel
+
+        
         UIApplication.shared.statusBarStyle = .lightContent
         // customization for pageController
         pageAnimatable = true
         titleSizeSelected = 16.0
         titleSizeNormal = 15.0
         menuViewStyle = .line
-        titleColorSelected = .white
-        titleColorNormal = .white
+        titleColorSelected = .black
+        titleColorNormal = .black
         menuItemWidth = self.view.frame.size.width/2
         bounces = true
         //        menuHeight = 44;
@@ -52,15 +57,15 @@ class MyPostHomeViewController: WMPageController {
 
         fooNavigationBarImage = self.navigationController?.navigationBar.backgroundImage(for: .default)
         fooNavigationBarShadowImage = self.navigationController?.navigationBar.shadowImage
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .white), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
 
     }
 
     override func viewDidLoad() {
         hidesBottomBarWhenPushed = true
-        menuBGColor = .BBSBlue
-        progressColor = .yellow
+        menuBGColor = .white
+        progressColor = .black
         // 把返回换成空白
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
 
