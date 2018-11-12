@@ -128,9 +128,7 @@ extension UserInfoViewController: UITableViewDataSource {
         }
     }
 
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return screenSize.height*(150/1920)
-//    }
+
 
 }
 

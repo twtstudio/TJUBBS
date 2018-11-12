@@ -36,6 +36,10 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        //如果不加这两个方法，从个人中心退回来的时候就会NavigationBar和TabBar就会消失
+        self.navigationController?.isNavigationBarHidden = false
+        self.tabBarController?.tabBar.isHidden = false
+        
         if BBSUser.shared.isVisitor == false {
             //需要加游客访问的接口
         }
@@ -165,8 +169,9 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         switch indexPath {
             
         case IndexPath(row: 0, section: 0):
-            let detailVC = NewPersonalViewController()
-            self.navigationController?.pushViewController(detailVC, animated: true)
+            let detailVC = SelfPersonalViewController()
+        self.navigationController?.pushViewController(detailVC, animated: true)
+
         case IndexPath(row: 0, section: 2):
             let detailVC = FavorateViewController()
             self.navigationController?.pushViewController(detailVC, animated: true)
@@ -180,6 +185,8 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             break
         }
     }
+  
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return detailArray.count
     }
