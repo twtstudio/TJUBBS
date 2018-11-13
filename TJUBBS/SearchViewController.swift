@@ -201,7 +201,7 @@ extension SearchViewController: UITableViewDataSource {
             cell.initUI(thread: data)
             cell.boardButton.isHidden = true
             cell.boardButton.addTarget { _ in
-                let boardVC = ThreadListController(bid: data.boardID)
+                let boardVC = ThreadListController(bid: data.boardID, boardName: data.boardName)
                 self.navigationController?.pushViewController(boardVC, animated: true)
             }
             if data.anonymous == 0 { // exclude anonymous user

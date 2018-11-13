@@ -56,7 +56,6 @@ class MessageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         //        guard msgList.count != 0 else {
         //            let noDataLabel = UILabel(text: "没有消息哦～", color: .gray, fontSize: 20)
         //            view.addSubview(noDataLabel)

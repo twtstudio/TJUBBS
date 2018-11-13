@@ -119,6 +119,7 @@ class ForumListTableViewCell: UITableViewCell {
             }
         }
     }
+    
     func boardButtonTapped(sender: UIButton) {
         print(sender.tag)
         buttonTapped?(sender.tag)

@@ -15,7 +15,7 @@ import PiwikTracker
 
 class ThreadListController: UIViewController {
 
-    var tableView: UITableView?
+    var tableView: UITableView = UITableView(frame: .zero, style: .grouped)
     var board: BoardModel?
     var threadList: [ThreadModel] = [] {
         didSet {
@@ -38,20 +38,36 @@ class ThreadListController: UIViewController {
         }
     }
     var bid: Int = 0
+    var boardName: String = ""
 
     convenience init(board: BoardModel?) {
         self.init()
         self.board = board
+<<<<<<< HEAD
         view.backgroundColor = .lightGray
+=======
+        UIApplication.shared.statusBarStyle = .lightContent
+>>>>>>> Usable ranklist in homepage
         self.hidesBottomBarWhenPushed = true
     }
 
     convenience init(bid: Int) {
         self.init()
+<<<<<<< HEAD
         view.backgroundColor = .lightGray
+=======
+        UIApplication.shared.statusBarStyle = .lightContent
+>>>>>>> Usable ranklist in homepage
         self.hidesBottomBarWhenPushed = true
         self.bid = bid
-//        refresh()
+    }
+    
+    convenience init(bid: Int, boardName: String) {
+        self.init()
+        UIApplication.shared.statusBarStyle = .lightContent
+        self.hidesBottomBarWhenPushed = true
+        self.bid = bid
+        self.boardName = boardName
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -60,30 +76,36 @@ class ThreadListController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: .zero, style: .grouped)
+        view.backgroundColor = .lightGray
 
         // 3D Touch
-        registerForPreviewing(with: self, sourceView: self.tableView!)
+        registerForPreviewing(with: self, sourceView: self.tableView)
 
-        view.addSubview(tableView!)
-        tableView?.snp.makeConstraints {
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints {
             make in
             make.top.equalToSuperview().offset(0)
             make.left.right.bottom.equalToSuperview()
         }
-        registerForPreviewing(with: self, sourceView: tableView!)
-        tableView?.register(PostCell.self, forCellReuseIdentifier: "postCell")
-        tableView?.delegate = self
-        tableView?.dataSource = self
-        tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 300
-
+        registerForPreviewing(with: self, sourceView: tableView)
+        tableView.register(PostCell.self, forCellReuseIdentifier: "postCell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 300
+        var titleLabel = UILabel()
+        
+        let name = board?.name ?? boardName
+        titleLabel = UILabel(text: name, color: .black, fontSize: 18, weight: UIFontWeightMedium)
+        
+        self.navigationItem.titleView = titleLabel
+        
         // 把返回换成空白
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
 
         //TODO: put this in view did load
-//        self.tableView?.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
+//        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
 
         let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
         var refreshingImages = [UIImage]()
@@ -95,11 +117,11 @@ class ThreadListController: UIViewController {
         header?.stateLabel.isHidden = true
         header?.lastUpdatedTimeLabel.isHidden = true
         header?.setImages(refreshingImages, for: .pulling)
-        tableView?.mj_header = header
+        tableView.mj_header = header
 
-        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
-        //self.tableView?.mj_footer.isAutomaticallyHidden = true
-        self.tableView?.mj_header.beginRefreshing()
+        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        //self.tableView.mj_footer.isAutomaticallyHidden = true
+        self.tableView.mj_header.beginRefreshing()
 
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
@@ -107,22 +129,7 @@ class ThreadListController: UIViewController {
         self.navigationItem.titleView = titleLabel
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
-
     func addButtonTapped() {
-
         guard BBSUser.shared.token != nil else {
             let alert = UIAlertController(title: "请先登录", message: "BBS需要登录才能发布消息", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -184,16 +191,21 @@ extension ThreadListController {
     func refresh() {
         self.curPage = 0
         BBSJarvis.getThreadList(boardID: board?.id ?? bid, page: 0, failure: { _ in
-                if (self.tableView?.mj_header.isRefreshing)! {
-                    self.tableView?.mj_header.endRefreshing()
+                if self.tableView.mj_header.isRefreshing {
+                    self.tableView.mj_header.endRefreshing()
                 }
         }) {
             dict in
             if let data = dict["data"] as? [String: Any],
                 let board = data["board"] as? [String: Any],
                 let threads = data["thread"] as? [[String: Any]] {
+<<<<<<< HEAD
                 if (self.tableView?.mj_header.isRefreshing)! {
                     self.tableView?.mj_header.endRefreshing()
+=======
+                if self.tableView.mj_header.isRefreshing {
+                    self.tableView.mj_header.endRefreshing()
+>>>>>>> Usable ranklist in homepage
                 }
                 self.curPage = 0
                 let boardModel = Mapper<BoardModel>().map(JSON: board)
@@ -204,7 +216,7 @@ extension ThreadListController {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: threads)
             }
             DispatchQueue.main.async {
-                self.tableView?.reloadData()
+                self.tableView.reloadData()
             }
         }
     }
@@ -213,9 +225,10 @@ extension ThreadListController {
         self.curPage += 1
         BBSJarvis.getThreadList(boardID: board!.id, page: curPage, failure: { _ in
             HUD.flash(.labeledError(title: "网络错误...", subtitle: nil), onView: self.view, delay: 1.2, completion: nil)
-            if (self.tableView?.mj_footer.isRefreshing)! {
-                self.tableView?.mj_footer.endRefreshing()
+            if self.tableView.mj_footer.isRefreshing {
+                self.tableView.mj_footer.endRefreshing()
             }
+<<<<<<< HEAD
         }) {
             dict in
             if let data = dict["data"] as? [String: Any],
@@ -223,23 +236,29 @@ extension ThreadListController {
                 if (self.tableView?.mj_footer.isRefreshing)! {
                     self.tableView?.mj_footer.endRefreshing()
                 }
+=======
+        }, success: { dict in
+            self.tableView.mj_footer.endRefreshing()
+
+            if let data = dict["data"] as? [String: Any],
+                let threads = data["thread"] as? [[String: Any]] {
+>>>>>>> Usable ranklist in homepage
                 let newList = Mapper<ThreadModel>().mapArray(JSONArray: threads)
-                if newList.count == 0 {
-                    self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+                if newList.isEmpty {
+                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
                 }
                 self.threadList += newList
             }
             DispatchQueue.main.async {
-
-                self.tableView?.reloadData()
+                self.tableView.reloadData()
             }
-        }
+        })
     }
 }
 
 extension ThreadListController: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = tableView?.indexPathForRow(at: location), let cell = tableView?.cellForRow(at: indexPath) {
+        if let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) {
             previewingContext.sourceRect = cell.frame
             let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row])
             return detailVC

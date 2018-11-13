@@ -76,7 +76,11 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     func getForumList() {
         let group = DispatchGroup()
         
+<<<<<<< HEAD
         BBSJarvis.getForumList { dict in
+=======
+        BBSJarvis.getForumList{ dict in
+>>>>>>> Usable ranklist in homepage
             if let data = dict["data"] as? [[String: Any]] {
                 let forums = Mapper<ForumModel>().mapArray(JSONArray: data)
                 self.forumList = forums

@@ -92,14 +92,23 @@
 		8559B23D21966778004A0264 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8559B23C21966778004A0264 /* BBSAPI.swift */; };
 		8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51220FDD7130058EACC /* ForumListVC.swift */; };
 		8574A51520FDD72B0058EACC /* ForumListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51420FDD72B0058EACC /* ForumListTableViewCell.swift */; };
+<<<<<<< HEAD
 		8583682F2198F149004C74F8 /* SelfPersonalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583682E2198F149004C74F8 /* SelfPersonalViewController.swift */; };
 		858368312198F636004C74F8 /* SelfPersonPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858368302198F636004C74F8 /* SelfPersonPageView.swift */; };
 		85A97FE62195207C0059C8EC /* NewUserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE52195207C0059C8EC /* NewUserInfoViewController.swift */; };
 		85A97FE9219520C60059C8EC /* NewUserDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE7219520C60059C8EC /* NewUserDataTableViewCell.swift */; };
 		85A97FEA219520C60059C8EC /* NewUserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE8219520C60059C8EC /* NewUserInfoTableViewCell.swift */; };
+=======
+		C815FF9621869637009A8DD4 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C815FF9521869637009A8DD4 /* ActivityViewController.swift */; };
+		C8191630218FC8F300852E24 /* RanklistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C819162F218FC8F300852E24 /* RanklistTableViewCell.swift */; };
+		C8191632218FCDA700852E24 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8191631218FCDA700852E24 /* UserModel.swift */; };
+		C819163421906DBF00852E24 /* RankListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C819163321906DBF00852E24 /* RankListViewController.swift */; };
+>>>>>>> Usable ranklist in homepage
 		C82D091F20C782020078FD5E /* NewHomePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D091E20C782020078FD5E /* NewHomePageViewController.swift */; };
 		C82D092120C7834C0078FD5E /* HomePageThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */; };
+		C84E7C362175963400314FB5 /* HotThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84E7C352175963400314FB5 /* HotThreadTableViewCell.swift */; };
 		C86DBD162173833100830E95 /* HottestThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C86DBD152173833100830E95 /* HottestThreadViewController.swift */; };
+		C8745EBF2179D2A500001C2D /* AnnounceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8745EBE2179D2A500001C2D /* AnnounceViewController.swift */; };
 		C883CD3D20C9594900842A2A /* HomePageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883CD3C20C9594900842A2A /* HomePageHeaderView.swift */; };
 		C8CAC79320B64A9E0092BD7B /* piwiktracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C8CAC79020B64A9D0092BD7B /* piwiktracker.xcdatamodeld */; };
 		C8DCA2AB20FDAC90000C7656 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DCA2AA20FDAC90000C7656 /* Variables.swift */; };
@@ -244,9 +253,15 @@
 		85A97FE7219520C60059C8EC /* NewUserDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserDataTableViewCell.swift; sourceTree = "<group>"; };
 		85A97FE8219520C60059C8EC /* NewUserInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserInfoTableViewCell.swift; sourceTree = "<group>"; };
 		93952F21B48D2736B35318D9 /* Pods-BBSWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BBSWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-BBSWidget/Pods-BBSWidget.release.xcconfig"; sourceTree = "<group>"; };
+		C815FF9521869637009A8DD4 /* ActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
+		C819162F218FC8F300852E24 /* RanklistTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RanklistTableViewCell.swift; sourceTree = "<group>"; };
+		C8191631218FCDA700852E24 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		C819163321906DBF00852E24 /* RankListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankListViewController.swift; sourceTree = "<group>"; };
 		C82D091E20C782020078FD5E /* NewHomePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHomePageViewController.swift; sourceTree = "<group>"; };
 		C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageThreadTableViewCell.swift; sourceTree = "<group>"; };
+		C84E7C352175963400314FB5 /* HotThreadTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotThreadTableViewCell.swift; sourceTree = "<group>"; };
 		C86DBD152173833100830E95 /* HottestThreadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HottestThreadViewController.swift; sourceTree = "<group>"; };
+		C8745EBE2179D2A500001C2D /* AnnounceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnounceViewController.swift; sourceTree = "<group>"; };
 		C883CD3C20C9594900842A2A /* HomePageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageHeaderView.swift; sourceTree = "<group>"; };
 		C8CAC79120B64A9D0092BD7B /* piwiktracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = piwiktracker.xcdatamodel; sourceTree = "<group>"; };
 		C8CAC79220B64A9D0092BD7B /* piwiktracker v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "piwiktracker v2.xcdatamodel"; sourceTree = "<group>"; };
@@ -663,11 +678,23 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		C819163521990A1200852E24 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C8DCA2AA20FDAC90000C7656 /* Variables.swift */,
+				C8191631218FCDA700852E24 /* UserModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		C8CBB28021007EE000D6D5DB /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				C82D091E20C782020078FD5E /* NewHomePageViewController.swift */,
 				C86DBD152173833100830E95 /* HottestThreadViewController.swift */,
+				C8745EBE2179D2A500001C2D /* AnnounceViewController.swift */,
+				C815FF9521869637009A8DD4 /* ActivityViewController.swift */,
+				C819163321906DBF00852E24 /* RankListViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -676,7 +703,6 @@
 			isa = PBXGroup;
 			children = (
 				C8DCA2AC20FDC402000C7656 /* HomePage */,
-				C8DCA2AA20FDAC90000C7656 /* Variables.swift */,
 			);
 			name = BBSV3;
 			sourceTree = "<group>";
@@ -684,6 +710,7 @@
 		C8DCA2AC20FDC402000C7656 /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				C819163521990A1200852E24 /* Model */,
 				C8CBB28021007EE000D6D5DB /* Controller */,
 				C8DCA2AD20FDC40B000C7656 /* View */,
 			);
@@ -696,6 +723,8 @@
 				C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */,
 				C883CD3C20C9594900842A2A /* HomePageHeaderView.swift */,
 				C8DCA2AE20FDC495000C7656 /* TimerScrollerView.swift */,
+				C84E7C352175963400314FB5 /* HotThreadTableViewCell.swift */,
+				C819162F218FC8F300852E24 /* RanklistTableViewCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1035,12 +1064,14 @@
 				36E9AF8820ADC2E500E77645 /* NewPersonalViewController.swift in Sources */,
 				36C58A381F0A26610055F7F6 /* FakeTextFieldView.swift in Sources */,
 				68B5A5281EB7305B00968FFD /* MainTabBarController.swift in Sources */,
+				C815FF9621869637009A8DD4 /* ActivityViewController.swift in Sources */,
 				36DDCA031EC0682E00E3AB63 /* ForumListController.swift in Sources */,
 				C86DBD162173833100830E95 /* HottestThreadViewController.swift in Sources */,
 				36D0BC8B1EFE6B5D00265D8B /* Metadata.swift in Sources */,
 				36E9AF8720ADC2E500E77645 /* HHUserDetailViewController.swift in Sources */,
 				6849ABBF1EC897B200042B5F /* EliteThreadViewController.swift in Sources */,
 				36D0BC8D1EFE6D1700265D8B /* ChatDetailViewController.swift in Sources */,
+				C8191632218FCDA700852E24 /* UserModel.swift in Sources */,
 				36C461A21F05379E0002C0B5 /* EditDetailViewController.swift in Sources */,
 				36D0BC891EFE6AA600265D8B /* UserCell.swift in Sources */,
 				8559B23D21966778004A0264 /* BBSAPI.swift in Sources */,
@@ -1057,9 +1088,11 @@
 				6826D7431EB5F561000F520B /* ClassExtensions.swift in Sources */,
 				361A30AD1F000DA000DDF11C /* MarkdownParser.swift in Sources */,
 				C883CD3D20C9594900842A2A /* HomePageHeaderView.swift in Sources */,
+				C8191630218FC8F300852E24 /* RanklistTableViewCell.swift in Sources */,
 				68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */,
 				6884B00F1EDAA77800FEA9BD /* GuideViewController.swift in Sources */,
 				68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */,
+				C819163421906DBF00852E24 /* RankListViewController.swift in Sources */,
 				6826D7451EB604F0000F520B /* AuthenticateViewController.swift in Sources */,
 				36DA59271EC1E1E700B56F07 /* ThreadModel.swift in Sources */,
 				36636FEA1EC7723200C45CB8 /* ImageDetailViewController.swift in Sources */,
@@ -1067,6 +1100,11 @@
 				6826D7471EB61496000F520B /* TextInputCell.swift in Sources */,
 				36D0BC851EFE5B4800265D8B /* FriendsListController.swift in Sources */,
 				68E4ED771EC59D5F0067DA35 /* ForumModel.swift in Sources */,
+<<<<<<< HEAD
+=======
+				689A0D2D1EDDF97400919341 /* BBSAPI.swift in Sources */,
+				C8745EBF2179D2A500001C2D /* AnnounceViewController.swift in Sources */,
+>>>>>>> Usable ranklist in homepage
 				36D21F411EB7171D00677534 /* InputItem.swift in Sources */,
 				8583682F2198F149004C74F8 /* SelfPersonalViewController.swift in Sources */,
 				68B683491EC1F24600F7A0BF /* MessageDetailViewController.swift in Sources */,
@@ -1084,6 +1122,7 @@
 				363D07B61F0FDF0B00F0EC97 /* BlackListViewController.swift in Sources */,
 				3659B5841F4ED91200B65D13 /* SetFontSizeViewController.swift in Sources */,
 				36DCA44D1F47404F007643A3 /* TodayViewController.swift in Sources */,
+				C84E7C362175963400314FB5 /* HotThreadTableViewCell.swift in Sources */,
 				C82D091F20C782020078FD5E /* NewHomePageViewController.swift in Sources */,
 				68B6834D1EC200D800F7A0BF /* MyPostHomeViewController.swift in Sources */,
 				68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */,

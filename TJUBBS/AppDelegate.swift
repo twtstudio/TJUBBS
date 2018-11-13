@@ -35,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     BBSJarvis.getAvatar(success: { image in
                         BBSUser.shared.avatar = image
                     }, failure: { _ in })
+                    UserDefaults.standard.set(true, forKey: "noJobMode")
                     let tabBarVC = MainTabBarController(para: 1)
                     tabBarVC.modalTransitionStyle = .crossDissolve
                     window.rootViewController = tabBarVC

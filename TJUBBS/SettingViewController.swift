@@ -13,7 +13,7 @@ class SettingViewController: UIViewController {
     let screenFrame = UIScreen.main.bounds
     var tableView: UITableView?
 //    var contentArray = ["黑名单", "公开个人资料", "字体设置", "My Posts"]
-    var contentArray = ["黑名单", "公开个人资料", "字体设置"]
+    var contentArray = ["黑名单", "公开个人资料", "字体设置", "我不想工作！"]
     //FIX ME: should initUI in init or viewDidLoad
 //    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 //        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -65,11 +65,11 @@ extension SettingViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            if indexPath.row != 1 {
+            if indexPath.row != 1 && indexPath.row != 3{
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
                 cell.textLabel?.text = contentArray[indexPath.row]
                 return cell
-            } else {
+            } else if indexPath.row == 2 {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
                 cell.textLabel?.text = contentArray[indexPath.row]
                 let switchButton = UISwitch()
@@ -80,6 +80,24 @@ extension SettingViewController: UITableViewDataSource {
                     make.right.equalToSuperview().offset(-16)
                     make.centerY.equalToSuperview()
                 }
+                return cell
+            } else {
+                let cell = UITableViewCell(style: .default, reuseIdentifier: "ID")
+                cell.textLabel?.text = contentArray[indexPath.row]
+                let noWorkSwitchButton = UISwitch()
+                cell.contentView.addSubview(noWorkSwitchButton)
+                noWorkSwitchButton.onTintColor = UIColor.BBSBlue
+                noWorkSwitchButton.snp.makeConstraints {
+                    make in
+                    make.right.equalToSuperview().offset(-16)
+                    make.centerY.equalToSuperview()
+                }
+                if UserDefaults.standard.bool(forKey: "noJobMode") {
+                    noWorkSwitchButton.isOn = true
+                } else {
+                    noWorkSwitchButton.isOn = false
+                }
+                noWorkSwitchButton.addTarget(self, action: #selector(noWorkModeOn), for: .valueChanged)
                 return cell
             }
         } else if indexPath.section == 1 {
@@ -127,6 +145,16 @@ extension SettingViewController: UITableViewDelegate {
 //            }
             self.present(loginNC, animated: true, completion: nil)
         default: break
+        }
+    }
+}
+
+extension SettingViewController {
+    @objc func noWorkModeOn() {
+        if UserDefaults.standard.bool(forKey: "noJobMode") {
+            UserDefaults.standard.set(true, forKey: "noJobMode")
+        } else {
+            UserDefaults.standard.set(false, forKey: "noJobMode")
         }
     }
 }

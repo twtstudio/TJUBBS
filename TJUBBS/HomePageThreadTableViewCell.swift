@@ -13,7 +13,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
 
     let screenSize = UIScreen.main.bounds.size
     var thread: ThreadModel?
-    var titleLabel: UILabel = UILabel(text: "", color: .black, fontSize: 21, weight: UIFontWeightLight)
+    var titleLabel: UILabel = UILabel(text: "", color: .black, fontSize: 19, weight: UIFontWeightLight)
     var nameLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 16, weight: UIFontWeightLight)
     var timeLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 13, weight: UIFontWeightLight)
     var likedLabel: UILabel = UILabel(text: "", color: .darkGray, fontSize: 14, weight: UIFontWeightLight)
@@ -81,7 +81,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
         //TitleLabel
         titleLabel.text = thread.title
         titleLabel.numberOfLines = 0
-        titleLabel.font = UIFont.flexibleFont(ofBaseSize: 19)
+        titleLabel.font = UIFont.flexibleFont(ofBaseSize: 17)
         titleLabel.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-16)
             make.top.equalTo(nameLabel.snp.bottom).offset(8)
@@ -92,7 +92,6 @@ class HomePageThreadTableViewCell: UITableViewCell {
         //replyImageView
         replyImageView.image = UIImage(named: "评论")
         replyImageView.snp.makeConstraints { make in
-
             make.bottom.equalToSuperview().offset(-6)
             make.left.equalTo(titleLabel)
             make.height.equalTo(24)

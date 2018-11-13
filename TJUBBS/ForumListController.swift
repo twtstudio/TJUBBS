@@ -125,7 +125,7 @@ class ForumCoverCell: UICollectionViewCell {
             make.center.equalToSuperview()
         }
         titlelabel.font = UIFont.systemFont(ofSize: 20)
-        titlelabel.textColor = UIColor.white
+        titlelabel.textColor = UIColor.black
         titlelabel.sizeToFit()
     }
 

@@ -14,11 +14,28 @@ import MJRefresh
 import PiwikTracker
 
 class NewHomePageViewController: UIViewController {
+<<<<<<< HEAD
     var tableView = UITableView(frame: .zero, style: .grouped)
+=======
+    
+    var tabBar = MainTabBarController()
+    var tableView: UITableView?
+>>>>>>> Usable ranklist in homepage
     var threadList: [ThreadModel] = [] {
         didSet {
             threadList = threadList.filter { element in
                 return BBSUser.shared.blackList.keys.contains(element.authorName) == false
+            }
+            
+            if(UserDefaults.standard.bool(forKey: "noJobMode") == true) {
+                threadList = threadList.filter { element in
+                    for _ in threadList {
+                        if element.boardName == "招聘信息" || element.boardName == "找工作" || element.boardName == "二手市场" {
+                            return false
+                        }
+                    }
+                    return true
+                }
             }
         }
     }
@@ -53,8 +70,34 @@ class NewHomePageViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
 
+<<<<<<< HEAD
         registerForPreviewing(with: self, sourceView: tableView)
         tableView.snp.makeConstraints { make in
+=======
+        headerView.eliteButton.addTarget { _ in
+            let hotVC = HottestThreadViewController()
+            self.navigationController?.pushViewController(hotVC, animated: true)
+        }
+        
+        headerView.announceButton.addTarget { _ in
+            let announceVC = AnnounceViewController()
+            self.navigationController?.pushViewController(announceVC, animated: true)
+        }
+        
+        headerView.activityButton.addTarget { _ in
+            let activityVC = ActivityViewController()
+            self.navigationController?.pushViewController(activityVC, animated: true)
+        }
+        
+        headerView.rankButton.addTarget { _ in
+            let rankListVC = RankListViewController()
+            self.navigationController?.pushViewController(rankListVC, animated: true)
+        }
+        
+        
+        registerForPreviewing(with: self, sourceView: tableView!)
+        tableView?.snp.makeConstraints { make in
+>>>>>>> Usable ranklist in homepage
             make.top.equalToSuperview()
             make.left.right.bottom.equalToSuperview()
         }
@@ -85,6 +128,14 @@ class NewHomePageViewController: UIViewController {
         tableView.mj_header = header
 
         self.refresh()
+<<<<<<< HEAD
+=======
+        self.tabBar.hidesBottomBarWhenPushed = false
+        
+        let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(load))
+        footer?.setTitle("还没看过瘾？去分区看看吧~", for: .noMoreData)
+        self.tableView?.mj_footer = footer
+>>>>>>> Usable ranklist in homepage
     }
 
     override func didReceiveMemoryWarning() {
@@ -100,10 +151,6 @@ class NewHomePageViewController: UIViewController {
             self.automaticallyAdjustsScrollViewInsets = false
             // Fallback on earlier versions
         }
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-//        self.navigationController?.navigationBar.shadowImage = UIImage()
-//        self.navigationController?.navigationBar.isTranslucent = true
-//        self.navigationController?.navigationBar.hideBottomHairline()
         PiwikTracker.shared.dispatcher.setUserAgent?(DeviceStatus.userAgent)
         PiwikTracker.shared.appName = "bbs.tju.edu.cn"
         PiwikTracker.shared.userID = "[\(BBSUser.shared.uid ?? 0)] \"\(BBSUser.shared.username ?? "unknown")\""
@@ -112,9 +159,7 @@ class NewHomePageViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        //tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.always
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .BBSBlue), for: .default)
         self.navigationController?.navigationBar.showBottomHairline()
     }
 
@@ -148,6 +193,30 @@ extension NewHomePageViewController {
                 self.tableView.mj_header.endRefreshing()
             }
             self.tableView.reloadData()
+        })
+    }
+    
+    func load() {
+        curPage += 1
+        
+        BBSJarvis.getIndex(page: curPage, failure: { _ in
+            self.curPage -= 1
+            if (self.tableView?.mj_footer.isRefreshing)! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+        }, success: { dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                let newList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+                if newList.count > 0 {
+                    self.threadList += newList
+                } else {
+                    self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+                }
+            }
+            if (self.tableView?.mj_footer.isRefreshing)! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+            self.tableView?.reloadData()
         })
     }
 }
@@ -199,7 +268,7 @@ extension NewHomePageViewController: UITableViewDataSource {
         cell.loadModel(thread: data)
         cell.boardButton.isHidden = false
         cell.boardButton.addTarget { _ in
-            let boardVC = ThreadListController(bid: data.boardID)
+            let boardVC = ThreadListController(bid: data.boardID, boardName: data.boardName)
             self.navigationController?.pushViewController(boardVC, animated: true)
         }
         if data.anonymous == 0 { // exclude anonymous user

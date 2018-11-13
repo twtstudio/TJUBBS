@@ -92,7 +92,7 @@ class ThreadDetailViewController: UIViewController {
         titleLabel.textAlignment = .center
         titleLabel.text = title as String
         titleLabel.font = UIFont.systemFont(ofSize: 14)
-        titleLabel.textColor = .white
+        titleLabel.textColor = .black
         titleLabel.frame = CGRect(x: 0, y: 0, width: width, height: titleSize.height)
         titleLabel.numberOfLines = 1
         centerTextView.addSubview(titleLabel)
@@ -291,12 +291,12 @@ class ThreadDetailViewController: UIViewController {
                 width = min(titleSize.width, UIScreen.main.bounds.width-125)
                 height = titleSize.height
                 x = (UIScreen.main.bounds.width - width)/2
-                centerTextView.frame = CGRect(x: x, y: y, width: width, height: height)
+                centerTextView.frame = CGRect(x: x, y: 64, width: width, height: height)
                 titleLabel.tag = 1
                 titleLabel.textAlignment = .center
                 titleLabel.text = title as String
                 titleLabel.font = UIFont.systemFont(ofSize: 14)
-                titleLabel.textColor = .white
+                titleLabel.textColor = .black
                 titleLabel.frame = CGRect(x: 0, y: 0, width: width, height: titleSize.height)
                 titleLabel.numberOfLines = 1
             }
@@ -895,8 +895,8 @@ extension ThreadDetailViewController: UIScrollViewDelegate {
 
         if offsetY > headerHeight*ratio && offsetY < headerHeight {
             self.navigationItem.titleView = centerTextView
-            let progress = offsetY - headerHeight*ratio
-            self.centerTextView.y = 10 + titleHeight - titleHeight*(progress/(headerHeight*(1-ratio)))
+            let progress = offsetY - headerHeight*ratio 
+            self.centerTextView.y = titleHeight - titleHeight*(progress/(headerHeight*(1-ratio)))
             centerTextView.alpha = progress/headerHeight < 0.17 ? 0 : progress/(headerHeight*(1-ratio))
         }
 

@@ -75,7 +75,7 @@ class HomePageHeaderView: UIView {
         announceButton.setBackgroundImage(annonceBtnImage, for: .normal)
         announceButton.snp.makeConstraints { make in
             make.centerX.equalTo(baseWidth)
-            make.bottom.equalTo(container).offset(bottomHeight)
+            make.centerY.equalToSuperview()
             make.height.equalTo(buttonSize)
             make.width.equalTo(buttonSize)
         }
@@ -84,7 +84,7 @@ class HomePageHeaderView: UIView {
         activityButton.setBackgroundImage(activityBtnImage, for: .normal)
         activityButton.snp.makeConstraints { make in
             make.centerX.equalTo(baseWidth * 3)
-            make.bottom.equalTo(container).offset(bottomHeight)
+            make.centerY.equalToSuperview()
             make.height.equalTo(buttonSize)
             make.width.equalTo(buttonSize)
         }
@@ -93,7 +93,7 @@ class HomePageHeaderView: UIView {
         eliteButton.setBackgroundImage(eliteBtnImage, for: .normal)
         eliteButton.snp.makeConstraints { make in
             make.centerX.equalTo(baseWidth * 5)
-            make.bottom.equalTo(container).offset(bottomHeight)
+            make.centerY.equalToSuperview()
             make.height.equalTo(buttonSize)
             make.width.equalTo(buttonSize)
         }
@@ -102,7 +102,7 @@ class HomePageHeaderView: UIView {
         rankButton.setBackgroundImage(rankBtnImage, for: .normal)
         rankButton.snp.makeConstraints { make in
             make.centerX.equalTo(baseWidth * 7)
-            make.bottom.equalTo(container).offset(bottomHeight)
+            make.centerY.equalToSuperview()
             make.height.equalTo(buttonSize)
             make.width.equalTo(buttonSize)
         }

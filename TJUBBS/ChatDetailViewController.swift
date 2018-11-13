@@ -75,9 +75,9 @@ class ChatDetailViewController: SLKTextViewController {
 //        leftButton.tintColor = .gray
         rightButton.setTitle("发送", for: .normal)
 
-//        session.messages = session.messages
-//        title = session.palName
-        self.title = pal?.nickname
+        let viewTitle = pal?.nickname ?? ""
+        let titleLabel = UILabel(text: viewTitle, color: .black, fontSize: 18, weight: UIFontWeightMedium)
+        self.navigationItem.titleView = titleLabel
 
         tableView?.separatorColor = .clear
 

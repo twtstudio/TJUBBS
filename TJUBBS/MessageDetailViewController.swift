@@ -23,11 +23,12 @@ class MessageDetailViewController: UIViewController {
         view.backgroundColor = .lightGray
         UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
-        self.title = "详情"
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let titleLabel = UILabel(text: "详情", color: .black, fontSize: 18, weight: UIFontWeightMedium)
+        self.navigationItem.titleView = titleLabel
         tableView = UITableView(frame: .zero, style: .grouped)
         self.navigationController?.navigationBar.isTranslucent = false
         self.tableView?.contentInset.top = -35

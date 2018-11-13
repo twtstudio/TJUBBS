@@ -108,10 +108,26 @@ struct BBSJarvis {
         BBSBeacon.request(withType: .get, url: BBSAPI.index(page: page), parameters: nil, failure: failure, success: success)
     }
 
-    static func getHot(failure: ((Error) -> Void)? = nil, success: @escaping ([String: Any]) -> Void) {
+    static func getHot(success: @escaping ([String: Any]) -> Void, failure: ((Error) -> Void)? = nil) {
         BBSBeacon.request(withType: .get, url: BBSAPI.index, parameters: nil, failure: failure, success: success)
     }
+    
+    static func getAnnouce(success: @escaping ([String: Any]) -> Void, failure: ((Error) -> Void)? = nil) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.announce, parameters: nil, failure: failure, success: success)
+    }
+    
+    static func getActivity(success: @escaping ([String: Any]) -> Void, failure: ((Error) -> Void)? = nil) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.event, parameters: nil, failure: failure, success: success)
+    }
 
+    static func getWeekRankList(success: @escaping ([String: Any]) -> Void, failure: ((Error) -> Void)? = nil) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.monthRankList, parameters: nil, failure: failure, success: success)
+    }
+    
+    static func getMonthRankList(success: @escaping ([String: Any]) -> Void, failure: ((Error) -> Void)? = nil) {
+        BBSBeacon.request(withType: .get, url: BBSAPI.monthRankList, parameters: nil, failure: failure, success: success)
+    }
+    
     static func getThread(threadID: Int, page: Int, failure: ((Error) -> Void)? = nil, success: @escaping ([String: Any]) -> Void) {
         BBSBeacon.request(withType: .get, url: BBSAPI.thread(threadID: threadID, page: page), parameters: nil, failure: failure, success: success)
     }
