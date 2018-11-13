@@ -42,6 +42,10 @@ class HHUserDetailViewController: UIViewController {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
+//        self.navigationController?.isNavigationBarHidden = true
+        self.navigationItem.hidesBackButton = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self as? UIGestureRecognizerDelegate
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -106,6 +110,7 @@ class HHUserDetailViewController: UIViewController {
         registerForPreviewing(with: self, sourceView: self.tableView)
         view.backgroundColor = .lightGray
         self.hidesBottomBarWhenPushed = true
+        self.navigationItem.backBarButtonItem?.title = ""
     }
 
     func loadModel() {
@@ -147,20 +152,6 @@ class HHUserDetailViewController: UIViewController {
         }
         self.tableView.addSubview(headerView)
 
-//        //header and footer of MJRefresh
-//        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-//        self.tableView!.mj_header = header
-//        header?.ignoredScrollViewContentInsetTop = UIScreen.main.bounds.height * 0.65
-//        var refreshingImages = [UIImage]()
-//        for i in 1...6 {
-//            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-//            refreshingImages.append(image!)
-//        }
-//        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
-//        header?.stateLabel.isHidden = true
-//        header?.lastUpdatedTimeLabel.isHidden = true
-//        header?.setImages(refreshingImages, for: .pulling)
-
         self.headerView.avatarViewBackground.contentMode = .scaleAspectFill
         self.headerView.blackGlassView.contentMode = .scaleAspectFill
         self.headerView.avatarViewBackground.clipsToBounds = true
@@ -172,14 +163,6 @@ class HHUserDetailViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-//    //下拉刷新
-//    func refresh() {
-//        // 结束刷新
-//        if self.tableView.mj_header.isRefreshing {
-//            self.tableView.mj_header.endRefreshing()
-//        }
-//    }
 
     func loadThread() {
         let page = 0
@@ -285,28 +268,30 @@ extension HHUserDetailViewController: UIViewControllerPreviewingDelegate {
     }
 }
 
-//extension HHUserDetailViewController: UIScrollViewDelegate {
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let y = -scrollView.contentOffset.y
-//        guard y > 0 else {
-//            tableView.y = UIScreen.main.bounds.height * 0.65 + 30 + y
-//            return
-//        }
-//        let ratio = self.view.width/(UIScreen.main.bounds.height * 0.65)
-//        let height = UIScreen.main.bounds.height * 0.65 + y
-//        let width = height*ratio
-//        headerView.avatarViewBackground.snp.remakeConstraints { make in
-//            make.bottom.equalToSuperview()
-//            make.width.equalTo(width)
-//            make.centerX.equalTo(headerView.avatarView)
-//            make.height.equalTo(height+1)
-//        }
-//        headerView.blackGlassView.snp.remakeConstraints { make in
-//            make.bottom.equalToSuperview()
-//            make.centerX.equalTo(headerView.avatarView)
-//            make.width.equalTo(width)
-//            make.height.equalTo(height+1)
-//        }
-//        tableView.y = height + 30
-//    }
-//}
+extension HHUserDetailViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offY = scrollView.contentOffset.y
+        let topViewHeight = UIScreen.main.bounds.height * 0.65
+        let y = -offY - topViewHeight
+        guard y > 0 else {
+            return
+        }
+        let ratio = self.view.width/(topViewHeight)
+        let height = topViewHeight + y
+        let width = height * ratio
+        headerView.avatarViewBackground.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().offset(-screenHeight * 0.12)
+            make.width.equalTo(width)
+            make.centerX.equalTo(headerView.avatarView)
+            make.height.equalTo(height+1)
+            make.top.equalToSuperview().offset(-y)
+        }
+        headerView.blackGlassView.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().offset(-screenHeight * 0.12)
+            make.centerX.equalTo(headerView.avatarView)
+            make.width.equalTo(width)
+            make.height.equalTo(height+1)
+            make.top.equalToSuperview().offset(-y)
+        }
+    }
+}

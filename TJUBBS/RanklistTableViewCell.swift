@@ -47,6 +47,7 @@ class RanklistTableViewCell: UITableViewCell {
         avatarImageView.layer.cornerRadius = Variables.WIDTH*(1/8)/2
         avatarImageView.clipsToBounds = true
         
+        rankLabel.font = UIFont.flexibleFont(ofBaseSize: 23)
         rankLabel.snp.makeConstraints { make in
             make.width.height.equalTo(30)
             make.left.equalToSuperview().offset(20)
@@ -55,6 +56,7 @@ class RanklistTableViewCell: UITableViewCell {
         
         nameLabel.text = "\(user.name)"
         nameLabel.sizeToFit()
+        totalPoint.font = UIFont.flexibleFont(ofBaseSize: 15)
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(5)
             make.left.equalTo(avatarImageView.snp.right).offset(10)
@@ -62,6 +64,7 @@ class RanklistTableViewCell: UITableViewCell {
         
         totalPoint.text = "总积分 \(user.totalPoints)"
         totalPoint.sizeToFit()
+        totalPoint.font = UIFont.flexibleFont(ofBaseSize: 15)
         totalPoint.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-5)
             make.top.equalTo(nameLabel.snp.bottom).offset(5)
@@ -69,6 +72,7 @@ class RanklistTableViewCell: UITableViewCell {
         }
         
         getPointLabel.text = "\(user.getPoints)"
+        getPointLabel.font = UIFont.flexibleFont(ofBaseSize: 20)
         getPointLabel.sizeToFit()
         getPointLabel.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-30)
@@ -77,6 +81,7 @@ class RanklistTableViewCell: UITableViewCell {
         
         pointLabel.text = "月积分"
         pointLabel.sizeToFit()
+        pointLabel.font = UIFont.flexibleFont(ofBaseSize: 13)
         pointLabel.snp.makeConstraints{ make in
             make.centerY.equalTo(totalPoint.snp.centerY)
             make.centerX.equalTo(getPointLabel.snp.centerX)

@@ -18,7 +18,7 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
 
     //定义cell重用标志
     let reuStr: String = "reuStr"
-    var buttonHeight = Variables.screenWidth/8
+    var buttonHeight = Variables.WIDTH/8
     //每一个button定义为屏幕高度的八分之一，宽度为屏宽的四分之一
 
     //论坛名，论坛里有的板块
@@ -76,11 +76,7 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     func getForumList() {
         let group = DispatchGroup()
         
-<<<<<<< HEAD
         BBSJarvis.getForumList { dict in
-=======
-        BBSJarvis.getForumList{ dict in
->>>>>>> Usable ranklist in homepage
             if let data = dict["data"] as? [[String: Any]] {
                 let forums = Mapper<ForumModel>().mapArray(JSONArray: data)
                 self.forumList = forums

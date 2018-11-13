@@ -43,21 +43,13 @@ class ThreadListController: UIViewController {
     convenience init(board: BoardModel?) {
         self.init()
         self.board = board
-<<<<<<< HEAD
         view.backgroundColor = .lightGray
-=======
-        UIApplication.shared.statusBarStyle = .lightContent
->>>>>>> Usable ranklist in homepage
         self.hidesBottomBarWhenPushed = true
     }
 
     convenience init(bid: Int) {
         self.init()
-<<<<<<< HEAD
         view.backgroundColor = .lightGray
-=======
-        UIApplication.shared.statusBarStyle = .lightContent
->>>>>>> Usable ranklist in homepage
         self.hidesBottomBarWhenPushed = true
         self.bid = bid
     }
@@ -68,10 +60,6 @@ class ThreadListController: UIViewController {
         self.hidesBottomBarWhenPushed = true
         self.bid = bid
         self.boardName = boardName
-    }
-
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
     }
 
     override func viewDidLoad() {
@@ -125,8 +113,8 @@ class ThreadListController: UIViewController {
 
         // 右侧按钮
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        let titleLabel = UILabel(text: board?.name ?? "帖子", color: .black, fontSize: 16, weight: UIFontWeightBold)
-        self.navigationItem.titleView = titleLabel
+        let rightButtonTitleLabel = UILabel(text: board?.name ?? "帖子", color: .black, fontSize: 16, weight: UIFontWeightBold)
+        self.navigationItem.titleView = rightButtonTitleLabel
     }
 
     func addButtonTapped() {
@@ -199,13 +187,8 @@ extension ThreadListController {
             if let data = dict["data"] as? [String: Any],
                 let board = data["board"] as? [String: Any],
                 let threads = data["thread"] as? [[String: Any]] {
-<<<<<<< HEAD
-                if (self.tableView?.mj_header.isRefreshing)! {
-                    self.tableView?.mj_header.endRefreshing()
-=======
-                if self.tableView.mj_header.isRefreshing {
+                if (self.tableView.mj_header.isRefreshing) {
                     self.tableView.mj_header.endRefreshing()
->>>>>>> Usable ranklist in homepage
                 }
                 self.curPage = 0
                 let boardModel = Mapper<BoardModel>().map(JSON: board)
@@ -228,21 +211,11 @@ extension ThreadListController {
             if self.tableView.mj_footer.isRefreshing {
                 self.tableView.mj_footer.endRefreshing()
             }
-<<<<<<< HEAD
-        }) {
-            dict in
-            if let data = dict["data"] as? [String: Any],
-                let threads = data["thread"] as? [[String: Any]] {
-                if (self.tableView?.mj_footer.isRefreshing)! {
-                    self.tableView?.mj_footer.endRefreshing()
-                }
-=======
         }, success: { dict in
             self.tableView.mj_footer.endRefreshing()
 
             if let data = dict["data"] as? [String: Any],
                 let threads = data["thread"] as? [[String: Any]] {
->>>>>>> Usable ranklist in homepage
                 let newList = Mapper<ThreadModel>().mapArray(JSONArray: threads)
                 if newList.isEmpty {
                     self.tableView.mj_footer.endRefreshingWithNoMoreData()

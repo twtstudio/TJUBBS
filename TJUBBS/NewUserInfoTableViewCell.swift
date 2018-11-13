@@ -76,7 +76,7 @@ class NewUserInfoTableViewCell: UITableViewCell {
         }
         nameLabel.snp.makeConstraints { (make) -> Void in
             make.top.equalTo(contentView).offset(38)
-            make.left.equalTo(avatarView).offset(110)
+            make.left.equalTo(avatarView.snp.right).offset(10)
             make.width.equalTo(130)
             make.height.equalTo(36)
         }
@@ -96,7 +96,7 @@ class NewUserInfoTableViewCell: UITableViewCell {
             make.right.equalTo(contentView)
             make.centerY.equalTo(contentView.snp.centerY)
         }
-        nameLabel.font = UIFont(name: "Arial Hebrew", size: 30)
+        nameLabel.font = UIFont(name: "Arial Hebrew", size: 24)
         nameLabel.textAlignment = .left
         
         gradeLabel.textColor = .darkGray

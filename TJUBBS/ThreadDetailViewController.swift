@@ -126,7 +126,7 @@ class ThreadDetailViewController: UIViewController {
         super.viewDidLoad()
         //        self.title = thread?.title
         view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .lightContent
+        UIApplication.shared.statusBarStyle = .default
         self.hidesBottomBarWhenPushed = true
         view.addSubview(tableView)
         //        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))

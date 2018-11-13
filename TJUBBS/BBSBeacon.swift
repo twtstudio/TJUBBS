@@ -18,7 +18,6 @@ enum SessionType {
 }
 
 struct BBSBeacon {
-<<<<<<< HEAD
     static var authentication: String? {
         if let uid = BBSUser.shared.uid, let tokenStr = BBSUser.shared.token {
             return String(uid) + "|" + tokenStr
@@ -26,10 +25,6 @@ struct BBSBeacon {
             return nil
         }
     }
-
-=======
-    //TODO: change AnyObject to Any
->>>>>>> Usable ranklist in homepage
     static func request(withType type: HTTPMethod = .get, url: String, token: String? = nil, parameters: [String: String]?, failure: ((Error) -> Void)? = nil, success: (([String: Any]) -> Void)?) {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
@@ -51,9 +46,7 @@ struct BBSBeacon {
                 LoadingWrapper.shared.stopTimer?.invalidate()
                 LoadingWrapper.shared.startTimer = nil
                 switch response.result {
-                case .success:
-<<<<<<< HEAD
-                    guard let data = response.data else {
+                case .success:    guard let data = response.data else {
                         failure?(BBSError.custom("请求数据为空"))
                         return
                     }
@@ -78,31 +71,6 @@ struct BBSBeacon {
                             // TODO: present login controller
                             BBSUser.shared.token = nil
                             return
-=======
-                    if let data = response.data {
-                        do {
-                            let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                            if let dict = json as? [String: AnyObject] {
-                                if let err = dict["err"] as? Int, err == 0 {
-                                    success?(dict)
-                                } else {
-                                    if dict["data"] as? String == "无效的token" {
-                                        BBSUser.shared.token = nil
-//                                        HUD.flash(.labeledError(title: "登录过期😐 请重新登录", subtitle: nil), delay: 1.5)
-                                    } else {
-//                                        if BBSUser.shared.token != nil {
-                                            HUD.flash(.label(dict["data"] as? String), delay: 1.2)
-//                                        }
-                                    }
-                                    failure?(BBSError.custom)
-                                }
-                            }
-                        } catch let error {
-                            let errMsg = String(data: response.data!, encoding: .utf8)
-                            HUD.flash(.labeledError(title: errMsg, subtitle: nil), delay: 1.2)
-                            failure?(error)
-                            // log.error(error)/
->>>>>>> Usable ranklist in homepage
                         }
 
                         if let msg = dict["data"] as? String {
@@ -136,11 +104,8 @@ struct BBSBeacon {
                 case .failure(let error):
                     if let data = response.result.value {
                         if let dict = data as? [String: Any] {
-<<<<<<< HEAD
                             //                            log.errorMessage(dict["data"] as? String)/
-=======
-//                            log.errorMessage(dict["data"] as? String)/
->>>>>>> Usable ranklist in homepage
+
                             HUD.hide()
                             HUD.flash(.label(dict["data"] as? String), delay: 1.0)
                         }

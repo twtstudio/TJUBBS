@@ -11,7 +11,7 @@ import ObjectMapper
 
 class ForumListTableViewCell: UITableViewCell {
     //全局定义屏宽
-    let widthOfItemInCell = Variables.screenWidth / 4
+    let widthOfItemInCell = Variables.WIDTH / 4
 
     var modelButton = UIButton()
 
@@ -44,16 +44,16 @@ class ForumListTableViewCell: UITableViewCell {
             }
         }
         //定义相关变量，消除Magic Number
-        let heightOfCell = CGFloat(numButtonInStack) * Variables.screenWidth / 8
-        let imageCenterX = Variables.screenWidth / 8
-        let titleCenterX = Variables.screenWidth / 8
+        let heightOfCell = CGFloat(numButtonInStack) * Variables.WIDTH / 8
+        let imageCenterX = Variables.WIDTH / 8
+        let titleCenterX = Variables.WIDTH / 8
         let imageCenterY = heightOfCell / 2  - 15
         let titleCenterY = heightOfCell / 2  + 17
 
         contentView.frame = UIScreen.main.bounds
         numOfButtonInStack = numButtonInStack
 
-        modelButton = UIButton(frame: CGRect(x: 0, y: 0, width: Variables.screenWidth/4, height: CGFloat(numButtonInStack) * Variables.screenWidth / 8))
+        modelButton = UIButton(frame: CGRect(x: 0, y: 0, width: Variables.WIDTH/4, height: CGFloat(numButtonInStack) * Variables.WIDTH / 8))
 
         let myTitleLabel = UILabel(text: "\(forumName)")
         myTitleLabel.frame = CGRect(x: 0, y: 0, width: 64, height: 20)
@@ -92,7 +92,7 @@ class ForumListTableViewCell: UITableViewCell {
 
 
     func buttonLayout(numberOfButton: Int) {
-        let heightOfButton = Variables.screenWidth / 8
+        let heightOfButton = Variables.WIDTH / 8
         print("buttonLayout")
         for j in 1...3 {
             for i in 0 ..< numberOfButton {

@@ -47,13 +47,8 @@ class MainTabBarController: UITabBarController {
         messageVC.tabBarItem.tag = 2
 //        messageVC?.tabBarItem.badgeColor = .red
 
-<<<<<<< HEAD
 //        infoVC?.title = "个人中心"
         let infoNC = UINavigationController(rootViewController: infoVC)
-=======
-        infoVC = UserInfoViewController()
-        let infoNC = UINavigationController(rootViewController: infoVC!)
->>>>>>> Usable ranklist in homepage
         infoNC.tabBarItem = createBarItem(imageName: "mine")
         infoNC.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         setViewControllers([homepageNC, bbcNC, addNC, messageNC, infoNC], animated: true)

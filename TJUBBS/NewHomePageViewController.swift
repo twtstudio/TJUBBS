@@ -14,13 +14,8 @@ import MJRefresh
 import PiwikTracker
 
 class NewHomePageViewController: UIViewController {
-<<<<<<< HEAD
     var tableView = UITableView(frame: .zero, style: .grouped)
-=======
-    
-    var tabBar = MainTabBarController()
-    var tableView: UITableView?
->>>>>>> Usable ranklist in homepage
+
     var threadList: [ThreadModel] = [] {
         didSet {
             threadList = threadList.filter { element in
@@ -70,10 +65,6 @@ class NewHomePageViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
 
-<<<<<<< HEAD
-        registerForPreviewing(with: self, sourceView: tableView)
-        tableView.snp.makeConstraints { make in
-=======
         headerView.eliteButton.addTarget { _ in
             let hotVC = HottestThreadViewController()
             self.navigationController?.pushViewController(hotVC, animated: true)
@@ -95,9 +86,8 @@ class NewHomePageViewController: UIViewController {
         }
         
         
-        registerForPreviewing(with: self, sourceView: tableView!)
-        tableView?.snp.makeConstraints { make in
->>>>>>> Usable ranklist in homepage
+        registerForPreviewing(with: self, sourceView: tableView)
+        tableView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.left.right.bottom.equalToSuperview()
         }
@@ -128,14 +118,11 @@ class NewHomePageViewController: UIViewController {
         tableView.mj_header = header
 
         self.refresh()
-<<<<<<< HEAD
-=======
-        self.tabBar.hidesBottomBarWhenPushed = false
+//        self.tabBarItem.hidesBottomBarWhenPushed = false
         
         let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(load))
         footer?.setTitle("还没看过瘾？去分区看看吧~", for: .noMoreData)
-        self.tableView?.mj_footer = footer
->>>>>>> Usable ranklist in homepage
+        self.tableView.mj_footer = footer
     }
 
     override func didReceiveMemoryWarning() {
@@ -168,8 +155,10 @@ class NewHomePageViewController: UIViewController {
         searchVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(searchVC, animated: true)
     }
-
+    
 }
+
+    
 
 extension NewHomePageViewController {
     func refresh() {
@@ -201,8 +190,8 @@ extension NewHomePageViewController {
         
         BBSJarvis.getIndex(page: curPage, failure: { _ in
             self.curPage -= 1
-            if (self.tableView?.mj_footer.isRefreshing)! {
-                self.tableView?.mj_footer.endRefreshing()
+            if (self.tableView.mj_footer.isRefreshing) {
+                self.tableView.mj_footer.endRefreshing()
             }
         }, success: { dict in
             if let data = dict["data"] as? [[String: Any]] {
@@ -210,13 +199,13 @@ extension NewHomePageViewController {
                 if newList.count > 0 {
                     self.threadList += newList
                 } else {
-                    self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+                    self.tableView.mj_footer.endRefreshingWithNoMoreData()
                 }
             }
-            if (self.tableView?.mj_footer.isRefreshing)! {
-                self.tableView?.mj_footer.endRefreshing()
+            if (self.tableView.mj_footer.isRefreshing) {
+                self.tableView.mj_footer.endRefreshing()
             }
-            self.tableView?.reloadData()
+            self.tableView.reloadData()
         })
     }
 }

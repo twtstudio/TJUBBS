@@ -82,20 +82,6 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate{
         
         self.tableView?.addSubview(headerView)
         
-        //header and footer of MJRefresh
-        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        self.tableView!.mj_header = header
-        header?.ignoredScrollViewContentInsetTop = UIScreen.main.bounds.height * 0.65
-        var refreshingImages = [UIImage]()
-        for i in 1...6 {
-            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-            refreshingImages.append(image!)
-        }
-        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
-        header?.stateLabel.isHidden = true
-        header?.lastUpdatedTimeLabel.isHidden = true
-        header?.setImages(refreshingImages, for: .pulling)
-        
         self.headerView.avatarViewBackground.contentMode = .scaleAspectFill
         self.headerView.blackGlassView.contentMode = .scaleAspectFill
         self.headerView.avatarViewBackground.clipsToBounds = true
@@ -130,14 +116,6 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate{
         //question
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
-    
-    //下拉刷新
-    @objc func refresh() {
-        self.tableView?.reloadData()
-        // 结束刷新
-        self.tableView?.mj_header.endRefreshing()
-    }
-    
 }
 
 extension SelfPersonalViewController: UITableViewDelegate {
@@ -181,5 +159,33 @@ extension SelfPersonalViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension SelfPersonalViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offY = scrollView.contentOffset.y
+        let topViewHeight = UIScreen.main.bounds.height * 0.65
+        let y = -offY - topViewHeight
+        guard y > 0 else {
+            return
+        }
+        let ratio = self.view.width/(topViewHeight)
+        let height = topViewHeight + y
+        let width = height * ratio
+        headerView.avatarViewBackground.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().offset(-screenHeight * 0.12)
+            make.width.equalTo(width)
+            make.centerX.equalTo(headerView.avatarView)
+            make.height.equalTo(height+1)
+            make.top.equalToSuperview().offset(-y)
+        }
+        headerView.blackGlassView.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().offset(-screenHeight * 0.12)
+            make.centerX.equalTo(headerView.avatarView)
+            make.width.equalTo(width)
+            make.height.equalTo(height+1)
+            make.top.equalToSuperview().offset(-y)
+        }
     }
 }

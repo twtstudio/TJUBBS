@@ -12,7 +12,7 @@ import Kingfisher
 import ObjectMapper
 
 
-class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource{
+class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
    
     var userTableView = UITableView(frame: UIScreen.main.bounds, style: .grouped)
     var detailArray: [String] = ["我的收藏", "我的发布", "通用设置"]
@@ -30,9 +30,6 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
     var messagePage: Int = 0
     var messageList: [MessageModel] = []
     var messageFlag = false
-    
-
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

@@ -92,18 +92,15 @@
 		8559B23D21966778004A0264 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8559B23C21966778004A0264 /* BBSAPI.swift */; };
 		8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51220FDD7130058EACC /* ForumListVC.swift */; };
 		8574A51520FDD72B0058EACC /* ForumListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51420FDD72B0058EACC /* ForumListTableViewCell.swift */; };
-<<<<<<< HEAD
-		8583682F2198F149004C74F8 /* SelfPersonalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583682E2198F149004C74F8 /* SelfPersonalViewController.swift */; };
-		858368312198F636004C74F8 /* SelfPersonPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858368302198F636004C74F8 /* SelfPersonPageView.swift */; };
-		85A97FE62195207C0059C8EC /* NewUserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE52195207C0059C8EC /* NewUserInfoViewController.swift */; };
-		85A97FE9219520C60059C8EC /* NewUserDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE7219520C60059C8EC /* NewUserDataTableViewCell.swift */; };
-		85A97FEA219520C60059C8EC /* NewUserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE8219520C60059C8EC /* NewUserInfoTableViewCell.swift */; };
-=======
 		C815FF9621869637009A8DD4 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C815FF9521869637009A8DD4 /* ActivityViewController.swift */; };
 		C8191630218FC8F300852E24 /* RanklistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C819162F218FC8F300852E24 /* RanklistTableViewCell.swift */; };
 		C8191632218FCDA700852E24 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8191631218FCDA700852E24 /* UserModel.swift */; };
 		C819163421906DBF00852E24 /* RankListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C819163321906DBF00852E24 /* RankListViewController.swift */; };
->>>>>>> Usable ranklist in homepage
+		C8191636219B260500852E24 /* NewUserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE52195207C0059C8EC /* NewUserInfoViewController.swift */; };
+		C8191637219B264F00852E24 /* NewUserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE8219520C60059C8EC /* NewUserInfoTableViewCell.swift */; };
+		C8191638219B266D00852E24 /* NewUserDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A97FE7219520C60059C8EC /* NewUserDataTableViewCell.swift */; };
+		C8191639219B268500852E24 /* SelfPersonalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583682E2198F149004C74F8 /* SelfPersonalViewController.swift */; };
+		C819163A219B269900852E24 /* SelfPersonPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858368302198F636004C74F8 /* SelfPersonPageView.swift */; };
 		C82D091F20C782020078FD5E /* NewHomePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D091E20C782020078FD5E /* NewHomePageViewController.swift */; };
 		C82D092120C7834C0078FD5E /* HomePageThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82D092020C7834C0078FD5E /* HomePageThreadTableViewCell.swift */; };
 		C84E7C362175963400314FB5 /* HotThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84E7C352175963400314FB5 /* HotThreadTableViewCell.swift */; };
@@ -1055,7 +1052,6 @@
 				68B683521EC20F7100F7A0BF /* ThreadDetailViewController.swift in Sources */,
 				68B5A52A1EBB162700968FFD /* UserInfoViewController.swift in Sources */,
 				68B6834F1EC2086200F7A0BF /* HomepageMainController.swift in Sources */,
-				85A97FE9219520C60059C8EC /* NewUserDataTableViewCell.swift in Sources */,
 				36D0BC871EFE6A8000265D8B /* BubbleCell.swift in Sources */,
 				682A84651EB5C3B900510FA4 /* LoginViewController.swift in Sources */,
 				36E9AF8D20ADC2F400E77645 /* NewPersonTableViewCell.swift in Sources */,
@@ -1077,18 +1073,20 @@
 				8559B23D21966778004A0264 /* BBSAPI.swift in Sources */,
 				367AD9071F11EB00008C14C7 /* MyPostsViewController.swift in Sources */,
 				367AD9091F11EB0C008C14C7 /* MyThreadsViewController.swift in Sources */,
-				85A97FEA219520C60059C8EC /* NewUserInfoTableViewCell.swift in Sources */,
+				C819163A219B269900852E24 /* SelfPersonPageView.swift in Sources */,
 				36E9AF8C20ADC2F400E77645 /* NewPersonalPageView.swift in Sources */,
-				858368312198F636004C74F8 /* SelfPersonPageView.swift in Sources */,
 				36262A3B1F0D1A7E00C799B7 /* ImageTextAttachment.swift in Sources */,
 				36134C621F94CB3F00482E47 /* BBSCache.swift in Sources */,
 				36C8430E1F0B6F2E009C6887 /* UserDetailViewController.swift in Sources */,
 				36B8D0231EC33C2C006D58F8 /* BBSJarvis.swift in Sources */,
+				C8191637219B264F00852E24 /* NewUserInfoTableViewCell.swift in Sources */,
 				36DA59221EC1DF8800B56F07 /* ThreadListController.swift in Sources */,
 				6826D7431EB5F561000F520B /* ClassExtensions.swift in Sources */,
+				C8191639219B268500852E24 /* SelfPersonalViewController.swift in Sources */,
 				361A30AD1F000DA000DDF11C /* MarkdownParser.swift in Sources */,
 				C883CD3D20C9594900842A2A /* HomePageHeaderView.swift in Sources */,
 				C8191630218FC8F300852E24 /* RanklistTableViewCell.swift in Sources */,
+				C8191636219B260500852E24 /* NewUserInfoViewController.swift in Sources */,
 				68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */,
 				6884B00F1EDAA77800FEA9BD /* GuideViewController.swift in Sources */,
 				68F461521EBDCCE900D784F4 /* FavorateViewController.swift in Sources */,
@@ -1100,13 +1098,8 @@
 				6826D7471EB61496000F520B /* TextInputCell.swift in Sources */,
 				36D0BC851EFE5B4800265D8B /* FriendsListController.swift in Sources */,
 				68E4ED771EC59D5F0067DA35 /* ForumModel.swift in Sources */,
-<<<<<<< HEAD
-=======
-				689A0D2D1EDDF97400919341 /* BBSAPI.swift in Sources */,
 				C8745EBF2179D2A500001C2D /* AnnounceViewController.swift in Sources */,
->>>>>>> Usable ranklist in homepage
 				36D21F411EB7171D00677534 /* InputItem.swift in Sources */,
-				8583682F2198F149004C74F8 /* SelfPersonalViewController.swift in Sources */,
 				68B683491EC1F24600F7A0BF /* MessageDetailViewController.swift in Sources */,
 				36BD6BD31F39DBF7009D5D55 /* MessageHomePageViewController.swift in Sources */,
 				6802E4D31EC9984B00D3EE70 /* AddThreadViewController.swift in Sources */,
@@ -1123,6 +1116,7 @@
 				3659B5841F4ED91200B65D13 /* SetFontSizeViewController.swift in Sources */,
 				36DCA44D1F47404F007643A3 /* TodayViewController.swift in Sources */,
 				C84E7C362175963400314FB5 /* HotThreadTableViewCell.swift in Sources */,
+				C8191638219B266D00852E24 /* NewUserDataTableViewCell.swift in Sources */,
 				C82D091F20C782020078FD5E /* NewHomePageViewController.swift in Sources */,
 				68B6834D1EC200D800F7A0BF /* MyPostHomeViewController.swift in Sources */,
 				68B683451EBEC17100F7A0BF /* MessageViewController.swift in Sources */,
@@ -1133,7 +1127,6 @@
 				36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */,
 				3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */,
 				8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */,
-				85A97FE62195207C0059C8EC /* NewUserInfoViewController.swift in Sources */,
 				36E6A8DC1F8FEB5600E216FD /* SearchViewController.swift in Sources */,
 				C8DCA2AB20FDAC90000C7656 /* Variables.swift in Sources */,
 				68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */,

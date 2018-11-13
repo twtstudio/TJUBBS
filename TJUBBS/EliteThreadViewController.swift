@@ -81,17 +81,7 @@ class EliteThreadViewController: UIViewController {
                 self.tabBarController?.tabBar.items![2].badgeValue = "\(count)"
             }
         })
-
-<<<<<<< HEAD
-        BBSJarvis.getHot(failure: { _ in
-            if (self.tableView?.mj_header.isRefreshing)! {
-                self.tableView?.mj_header.endRefreshing()
-            }
-        }) {
-            dict in
-=======
         BBSJarvis.getHot(success: { dict in
->>>>>>> Usable ranklist in homepage
             if let data = dict["data"] as? [String: Any],
                 let hot = data["hot"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot)
