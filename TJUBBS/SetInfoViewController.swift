@@ -39,7 +39,7 @@ class SetInfoViewController: UIViewController {
 
 extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -47,6 +47,8 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
         case 0:
             return 3
         case 1:
+            return 1
+        case 2:
             return 1
         default:
             return 0
@@ -101,6 +103,24 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = UITableViewCell(style: .value1, reuseIdentifier: "CustomValueCell")
             cell.textLabel?.text = "修改密码"
             cell.accessoryType = .disclosureIndicator
+            return cell
+        case 2:
+            let cell = UITableViewCell(style: .default, reuseIdentifier: "CustomValueCell")
+            cell.textLabel?.text = "我不想工作！"
+            let noWorkSwitchButton = UISwitch()
+            cell.contentView.addSubview(noWorkSwitchButton)
+            noWorkSwitchButton.onTintColor = UIColor.BBSBlue
+            noWorkSwitchButton.snp.makeConstraints {
+                make in
+                make.right.equalToSuperview().offset(-16)
+                make.centerY.equalToSuperview()
+            }
+            if UserDefaults.standard.bool(forKey: "noJobMode") {
+                noWorkSwitchButton.isOn = true
+            } else {
+                noWorkSwitchButton.isOn = false
+            }
+            noWorkSwitchButton.addTarget(self, action: #selector(noWorkModeOn), for: .valueChanged)
             return cell
         default:
             break
@@ -287,4 +307,14 @@ extension SetInfoViewController: UIImagePickerControllerDelegate {
 
 extension SetInfoViewController: UINavigationControllerDelegate {
 
+}
+
+extension SetInfoViewController {
+    @objc func noWorkModeOn() {
+        if UserDefaults.standard.bool(forKey: "noJobMode") {
+            UserDefaults.standard.set(false, forKey: "noJobMode")
+        } else {
+            UserDefaults.standard.set(true, forKey: "noJobMode")
+        }
+    }
 }

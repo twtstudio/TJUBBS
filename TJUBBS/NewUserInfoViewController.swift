@@ -121,13 +121,13 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewUserInfoTableViewCell") as! NewUserInfoTableViewCell
             cell.initUI(avatarImageView: avatarView, userName: self.userName, signature: self.signature, grade: self.level)
             return cell
-        }else if indexPath.section == 1{
+        } else if indexPath.section == 1{
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewUserDataTableViewCell") as! NewUserDataTableViewCell
             cell.awakeFromNib()
             cell.loadData(points: self.points, threadCount: self.threadCount, age: self.age)
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell
-        }else if indexPath.section == 2{
+        } else if indexPath.section == 2{
             let cell = UITableViewCell()
             cell.textLabel?.text = detailArray[indexPath.row]
             cell.imageView?.image = UIImage(named:  detailArray[indexPath.row])
