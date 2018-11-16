@@ -13,7 +13,6 @@ import Kingfisher
 import SnapKit
 import PiwikTracker
 
-
 class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     //定义cell重用标志

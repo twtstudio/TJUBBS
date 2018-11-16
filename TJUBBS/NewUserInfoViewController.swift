@@ -11,7 +11,6 @@ import UIKit
 import Kingfisher
 import ObjectMapper
 
-
 class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
    
     var userTableView = UITableView(frame: UIScreen.main.bounds, style: .grouped)
@@ -62,13 +61,14 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
                 BBSUser.shared.avatar = image
             }
         }
-        let user = Mapper<UserWrapper>().map(JSON: ["uid": BBSUser.shared.uid ?? "0", "name": BBSUser.shared.username ?? "求实用户", "signature": BBSUser.shared.signature ?? "还没有个性签名", "points": BBSUser.shared.points ?? 0, "c_post": BBSUser.shared.postCount ?? 0, "c_thread": BBSUser.shared.threadCount ?? 0, "t_create": BBSUser.shared.tCreate ?? "fuck", "level": BBSUser.shared.level ?? 0])!
+        let user = Mapper<UserWrapper>().map(JSON: ["uid": BBSUser.shared.uid ?? "0", "name": BBSUser.shared.username ?? "求实用户", "signature": BBSUser.shared.signature ?? "还没有个性签名", "points": BBSUser.shared.points ?? 0, "c_post": BBSUser.shared.postCount ?? 0, "c_thread": BBSUser.shared.threadCount ?? 0, "t_create": BBSUser.shared.tCreate ?? "", "level": BBSUser.shared.level ?? 0])!
         loadModel(user: user)
        
         userTableView.dataSource = self
         userTableView.delegate = self
         self.view.addSubview(userTableView)
-        
+
+        self.userTableView.contentInset.top = 10
         self.userTableView.estimatedRowHeight = 0
         self.userTableView.estimatedSectionHeaderHeight = 0
         self.userTableView.sectionHeaderHeight = 1
@@ -81,7 +81,6 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         userTableView.reloadData()
        
     }
-    
     
     func refresh() {
         guard let token = BBSUser.shared.token, token != "" else {
@@ -202,12 +201,10 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             return 1
     }
     
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return nil
     }
-  
-    
+
     func loadModel(user: UserWrapper) {
        self.userName = user.username ?? " "
         if user.signature != nil {
@@ -224,16 +221,4 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             self.age = "0"
         }
     }
-    
-
-  
 }
-    
-
-
-
-    
-
-    
-
-

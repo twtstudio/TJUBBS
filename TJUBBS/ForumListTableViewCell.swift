@@ -90,7 +90,6 @@ class ForumListTableViewCell: UITableViewCell {
         self.contentView.addSubview(modelButton)
     }
 
-
     func buttonLayout(numberOfButton: Int) {
         let heightOfButton = Variables.WIDTH / 8
         print("buttonLayout")

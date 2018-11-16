@@ -99,7 +99,7 @@ class NewUserDataTableViewCell: UITableViewCell {
     }
     
     func loadData(points: String, threadCount: String, age: String){
-        let countLabelFont = UIFont.systemFont(ofSize: 30)
+        let countLabelFont = UIFont.systemFont(ofSize: 25)
         scoreCountLabel.text = points
         threadCountLabel.text = threadCount
         ageCountLabel.text = age

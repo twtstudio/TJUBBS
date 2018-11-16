@@ -6,7 +6,6 @@
 //  Copyright © 2018年 twtstudio. All rights reserved.
 //
 
-
 import UIKit
 
 class SelfPersonPageView: UIView {

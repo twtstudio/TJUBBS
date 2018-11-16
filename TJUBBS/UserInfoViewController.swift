@@ -127,9 +127,6 @@ extension UserInfoViewController: UITableViewDataSource {
             return cell
         }
     }
-
-
-
 }
 
 extension UserInfoViewController: UITableViewDelegate {

@@ -106,17 +106,12 @@ class NewUserInfoTableViewCell: UITableViewCell {
         
     }
     
-    
-    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
-
-    
 }
-
 
 extension UIImage {
     //生成圆形图片
@@ -142,15 +137,3 @@ extension UIImage {
         return maskedImage
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

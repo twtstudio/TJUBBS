@@ -12,16 +12,21 @@ import Kingfisher
 
 class MessageDetailViewController: UIViewController {
 
-    var tableView: UITableView?
+    var tableView = UITableView(frame: .zero, style: .grouped)
     var model: MessageModel! = nil
 //    var replyButton: UIButton?
-    var replyButton = FakeTextFieldView(frame: CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45))
+    var replyButton: FakeTextFieldView = {
+        let frame = UIScreen.main.bounds.size.height == 812 ? CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45-34, width: UIScreen.main.bounds.size.width, height: 45) : CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45)
+        let replyButton = FakeTextFieldView(frame: frame)
+
+        return replyButton
+    }()
 
     convenience init(model: MessageModel) {
         self.init()
         self.model = model
         view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .lightContent
+//        UIApplication.shared.statusBarStyle = .lightContent
         self.hidesBottomBarWhenPushed = true
     }
 
@@ -29,25 +34,23 @@ class MessageDetailViewController: UIViewController {
         super.viewDidLoad()
         let titleLabel = UILabel(text: "详情", color: .black, fontSize: 18, weight: UIFontWeightMedium)
         self.navigationItem.titleView = titleLabel
-        tableView = UITableView(frame: .zero, style: .grouped)
         self.navigationController?.navigationBar.isTranslucent = false
-        self.tableView?.contentInset.top = -35
+        self.tableView.contentInset.top = -35
 
-        view.addSubview(tableView!)
-        tableView?.snp.makeConstraints {
-            make in
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
-            if self.model.detailContent != nil {
-                make.bottom.equalToSuperview().offset(-45)
-            } else {
+//            if self.model.detailContent != nil {
+//                //
+//            } else {
                 make.bottom.equalToSuperview()
-            }
+//            }
         }
 
-        tableView?.dataSource = self
-        tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 100
-        tableView?.allowsSelection = false
+        tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.allowsSelection = false
 
         if model.friendRequest == nil {
             self.view.addSubview(replyButton)

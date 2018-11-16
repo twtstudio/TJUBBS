@@ -18,19 +18,11 @@ class NewHomePageViewController: UIViewController {
 
     var threadList: [ThreadModel] = [] {
         didSet {
+            let isNoJobMode = UserDefaults.standard.bool(forKey: "noJobMode")
             threadList = threadList.filter { element in
-                return BBSUser.shared.blackList.keys.contains(element.authorName) == false
-            }
-            
-            if(UserDefaults.standard.bool(forKey: "noJobMode") == true) {
-                threadList = threadList.filter { element in
-                    for _ in threadList {
-                        if element.boardName == "招聘信息" || element.boardName == "找工作" || element.boardName == "二手市场" {
-                            return false
-                        }
-                    }
-                    return true
-                }
+                let isInBlackList = BBSUser.shared.blackList.keys.contains(element.authorName)
+                let isJobRelated = [188, 189].contains(element.boardID) && isNoJobMode
+                return isInBlackList == false || isJobRelated == false
             }
         }
     }
@@ -102,7 +94,6 @@ class NewHomePageViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
         self.navigationItem.rightBarButtonItem?.tintColor = UIColor.darkGray
 
-//        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "最新动态", style: UIBarButtonItemStyle.plain, target: self, action: nil)
         
         let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
@@ -158,8 +149,6 @@ class NewHomePageViewController: UIViewController {
     
 }
 
-    
-
 extension NewHomePageViewController {
     func refresh() {
         BBSJarvis.getMessageCount(success: { dict in
@@ -176,6 +165,7 @@ extension NewHomePageViewController {
         }, success: { dict in
             if let data = dict["data"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+                self.tableView.mj_footer.resetNoMoreData()
             }
 //            self.tableView.mj_footer.resetNoMoreData()
             if self.tableView.mj_header.isRefreshing {
@@ -187,13 +177,15 @@ extension NewHomePageViewController {
     
     func load() {
         curPage += 1
-        
         BBSJarvis.getIndex(page: curPage, failure: { _ in
-            self.curPage -= 1
-            if (self.tableView.mj_footer.isRefreshing) {
+            if self.tableView.mj_footer.isRefreshing {
                 self.tableView.mj_footer.endRefreshing()
             }
+            self.curPage -= 1
         }, success: { dict in
+            if self.tableView.mj_footer.isRefreshing {
+                self.tableView.mj_footer.endRefreshing()
+            }
             if let data = dict["data"] as? [[String: Any]] {
                 let newList = Mapper<ThreadModel>().mapArray(JSONArray: data)
                 if newList.count > 0 {
@@ -201,9 +193,6 @@ extension NewHomePageViewController {
                 } else {
                     self.tableView.mj_footer.endRefreshingWithNoMoreData()
                 }
-            }
-            if (self.tableView.mj_footer.isRefreshing) {
-                self.tableView.mj_footer.endRefreshing()
             }
             self.tableView.reloadData()
         })

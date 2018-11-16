@@ -829,6 +829,7 @@
 					};
 					682A845E1EB5C3B900510FA4 = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = TYRRVX7RWJ;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -1329,7 +1330,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TJUBBS/TJUBBS.entitlements;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = TYRRVX7RWJ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",
@@ -1363,7 +1364,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TJUBBS/TJUBBS.entitlements;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = TYRRVX7RWJ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",

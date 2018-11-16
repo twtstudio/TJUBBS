@@ -8,6 +8,7 @@
 
 import UIKit
 import PiwikTracker
+import Kingfisher
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
