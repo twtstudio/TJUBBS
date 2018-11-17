@@ -88,18 +88,9 @@ class NewPersonalViewController: UIViewController {
         self.tableView?.addSubview(headerView)
 
         //header and footer of MJRefresh
-        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        self.tableView!.mj_header = header
-        header?.ignoredScrollViewContentInsetTop = UIScreen.main.bounds.height * 0.65
-        var refreshingImages = [UIImage]()
-        for i in 1...6 {
-            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-            refreshingImages.append(image!)
-        }
-        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
-        header?.stateLabel.isHidden = true
-        header?.lastUpdatedTimeLabel.isHidden = true
-        header?.setImages(refreshingImages, for: .pulling)
+        let header = AnimatedRefreshingHeader(target: self, action: #selector(self.refresh))
+        self.tableView?.mj_header = header
+        header.ignoredScrollViewContentInsetTop = UIScreen.main.bounds.height * 0.65
 
         self.headerView.avatarViewBackground.contentMode = .scaleAspectFill
         self.headerView.blackGlassView.contentMode = .scaleAspectFill
@@ -108,16 +99,14 @@ class NewPersonalViewController: UIViewController {
         self.view.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
 
         if BBSUser.shared.threadCount == 0 {
-            var NoMoreDataLabel = UILabel(text: "还没有发布过帖子哟", color: .darkGray, fontSize: 14)
-            tableView?.addSubview(NoMoreDataLabel)
-            NoMoreDataLabel.snp.makeConstraints { make in
+            let noMoreDataLabel = UILabel(text: "还没有发布过帖子哟", color: .darkGray, fontSize: 14)
+            tableView?.addSubview(noMoreDataLabel)
+            noMoreDataLabel.snp.makeConstraints { make in
                 make.centerX.equalToSuperview()
                 make.top.equalTo(UIScreen.main.bounds.height * 0.095)
             }
         }
     }
- 
-    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -136,7 +125,6 @@ class NewPersonalViewController: UIViewController {
         // 结束刷新
         self.tableView?.mj_header.endRefreshing()
     }
-
 }
 
 extension NewPersonalViewController: UITableViewDelegate {

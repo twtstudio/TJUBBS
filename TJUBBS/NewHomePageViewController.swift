@@ -94,26 +94,20 @@ class NewHomePageViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchToggled(sender:)))
         self.navigationItem.rightBarButtonItem?.tintColor = UIColor.darkGray
 
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "最新动态", style: UIBarButtonItemStyle.plain, target: self, action: nil)
-        
-        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        var refreshingImages = [UIImage]()
-        for i in 1...6 {
-            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-            refreshingImages.append(image!)
-        }
-        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
-        header?.stateLabel.isHidden = true
-        header?.lastUpdatedTimeLabel.isHidden = true
-        header?.setImages(refreshingImages, for: .pulling)
+//        var timer = Timer.scheduledTimer(timeInterval: 8.0, target: self, selector: #selector(NewHomePageViewController.pageNumberChanged(sender:)), userInfo: nil, repeats: true)
+        let item = UIBarButtonItem(title: "最新动态", style: UIBarButtonItemStyle.plain, target: self, action: nil)
+        self.navigationItem.leftBarButtonItem = item
+
+        let header = AnimatedRefreshingHeader(target: self, action: #selector(self.refresh))
         tableView.mj_header = header
 
-        self.refresh()
-//        self.tabBarItem.hidesBottomBarWhenPushed = false
-        
         let footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(load))
         footer?.setTitle("还没看过瘾？去分区看看吧~", for: .noMoreData)
         self.tableView.mj_footer = footer
+
+        self.loadCache()
+        self.tableView.mj_header.beginRefreshing()
+//        self.tabBarItem.hidesBottomBarWhenPushed = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -146,10 +140,18 @@ class NewHomePageViewController: UIViewController {
         searchVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(searchVC, animated: true)
     }
-    
 }
 
 extension NewHomePageViewController {
+    func loadCache() {
+        BBSCache.retreive(.threadList, from: .group, as: String.self, success: { str in
+            if let threadList = Mapper<ThreadModel>().mapArray(JSONString: str) {
+                self.threadList = threadList
+                self.tableView.reloadData()
+            }
+        })
+    }
+
     func refresh() {
         BBSJarvis.getMessageCount(success: { dict in
             if let count = dict["data"] as? Int, count != 0 {
@@ -159,42 +161,36 @@ extension NewHomePageViewController {
 
         curPage = 0
         BBSJarvis.getIndex(page: curPage, failure: { _ in
-            if self.tableView.mj_header.isRefreshing {
-                self.tableView.mj_header.endRefreshing()
-            }
+            self.tableView.mj_header.endRefreshing()
         }, success: { dict in
             if let data = dict["data"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+                BBSCache.store(object: self.threadList.toJSONString(), in: .group, as: .threadList)
+                self.tableView.reloadData()
                 self.tableView.mj_footer.resetNoMoreData()
             }
-//            self.tableView.mj_footer.resetNoMoreData()
-            if self.tableView.mj_header.isRefreshing {
-                self.tableView.mj_header.endRefreshing()
-            }
-            self.tableView.reloadData()
+            self.tableView.mj_header.endRefreshing()
         })
     }
     
     func load() {
         curPage += 1
         BBSJarvis.getIndex(page: curPage, failure: { _ in
-            if self.tableView.mj_footer.isRefreshing {
-                self.tableView.mj_footer.endRefreshing()
-            }
+            self.tableView.mj_footer.endRefreshing()
             self.curPage -= 1
         }, success: { dict in
-            if self.tableView.mj_footer.isRefreshing {
-                self.tableView.mj_footer.endRefreshing()
-            }
+            self.tableView.mj_footer.endRefreshing()
+
             if let data = dict["data"] as? [[String: Any]] {
                 let newList = Mapper<ThreadModel>().mapArray(JSONArray: data)
                 if newList.count > 0 {
                     self.threadList += newList
+                    self.tableView.reloadData()
+                    BBSCache.store(object: self.threadList.toJSONString(), in: .group, as: .threadList)
                 } else {
                     self.tableView.mj_footer.endRefreshingWithNoMoreData()
                 }
             }
-            self.tableView.reloadData()
         })
     }
 }

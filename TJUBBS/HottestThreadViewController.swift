@@ -13,7 +13,7 @@ import MJRefresh
 
 class HottestThreadViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var tableView: UITableView?
+    var tableView = UITableView(frame: .zero, style: .grouped)
     var threadList: [ThreadModel] = [] {
         didSet {
             threadList = threadList.filter { element in
@@ -24,16 +24,15 @@ class HottestThreadViewController: UIViewController, UITableViewDataSource, UITa
                 }
                 return true
             }
-            BBSCache.saveTopThread(threads: threadList)
+//            BBSCache.saveTopThread(threads: threadList)
         }
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 //        view.backgroundColor = .lightGray
-        UIApplication.shared.statusBarStyle = .default
+//        UIApplication.shared.statusBarStyle = .default
         self.hidesBottomBarWhenPushed = true
-        threadList = BBSCache.getTopThread()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -46,39 +45,37 @@ class HottestThreadViewController: UIViewController, UITableViewDataSource, UITa
         let titleLabel = UILabel(text: "十大热帖", color: .black, fontSize: 18, weight: UIFontWeightMedium)
         self.navigationItem.titleView = titleLabel
         initUI()
+        loadCache()
     }
 
     func initUI() {
         view.backgroundColor = .lightGray
-        tableView = UITableView(frame: .zero, style: .grouped)
         //3D Touch
-        registerForPreviewing(with: self as UIViewControllerPreviewingDelegate, sourceView: tableView!)
+        registerForPreviewing(with: self as UIViewControllerPreviewingDelegate, sourceView: tableView)
         
-        view.addSubview(tableView!)
-        tableView?.snp.makeConstraints {
-            make in
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
             make.top.left.right.bottom.equalToSuperview()
         }
         
-        tableView?.register(HotThreadTableViewCell.self, forCellReuseIdentifier: "hotThreadCell")
-        tableView?.delegate = self
-        tableView?.dataSource = self
-        tableView?.rowHeight = UITableViewAutomaticDimension
-        tableView?.estimatedRowHeight = 300
-        
-        let header = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: #selector(self.refresh))
-        var refreshingImages = [UIImage]()
-        for i in 1...6 {
-            let image = UIImage(named: "鹿鹿\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-            refreshingImages.append(image!)
-        }
-        header?.setImages(refreshingImages, duration: 0.2, for: .pulling)
-        header?.stateLabel.isHidden = true
-        header?.lastUpdatedTimeLabel.isHidden = true
-        header?.setImages(refreshingImages, for: .pulling)
-        tableView?.mj_header = header
-        tableView?.mj_header.beginRefreshing()
-        
+        tableView.register(HotThreadTableViewCell.self, forCellReuseIdentifier: "hotThreadCell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 300
+
+        let header = AnimatedRefreshingHeader(target: self, action: #selector(self.refresh))
+        tableView.mj_header = header
+        tableView.mj_header.beginRefreshing()
+    }
+
+    func loadCache() {
+        BBSCache.retreive(.topThreads, from: .group, as: String.self, success: { str in
+            if let threadList = Mapper<ThreadModel>().mapArray(JSONString: str) {
+                self.threadList = threadList
+                self.tableView.reloadData()
+            }
+        })
     }
     
     func refresh() {
@@ -93,14 +90,15 @@ class HottestThreadViewController: UIViewController, UITableViewDataSource, UITa
             if let data = dict["data"] as? [String: Any],
                 let hot = data["hot"] as? [[String: Any]] {
                 self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: hot)
+                BBSCache.store(object: self.threadList.toJSONString(), in: .group, as: .topThreads)
             }
-            if (self.tableView?.mj_header.isRefreshing)! {
-                self.tableView?.mj_header.endRefreshing()
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
             }
-            self.tableView?.reloadData()
+            self.tableView.reloadData()
         }, failure: { _ in
-            if (self.tableView?.mj_header.isRefreshing)! {
-                self.tableView?.mj_header.endRefreshing()
+            if self.tableView.mj_header.isRefreshing {
+                self.tableView.mj_header.endRefreshing()
             }
         })
     }
@@ -171,7 +169,7 @@ extension HottestThreadViewController {
 
 extension HottestThreadViewController: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = tableView?.indexPathForRow(at: location), let cell = tableView?.cellForRow(at: indexPath) {
+        if let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) {
             previewingContext.sourceRect = cell.frame
             let detailVC = ThreadDetailViewController(thread: threadList[indexPath.section])
             return detailVC

@@ -14,20 +14,13 @@ import SnapKit
 import PiwikTracker
 
 class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-    //定义cell重用标志
-    let reuStr: String = "reuStr"
-    var buttonHeight = Variables.WIDTH/8
-    //每一个button定义为屏幕高度的八分之一，宽度为屏宽的四分之一
-
     //论坛名，论坛里有的板块
     var forumList: [ForumModel] = []
     var boardList: [BoardModel] = []
     var forum: ForumModel?
     //每一个cell中相应的board
     var cellBorad: [[BoardModel]] = []
-    var group = DispatchGroup()
-    
+
     //一个用于计算行高的测试数组，表明每一个Row的高度应该是heightForButton*rowAarry[index.section]
     //TODO: 这里有一些问题，因为board的个数如何直接决定cell的行高
     var numOfButtonInStack: [Int] = [4, 2, 5, 3, 3, 2, 2, 2]
@@ -126,6 +119,8 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     
     //tableView datasource
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let buttonHeight = Variables.WIDTH/8
+        //每一个button定义为屏幕高度的八分之一，宽度为屏宽的四分之一
         return buttonHeight * CGFloat(numOfButtonInStack[indexPath.section])
     }
     
