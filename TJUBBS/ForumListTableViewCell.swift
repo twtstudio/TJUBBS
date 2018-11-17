@@ -35,7 +35,7 @@ class ForumListTableViewCell: UITableViewCell {
     // func initUI(forumName: String, boardArray: [BoardModel], numButtonInStack: Int) {
     func initUI(forumName: String, numButtonInStack: Int, boardArray: [BoardModel]) {
 
-        for a in 0 ..< numButtonInStack * 3{
+        for a in 0 ..< numButtonInStack * 3 {
             if a < boardArray.count{
                 buttonNameArray.append(boardArray[a].name)
             }

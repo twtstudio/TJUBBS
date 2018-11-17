@@ -344,8 +344,7 @@ class LoginViewController: UIViewController {
 
         loginButton = UIButton(title: "登录", isConfirmButton: true)
         view.addSubview(loginButton!)
-        loginButton?.snp.makeConstraints {
-            make in
+        loginButton?.snp.makeConstraints { make in
             make.top.equalTo(forgetButton!.snp.bottom).offset(8)
             make.centerX.equalTo(view)
             make.width.equalTo(screenSize.width*(800/1080))
@@ -362,14 +361,16 @@ class LoginViewController: UIViewController {
 
             if let username = self?.usernameTextField?.text, let password = self?.passwordTextField?.text, username != "", password != "" {
                 HUD.show(.rotatingImage(#imageLiteral(resourceName: "progress")))
-                BBSJarvis.login(username: username, password: password) {
+                BBSJarvis.login(username: username, password: password, failure: { err in
+                    print(err)
+                }, success: {
                     HUD.hide()
                     HUD.flash(.success, onView: self?.portraitImageView, delay: 1.2, completion: nil)
                     BBSUser.shared.isVisitor = false
                     let tabBarVC = MainTabBarController(para: 1)
                     tabBarVC.modalTransitionStyle = .crossDissolve
                     self?.present(tabBarVC, animated: false, completion: nil)
-                }
+                })
             } else {
                 HUD.flash(.label("用户名或密码不能为空"), onView: self?.view, delay: 0.7, completion: nil)
             }

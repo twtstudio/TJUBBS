@@ -12,7 +12,7 @@ import Kingfisher
 import ObjectMapper
 
 class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
-   
+
     var userTableView = UITableView(frame: UIScreen.main.bounds, style: .grouped)
     var detailArray: [String] = ["我的收藏", "我的发布", "通用设置"]
 
@@ -45,7 +45,7 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         self.navigationController?.navigationBar.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "我的", style: UIBarButtonItemStyle.plain, target: self, action: nil)
         self.tabBarController?.tabBar.isTranslucent = false
-//        self.userTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        //        self.userTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
     
     override func viewDidLoad() {
@@ -57,13 +57,13 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         
         let cacheKey = "\(BBSUser.shared.uid ?? 0)" + Date.today
         if let url = URL(string: BBSAPI.avatar(uid: BBSUser.shared.uid ?? 0)) {
-           avatarView.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default")) { image, _, _, _ in
+            avatarView.kf.setImage(with: ImageResource(downloadURL: url, cacheKey: cacheKey), placeholder: UIImage(named: "default")) { image, _, _, _ in
                 BBSUser.shared.avatar = image
             }
         }
         let user = Mapper<UserWrapper>().map(JSON: ["uid": BBSUser.shared.uid ?? "0", "name": BBSUser.shared.username ?? "求实用户", "signature": BBSUser.shared.signature ?? "还没有个性签名", "points": BBSUser.shared.points ?? 0, "c_post": BBSUser.shared.postCount ?? 0, "c_thread": BBSUser.shared.threadCount ?? 0, "t_create": BBSUser.shared.tCreate ?? "", "level": BBSUser.shared.level ?? 0])!
         loadModel(user: user)
-       
+
         userTableView.dataSource = self
         userTableView.delegate = self
         self.view.addSubview(userTableView)
@@ -79,7 +79,7 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         userTableView.register(NewUserDataTableViewCell.self, forCellReuseIdentifier: "NewUserDataTableViewCell")
         userTableView.register(NewUserInfoTableViewCell.self, forCellReuseIdentifier: "NewUserInfoTableViewCell")
         userTableView.reloadData()
-       
+
     }
     
     func refresh() {
@@ -99,14 +99,14 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         //TODO：后期添加游客访问方法，或者废除？？？
         if BBSUser.shared.isVisitor == false {
             BBSJarvis.getHome(success: { wrapper in
-            
+
             }, failure: { error in
                 print(error)
             })
         }
     }
 
-  
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -116,17 +116,17 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if indexPath.section == 0{
+        if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewUserInfoTableViewCell") as! NewUserInfoTableViewCell
             cell.initUI(avatarImageView: avatarView, userName: self.userName, signature: self.signature, grade: self.level)
             return cell
-        } else if indexPath.section == 1{
+        } else if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewUserDataTableViewCell") as! NewUserDataTableViewCell
             cell.awakeFromNib()
             cell.loadData(points: self.points, threadCount: self.threadCount, age: self.age)
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell
-        } else if indexPath.section == 2{
+        } else if indexPath.section == 2 {
             let cell = UITableViewCell()
             cell.textLabel?.text = detailArray[indexPath.row]
             cell.imageView?.image = UIImage(named:  detailArray[indexPath.row])
@@ -135,11 +135,10 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         }
         let cell = UITableViewCell()
         return cell
-        
-        
+
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 2){
+        if (section == 2) {
             return 3
         }
         return 1
@@ -166,7 +165,7 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             
         case IndexPath(row: 0, section: 0):
             let detailVC = SelfPersonalViewController()
-        self.navigationController?.pushViewController(detailVC, animated: true)
+            self.navigationController?.pushViewController(detailVC, animated: true)
 
         case IndexPath(row: 0, section: 2):
             let detailVC = FavorateViewController()
@@ -181,14 +180,14 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             break
         }
     }
-  
+
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return detailArray.count
     }
     // TODO: 5s及以下的小机型和XR等大机型，需要另行适配
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0{
+        if indexPath.section == 0 {
             return 110
         }
         else if indexPath.section == 1 {
@@ -198,7 +197,7 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         }
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 1
+        return 1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -206,12 +205,12 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
     }
 
     func loadModel(user: UserWrapper) {
-       self.userName = user.username ?? " "
+        self.userName = user.username ?? " "
         if user.signature != nil {
             self.signature = user.signature!
-        }else{
+        }else {
         }
-//        self.level = "\(user.level ?? 0)"
+        //        self.level = "\(user.level ?? 0)"
         self.level = " "
         self.points = "\(user.points ?? 0)"
         self.threadCount = "\((user.postCount ?? 0) + (user.threadCount ?? 0))"

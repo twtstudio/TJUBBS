@@ -19,7 +19,7 @@ class NewUserInfoTableViewCell: UITableViewCell {
     // 个人主页label
     var personalPageLabel = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 65, height: 20)))
   
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?){
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
     
@@ -54,49 +54,49 @@ class NewUserInfoTableViewCell: UITableViewCell {
       
     }
     
-    func loadData( name: String, grade: String, signature:String){
+    func loadData( name: String, grade: String, signature:String) {
     
         self.nameLabel.text = name
         self.gradeLabel.text = grade
         self.signatureLabel.text = signature
         
     }
-    func initLayout(){
+    func initLayout() {
         
         self.contentView.addSubview(nameLabel)
 //        self.contentView.addSubview(gradeLabel)
         self.contentView.addSubview(signatureLabel)
         
         
-        avatarView.snp.makeConstraints { (make) -> Void in
+        avatarView.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(15)
             make.left.equalTo(contentView).offset(15)
             make.bottom.equalTo(contentView).offset(-15)
             make.width.equalTo(80)
         }
-        nameLabel.snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(contentView).offset(38)
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalTo(contentView).offset(30)
             make.left.equalTo(avatarView.snp.right).offset(10)
             make.width.equalTo(130)
             make.height.equalTo(36)
         }
-//        gradeLabel.snp.makeConstraints { (make) -> Void in
+//        gradeLabel.snp.makeConstraints { make in
 //            make.top.equalTo(nameLabel).offset(35)
 //            make.left.equalTo(nameLabel)
 //            make.width.equalTo(130)
 //            make.height.equalTo(21)
 //        }
-        signatureLabel.snp.makeConstraints { (make) -> Void in
+        signatureLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel).offset(34)
             make.left.equalTo(nameLabel)
             make.width.equalTo(150)
             make.height.equalTo(21)
         }
-        personalPageLabel.snp.makeConstraints { (make) -> Void in
+        personalPageLabel.snp.makeConstraints { make in
             make.right.equalTo(contentView)
             make.centerY.equalTo(contentView.snp.centerY)
         }
-        nameLabel.font = UIFont(name: "Arial Hebrew", size: 24)
+        nameLabel.font = UIFont.systemFont(ofSize: 24)
         nameLabel.textAlignment = .left
         
         gradeLabel.textColor = .darkGray

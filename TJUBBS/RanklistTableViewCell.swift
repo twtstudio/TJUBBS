@@ -82,7 +82,7 @@ class RanklistTableViewCell: UITableViewCell {
         pointLabel.text = "月积分"
         pointLabel.sizeToFit()
         pointLabel.font = UIFont.flexibleFont(ofBaseSize: 13)
-        pointLabel.snp.makeConstraints{ make in
+        pointLabel.snp.makeConstraints { make in
             make.centerY.equalTo(totalPoint.snp.centerY)
             make.centerX.equalTo(getPointLabel.snp.centerX)
             make.bottom.equalToSuperview().offset(-5)

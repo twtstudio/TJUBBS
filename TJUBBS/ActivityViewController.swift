@@ -77,7 +77,7 @@ class ActivityViewController: UIViewController {
     }
 }
 
-extension ActivityViewController:  UITableViewDataSource, UITableViewDelegate{
+extension ActivityViewController:  UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }

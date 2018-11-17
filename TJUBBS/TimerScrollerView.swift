@@ -14,7 +14,7 @@ protocol TimerScrollerViewDelegate {
     func tapActionIndexOfPage(index: Int)
 }
 
-class TimerScrollerView: UIView, UIScrollViewDelegate{
+class TimerScrollerView: UIView, UIScrollViewDelegate {
     var count: Int = 0
     var timer: Timer!
     var timerDelegate: TimerScrollerViewDelegate?

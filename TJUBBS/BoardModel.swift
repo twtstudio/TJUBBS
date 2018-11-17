@@ -11,8 +11,7 @@
 import Foundation
 import ObjectMapper
 
-struct BoardModel: Mappable {
-
+class BoardModel: Mappable {
     var id: Int = 0
     var name: String = ""
     var info: String = ""
@@ -24,9 +23,9 @@ struct BoardModel: Mappable {
     var forumName: String = ""
     var hidden: Int = 0
 
-    init?(map: Map) {}
+    required init?(map: Map) {}
 
-    mutating func mapping(map: Map) {
+    func mapping(map: Map) {
         id <- map["id"]
         name <- map["name"]
         info <- map["info"]

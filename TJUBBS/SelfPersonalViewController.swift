@@ -12,7 +12,7 @@ import ObjectMapper
 import MJRefresh
 import PiwikTracker
 
-class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate{
+class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //ThreadList TableView
     var tableView: UITableView!

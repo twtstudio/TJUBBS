@@ -62,6 +62,7 @@ class ForumListViewController: UIViewController {
     func loadCache() {
         BBSCache.retreive(.forumList, from: .caches, as: String.self, success: { str in
             if let forums = Mapper<ForumModel>().mapArray(JSONString: str) {
+                self.forceRefresh = true
                 self.forumList = forums
                 self.forumTableView.reloadData()
             }
@@ -71,11 +72,12 @@ class ForumListViewController: UIViewController {
     func getForumList() {
         let group = DispatchGroup()
 
+        var tmpForumList: [ForumModel] = []
         BBSJarvis.getForumList { dict in
             if let data = dict["data"] as? [[String: Any]] {
                 let forums = Mapper<ForumModel>().mapArray(JSONArray: data)
-                self.forumList = forums
-
+//                self.forumList = forums
+                tmpForumList = forums
                 var forumDict: [String: ForumModel] = [:]
                 forums.forEach { forum in
                     forumDict[forum.name] = forum
@@ -89,10 +91,9 @@ class ForumListViewController: UIViewController {
                         group.leave()
                         if let data = dict["data"] as? [String: Any],
                             let boards = data["boards"] as? [[String: Any]] {
-                            for board in boards {
-                                var boardCopy = board
-                                boardCopy["forum_name"] = forum.name
-                                let newBoard = BoardModel(JSON: boardCopy)!
+                            for var board in boards {
+                                board["forum_name"] = forum.name
+                                let newBoard = BoardModel(JSON: board)!
                                 forumDict[forum.name]?.boards.append(newBoard)
                             }
                         }
@@ -102,6 +103,7 @@ class ForumListViewController: UIViewController {
             
             group.notify(queue: .main, execute: {
                 self.forceRefresh = true
+                self.forumList = tmpForumList
                 self.forumTableView.reloadData()
                 BBSCache.store(object: self.forumList.toJSONString(), in: .caches, as: .forumList)
             })
@@ -143,19 +145,20 @@ extension ForumListViewController: UITableViewDataSource {
 
         let cell = ForumListTableViewCell(style: .default, reuseIdentifier: "ForumCell\(indexPath.section)")
 
+        let forum = forumList[indexPath.section]
         let buttonCount = numOfButton(in: indexPath.section)
 
-        cell.initUI(forumName: forumList[indexPath.section].name,
+        cell.initUI(forumName: forum.name,
                     numButtonInStack: buttonCount,
-                    boardArray: forumList[indexPath.section].boards)
+                    boardArray: forum.boards)
         cell.buttonTapped = { index in
-            let bid = self.forumList[indexPath.section].boards[index - 1].id
-            let boardVC = ThreadListController(bid: bid)
+            let board = forum.boards[index - 1]
+            let boardVC = ThreadListController(board: board)
             self.navigationController?.pushViewController(boardVC, animated: true)
         }
 
         // 加载完了，以后利用缓存池里的
-        if indexPath.row == self.forumList.count - 1 {
+        if indexPath.section == self.forumList.count - 1 {
             forceRefresh = false
         }
 

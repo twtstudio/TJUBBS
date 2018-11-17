@@ -42,11 +42,12 @@ struct BBSBeacon {
             Alamofire.request(url, method: type, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseString { response in
                 HUD.hide()
                 LoadingWrapper.shared.startTimer?.invalidate()
+                LoadingWrapper.shared.startTimer = nil
                 LoadingWrapper.shared.stopTimer = nil
                 LoadingWrapper.shared.stopTimer?.invalidate()
-                LoadingWrapper.shared.startTimer = nil
                 switch response.result {
-                case .success:    guard let data = response.data else {
+                case .success:
+                    guard let data = response.data else {
                         failure?(BBSError.custom("请求数据为空"))
                         return
                     }

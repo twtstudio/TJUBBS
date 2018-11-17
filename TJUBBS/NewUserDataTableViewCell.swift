@@ -9,18 +9,14 @@
 import UIKit
 
 class NewUserDataTableViewCell: UITableViewCell {
-
-    
     var scoreCountLabel = UILabel()
     var threadCountLabel = UILabel()
     var ageCountLabel = UILabel()
     
-    
     var scoreLabel = UILabel()
     var threadLabel = UILabel()
     var ageLabel = UILabel()
-    
-    
+
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
@@ -37,7 +33,7 @@ class NewUserDataTableViewCell: UITableViewCell {
         setUpLocation()
     }
     
-    func setUpLocation(){
+    func setUpLocation() {
         let width = contentView.bounds.width
         // let height = contentView.bounds.height
         
@@ -49,40 +45,40 @@ class NewUserDataTableViewCell: UITableViewCell {
         self.contentView.addSubview(threadLabel)
         self.contentView.addSubview(ageLabel)
         
-        scoreCountLabel.snp.makeConstraints { (make) -> Void in
+        scoreCountLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(15)
             // make.left.equalTo(contentView).offset(20)
             make.width.equalTo(width/3)
             make.height.equalTo(38)
         }
-        threadCountLabel.snp.makeConstraints { (make) -> Void in
+        threadCountLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(15)
             make.left.equalTo(contentView).offset(width/3)
             make.width.equalTo(width/3)
             make.height.equalTo(38)
         }
-        ageCountLabel.snp.makeConstraints { (make) -> Void in
+        ageCountLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(15)
             make.left.equalTo(contentView).offset(width/3*2)
             make.width.equalTo(width/3)
             make.height.equalTo(38)
         }
-        
-        
-        scoreLabel.snp.makeConstraints { (make) -> Void in
+
+        scoreLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(54)
             make.bottom.equalTo(contentView).offset(-9)
             make.left.equalTo(contentView)
             make.width.equalTo(width/3)
         }
-        threadLabel.snp.makeConstraints { (make) -> Void in
+
+        threadLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(54)
             make.bottom.equalTo(contentView).offset(-9)
             
             make.left.equalTo(contentView).offset(width/3)
             make.width.equalTo(width/3)
         }
-        ageLabel.snp.makeConstraints { (make) -> Void in
+        ageLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(54)
             make.bottom.equalTo(contentView).offset(-9)
             
@@ -98,7 +94,7 @@ class NewUserDataTableViewCell: UITableViewCell {
         
     }
     
-    func loadData(points: String, threadCount: String, age: String){
+    func loadData(points: String, threadCount: String, age: String) {
         let countLabelFont = UIFont.systemFont(ofSize: 25)
         scoreCountLabel.text = points
         threadCountLabel.text = threadCount

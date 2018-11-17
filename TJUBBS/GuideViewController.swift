@@ -17,8 +17,8 @@ class GuideViewController: UIViewController {
     var scorllView = UIScrollView()
     let screenSize = UIScreen.main.bounds.size
     let pageNameList = ["启动页1", "启动页2", "启动页3"]
-    var newUserButton = UIButton.borderButton(title: "我是新用户")
-    var oldUserButton = UIButton.borderButton(title: "我是老用户")
+    var newUserButton = UIButton.borderButton(title: "新用户注册")
+    var oldUserButton = UIButton.borderButton(title: "改版前用户激活")
     var loginBtn = UIButton(title: "直接登录>")
 //    var loginBtn = UIButton.borderButton(title: "马上体验")
 
@@ -183,7 +183,6 @@ class GuideViewController: UIViewController {
             let navigationController = UINavigationController(rootViewController: LoginViewController(para: 1))
             self.present(navigationController, animated: true, completion: nil)
         }
-
     }
 
     override func didReceiveMemoryWarning() {

@@ -16,7 +16,6 @@ class NewPersonalViewController: UIViewController {
 
     //ThreadList TableView
     var tableView: UITableView!
-    var newThreadData: [NewThreadModel]? = []
     var threadList: [ThreadModel] = []
 
     let header = MJRefreshNormalHeader()

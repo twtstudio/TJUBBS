@@ -39,7 +39,7 @@ class SetInfoViewController: UIViewController {
 
 extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -49,6 +49,8 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
         case 1:
             return 1
         case 2:
+            return 1
+        case 3:
             return 1
         default:
             return 0
@@ -121,6 +123,11 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 noWorkSwitchButton.isOn = false
             }
             noWorkSwitchButton.addTarget(self, action: #selector(noWorkModeOn), for: .valueChanged)
+            return cell
+        case 3:
+            let cell = UITableViewCell(style: .default, reuseIdentifier: "CustomValueCell")
+            cell.textLabel?.text = "引导页面"
+            cell.accessoryType = .disclosureIndicator
             return cell
         default:
             break
@@ -275,6 +282,10 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
 
             }
             self.navigationController?.pushViewController(setPasswordVC, animated: true)
+        case 3:
+           let guideVC = GuideViewController()
+           guideVC.hidesBottomBarWhenPushed = true
+           self.navigationController?.pushViewController(guideVC, animated: true)
         default:
             return
         }
