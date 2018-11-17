@@ -9,21 +9,24 @@
 import Foundation
 import ObjectMapper
 
-struct ForumModel: Mappable {
+typealias ForumModel = ForumWrapperModel<BoardModel>
 
+class ForumWrapperModel<T: Mappable>: Mappable {
     var id: Int = 0
     var name: String = ""
     var info: String = ""
     var admin: String = ""
     var boardCount: Int = 0
+    var boards: [T] = []
 
-    init?(map: Map) {}
+    required init?(map: Map) {}
 
-    mutating func mapping(map: Map) {
+    func mapping(map: Map) {
         id <- map["id"]
         name <- map["name"]
         info <- map["info"]
         admin <- map["admin"]
         boardCount <- map["c_board"]
+        boards <- map["boards"]
     }
 }

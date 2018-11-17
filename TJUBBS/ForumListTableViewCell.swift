@@ -76,13 +76,7 @@ class ForumListTableViewCell: UITableViewCell {
 
     }
 
-    func defaultInit() {
-        modelButton.setTitle("   ", for: .normal)
-
-    }
-
     func modelButtonLayout(heightForRow: CGFloat) {
-        print("modelButtonLayout")
         modelButton.backgroundColor = .white
         modelButton.layer.borderWidth = 0.8
         modelButton.layer.borderColor = UIColor.white.cgColor
@@ -92,7 +86,6 @@ class ForumListTableViewCell: UITableViewCell {
 
     func buttonLayout(numberOfButton: Int) {
         let heightOfButton = Variables.WIDTH / 8
-        print("buttonLayout")
         for j in 1...3 {
             for i in 0 ..< numberOfButton {
                 let button = UIButton(frame: CGRect(x: widthOfItemInCell * CGFloat(j), y: 0 + heightOfButton * CGFloat(i), width: widthOfItemInCell, height: widthOfItemInCell / 2))
@@ -101,9 +94,16 @@ class ForumListTableViewCell: UITableViewCell {
                 button.backgroundColor = .clear
                 button.setTitle(buttonNameArray[index - 1], for: .normal)
                 button.setTitleColor(.black, for: .normal)
-                if hotBoard.first(where: { $0 == buttonNameArray[index - 1] }) != nil { button.setTitleColor(.BBSHotOrange, for: .normal)
-                } else {
-                    button.setTitleColor(.black, for: .normal)
+                if hotBoard.first(where: { $0 == buttonNameArray[index - 1] }) != nil {
+                    let imgView = UIImageView(image: UIImage(named: "hotBadge"))
+                    button.addSubview(imgView)
+                    imgView.snp.makeConstraints { make in
+                        make.right.equalToSuperview().offset(-3)
+                        make.top.equalToSuperview()
+                        make.width.equalTo(25.2)
+                        make.height.equalTo(21)
+                    }
+//                    button.setTitleColor(.BBSHotOrange, for: .normal)
                 }
                 
                 button.titleLabel?.font = UIFont.HHflexibleFont(ofBaseSize: 15)

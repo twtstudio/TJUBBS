@@ -7,24 +7,13 @@
 
 import UIKit
 import ObjectMapper
-import Alamofire
-import PKHUD
-import Kingfisher
-import SnapKit
 import PiwikTracker
 
-class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ForumListViewController: UIViewController {
     //论坛名，论坛里有的板块
     var forumList: [ForumModel] = []
-    var boardList: [BoardModel] = []
-    var forum: ForumModel?
-    //每一个cell中相应的board
-    var cellBorad: [[BoardModel]] = []
+    var forceRefresh = false
 
-    //一个用于计算行高的测试数组，表明每一个Row的高度应该是heightForButton*rowAarry[index.section]
-    //TODO: 这里有一些问题，因为board的个数如何直接决定cell的行高
-    var numOfButtonInStack: [Int] = [4, 2, 5, 3, 3, 2, 2, 2]
-    
     //tableview
     var forumTableView =  UITableView(frame: .zero, style: .grouped)
 
@@ -39,8 +28,6 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //发起网络请求
-        getForumList()
         //navigationBarItem的相关设置，左侧返回置空，写成讨论区，应该把navigationbar变白
         //navigation item
         let item = UIBarButtonItem(title: "讨论区", style: UIBarButtonItemStyle.plain, target: self, action: nil)
@@ -52,26 +39,47 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         // tableView的相关设置
         forumTableView.delegate = self
         forumTableView.dataSource = self
-        //TODO: Cell高度自适应，如果板块数改动可调
+
         self.forumTableView.estimatedSectionHeaderHeight = 0
         self.forumTableView.estimatedSectionFooterHeight = 0
-        //注册cell
-        // self.ForumTableView.register(ForumListTableViewCell.self, forCellReuseIdentifier: reuStr)
-        //添加subView
+
         self.view.addSubview(forumTableView)
         forumTableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+
+        loadCache()
+        //发起网络请求
+        getForumList()
     }
-    
-    //    网络请求
+
+    func numOfButton(in section: Int) -> Int {
+        let boardCount = forumList[section].boards.count
+        let lineCount = (CGFloat(boardCount) / 3.0).rounded(.up)
+        return max(Int(lineCount), 2)
+    }
+
+    func loadCache() {
+        BBSCache.retreive(.forumList, from: .caches, as: String.self, success: { str in
+            if let forums = Mapper<ForumModel>().mapArray(JSONString: str) {
+                self.forumList = forums
+                self.forumTableView.reloadData()
+            }
+        })
+    }
+
     func getForumList() {
         let group = DispatchGroup()
-        
+
         BBSJarvis.getForumList { dict in
             if let data = dict["data"] as? [[String: Any]] {
                 let forums = Mapper<ForumModel>().mapArray(JSONArray: data)
                 self.forumList = forums
+
+                var forumDict: [String: ForumModel] = [:]
+                forums.forEach { forum in
+                    forumDict[forum.name] = forum
+                }
                 //请求到以后，接着请求board
                 for forum in forums {
                     group.enter()
@@ -84,72 +92,73 @@ class ForumListVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
                             for board in boards {
                                 var boardCopy = board
                                 boardCopy["forum_name"] = forum.name
-                                let fooBoard = BoardModel(JSON: boardCopy)
-                                self.boardList.append(fooBoard!)
+                                let newBoard = BoardModel(JSON: boardCopy)!
+                                forumDict[forum.name]?.boards.append(newBoard)
                             }
                         }
-                 
                     })
-                    
                 }
-                
             }
             
             group.notify(queue: .main, execute: {
-                for i in 0..<self.forumList.count{
-                    var tempBoard : [BoardModel] = []
-                        for board in self.boardList{
-                        
-                                if board.forumName == self.forumList[i].name{
-                               tempBoard.append(board)
-                        }
-                           
-                    }
-                    if tempBoard.count >= 1{
-                        self.cellBorad.append(tempBoard)
-                        tempBoard.removeAll()
-                    }
-                }
+                self.forceRefresh = true
                 self.forumTableView.reloadData()
+                BBSCache.store(object: self.forumList.toJSONString(), in: .caches, as: .forumList)
             })
         }
     }
-//    func appendCellBoard(boardList: [BoardModel]) -> [[BoardModel]]{
-//    }
-    
-    //tableView datasource
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let buttonHeight = Variables.WIDTH/8
-        //每一个button定义为屏幕高度的八分之一，宽度为屏宽的四分之一
-        return buttonHeight * CGFloat(numOfButtonInStack[indexPath.section])
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return forumList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = ForumListTableViewCell()
-        cell.initUI(forumName: forumList[indexPath.section].name,
-                    numButtonInStack: numOfButtonInStack[indexPath.section],
-                    boardArray: cellBorad[indexPath.section])
-        cell.buttonTapped = { index in
-            let bid = self.cellBorad[indexPath.section][index - 1].id
-            let boardVC = ThreadListController(bid: bid)
-            self.navigationController?.pushViewController(boardVC, animated: true)
-        }
-        return cell
-    }
-    
+
+}
+
+extension ForumListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 10
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.001
+    }
+
+    //tableView datasource
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let buttonHeight = Variables.WIDTH/8
+        return buttonHeight * CGFloat(numOfButton(in: indexPath.section))
+    }
+}
+
+extension ForumListViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return forumList.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if !forceRefresh,
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ForumCell\(indexPath.section)") {
+            return cell
+        }
+
+        let cell = ForumListTableViewCell(style: .default, reuseIdentifier: "ForumCell\(indexPath.section)")
+
+        let buttonCount = numOfButton(in: indexPath.section)
+
+        cell.initUI(forumName: forumList[indexPath.section].name,
+                    numButtonInStack: buttonCount,
+                    boardArray: forumList[indexPath.section].boards)
+        cell.buttonTapped = { index in
+            let bid = self.forumList[indexPath.section].boards[index - 1].id
+            let boardVC = ThreadListController(bid: bid)
+            self.navigationController?.pushViewController(boardVC, animated: true)
+        }
+
+        // 加载完了，以后利用缓存池里的
+        if indexPath.row == self.forumList.count - 1 {
+            forceRefresh = false
+        }
+
+        return cell
     }
 }

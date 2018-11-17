@@ -18,6 +18,7 @@ struct BBSCache {
     enum Filename: String {
         case topThreads
         case threadList
+        case forumList
     }
     static func set(_ object: Any, forKey key: String) {
         UserDefaults(suiteName: "com.TJUBBS")?.set(object, forKey: key)

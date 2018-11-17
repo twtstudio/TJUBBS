@@ -93,7 +93,7 @@
 		68F461561EBE264800D784F4 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F461551EBE264800D784F4 /* SettingViewController.swift */; };
 		6BEE2A6DD08EA5391EEECB6B /* Pods_TJUBBS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6F43ADEF3827A55E61BC12 /* Pods_TJUBBS.framework */; };
 		8559B23D21966778004A0264 /* BBSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8559B23C21966778004A0264 /* BBSAPI.swift */; };
-		8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51220FDD7130058EACC /* ForumListVC.swift */; };
+		8574A51320FDD7140058EACC /* ForumListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51220FDD7130058EACC /* ForumListViewController.swift */; };
 		8574A51520FDD72B0058EACC /* ForumListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574A51420FDD72B0058EACC /* ForumListTableViewCell.swift */; };
 		C815FF9621869637009A8DD4 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C815FF9521869637009A8DD4 /* ActivityViewController.swift */; };
 		C8191630218FC8F300852E24 /* RanklistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C819162F218FC8F300852E24 /* RanklistTableViewCell.swift */; };
@@ -247,7 +247,7 @@
 		68F461511EBDCCE900D784F4 /* FavorateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavorateViewController.swift; sourceTree = "<group>"; };
 		68F461551EBE264800D784F4 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		8559B23C21966778004A0264 /* BBSAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSAPI.swift; sourceTree = "<group>"; };
-		8574A51220FDD7130058EACC /* ForumListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListVC.swift; sourceTree = "<group>"; };
+		8574A51220FDD7130058EACC /* ForumListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListViewController.swift; sourceTree = "<group>"; };
 		8574A51420FDD72B0058EACC /* ForumListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListTableViewCell.swift; sourceTree = "<group>"; };
 		8583682E2198F149004C74F8 /* SelfPersonalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfPersonalViewController.swift; sourceTree = "<group>"; };
 		858368302198F636004C74F8 /* SelfPersonPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfPersonPageView.swift; sourceTree = "<group>"; };
@@ -398,7 +398,7 @@
 		36DA59231EC1DFAB00B56F07 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				8574A51220FDD7130058EACC /* ForumListVC.swift */,
+				8574A51220FDD7130058EACC /* ForumListViewController.swift */,
 				36DDCA021EC0682E00E3AB63 /* ForumListController.swift */,
 				36DA591D1EC1D54E00B56F07 /* BoardListController.swift */,
 				36E6A8DB1F8FEB5600E216FD /* SearchViewController.swift */,
@@ -1137,7 +1137,7 @@
 				36B45E041F6060C600AF9E57 /* MyPostTestViewController.swift in Sources */,
 				36DA59201EC1DD9300B56F07 /* BoardModel.swift in Sources */,
 				3699D1701ECB34630013D2FD /* MessageModel.swift in Sources */,
-				8574A51320FDD7140058EACC /* ForumListVC.swift in Sources */,
+				8574A51320FDD7140058EACC /* ForumListViewController.swift in Sources */,
 				36E6A8DC1F8FEB5600E216FD /* SearchViewController.swift in Sources */,
 				C8DCA2AB20FDAC90000C7656 /* Variables.swift in Sources */,
 				68B683581EC31BE700F7A0BF /* LatestThreadViewController.swift in Sources */,
