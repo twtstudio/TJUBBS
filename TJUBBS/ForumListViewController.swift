@@ -152,6 +152,10 @@ extension ForumListViewController: UITableViewDataSource {
                     numButtonInStack: buttonCount,
                     boardArray: forum.boards)
         cell.buttonTapped = { index in
+            guard index - 1 < forum.boards.count else {
+                return
+            }
+            
             let board = forum.boards[index - 1]
             let boardVC = ThreadListController(board: board)
             self.navigationController?.pushViewController(boardVC, animated: true)
