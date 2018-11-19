@@ -212,15 +212,10 @@ class RichPostCell: DTAttributedTextCell {
             }
         }
 //        attributedTextContextView.relayoutText()
-
-        if thread.content.contains("圣诞") || thread.content.contains("Christmas") || thread.content.contains("christmas") {
-            decorateAvatar()
-        }
-
     }
 
     func load(post: PostModel) {
-        let html = Markdown.parse(string: post.content)
+        let html = Markdown.parse(string: post.content + "<style> img { max-width: 50%} </style>")
 
         let option = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
                       DTDefaultFontSize: BBSUser.shared.fontSize,
@@ -291,34 +286,6 @@ class RichPostCell: DTAttributedTextCell {
             }
         }
 //        attributedTextContextView.relayoutText()
-
-        if post.content.contains("圣诞") || post.content.contains("Christmas") || post.content.contains("christmas") {
-            decorateAvatar()
-        }
-    }
-
-    func decorateAvatar() {
-        guard !containerView.subviews.contains(where: { $0.tag == -10 }) else {
-            return
-        }
-        let imgView = UIImageView()
-        imgView.tag = -10
-        if arc4random() % 2 == 0 {
-            imgView.image = UIImage(named: "deer_horn")
-            containerView.addSubview(imgView)
-            imgView.snp.makeConstraints { make in
-                make.center.equalTo(portraitImageView.center)
-                make.width.height.equalTo(60)
-            }
-        } else {
-            imgView.image = UIImage(named: "xmas_hat")
-            containerView.addSubview(imgView)
-            imgView.snp.makeConstraints { make in
-                make.centerX.equalTo(portraitImageView.snp.right).offset(-8)
-                make.centerY.equalTo(portraitImageView.snp.top).offset(8)
-                make.width.height.equalTo(30)
-            }
-        }
     }
 
     override func layoutSubviews() {
@@ -344,24 +311,6 @@ class RichPostCell: DTAttributedTextCell {
 }
 
 extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDelegate {
-//    func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor string: NSAttributedString!, frame: CGRect) -> UIView! {
-//        
-//        let attributes = string.attributes(at: 0, effectiveRange: nil)
-//        let url = attributes[DTLinkAttribute]
-//        let identifier = attributes[DTGUIDAttribute] as? String
-//        
-//        let button = DTLinkButton(frame: frame)
-//        button.url = url as! URL!
-//        button.guid = identifier
-//        button.minimumHitSize = CGSize(width: 25, height: 25)
-//        button.addTarget { sender in
-//            if let url = (sender as? DTLinkButton)?.url {
-//                self.delegate?.htmlContentCell(cell: self, linkDidPress: url)
-//            }
-//        }
-//        
-//        return button
-//    }
 
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewForLink url: URL!, identifier: String!, frame: CGRect) -> UIView! {
         if let button = buttons[identifier] {
@@ -381,8 +330,8 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
     }
 
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, didDraw layoutFrame: DTCoreTextLayoutFrame!, in context: CGContext!) {
-        attributedTextContextView.layouter = nil
-        attributedTextContextView.relayoutText()
+//        attributedTextContextView.layouter = nil
+//        attributedTextContextView.relayoutText()
     }
 
     func attributedTextContentView(_ attributedTextContentView: DTAttributedTextContentView!, viewFor attachment: DTTextAttachment!, frame: CGRect) -> UIView! {
@@ -414,7 +363,6 @@ extension RichPostCell: DTAttributedTextContentViewDelegate, DTLazyImageViewDele
         }
 
         let rectangleRect = UIBezierPath(rect: CGRect(x: frame.origin.x, y: frame.origin.y+1, width: 4, height: frame.size.height-2))
-//        let rectangleRect = UIBezierPath(roundedRect: CGRect(x: frame.origin.x, y: frame.origin.y, width: 4, height: frame.size.height), cornerRadius: 2)
         context.addPath(rectangleRect.cgPath)
         context.setFillColor(UIColor(hex6: 0x2565ac).cgColor)
         context.fillPath()

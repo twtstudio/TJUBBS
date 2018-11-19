@@ -1208,7 +1208,7 @@
 				INFOPLIST_FILE = BBSWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.BBSWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug.BBSWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -1225,7 +1225,7 @@
 				INFOPLIST_FILE = BBSWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.BBSWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug.BBSWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -1352,7 +1352,7 @@
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1386,7 +1386,7 @@
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

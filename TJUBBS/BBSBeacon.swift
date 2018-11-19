@@ -29,10 +29,9 @@ struct BBSBeacon {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
         headers["X-Requested-With"] = "Mobile"
-        guard let authentication = authentication else {
-            return
+        if let authentication = authentication {
+            headers["authentication"] = authentication
         }
-        headers["authentication"] = authentication
         Alamofire.SessionManager.default.session.configuration.timeoutIntervalForRequest = 7.0
 
         LoadingWrapper.shared.startTimer = Timer.scheduledTimer(timeInterval: 1.0, target: LoadingWrapper.shared, selector: #selector(LoadingWrapper.startLoading), userInfo: nil, repeats: false)
@@ -123,10 +122,9 @@ struct BBSBeacon {
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
 
-        guard let authentication = authentication else {
-            return
+        if let authentication = authentication {
+            headers["authentication"] = authentication
         }
-        headers["authentication"] = authentication
 
         Alamofire.request(url, method: .get, parameters: nil, headers: headers).responseData { response in
             switch response.result {
@@ -144,10 +142,9 @@ struct BBSBeacon {
         let data = UIImageJPEGRepresentation(image, 1.0)
         var headers = HTTPHeaders()
         headers["User-Agent"] = DeviceStatus.userAgent
-        guard let authentication = authentication else {
-            return
+        if let authentication = authentication {
+            headers["authentication"] = authentication
         }
-        headers["authentication"] = authentication
 
         if method == .put {
             Alamofire.upload(multipartFormData: { formdata in

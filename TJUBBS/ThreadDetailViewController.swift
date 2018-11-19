@@ -393,7 +393,7 @@ class ThreadDetailViewController: UIViewController {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + (self.thread?.authorName ?? "")
-            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
+            editDetailVC.canAnonymous = self.thread?.boardID == 193
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 BBSJarvis.reply(threadID: self.thread!.id, content: string, toID: nil, anonymous: editDetailVC?.isAnonymous ?? false, failure: { _ in
                     HUD.flash(.label("出错了...请稍后重试"))
@@ -825,14 +825,14 @@ extension ThreadDetailViewController: UITableViewDelegate {
             let editDetailVC = EditDetailViewController()
             let edictNC = UINavigationController(rootViewController: editDetailVC)
             editDetailVC.title = "回复 " + self.postList[indexPath.row].authorName
-            editDetailVC.canAnonymous = (self.thread?.anonymous ?? 0) == 1
+            editDetailVC.canAnonymous = self.thread?.boardID == 193
             editDetailVC.doneBlock = { [weak editDetailVC] string in
                 let post = self.postList[indexPath.row]
                 let origin = post.content
                 // cut secondary quotation
                 let cutString = origin.replacingOccurrences(of: "[\\s]*>[\\s]*>(.|[\\s])*", with: "", options: .regularExpression, range: nil)
                 var shortString = cutString
-                if cutString.characters.count > 61 {
+                if cutString.count > 61 {
                     shortString = (cutString as NSString).substring(with: NSRange(location: 0, length: 60))
                 }
                 let resultString = string + "\n > 回复 #\(post.floor) \(post.authorName): \n" + shortString.replacingOccurrences(of: ">", with: "> >", options: .regularExpression, range: nil)

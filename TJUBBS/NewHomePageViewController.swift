@@ -22,7 +22,7 @@ class NewHomePageViewController: UIViewController {
             threadList = threadList.filter { element in
                 let isInBlackList = BBSUser.shared.blackList.keys.contains(element.authorName)
                 let isJobRelated = [188, 189].contains(element.boardID) && isNoJobMode
-                return isInBlackList == false || isJobRelated == false
+                return !isInBlackList && !isJobRelated
             }
         }
     }
