@@ -40,8 +40,8 @@ class ProgressView: UIView {
         let ctx = UIGraphicsGetCurrentContext()
         let center = CGPoint(x: rect.size.width/2, y: rect.size.height/2)
         let radius: CGFloat = 18
-        let start: CGFloat = -CGFloat(M_PI_2)
-        let end: CGFloat = -CGFloat(M_PI_2) + CGFloat.pi*2*CGFloat(progress)
+        let start: CGFloat = -.pi/2
+        let end: CGFloat = -CGFloat.pi/2 + CGFloat.pi*2*CGFloat(progress)
 
         let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: start, endAngle: end, clockwise: true)
         ctx?.setLineWidth(5)
