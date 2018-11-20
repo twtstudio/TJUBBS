@@ -124,7 +124,7 @@ class HomePageThreadTableViewCell: UITableViewCell {
         }
 
         //timeLabel
-        let timeStr = TimeStampTransfer.timeLabelSinceNewly(time: thread.createTime)
+        let timeStr = TimeStampTransfer.timeLabelSinceNewly(time: thread.replyTime)
         timeLabel.text = timeStr
         timeLabel.snp.makeConstraints { make in
             make.centerY.equalTo(replyLabel)

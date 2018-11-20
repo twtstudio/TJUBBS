@@ -186,7 +186,6 @@ class HHUserDetailViewController: UIViewController {
         threadGroup.notify(queue: DispatchQueue.main, execute: {
             self.threadList.sort(by: {$0.createTime > $1.createTime})
             self.tableView.reloadData()
-
         })
     }
 

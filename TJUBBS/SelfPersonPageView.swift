@@ -18,12 +18,10 @@ class SelfPersonPageView: UIView {
     let threadCountLabel = UILabel(text: "", color: .black, fontSize: 26, weight: UIFontWeightLight)
     let ageLabel = UILabel(text: "", color: .black, fontSize: 26, weight: UIFontWeightLight)
     let activityTabelView = UITableView(frame: .zero, style: .plain)
+
     
-    var messageImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-    let messageButton = UIButton()
-    
-    var friendImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-    let friendButton = UIButton()
+    var editImageView = UIImageView(frame: CGRect(x:0, y: 0, width: 30, height: 30))
+    let editButton = UIButton()
     
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
@@ -66,11 +64,8 @@ class SelfPersonPageView: UIView {
         self.addSubview(signatureLabel)
         self.addSubview(scoreLabel)
         self.addSubview(threadCountLabel)
-        
-               // self.addSubview(messageImageView)
-                self.addSubview(messageButton)
-               // self.addSubview(friendImageView)
-                self.addSubview(friendButton)
+        self.addSubview(editImageView)
+        self.addSubview(editButton)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -177,29 +172,17 @@ class SelfPersonPageView: UIView {
             make.height.equalTo(24)
         }
         
-//        messageImageView.image = UIImage(named: "私信")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
-//        messageImageView.contentMode = .center
-//        messageImageView.snp.makeConstraints {make in
-//            make.centerX.equalTo(ageHintLabel)
-//            make.centerY.equalTo(avatarViewBackground.snp.bottom)
-//        }
-//        messageButton.frame = CGRect(x: 0, y: 0, width: flexButtonSize, height: flexButtonSize)
-//        messageButton.snp.makeConstraints {make in
-//            make.centerX.equalTo(ageHintLabel)
-//            make.centerY.equalTo(avatarViewBackground.snp.bottom)
-//        }
-//        
-//        friendImageView.image = UIImage(named: "加好友")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
-//        friendImageView.contentMode = .center
-//        friendImageView.snp.makeConstraints {make in
-//            make.centerX.equalTo(ageHintLabel).offset(-flexButtonSize-10)
-//            make.centerY.equalTo(avatarViewBackground.snp.bottom)
-//        }
-//        friendButton.frame = CGRect(x: 0, y: 0, width: flexButtonSize, height: flexButtonSize)
-//        friendButton.snp.makeConstraints {make in
-//            make.centerX.equalTo(ageHintLabel).offset(-flexButtonSize-10)
-//            make.centerY.equalTo(avatarViewBackground.snp.bottom)
-//        }
+        editImageView.image = UIImage(named: "编辑")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
+        editImageView.contentMode = .center
+        editImageView.snp.makeConstraints {make in
+            make.centerX.equalTo(ageHintLabel).offset(-flexButtonSize-10)
+            make.centerY.equalTo(avatarViewBackground.snp.bottom)
+        }
+        editButton.frame = CGRect(x: 0, y: 0, width: flexButtonSize, height: flexButtonSize)
+        editButton.snp.makeConstraints {make in
+            make.centerX.equalTo(ageHintLabel).offset(-flexButtonSize-10)
+            make.centerY.equalTo(avatarViewBackground.snp.bottom)
+        }
         
         self.sizeToFit()
     }

@@ -18,15 +18,30 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate 
     var tableView: UITableView!
     var newThreadData: [NewThreadModel]? = []
     var threadList: [ThreadModel] = []
-    
-    let header = MJRefreshNormalHeader()
-
+    var page = 0
     
     var scrollView: UIScrollView?
     let headerView = SelfPersonPageView(frame: CGRect(x: 0, y: -UIScreen.main.bounds.height * 0.65, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.65))
     
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
+    
+//    convenience init(para: Int) {
+//        self.init()
+//        BBSJarvis.getMyThreadList(page: page) {
+//            dict in
+//            if let data = dict["data"] as? [[String: Any]] {
+//                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+//            }
+//            if self.threadList.count < 20 {
+//                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+//            } else {
+//                self.tableView?.mj_footer.resetNoMoreData()
+//            }
+//
+//            self.tableView?.reloadData()
+//        }
+//    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -54,6 +69,13 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate 
         tableView?.register(NewPersonTableViewCell.self, forCellReuseIdentifier: "NewPersonCell")
         tableView?.delegate = self
         tableView?.dataSource = self
+        
+        headerView.editButton.addTarget { _ in
+            let detailVC = SetInfoViewController()
+            //question
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
+
         
         let cacheKey = "\(BBSUser.shared.uid ?? 0)"
         
@@ -96,6 +118,42 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate 
                 make.top.equalTo(UIScreen.main.bounds.height * 0.095)
             }
         }
+        self.tableView?.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(self.load))
+        self.refresh()
+    }
+    
+    func refresh() {
+        page = 0
+        BBSJarvis.getMyThreadList(page: page) {
+            dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+            }
+            if self.threadList.count < 20 {
+                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+            } else {
+                self.tableView?.mj_footer.resetNoMoreData()
+            }
+            self.tableView?.reloadData()
+        }
+    }
+    
+    func load() {
+        page += 1
+        BBSJarvis.getMyThreadList(page: page) {
+            dict in
+            if let data = dict["data"] as? [[String: Any]] {
+                let fooThreadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
+                self.threadList += fooThreadList
+                if fooThreadList.count == 0 {
+                    self.tableView?.mj_footer.endRefreshingWithNoMoreData()
+                }
+            }
+            if (self.tableView?.mj_footer.isRefreshing)! {
+                self.tableView?.mj_footer.endRefreshing()
+            }
+            self.tableView?.reloadData()
+        }
     }
     
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -110,17 +168,15 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate 
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    @objc func edit() {
-        let detailVC = SetInfoViewController()
-        //question
-        self.navigationController?.pushViewController(detailVC, animated: true)
-    }
 }
 
 extension SelfPersonalViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.row != 0 {
+            let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row - 1])
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -146,19 +202,22 @@ extension SelfPersonalViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "NewPersonCell") as! NewPersonTableViewCell
         if indexPath.row == 0 {
+            let cell = UITableViewCell()
             cell.textLabel?.text = "—— 最近动态 ——"
             cell.textLabel?.textColor = UIColor.darkGray
             cell.textLabel?.font = UIFont.systemFont(ofSize: 13)
             cell.textLabel?.textAlignment = .center
+            return cell
         } else {
-            if threadList.count == 0 {
-                
-            }
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NewPersonCell") as! NewPersonTableViewCell
+            var thread = threadList[indexPath.row-1]
+            thread.authorName = BBSUser.shared.username!
+            thread.authorID = BBSUser.shared.uid!
+            cell.loadModel(thread: thread)
+            
+            return cell
         }
-        
-        return cell
     }
 }
 
