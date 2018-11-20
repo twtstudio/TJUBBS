@@ -120,6 +120,13 @@ class ThreadDetailViewController: UIViewController {
         } else {
             self.replyButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.size.height-64-45, width: UIScreen.main.bounds.size.width, height: 45)
         }
+      
+        self.navigationController?.isNavigationBarHidden = false
+       // self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isTranslucent = false
+        
+        
+        
     }
 
     override func viewDidLoad() {

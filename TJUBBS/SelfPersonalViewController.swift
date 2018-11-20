@@ -26,22 +26,6 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate 
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
     
-//    convenience init(para: Int) {
-//        self.init()
-//        BBSJarvis.getMyThreadList(page: page) {
-//            dict in
-//            if let data = dict["data"] as? [[String: Any]] {
-//                self.threadList = Mapper<ThreadModel>().mapArray(JSONArray: data)
-//            }
-//            if self.threadList.count < 20 {
-//                self.tableView?.mj_footer.endRefreshingWithNoMoreData()
-//            } else {
-//                self.tableView?.mj_footer.resetNoMoreData()
-//            }
-//
-//            self.tableView?.reloadData()
-//        }
-//    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

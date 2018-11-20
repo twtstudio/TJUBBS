@@ -83,7 +83,6 @@ class NewPersonalPageView: UIView {
         let avatarHeight: CGFloat = 140
         blackGlassView.backgroundColor = .black
         blackGlassView.alpha = 0.80
-//        avatarViewBackground.alpha = 0.80
 
         blackGlassView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()

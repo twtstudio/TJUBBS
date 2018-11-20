@@ -78,8 +78,7 @@ class SelfPersonPageView: UIView {
         let avatarHeight: CGFloat = 140
         blackGlassView.backgroundColor = .black
         blackGlassView.alpha = 0.80
-        //        avatarViewBackground.alpha = 0.80
-        
+     
         blackGlassView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-screenHeight * 0.12)
