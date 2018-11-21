@@ -43,13 +43,13 @@ class SelfPersonPageView: UIView {
         get {
             let screenWidth = UIScreen.main.bounds.width
             if screenWidth <= 320 {
-                return 45
+                return 40
             } else if screenWidth >= 414 {
-                return 60
+                return 55
             } else if screenWidth == 375 {
-                return 50
+                return 45
             } else {
-                return 60
+                return 55
             }
         }
     }
@@ -171,15 +171,15 @@ class SelfPersonPageView: UIView {
             make.height.equalTo(24)
         }
         
-        editImageView.image = UIImage(named: "编辑")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
+        editImageView.image = UIImage(named: "editSelfInfo")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
         editImageView.contentMode = .center
         editImageView.snp.makeConstraints {make in
-            make.centerX.equalTo(ageHintLabel).offset(-flexButtonSize-10)
+            make.centerX.equalTo(ageHintLabel).offset(flexOffset-10)
             make.centerY.equalTo(avatarViewBackground.snp.bottom)
         }
         editButton.frame = CGRect(x: 0, y: 0, width: flexButtonSize, height: flexButtonSize)
         editButton.snp.makeConstraints {make in
-            make.centerX.equalTo(ageHintLabel).offset(-flexButtonSize-10)
+            make.centerX.equalTo(ageHintLabel).offset(flexOffset-10)
             make.centerY.equalTo(avatarViewBackground.snp.bottom)
         }
         

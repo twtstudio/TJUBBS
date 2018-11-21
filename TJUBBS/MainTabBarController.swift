@@ -68,13 +68,13 @@ class MainTabBarController: UITabBarController {
         if item.tag != 2 {
             BBSJarvis.getMessageCount(success: { dict in
                 if let count = dict["data"] as? Int, count != 0 {
-                    self.tabBar.items?[2].badgeValue = "\(count)"
+                    self.tabBar.items?[3].badgeValue = "\(count)"
                 }
             })
         }
         if item.tag == 2 {
             BBSJarvis.setMessageRead(success: {_ in })
-            self.tabBar.items?[2].badgeValue = nil
+            self.tabBar.items?[3].badgeValue = nil
         }
     }
 

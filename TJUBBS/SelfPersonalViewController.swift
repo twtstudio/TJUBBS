@@ -53,6 +53,7 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate 
         tableView?.register(NewPersonTableViewCell.self, forCellReuseIdentifier: "NewPersonCell")
         tableView?.delegate = self
         tableView?.dataSource = self
+        registerForPreviewing(with: self, sourceView: self.tableView)
         
         headerView.editButton.addTarget { _ in
             let detailVC = SetInfoViewController()
@@ -172,7 +173,6 @@ extension SelfPersonalViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.1
     }
-    
 }
 
 extension SelfPersonalViewController: UITableViewDataSource {
@@ -188,6 +188,7 @@ extension SelfPersonalViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let cell = UITableViewCell()
+            cell.selectionStyle = .none
             cell.textLabel?.text = "—— 最近动态 ——"
             cell.textLabel?.textColor = UIColor.darkGray
             cell.textLabel?.font = UIFont.systemFont(ofSize: 13)
@@ -230,5 +231,20 @@ extension SelfPersonalViewController: UIScrollViewDelegate {
             make.height.equalTo(height+1)
             make.top.equalToSuperview().offset(-y)
         }
+    }
+}
+
+extension SelfPersonalViewController: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) {
+            previewingContext.sourceRect = cell.frame
+            let detailVC = ThreadDetailViewController(thread: threadList[indexPath.row - 1])
+            return detailVC
+        }
+        return nil
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
     }
 }
