@@ -43,13 +43,13 @@ class SelfPersonPageView: UIView {
         get {
             let screenWidth = UIScreen.main.bounds.width
             if screenWidth <= 320 {
-                return 40
-            } else if screenWidth >= 414 {
-                return 55
-            } else if screenWidth == 375 {
                 return 45
+            } else if screenWidth >= 414 {
+                return 60
+            } else if screenWidth == 375 {
+                return 50
             } else {
-                return 55
+                return 50
             }
         }
     }

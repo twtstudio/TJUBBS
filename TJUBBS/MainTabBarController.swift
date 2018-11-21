@@ -69,6 +69,7 @@ class MainTabBarController: UITabBarController {
             BBSJarvis.getMessageCount(success: { dict in
                 if let count = dict["data"] as? Int, count != 0 {
                     self.tabBar.items?[3].badgeValue = "\(count)"
+//                    self.tabBar.items?[2].badgeValue = nil
                 }
             })
         }

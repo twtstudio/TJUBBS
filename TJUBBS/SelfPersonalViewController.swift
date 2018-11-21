@@ -32,7 +32,10 @@ class SelfPersonalViewController: UIViewController, UIGestureRecognizerDelegate 
         self.navigationController?.isNavigationBarHidden = true
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isTranslucent = true
-       
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     override func viewDidLoad() {

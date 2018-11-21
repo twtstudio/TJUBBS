@@ -82,7 +82,7 @@ class HottestThreadViewController: UIViewController, UITableViewDataSource, UITa
         // refresh message count
         BBSJarvis.getMessageCount(success: { dict in
             if let count = dict["data"] as? Int, count != 0 {
-                self.tabBarController?.tabBar.items![2].badgeValue = "\(count)"
+                self.tabBarController?.tabBar.items![3].badgeValue = "\(count)"
             }
         })
         
