@@ -59,7 +59,7 @@
 		36E9AF8820ADC2E500E77645 /* NewPersonalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E9AF8620ADC2E500E77645 /* NewPersonalViewController.swift */; };
 		36E9AF8C20ADC2F400E77645 /* NewPersonalPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E9AF8920ADC2F400E77645 /* NewPersonalPageView.swift */; };
 		36E9AF8D20ADC2F400E77645 /* NewPersonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E9AF8A20ADC2F400E77645 /* NewPersonTableViewCell.swift */; };
-		36E9AF8E20ADC2F400E77645 /* NewThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E9AF8B20ADC2F400E77645 /* NewThreadCell.swift */; };
+		36E9AF8E20ADC2F400E77645 /* NewThreadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E9AF8B20ADC2F400E77645 /* NewThreadModel.swift */; };
 		36F451E01EE11F7F009BA627 /* RichPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F451DF1EE11F7F009BA627 /* RichPostCell.swift */; };
 		36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C21EB625F20090E805 /* BBSBeacon.swift */; };
 		36FE25C61EB62A630090E805 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE25C51EB62A630090E805 /* log.swift */; };
@@ -205,7 +205,7 @@
 		36E9AF8620ADC2E500E77645 /* NewPersonalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPersonalViewController.swift; sourceTree = "<group>"; };
 		36E9AF8920ADC2F400E77645 /* NewPersonalPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPersonalPageView.swift; sourceTree = "<group>"; };
 		36E9AF8A20ADC2F400E77645 /* NewPersonTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPersonTableViewCell.swift; sourceTree = "<group>"; };
-		36E9AF8B20ADC2F400E77645 /* NewThreadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadCell.swift; sourceTree = "<group>"; };
+		36E9AF8B20ADC2F400E77645 /* NewThreadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadModel.swift; sourceTree = "<group>"; };
 		36F451DF1EE11F7F009BA627 /* RichPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RichPostCell.swift; sourceTree = "<group>"; };
 		36FE25C21EB625F20090E805 /* BBSBeacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BBSBeacon.swift; sourceTree = "<group>"; };
 		36FE25C51EB62A630090E805 /* log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = "<group>"; };
@@ -609,7 +609,7 @@
 				36E9AF8920ADC2F400E77645 /* NewPersonalPageView.swift */,
 				858368302198F636004C74F8 /* SelfPersonPageView.swift */,
 				36E9AF8A20ADC2F400E77645 /* NewPersonTableViewCell.swift */,
-				36E9AF8B20ADC2F400E77645 /* NewThreadCell.swift */,
+				36E9AF8B20ADC2F400E77645 /* NewThreadModel.swift */,
 				68B5A52C1EBB1FFB00968FFD /* UserInfoTableViewCell.swift */,
 				68B683461EBEC36400F7A0BF /* MessageCell.swift */,
 				368F4A041F0F3D95003A0E05 /* UserDetailView.swift */,
@@ -1111,7 +1111,7 @@
 				36E774F021A082E100B41705 /* Storage.swift in Sources */,
 				368F4A051F0F3D95003A0E05 /* UserDetailView.swift in Sources */,
 				C82D092120C7834C0078FD5E /* HomePageThreadTableViewCell.swift in Sources */,
-				36E9AF8E20ADC2F400E77645 /* NewThreadCell.swift in Sources */,
+				36E9AF8E20ADC2F400E77645 /* NewThreadModel.swift in Sources */,
 				36FE25C31EB625F20090E805 /* BBSBeacon.swift in Sources */,
 				68B683471EBEC36400F7A0BF /* MessageCell.swift in Sources */,
 				68F461501EBDC95700D784F4 /* TimeStampTransfer.swift in Sources */,
@@ -1208,7 +1208,7 @@
 				INFOPLIST_FILE = BBSWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug.BBSWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.BBSWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -1225,7 +1225,7 @@
 				INFOPLIST_FILE = BBSWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug.BBSWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.BBSWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -1352,7 +1352,7 @@
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1386,7 +1386,7 @@
 				INFOPLIST_FILE = TJUBBS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.edu.twt.TJUBBS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

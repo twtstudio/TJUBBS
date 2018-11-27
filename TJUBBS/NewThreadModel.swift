@@ -1,5 +1,5 @@
 //
-//  NewThreadCell.swift
+//  NewThreadModel.swift
 //  TJUBBS
 //
 //  Created by 侯钦瀚 on 2018/4/26.

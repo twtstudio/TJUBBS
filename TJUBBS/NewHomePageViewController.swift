@@ -254,6 +254,9 @@ extension NewHomePageViewController: UITableViewDataSource {
                 let userVC = HHUserDetailViewController(uid: data.authorID)
                 self.navigationController?.pushViewController(userVC, animated: true)
             }
+        } else {
+            cell.nameLabel.gestureRecognizers?.removeAll()
+            cell.avatarImageView.gestureRecognizers?.removeAll()
         }
         return cell
     }
