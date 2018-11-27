@@ -196,6 +196,7 @@ class HHUserDetailViewController: UIViewController {
         //tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.always
         self.navigationController?.navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(color: .white), for: .default)
+        self.navigationController?.isNavigationBarHidden = false
     }
 
 }
