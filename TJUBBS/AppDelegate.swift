@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
-
+        
 //        let detailVC = ThreadDetailViewController()
         let tabBarVC = MainTabBarController(para: 1)
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -65,9 +65,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window.backgroundColor = .white
 
             //Handle NavigationBar Appearance
-            UINavigationBar.appearance().barTintColor = .BBSBlue
-            UINavigationBar.appearance().tintColor = .white
-            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white] //WTF I'm writing?
+            UINavigationBar.appearance().barTintColor = .white
+            UINavigationBar.appearance().tintColor = .black
+            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
             BBSUser.load()
 
             window.rootViewController = tabBarVC

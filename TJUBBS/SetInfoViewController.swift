@@ -108,7 +108,7 @@ extension SetInfoViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         case 2:
             let cell = UITableViewCell(style: .default, reuseIdentifier: "CustomValueCell")
-            cell.textLabel?.text = "我不想工作！"
+            cell.textLabel?.text = "巴拉拉能量，招聘广告去除！"
             let noWorkSwitchButton = UISwitch()
             cell.contentView.addSubview(noWorkSwitchButton)
             noWorkSwitchButton.onTintColor = UIColor.BBSBlue
