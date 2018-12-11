@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //Handle NavigationBar Appearance
             UINavigationBar.appearance().barTintColor = .white
             UINavigationBar.appearance().tintColor = .black
-            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.black]
 
             //            UserDefaults.standard.set(false, forKey: GUIDEDIDSHOW)
             if let userDidSeeGuide = UserDefaults.standard.value(forKey: GUIDEDIDSHOW) as? Bool, userDidSeeGuide == true {
