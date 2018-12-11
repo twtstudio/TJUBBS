@@ -38,7 +38,10 @@ class EditDetailViewController: UIViewController {
         // markdown parser
         textView.layoutManager.delegate = self
         textStorage.addLayoutManager(textView.layoutManager)
-        textStorage.appendString(placeholder)
+        let attributedPlaceHolder = NSAttributedString(string: placeholder)
+        textView.attributedText = attributedPlaceHolder
+//        textStorage.appendString(placeholder)
+        textStorage.append(attributedPlaceHolder)
 
         // set the cursor
         textView.selectedRange = NSRange(location: placeholder.count, length: 0)

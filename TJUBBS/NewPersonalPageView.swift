@@ -177,6 +177,10 @@ class NewPersonalPageView: UIView {
         }
 
         messageImageView.image = UIImage(named: "私信")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
+        messageImageView.layer.shadowColor = UIColor.black.cgColor
+        messageImageView.layer.shadowRadius = 4
+        messageImageView.layer.shadowOpacity = 1.0
+        messageImageView.layer.shadowOffset = CGSize(width: 2, height: 2)
         messageImageView.contentMode = .center
         messageImageView.snp.makeConstraints {make in
             make.centerX.equalTo(ageHintLabel)
@@ -189,6 +193,10 @@ class NewPersonalPageView: UIView {
         }
 
         friendImageView.image = UIImage(named: "加好友")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
+        friendImageView.layer.shadowColor = UIColor.black.cgColor
+        friendImageView.layer.shadowRadius = 4
+        friendImageView.layer.shadowOpacity = 1.0
+        friendImageView.layer.shadowOffset = CGSize(width: 2, height: 2)
         friendImageView.contentMode = .center
         friendImageView.snp.makeConstraints {make in
             make.centerX.equalTo(ageHintLabel).offset(-flexButtonSize-10)

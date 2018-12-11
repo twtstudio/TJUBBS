@@ -18,8 +18,9 @@ target 'TJUBBS' do
   pod 'SlackTextViewController'
   pod 'Kingfisher'
   pod 'DTCoreText'
-  pod 'Marklight'
+  pod 'Marklight', '1.0.0'
   pod 'TOCropViewController'
+  pod 'FSPagerView', '0.7.2'
   #pod 'PiwikTracker', '~> 4.0.0-beta'
 end
 

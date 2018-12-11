@@ -172,6 +172,10 @@ class SelfPersonPageView: UIView {
         }
         
         editImageView.image = UIImage(named: "editSelfInfo")?.kf.resize(to: CGSize(width: flexButtonSize, height: flexButtonSize))
+        editImageView.layer.shadowColor = UIColor.black.cgColor
+        editImageView.layer.shadowRadius = 4
+        editImageView.layer.shadowOpacity = 1.0
+        editImageView.layer.shadowOffset = CGSize(width: 2, height: 2)
         editImageView.contentMode = .center
         editImageView.snp.makeConstraints {make in
             make.centerX.equalTo(ageHintLabel).offset(flexOffset-10)

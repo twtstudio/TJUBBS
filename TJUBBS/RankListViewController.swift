@@ -90,7 +90,7 @@ extension RankListViewController: UITableViewDelegate {
 extension RankListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let detailVC = HHUserDetailViewController(uid: userList[indexPath.section].id)
+        let detailVC = HHUserDetailViewController(uid: userList[indexPath.row].id)
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
     
