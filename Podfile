@@ -5,7 +5,7 @@ platform :ios, '9.0'
 def shared_pods
   #pod 'PiwikTracker', git: 'https://github.com/piwik/piwik-sdk-ios.git', branch: 'master'
   pod 'PiwikTracker', '~> 3.3.0'
-  pod 'ObjectMapper'
+  pod 'ObjectMapper', '~> 3.4'
   pod 'Alamofire'
 end
 

@@ -30,18 +30,21 @@ class NewPersonalViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.isNavigationBarHidden = true
+      //  self.navigationController?.isNavigationBarHidden = true
        // self.navigationController?.navigationBar.barStyle = .blackOpaque
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
+         self.navigationController?.navigationBar.backgroundColor = UIColor.clear
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
        
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        
+        self.navigationController?.navigationBar.tintColor = .white
         tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight), style: .grouped)
         tableView?.contentInset = UIEdgeInsets(top: UIScreen.main.bounds.height * 0.65, left: 0, bottom: 0, right: 0)
         self.view.addSubview(tableView!)

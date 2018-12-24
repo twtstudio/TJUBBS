@@ -43,9 +43,11 @@ class HHUserDetailViewController: UIViewController {
             self.automaticallyAdjustsScrollViewInsets = false
             // Fallback on earlier versions
         }
-        self.navigationController?.isNavigationBarHidden = true
+      //  self.navigationController?.isNavigationBarHidden = true
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clear
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self as? UIGestureRecognizerDelegate
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
@@ -111,6 +113,8 @@ class HHUserDetailViewController: UIViewController {
         self.loadModel()
         registerForPreviewing(with: self, sourceView: self.tableView)
         view.backgroundColor = .lightGray
+        self.navigationController?.navigationBar.tintColor = .white
+        
         self.hidesBottomBarWhenPushed = true
         self.navigationItem.backBarButtonItem?.title = ""
     }

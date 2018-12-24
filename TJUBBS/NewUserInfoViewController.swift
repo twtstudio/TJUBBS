@@ -11,7 +11,7 @@ import UIKit
 import Kingfisher
 import ObjectMapper
 
-class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
+class NewUserInfoViewController: UIViewController,UITableViewDataSource {
 
     var userTableView = UITableView(frame: UIScreen.main.bounds, style: .grouped)
     var detailArray: [String] = ["我的收藏", "我的发布", "通用设置"]
@@ -32,7 +32,6 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //如果不加这两个方法，从个人中心退回来的时候就会NavigationBar和TabBar就会消失
         self.navigationController?.isNavigationBarHidden = false
         self.tabBarController?.tabBar.isHidden = false
         
@@ -45,7 +44,11 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         self.navigationController?.navigationBar.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "我的", style: UIBarButtonItemStyle.plain, target: self, action: nil)
         self.tabBarController?.tabBar.isTranslucent = false
-        //        self.userTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clear
     }
     
     override func viewDidLoad() {
@@ -53,6 +56,11 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         
         let backItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.navigationItem.backBarButtonItem = backItem
+       
+        let user = Mapper<UserWrapper>().map(JSON: ["uid": BBSUser.shared.uid ?? "0", "name": BBSUser.shared.username ?? "求实用户", "signature": BBSUser.shared.signature ?? "还没有个性签名", "points": BBSUser.shared.points ?? 0, "c_post": BBSUser.shared.postCount ?? 0, "c_thread": BBSUser.shared.threadCount ?? 0, "t_create": BBSUser.shared.tCreate ?? "", "level": BBSUser.shared.level ?? 0])!
+       
+        loadModel(user: user)
+        
         refresh()
         
         let cacheKey = "\(BBSUser.shared.uid ?? 0)" + Date.today
@@ -61,19 +69,19 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
                 BBSUser.shared.avatar = image
             }
         }
-        let user = Mapper<UserWrapper>().map(JSON: ["uid": BBSUser.shared.uid ?? "0", "name": BBSUser.shared.username ?? "求实用户", "signature": BBSUser.shared.signature ?? "还没有个性签名", "points": BBSUser.shared.points ?? 0, "c_post": BBSUser.shared.postCount ?? 0, "c_thread": BBSUser.shared.threadCount ?? 0, "t_create": BBSUser.shared.tCreate ?? "", "level": BBSUser.shared.level ?? 0])!
-        loadModel(user: user)
+   
 
         userTableView.dataSource = self
         userTableView.delegate = self
         self.view.addSubview(userTableView)
 
-        self.userTableView.contentInset.top = 10
+
         self.userTableView.estimatedRowHeight = 0
-        self.userTableView.estimatedSectionHeaderHeight = 0
-        self.userTableView.sectionHeaderHeight = 1
-        self.userTableView.sectionFooterHeight = 5
+//        self.userTableView.sectionHeaderHeight = 0
+//        self.userTableView.sectionFooterHeight = 0
         self.userTableView.estimatedSectionFooterHeight = 0
+        self.userTableView.estimatedSectionHeaderHeight = 0
+       
         userTableView.rowHeight = UITableViewAutomaticDimension
         userTableView.estimatedRowHeight = 300
         userTableView.register(NewUserDataTableViewCell.self, forCellReuseIdentifier: "NewUserDataTableViewCell")
@@ -112,7 +120,32 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         // Dispose of any resources that can be recreated.
     }
     
+    
+    func loadModel(user: UserWrapper) {
+        self.userName = user.username ?? " "
+        if user.signature != nil {
+            self.signature = user.signature!
+        }else {
+        }
+        //        self.level = "\(user.level ?? 0)"
+        self.level = " "
+        self.points = "\(user.points ?? 0)"
+        self.threadCount = "\((user.postCount ?? 0) + (user.threadCount ?? 0))"
+        if let tCreate = user.tCreate {
+            self.age = "\(TimeStampTransfer.daysSince(time: tCreate))"
+        } else {
+            self.age = "0"
+        }
+    }
 
+
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (section == 2) {
+            return 3
+        }
+        return 1
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -137,12 +170,10 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
         return cell
 
     }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 2) {
-            return 3
-        }
-        return 1
-    }
+}
+
+extension NewUserInfoViewController: UITableViewDelegate{
+ 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -165,6 +196,7 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             
         case IndexPath(row: 0, section: 0):
             let detailVC = SelfPersonalViewController()
+            
             self.navigationController?.pushViewController(detailVC, animated: true)
 
         case IndexPath(row: 0, section: 2):
@@ -196,28 +228,23 @@ class NewUserInfoViewController: UIViewController,UITableViewDelegate, UITableVi
             return 54
         }
     }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 1
+//    }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 1
+        return 10
     }
     
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.001
+    }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return nil
     }
-
-    func loadModel(user: UserWrapper) {
-        self.userName = user.username ?? " "
-        if user.signature != nil {
-            self.signature = user.signature!
-        }else {
-        }
-        //        self.level = "\(user.level ?? 0)"
-        self.level = " "
-        self.points = "\(user.points ?? 0)"
-        self.threadCount = "\((user.postCount ?? 0) + (user.threadCount ?? 0))"
-        if let tCreate = user.tCreate {
-            self.age = "\(TimeStampTransfer.daysSince(time: tCreate))"
-        } else {
-            self.age = "0"
-        }
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return nil
     }
+
 }
+
+

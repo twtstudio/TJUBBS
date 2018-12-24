@@ -27,8 +27,6 @@ class ForumListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //navigationBarItem的相关设置，左侧返回置空，写成讨论区，应该把navigationbar变白
         //navigation item
         let item = UIBarButtonItem(title: "讨论区", style: UIBarButtonItemStyle.plain, target: self, action: nil)
         self.navigationItem.leftBarButtonItem = item
@@ -49,7 +47,6 @@ class ForumListViewController: UIViewController {
         }
 
         loadCache()
-        //发起网络请求
         getForumList()
     }
 
