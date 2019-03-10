@@ -16,7 +16,7 @@ class AnimatedRefreshingHeader: MJRefreshGifHeader {
         var refreshingImages = [UIImage]()
         for i in 1...6 {
             let image = UIImage(named: "\(imageName)\(i)")?.kf.resize(to: CGSize(width: 60, height: 60))
-            refreshingImages.append(image!)
+             refreshingImages.append(image!)
         }
         self.setImages(refreshingImages, duration: 0.2, for: .pulling)
         self.stateLabel.isHidden = true
